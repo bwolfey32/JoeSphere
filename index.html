@@ -91,8 +91,8 @@ h1{
 /* ---------- section tabs ---------- */
 .viewtabs{display:flex;gap:0;margin:22px 0 0;border-bottom:1px solid var(--rule)}
 .viewtab{
-  font-family:"Oswald",Impact,sans-serif;font-weight:600;font-size:12px;
-  letter-spacing:.16em;text-transform:uppercase;padding:11px 18px;cursor:pointer;
+  font-family:"Oswald",Impact,sans-serif;font-weight:600;font-size:14.5px;
+  letter-spacing:.14em;text-transform:uppercase;padding:13px 22px;cursor:pointer;
   background:transparent;color:var(--ink-soft);border:none;border-bottom:2px solid transparent;
   margin-bottom:-1px;
 }
@@ -100,24 +100,38 @@ h1{
 .viewtab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--stamp)}
 
 /* ---------- insight modules ---------- */
-.figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;
+.figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:1px;
   background:var(--rule);border:1px solid var(--rule);margin-bottom:14px}
-.fig{background:var(--card);padding:11px 12px}
-.fig .k{font-family:"Oswald",Impact,sans-serif;font-size:9.5px;letter-spacing:.15em;
+.fig{background:var(--card);padding:13px 14px}
+.fig .k{font-family:"Oswald",Impact,sans-serif;font-size:11.5px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-soft)}
-.fig .v{font-family:"Oswald",Impact,sans-serif;font-weight:700;font-size:21px;
+.fig .v{font-family:"Oswald",Impact,sans-serif;font-weight:700;font-size:26px;
   line-height:1.15;margin-top:2px}
-.fig .s{font-size:11px;color:var(--ink-soft);margin-top:1px}
+.fig .s{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
 .ranklist{margin:0;padding:0;list-style:none}
-.ranklist li{display:flex;align-items:baseline;gap:9px;padding:5px 0;
-  border-bottom:1px dashed var(--rule);font-size:12.5px}
+.ranklist li{display:flex;align-items:baseline;gap:9px;padding:7px 0;
+  border-bottom:1px dashed var(--rule);font-size:14px}
 .ranklist li:last-child{border-bottom:none}
-.ranklist .n{font-family:"Oswald",Impact,sans-serif;color:var(--blue);font-size:12px;
+.ranklist .n{font-family:"Oswald",Impact,sans-serif;color:var(--blue);font-size:14.5px;
   white-space:nowrap;margin-left:auto}
 .ranklist .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.subhead{font-family:"Oswald",Impact,sans-serif;font-size:10px;letter-spacing:.15em;
+.subhead{font-family:"Oswald",Impact,sans-serif;font-size:12px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-soft);margin:15px 0 7px}
-.srcnote{font-size:11px;color:var(--ink-soft);margin-top:12px;font-style:italic}
+.srcnote{font-size:12.5px;color:var(--ink-soft);margin-top:14px;font-style:italic;line-height:1.6}
+.viewchart{display:block;width:100%;height:auto;margin:2px 0 4px;overflow:visible}
+.vc-ax{fill:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.05em}
+/* the median label crosses the bars, so it carries a surface-coloured halo */
+.vc-med{fill:var(--mid);font-family:"Oswald",Impact,sans-serif;font-size:10.5px;letter-spacing:.08em;
+  stroke:var(--card);stroke-width:3px;paint-order:stroke;stroke-linejoin:round}
+.vc-peak{fill:var(--ink);font-family:"Oswald",Impact,sans-serif;font-size:12px;font-weight:700}
+.vc-bar path{transition:opacity .12s}
+.vc-bar:hover path{opacity:.75}
+.vc-bar{cursor:default}
+.vc-key{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-soft);margin-top:2px}
+.vc-key span{display:flex;align-items:center;gap:6px}
+.vc-key .sw{width:11px;height:11px;background:var(--blue);display:inline-block;flex:0 0 auto}
+.vc-key .sw.prov{background:repeating-linear-gradient(45deg,
+  var(--ink-soft) 0 2px,transparent 2px 5px);opacity:.75}
 
 /* ---------- readout ---------- */
 .readout{
@@ -127,14 +141,14 @@ h1{
 }
 .cell{background:var(--card);padding:13px 12px}
 .cell .k{
-  font-family:"Oswald",Impact,sans-serif;font-size:10px;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
+  font-family:"Oswald",Impact,sans-serif;font-size:11.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
 }
 .cell .v{
   font-family:"Oswald",Impact,sans-serif;font-weight:700;
-  font-size:26px;line-height:1.1;margin-top:3px;
+  font-size:29px;line-height:1.1;margin-top:4px;
 }
-.cell .v.small{font-size:15px;line-height:1.25;padding-top:5px}
+.cell .v.small{font-size:16.5px;line-height:1.3;padding-top:5px}
 
 
 /* ---------- map ---------- */
@@ -143,8 +157,8 @@ h1{
 .maphead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
   padding:13px 15px 10px;border-bottom:1px dashed var(--rule)}
 .maphead h3{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
-  letter-spacing:.14em;font-size:12px;margin:0}
-.maphead .sub{font-size:11.5px;color:var(--ink-soft)}
+  letter-spacing:.13em;font-size:14px;margin:0}
+.maphead .sub{font-size:12.5px;color:var(--ink-soft)}
 .mapbody{padding:8px 10px 4px;background:
   repeating-linear-gradient(0deg,rgba(148,160,180,.10) 0 1px,transparent 1px 34px),
   repeating-linear-gradient(90deg,rgba(148,160,180,.10) 0 1px,transparent 1px 34px)}
@@ -163,20 +177,20 @@ h1{
 .pin:focus{outline:none}
 .pin:focus-visible circle{stroke:var(--blue);stroke-width:3}
 .mapfoot{display:flex;gap:14px;flex-wrap:wrap;align-items:center;
-  padding:10px 15px 13px;border-top:1px dashed var(--rule);font-size:11.5px;color:var(--ink-soft)}
+  padding:11px 15px 14px;border-top:1px dashed var(--rule);font-size:12.5px;color:var(--ink-soft)}
 .lg{display:flex;align-items:center;gap:5px}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
 .dot.up{background:var(--stamp)}
 .dot.pastpin{border:2px solid var(--ink-soft)}
-.readpin{flex:1 1 100%;color:var(--ink);font-size:12.5px;min-height:1.3em}
+.readpin{flex:1 1 100%;color:var(--ink);font-size:13.5px;min-height:1.3em}
 .readpin b{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;letter-spacing:.06em}
 
 
-.rowlab{font-family:"Oswald",Impact,sans-serif;font-size:9.5px;letter-spacing:.18em;
+.rowlab{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--ink-soft);margin-right:2px}
 .scoperow{margin-bottom:8px}
 .modes{margin-left:auto;display:flex;gap:5px}
-.modes .tab{padding:5px 10px;font-size:10px}
+.modes .tab{padding:6px 12px;font-size:11.5px}
 #heat circle{mix-blend-mode:screen}
 .hlabel{font-family:"Oswald",Impact,sans-serif;letter-spacing:.09em;
   fill:#EDEAE3;font-weight:600;dominant-baseline:auto}
@@ -201,24 +215,24 @@ body.m-both #heat{opacity:.8}
 .analysis{background:var(--card);border:1px solid var(--rule);margin:20px 0 0;
   padding:16px 16px 14px;box-shadow:0 8px 24px -16px var(--shadow)}
 .analysis h3{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
-  letter-spacing:.14em;font-size:12px;margin:0 0 4px}
-.an-q{font-size:11.5px;color:var(--ink-soft);margin:0 0 14px}
+  letter-spacing:.13em;font-size:14px;margin:0 0 5px}
+.an-q{font-size:13px;color:var(--ink-soft);margin:0 0 14px}
 .an-q b{color:var(--mid)}
 .an-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .an-block h4{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
-  letter-spacing:.15em;font-size:10px;color:var(--ink-soft);margin:0 0 9px;
+  letter-spacing:.13em;font-size:11.5px;color:var(--ink-soft);margin:0 0 10px;
   padding-bottom:5px;border-bottom:1px solid var(--rule)}
 .an-block+.an-block{margin-top:18px}
-.crow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;
+.crow{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;
   padding:4px 0;border-bottom:1px dotted var(--rule)}
 .crow:last-child{border-bottom:none}
 .crow .lab{color:var(--ink-soft)}
-.crow .val{font-family:"Oswald",Impact,sans-serif;font-size:13px;white-space:nowrap}
-.crow .val i{font-style:normal;color:var(--ink-soft);font-size:11px}
+.crow .val{font-family:"Oswald",Impact,sans-serif;font-size:14.5px;white-space:nowrap}
+.crow .val i{font-style:normal;color:var(--ink-soft);font-size:12px}
 .mrow{margin-bottom:9px}
-.mrow .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.mrow .top{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px}
 .mrow .top b{font-weight:400}
-.mrow .top span{color:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;font-size:11.5px}
+.mrow .top span{color:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;font-size:12.5px}
 .track{position:relative;height:9px;background:rgba(255,255,255,.05);border:1px solid var(--rule)}
 .fill{position:absolute;top:0;bottom:0;left:0;background:var(--blue)}
 .ci{position:absolute;top:-3px;bottom:-3px;border-left:1px solid var(--mid);
@@ -226,8 +240,8 @@ body.m-both #heat{opacity:.8}
 .months{display:flex;align-items:flex-end;gap:3px;height:74px;margin-top:4px}
 .mo{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
 .mo .b{width:100%;background:var(--mid);min-height:2px;opacity:.85}
-.mo .t{font-size:9px;color:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;letter-spacing:.04em}
-.an-foot{font-size:11px;color:var(--ink-soft);margin:14px 0 0;padding-top:10px;
+.mo .t{font-size:10.5px;color:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;letter-spacing:.04em}
+.an-foot{font-size:12.5px;color:var(--ink-soft);margin:16px 0 0;padding-top:12px;line-height:1.6;
   border-top:1px solid var(--rule)}
 @media(max-width:560px){.an-grid{grid-template-columns:1fr;gap:18px}}
 
@@ -262,8 +276,8 @@ body.m-both #heat{opacity:.8}
 .entry-head{padding:15px 16px 13px;border-bottom:1px dashed var(--rule)}
 .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:9px}
 .tag{
-  font-family:"Oswald",Impact,sans-serif;font-size:9.5px;letter-spacing:.15em;
-  text-transform:uppercase;padding:3px 7px;border:1px solid currentColor;
+  font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;padding:4px 8px;border:1px solid currentColor;
 }
 .tag.standup{color:var(--stamp)}
 .tag.broadcast{color:var(--blue)}
@@ -309,7 +323,7 @@ body.m-both #heat{opacity:.8}
 
 /* the line where the feed crosses from scheduled into already-released */
 .nowline{display:flex;align-items:center;gap:11px;margin:26px 2px 22px;
-  font-family:"Oswald",Impact,sans-serif;font-size:10px;letter-spacing:.22em;
+  font-family:"Oswald",Impact,sans-serif;font-size:11.5px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--stamp)}
 .nowline::before,.nowline::after{content:"";height:1px;background:var(--rule);flex:1}
 .nowline span{white-space:nowrap}
@@ -345,11 +359,11 @@ body.m-both #heat{opacity:.8}
 /* ---------- annotations ---------- */
 .ann{padding:12px 16px 15px;background:rgba(255,255,255,.028)}
 .ann-h{
-  font-family:"Oswald",Impact,sans-serif;font-size:10px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--ink-soft);margin-bottom:9px;
+  font-family:"Oswald",Impact,sans-serif;font-size:11.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;
 }
 .c{border-left:2px solid var(--blue);padding:2px 0 2px 10px;margin-bottom:9px}
-.c-meta{font-size:11px;color:var(--ink-soft)}
+.c-meta{font-size:12px;color:var(--ink-soft)}
 .c-meta b{color:var(--blue);font-style:italic}
 .c-body{font-size:13.5px;margin-top:1px;word-wrap:break-word;overflow-wrap:anywhere}
 .c-del{
@@ -364,8 +378,8 @@ input[type=text],input[type=date],textarea,select{
 }
 textarea{resize:vertical;min-height:64px}
 .mini{
-  font-family:"Oswald",Impact,sans-serif;font-size:10.5px;letter-spacing:.12em;
-  text-transform:uppercase;padding:7px 12px;cursor:pointer;
+  font-family:"Oswald",Impact,sans-serif;font-size:12px;letter-spacing:.11em;
+  text-transform:uppercase;padding:8px 14px;cursor:pointer;
   background:var(--ink);color:var(--paper);border:1px solid var(--ink);font-weight:700;
 }
 
@@ -387,13 +401,13 @@ textarea{resize:vertical;min-height:64px}
 code{font-family:inherit;color:var(--blue);font-size:12px}
 .panel h3{
   font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
-  letter-spacing:.09em;font-size:14px;margin:0 0 3px;
+  letter-spacing:.09em;font-size:16px;margin:0 0 4px;
 }
-.panel p.hint{font-size:12px;color:var(--ink-soft);margin:0 0 13px}
+.panel p.hint{font-size:13.5px;color:var(--ink-soft);margin:0 0 14px}
 .field{margin-bottom:11px}
 .field label{
-  display:block;font-family:"Oswald",Impact,sans-serif;font-size:10px;
-  letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px;
+  display:block;font-family:"Oswald",Impact,sans-serif;font-size:11.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px;
 }
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .actions{display:flex;gap:8px;margin-top:14px}
@@ -1179,6 +1193,94 @@ function medIQR(vals){
   return {n:s.length, med:quantile(s,.5), q1:quantile(s,.25), q3:quantile(s,.75)};
 }
 
+// Bars, not a line: episodes are discrete drops, and a line would draw a
+// slope through them that the eye reads as a trend. The right-hand end of
+// that slope is an artifact — the newest episodes have simply had fewer days
+// to collect views — so those bars are drawn provisional (hatched, greyed,
+// and labelled) rather than being presented as a fall in viewership.
+const PROVISIONAL_DAYS=7;
+function niceMax(n){
+  if(!(n>0)) return 1;
+  const mag=Math.pow(10,Math.floor(Math.log10(n)));
+  return [1,2,2.5,5,10].map(s=>s*mag).find(v=>v>=n)||10*mag;
+}
+function shortDate(d){
+  const [y,m,dd]=d.split('-').map(Number);
+  return new Date(y,m-1,dd).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+}
+// top-rounded bar: the data end gets the radius, the baseline end stays square.
+// Takes numbers and formats internally — handing it pre-formatted strings makes
+// every "+" a concatenation and the path comes out as "M50.0,67.682.4 ... HNaN".
+function barPath(x,y,w,h){
+  const r=Math.max(0,Math.min(4,w/2,h));
+  const n=v=>Number(v).toFixed(1);
+  return 'M'+n(x)+','+n(y+h)+'V'+n(y+r)+'Q'+n(x)+','+n(y)+' '+n(x+r)+','+n(y)+
+         'H'+n(x+w-r)+'Q'+n(x+w)+','+n(y)+' '+n(x+w)+','+n(y+r)+'V'+n(y+h)+'Z';
+}
+function viewChartHTML(eps){
+  const rows=eps.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  if(rows.length<3) return '';
+  const W=680,H=182,L=48,R=10,T=16,B=32;
+  const pw=W-L-R, ph=H-T-B, base=T+ph;
+  const max=niceMax(Math.max(...rows.map(e=>e.views)));
+  const med=quantile(rows.map(e=>e.views).slice().sort((a,b)=>a-b),.5);
+  const yOf=v=>base-(v/max)*ph;
+  const slot=pw/rows.length, bw=Math.max(3,slot-4);
+  const peak=rows.reduce((a,b)=>b.views>a.views?b:a,rows[0]);
+
+  let g='';
+  [0,.5,1].forEach(f=>{
+    const y=base-f*ph;
+    g+='<line x1="'+L+'" y1="'+y.toFixed(1)+'" x2="'+(W-R)+'" y2="'+y.toFixed(1)+
+       '" stroke="var(--rule)" stroke-width="1"'+(f?' opacity=".55"':'')+'/>'+
+       '<text x="'+(L-7)+'" y="'+(y+4).toFixed(1)+'" text-anchor="end" class="vc-ax">'+
+       esc(nfmt(max*f))+'</text>';
+  });
+  // Median reference — the panel quotes this figure, so show where it sits.
+  // Drawn after the bars, not before: at 773K the line lands mid-plot, and any
+  // taller bar painted straight over the label.
+  const medLayer='<line x1="'+L+'" y1="'+yOf(med).toFixed(1)+'" x2="'+(W-R)+'" y2="'+
+    yOf(med).toFixed(1)+'" stroke="var(--mid)" stroke-width="1" stroke-dasharray="4 4" '+
+    'opacity=".75"/><text x="'+(W-R)+'" y="'+(yOf(med)-5).toFixed(1)+
+    '" text-anchor="end" class="vc-med">median '+esc(nfmt(med))+'</text>';
+
+  let bars='',labels='';
+  rows.forEach((e,i)=>{
+    const x=L+i*slot+(slot-bw)/2, h=Math.max(1,base-yOf(e.views)), y=base-h;
+    const prov=daysTo(e.date)>-PROVISIONAL_DAYS;
+    bars+='<g class="vc-bar'+(prov?' prov':'')+'">'+
+      '<title>'+esc(e.title)+' — '+esc(nfmt(e.views))+' views, '+esc(shortDate(e.date))+
+      (prov?' (still accumulating)':'')+'</title>'+
+      '<path d="'+barPath(x,y,bw,h)+'"'+
+      (prov?' fill="url(#vc-prov)"':' fill="var(--blue)"')+'/>'+
+      // invisible full-height target so the tooltip is reachable on short bars
+      '<rect x="'+x.toFixed(1)+'" y="'+T+'" width="'+bw.toFixed(1)+'" height="'+ph+
+      '" fill="transparent"/></g>';
+    if(i===0||i===rows.length-1||i%4===0)
+      labels+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(base+16)+'" text-anchor="middle" '+
+        'class="vc-ax">'+esc(shortDate(e.date))+'</text>';
+  });
+  // one direct label, on the peak only — never a number on every bar
+  const pi=rows.indexOf(peak), px=L+pi*slot+slot/2;
+  labels+='<text x="'+px.toFixed(1)+'" y="'+(yOf(peak.views)-6).toFixed(1)+'" text-anchor="'+
+    (pi>rows.length-3?'end':(pi<2?'start':'middle'))+'" class="vc-peak">'+esc(nfmt(peak.views))+'</text>';
+
+  return '<div class="subhead">Views by release date</div>'+
+    '<svg class="viewchart" viewBox="0 0 '+W+' '+H+'" role="img" '+
+    'aria-label="Bar chart of view counts for the '+rows.length+' most recent episodes, '+
+    esc(shortDate(rows[0].date))+' to '+esc(shortDate(rows[rows.length-1].date))+'">'+
+    '<defs><pattern id="vc-prov" width="5" height="5" patternUnits="userSpaceOnUse" '+
+    'patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--ink-soft)" opacity=".18"/>'+
+    '<line x1="0" y1="0" x2="0" y2="5" stroke="var(--ink-soft)" stroke-width="2" opacity=".5"/>'+
+    '</pattern></defs>'+
+    g+bars+medLayer+
+    '<line x1="'+L+'" y1="'+base+'" x2="'+(W-R)+'" y2="'+base+'" stroke="var(--rule)"/>'+
+    labels+'</svg>'+
+    '<div class="vc-key"><span><i class="sw"></i>Settled</span>'+
+    '<span><i class="sw prov"></i>Released in the last '+PROVISIONAL_DAYS+
+    ' days — still accumulating</span></div>';
+}
+
 function renderViewInsights(){
   const el=document.getElementById('in-view-body'); if(!el) return;
   const eps=allEntries().filter(e=>e.type==='podcast'&&Number.isFinite(e.views)&&e.views>0);
@@ -1213,6 +1315,7 @@ function renderViewInsights(){
       {k:'Main show',v:main.length?nfmt(medIQR(main.map(e=>e.views)).med):'—',s:'median · n='+main.length},
       {k:'MMA show',v:mma.length?nfmt(medIQR(mma.map(e=>e.views)).med):'—',s:'median · n='+mma.length}
     ])+
+    viewChartHTML(eps)+
     '<div class="subhead">Biggest draws</div>'+
     ranks(eps.slice().sort((a,b)=>b.views-a.views).slice(0,5)
       .map(e=>({t:e.title,n:nfmt(e.views)})))+
