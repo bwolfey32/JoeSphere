@@ -99,18 +99,20 @@ h1{
 .viewtab:hover{color:var(--ink)}
 .viewtab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--stamp)}
 
-/* ---------- insights layout ---------- */
-/* The Log stays a narrow reading column; Insights becomes a two-pane
-   dashboard, so the page widens only while that tab is open. */
-body.wide .wrap{max-width:1240px}
-#view-insights{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:22px;align-items:start}
-.insight-main{min-width:0}
-.insight-side{position:sticky;top:14px;min-width:0}
+/* ---------- app shell ---------- */
+/* One layout for the whole site: whatever the left column is showing, the
+   detail pane on the right is the single place an entry opens. */
+.wrap{max-width:1240px}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:22px;align-items:start;
+  margin-top:18px}
+.app-main{min-width:0}
+.app-side{position:sticky;top:14px;min-width:0}
 @media(max-width:1040px){
-  body.wide .wrap{max-width:760px}
-  #view-insights{grid-template-columns:1fr}
+  .wrap{max-width:820px}
+  .app{grid-template-columns:1fr;gap:16px}
   /* stacked, the pane leads — otherwise a selection lands off-screen */
-  .insight-side{order:-1;position:static}
+  .app-side{order:-1;position:sticky;top:0;z-index:5;
+    background:var(--paper);padding-bottom:8px}
 }
 
 /* ---------- selected-entry pane ---------- */
@@ -122,8 +124,16 @@ body.wide .wrap{max-width:1240px}
   text-transform:uppercase;margin:11px 0 4px;line-height:1.25}
 .player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
 .player .pstat{font-size:12.5px;color:var(--blue);margin:2px 0 0}
-.player .ptalk{font-size:12.5px;color:var(--ink-soft);margin:8px 0 0;
-  padding-top:8px;border-top:1px dashed var(--rule)}
+.player .pposts{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule)}
+.player .ppost{font-size:12.5px;color:var(--ink-soft);padding:4px 0;
+  border-bottom:1px dotted var(--rule)}
+.player .ppost:last-of-type{border-bottom:none}
+.player .ppost b{color:var(--blue);font-style:italic}
+.player .ppost .n{color:var(--stamp);white-space:nowrap}
+/* the pane can get tall with a long comment thread — keep it scrollable
+   rather than letting it run past the viewport on a sticky element */
+.app-side .player{max-height:calc(100vh - 28px);overflow-y:auto}
+@media(max-width:1040px){.app-side .player{max-height:none}}
 .player .frame{position:relative;aspect-ratio:16/9;background:#080A0E;border:1px solid var(--rule);
   overflow:hidden}
 .player .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -156,10 +166,6 @@ body.wide .wrap{max-width:1240px}
 .vc-bar.sel path{stroke:var(--ink);stroke-width:1.5}
 .rlink.sel .t{color:var(--blue)}
 .rlink.sel::before{content:"▸ ";color:var(--blue)}
-/* brief highlight on the card a jump lands on, so the target is obvious */
-@keyframes entryflash{0%{box-shadow:0 0 0 2px var(--blue)}100%{box-shadow:0 0 0 2px transparent}}
-.entry.flash{animation:entryflash 1.5s ease-out}
-@media(prefers-reduced-motion:reduce){.entry.flash{animation:none;box-shadow:0 0 0 2px var(--blue)}}
 .subhead{font-family:"Oswald",Impact,sans-serif;font-size:12px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-soft);margin:15px 0 7px}
 .srcnote{font-size:12.5px;color:var(--ink-soft);margin-top:14px;font-style:italic;line-height:1.6}
@@ -362,8 +368,6 @@ body.m-both #heat{opacity:.8}
   background:var(--stamp);color:#14171D;border:none}
 .playbtn:hover{filter:brightness(1.12)}
 
-.cardactions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:11px}
-.cardactions .mini{margin:0}
 .ticketlink{display:inline-flex;align-items:center;gap:7px;
   font-family:"Oswald",Impact,sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;
   text-transform:uppercase;padding:8px 12px;background:var(--ink);color:var(--paper);
@@ -409,6 +413,32 @@ body.m-both #heat{opacity:.8}
   display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical}
 .poster-meta span{font-size:11px;color:var(--ink-soft)}
 @media(max-width:520px){ .poster{gap:10px;padding:9px 11px} }
+
+/* ---------- browse rows ---------- */
+.row{display:flex;gap:12px;width:100%;text-align:left;align-items:stretch;
+  background:var(--card);border:1px solid var(--rule);border-left:3px solid transparent;
+  padding:10px 12px;margin-bottom:7px;cursor:pointer;font:inherit;color:inherit}
+.row:hover{border-color:var(--ink-soft)}
+.row:focus-visible{outline:1px solid var(--blue);outline-offset:2px}
+.row.sel{border-left-color:var(--stamp);background:#1E2632}
+.row.past{opacity:.78}
+.row.past:hover,.row.sel{opacity:1}
+.row-thumb{flex:0 0 104px;height:59px;position:relative;overflow:hidden;background:#080A0E;
+  border:1px solid var(--rule);display:flex;align-items:center;justify-content:center}
+.row-thumb img{width:100%;height:100%;object-fit:cover}
+.row-thumb.noimg i{font-family:"Oswald",Impact,sans-serif;font-style:normal;font-weight:700;
+  font-size:13px;letter-spacing:.06em;color:var(--blue);text-align:center;padding:0 4px;
+  line-height:1.1}
+.row-body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.row-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.row-title{font-family:"Oswald",Impact,sans-serif;font-size:14.5px;letter-spacing:.02em;
+  text-transform:uppercase;color:var(--ink);line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.row-meta{font-size:12px;color:var(--ink-soft)}
+@media(max-width:520px){
+  .row-thumb{flex-basis:76px;height:44px}
+  .row-title{font-size:13px}
+}
 
 /* ---------- annotations ---------- */
 .ann{padding:12px 16px 15px;background:rgba(255,255,255,.028)}
@@ -517,58 +547,15 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   </header>
 
   <nav class="viewtabs" aria-label="Sections">
-    <button class="viewtab" data-view="log" aria-pressed="true">The Log</button>
+    <button class="viewtab" data-view="browse" aria-pressed="true">Browse</button>
+    <button class="viewtab" data-view="posts" aria-pressed="false">Fan Posts</button>
     <button class="viewtab" data-view="insights" aria-pressed="false">Insights</button>
   </nav>
 
-  <div id="view-log">
+  <div class="app">
+    <div class="app-main">
 
-  <section class="panel posts" id="posts-section" aria-label="Fan posts">
-    <h3>Fan Posts</h3>
-    <p class="hint">Share a clip and say something about it. Public — visible to everyone, posted
-      under the name you choose, and not vetted before it appears.</p>
-
-    <div class="bar" style="margin:0 0 14px">
-      <span class="rowlab">Post</span>
-      <button class="filebtn" id="open-postform">+ Share a clip</button>
-    </div>
-
-    <div class="panel hidden" id="postform-panel" style="margin-bottom:16px">
-      <h3>Share a clip</h3>
-      <p class="hint">Only recognized YouTube, TikTok and Vimeo links are accepted — the same check used
-        for event clips.</p>
-      <div class="field">
-        <label for="p-name">Display name</label>
-        <input type="text" id="p-name" placeholder="How you'll appear on your posts" maxlength="40">
-      </div>
-      <div class="field">
-        <label for="p-vid">Clip link</label>
-        <input type="text" id="p-vid" placeholder="https://youtu.be/…" spellcheck="false">
-      </div>
-      <div class="field">
-        <label for="p-cap">Caption</label>
-        <textarea id="p-cap" maxlength="500" placeholder="What's happening in this clip…"></textarea>
-      </div>
-      <div class="field">
-        <label for="p-event">Tag an event <span style="text-transform:none;letter-spacing:0">— optional</span></label>
-        <select id="p-event"><option value="">— none —</option></select>
-      </div>
-      <div class="err" id="p-err"></div>
-      <div class="actions">
-        <button class="mini" id="post-submit">Post</button>
-        <button class="mini ghost" id="post-cancel">Cancel</button>
-      </div>
-    </div>
-
-    <div class="postfilter hidden" id="postfilter">
-      Showing posts tagged to <b id="postfilter-label"></b> ·
-      <button class="mini ghost" id="postfilter-clear">Show all</button>
-    </div>
-
-    <div id="postsfeed"><div class="empty"><strong>Loading…</strong></div></div>
-  </section>
-
-
+      <div id="view-browse">
   <div class="bar scoperow">
     <span class="rowlab">Window</span>
     <button class="tab" data-s="all" aria-pressed="true">All time</button>
@@ -651,13 +638,57 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   </div>
 
   <main id="feed"><div class="empty"><strong>Opening file…</strong>Reading from the cabinet.</div></main>
+      </div>
 
+      <div id="view-posts" hidden>
+  <section class="panel posts" id="posts-section" aria-label="Fan posts">
+    <h3>Fan Posts</h3>
+    <p class="hint">Share a clip and say something about it. Public — visible to everyone, posted
+      under the name you choose, and not vetted before it appears.</p>
 
-  </div>
+    <div class="bar" style="margin:0 0 14px">
+      <span class="rowlab">Post</span>
+      <button class="filebtn" id="open-postform">+ Share a clip</button>
+    </div>
 
-  <div id="view-insights" hidden>
-    <div class="insight-main">
+    <div class="panel hidden" id="postform-panel" style="margin-bottom:16px">
+      <h3>Share a clip</h3>
+      <p class="hint">Only recognized YouTube, TikTok and Vimeo links are accepted — the same check used
+        for event clips.</p>
+      <div class="field">
+        <label for="p-name">Display name</label>
+        <input type="text" id="p-name" placeholder="How you'll appear on your posts" maxlength="40">
+      </div>
+      <div class="field">
+        <label for="p-vid">Clip link</label>
+        <input type="text" id="p-vid" placeholder="https://youtu.be/…" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="p-cap">Caption</label>
+        <textarea id="p-cap" maxlength="500" placeholder="What's happening in this clip…"></textarea>
+      </div>
+      <div class="field">
+        <label for="p-event">Tag an event <span style="text-transform:none;letter-spacing:0">— optional</span></label>
+        <select id="p-event"><option value="">— none —</option></select>
+      </div>
+      <div class="err" id="p-err"></div>
+      <div class="actions">
+        <button class="mini" id="post-submit">Post</button>
+        <button class="mini ghost" id="post-cancel">Cancel</button>
+      </div>
+    </div>
 
+    <div class="postfilter hidden" id="postfilter">
+      Showing posts tagged to <b id="postfilter-label"></b> ·
+      <button class="mini ghost" id="postfilter-clear">Show all</button>
+    </div>
+
+    <div id="postsfeed"><div class="empty"><strong>Loading…</strong></div></div>
+  </section>
+
+      </div>
+
+      <div id="view-insights" hidden>
   <div class="readout">
     <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
     <div class="cell"><div class="k">Entries on file</div><div class="v" id="stat-count">—</div></div>
@@ -727,9 +758,11 @@ This log needs JavaScript to render the map and event list.</div></noscript>
     <p class="an-foot">Descriptive only: this reads the entries you've logged, and describes
       what has already been announced. It doesn't forecast where the subject will be.</p>
   </section>
+      </div>
+
     </div>
 
-    <aside class="insight-side" aria-label="Selected entry">
+    <aside class="app-side" aria-label="Selected entry">
       <div id="insight-player"></div>
     </aside>
   </div>
@@ -947,6 +980,9 @@ async function loadFeed(){
       ? auto.length+' auto-synced · updated '+new Date(data.generated).toLocaleDateString()
       : '';
     render();
+    // A shared link names a feed entry, and the feed is what just arrived —
+    // this is the first moment the link can actually resolve.
+    if(!selectedId) applyHash();
   }catch(e){ /* no feed present — the app works fine without one */ }
 }
 // A positive finite number, or null. Anything else — strings, NaN, negatives,
@@ -1272,29 +1308,22 @@ function ranks(rows){
 // than scrolling the page to it, so the figure you clicked and the thing it
 // describes stay on screen together.
 let selectedId=null;
-function selectEntry(id){
+function selectEntry(id,opts){
   if(!id) return;
   selectedId=id;
   renderPlayer();
   document.querySelectorAll('[data-goto]').forEach(el=>
     el.classList.toggle('sel',el.dataset.goto===id));
+  // `silent` is for selections that came *from* the URL — rewriting the hash
+  // there would push a duplicate history entry and break the back button.
+  if(!(opts&&opts.silent)&&shareable({id:id})&&location.hash!==hashFor(id)){
+    history.replaceState(null,'',hashFor(id));
+  }
   // On a stacked layout the pane is above the panels and may be off-screen.
   const pane=document.getElementById('insight-player');
   if(pane) pane.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-// How much conversation an entry has attracted. Both counts come from data
-// already loaded for the feed, so this costs no extra request — and it stays
-// silent rather than showing "0 comments" when Fan Posts isn't configured.
-function talkHTML(e){
-  if(!sb) return '';
-  const c=comments.filter(x=>x.event_id===e.id).length, p=postCountFor(e.id);
-  const bits=[];
-  if(c) bits.push(c+' comment'+(c===1?'':'s'));
-  if(p) bits.push(p+' fan post'+(p===1?'':'s'));
-  return '<p class="ptalk">'+(bits.length?'💬 '+esc(bits.join(' · '))
-    :'No comments yet — be the first in the Log.')+'</p>';
-}
 
 function renderPlayer(){
   const el=document.getElementById('insight-player'); if(!el) return;
@@ -1321,32 +1350,38 @@ function renderPlayer(){
     (Number.isFinite(e.views)?'<p class="pstat">'+esc(nfmt(e.views))+' views at last sync</p>':'')+
     (e.box&&Number.isFinite(e.box.gate)?'<p class="pstat">'+esc(money(e.box.gate))+' gate'+
       (Number.isFinite(e.box.attendance)?' · '+esc(cfmt(e.box.attendance))+' in attendance':'')+'</p>':'')+
-    talkHTML(e)+
-    '<div class="pactions">'+ticketHTML(e)+
-    '<button class="mini ghost" data-openlog="'+esc(e.id)+'">Open in the Log</button>'+
-    '</div></div>';
+    '<div class="pactions">'+ticketHTML(e)+shareHTML(e)+
+    (e.locked?'':'<button class="c-del" data-drop="'+esc(e.id)+'">Remove entry</button>')+
+    '</div>'+
+    fanPostsForHTML(e)+
+    eventCommentsHTML(e.id)+
+    '</div>';
 }
 
-// The full card — comments, fan posts — still lives in the Log, so keep a way
-// through to it rather than duplicating all of that in the pane.
-function goToEntry(id){
-  if(!id) return;
-  filter='all'; scope='all';
-  document.querySelectorAll('[data-f]').forEach(x=>
-    x.setAttribute('aria-pressed',String(x.dataset.f==='all')));
-  document.querySelectorAll('[data-s]').forEach(x=>
-    x.setAttribute('aria-pressed',String(x.dataset.s==='all')));
-  render();
-  showView('log');
-  requestAnimationFrame(()=>{
-    const el=document.querySelector('[data-entry="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');
-    if(!el) return;
-    el.scrollIntoView({behavior:'smooth',block:'center'});
-    el.classList.remove('flash');
-    void el.offsetWidth;              // restart the animation if it is re-triggered
-    el.classList.add('flash');
-  });
+// Only feed-backed entries get a share button. A visitor's own logged entries
+// use a random uid() that exists in their browser alone, so a link to one
+// would open to nothing for whoever received it — better to offer no link
+// than a broken one.
+function shareable(e){ return !!(e&&typeof e.id==='string'&&e.id.startsWith('a:')); }
+function shareHTML(e){
+  return shareable(e)
+    ? '<button class="mini ghost" data-share="'+esc(e.id)+'">Copy link</button>' : '';
 }
+
+// A compact peek at the fan posts tagged to this entry, with a way through to
+// the full feed filtered to it (postFilterEvent already drives that).
+function fanPostsForHTML(e){
+  if(!sb) return '';
+  const mine=posts.filter(p=>p.event_id===e.id);
+  if(!mine.length) return '';
+  return '<div class="pposts"><div class="ann-h">Fan posts · '+mine.length+'</div>'+
+    mine.slice(0,3).map(p=>'<div class="ppost"><b>'+esc(p.author_label||'Fan')+'</b> '+
+      esc((p.caption||'').slice(0,90))+(p.caption&&p.caption.length>90?'…':'')+
+      ' <span class="n">♥ '+(p.likeCount||0)+'</span></div>').join('')+
+    '<button class="mini ghost" data-viewposts="'+esc(e.id)+'">See all '+mine.length+
+    ' in Fan Posts</button></div>';
+}
+
 function medIQR(vals){
   const s=vals.slice().sort((a,b)=>a-b);
   return {n:s.length, med:quantile(s,.5), q1:quantile(s,.25), q3:quantile(s,.75)};
@@ -1685,6 +1720,10 @@ function render(){
   const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
   plotMap(rows);
   renderAnalysis(rows);
+  // Compact rows. The clip, ticket link, comments and delete control all live
+  // in the detail pane now — 242 of those inline was both unscannable and a lot
+  // of DOM (an iframe placeholder and a comment form each). A row is a
+  // thumbnail, a title and the numbers you'd scan by.
   feed.innerHTML=rows.map((e,i)=>{
     const n=daysTo(e.date), past=n<0;
     const when=past?(Math.abs(n)+' days ago'):(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'));
@@ -1692,33 +1731,30 @@ function render(){
     // Only when a future row actually precedes it, so the scope filters
     // ("Upcoming" / "Previous") don't render a stray divider at the top.
     const crosses=past&&i>0&&daysTo(rows[i-1].date)>=0;
+    const yt=e.video&&e.video.kind==='yt'&&/^[A-Za-z0-9_-]{11}$/.test(e.video.id)?e.video.id:null;
+    const cCount=sb?comments.filter(c=>c.event_id===e.id).length:0;
+    const pCount=sb?postCountFor(e.id):0;
+    const stat=Number.isFinite(e.views)?nfmt(e.views)+' views'
+      :(e.box&&Number.isFinite(e.box.gate)?money(e.box.gate)+' gate':'');
     return (crosses?'<div class="nowline"><span>Today</span></div>':'')+
-      '<article class="entry'+(past?' past':'')+'" data-entry="'+esc(e.id)+'">'+
-      '<div class="entry-head">'+
-      '<div class="tags">'+
-        '<span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
+      '<button class="row'+(past?' past':'')+(selectedId===e.id?' sel':'')+
+        '" data-entry="'+esc(e.id)+'" data-goto="'+esc(e.id)+'">'+
+      '<span class="row-thumb'+(yt?'':' noimg')+'">'+
+        (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg">'
+           :'<i>'+esc(posterBadge(e.title||'')||labels[e.type]||'')+'</i>')+'</span>'+
+      '<span class="row-body">'+
+        '<span class="row-top"><span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
         (e.flag==='demo'?'<span class="tag demo">Demo</span>':'')+
-        (e.flag==='auto'?'<span class="tag auto">Auto-synced</span>':'')+
         (e.flag==='unconfirmed'?'<span class="tag unconf">Unconfirmed</span>':'')+
-        '<span class="when">'+when+'</span>'+
-      '</div>'+
-      '<h2>'+esc(e.title)+'</h2>'+
-      '<p class="loc">'+esc(e.loc||'Location not listed')+' · '+fmt(e.date)+'</p>'+
-      (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
-      (e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?
-        '<div class="clip" data-k="'+e.video.kind+'" data-v="'+e.video.id+'">'+
-        (e.video.kind==='yt'?'<img class="thumb" loading="lazy" alt="" src="https://i.ytimg.com/vi/'+
-          e.video.id+'/hqdefault.jpg">':'')+
-        '<button class="playbtn" type="button" aria-label="Load and play the '+
-        CLIPNAME[e.video.kind]+' clip">▶ Play '+CLIPNAME[e.video.kind]+' clip</button>'+
-        '</div>'
-        :posterHTML(e))+
-      '<div class="cardactions">'+ticketHTML(e)+
-      (sb?'<button class="mini ghost" data-viewposts="'+e.id+'">💬 '+postCountFor(e.id)+
-        ' fan post'+(postCountFor(e.id)===1?'':'s')+'</button>':'')+'</div>'+
-      (e.locked?'<div style="margin-top:10px" class="lockednote">Auto-synced — edit the source feed</div>'
-        :'<div style="margin-top:10px"><button class="c-del" data-drop="'+e.id+'">Remove entry</button></div>')+
-      '</div>'+eventCommentsHTML(e.id)+'</article>';
+        '<span class="when">'+esc(when)+'</span></span>'+
+        '<span class="row-title">'+esc(e.title)+'</span>'+
+        '<span class="row-meta">'+esc(fmt(e.date))+
+          (e.loc?' · '+esc(cityLabel(e.loc)):'')+
+          (stat?' · '+esc(stat):'')+
+          (cCount?' · '+cCount+' comment'+(cCount===1?'':'s'):'')+
+          (pCount?' · '+pCount+' fan post'+(pCount===1?'':'s'):'')+
+        '</span>'+
+      '</span></button>';
   }).join('');
 }
 
@@ -1916,15 +1952,16 @@ function renderAnalysis(rows){
 
 // Bound to [data-view], not to a shared class — same reason as the filter
 // rows (see AGENTS.md #2).
+const VIEWS=['browse','posts','insights'];
+let currentView='browse';
 function showView(name){
-  document.getElementById('view-log').hidden = name!=='log';
-  document.getElementById('view-insights').hidden = name!=='insights';
+  if(!VIEWS.includes(name)) name='browse';
+  currentView=name;
+  VIEWS.forEach(v=>{ document.getElementById('view-'+v).hidden = v!==name; });
   document.querySelectorAll('[data-view]').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.view===name)));
-  document.body.classList.toggle('wide',name==='insights');
   if(name==='insights'){
     renderInsights();
-    renderPlayer();
     // The map lives in a hidden container until now, and clientWidth reads 0
     // while hidden, so uiK() would size every pin against a zero-width box and
     // the map would come up looking empty. Re-plot once it is actually visible.
@@ -1934,19 +1971,35 @@ function showView(name){
 document.querySelectorAll('[data-view]').forEach(b=>
   b.addEventListener('click',()=>showView(b.dataset.view)));
 
-// Delegated so it covers both the ranked-list buttons and the SVG bars, which
-// are rebuilt on every renderInsights().
-document.getElementById('view-insights').addEventListener('click',ev=>{
-  const openLog=ev.target.closest('[data-openlog]');
-  if(openLog){ goToEntry(openLog.dataset.openlog); return; }
+// One delegated handler for every surface that can open an entry — rows,
+// ranked lists, SVG bars — since they are all rebuilt on each render and all
+// route through selectEntry.
+function onPick(ev){
   const t=ev.target.closest('[data-goto]');
   if(t) selectEntry(t.dataset.goto);
-});
+}
+document.getElementById('view-insights').addEventListener('click',onPick);
+document.getElementById('feed').addEventListener('click',onPick);
 document.getElementById('view-insights').addEventListener('keydown',ev=>{
   if(ev.key!=='Enter'&&ev.key!==' ') return;
   const t=ev.target.closest('[data-goto]');
   if(t){ ev.preventDefault(); selectEntry(t.dataset.goto); }
 });
+
+/* ---------- deep links ---------- */
+// An entry gets its own URL so a find can actually be shared. Feed ids are
+// stable across rebuilds (a:wikipedia:<slug>, a:youtube:<videoId>), which is
+// what makes them safe to put in a link at all.
+function hashFor(id){ return '#e='+encodeURIComponent(id); }
+function applyHash(){
+  const m=/^#e=(.+)$/.exec(location.hash||'');
+  if(!m) return false;
+  let id; try{ id=decodeURIComponent(m[1]); }catch(e){ return false; }
+  if(!allEntries().some(x=>x.id===id)) return false;
+  selectEntry(id,{silent:true});
+  return true;
+}
+window.addEventListener('hashchange',()=>{ applyHash(); });
 
 let rzt;
 window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>plotMap(lastRows),150);});
@@ -2158,31 +2211,31 @@ document.getElementById('save-entry').addEventListener('click',async()=>{
   render(); await save();
 });
 
-document.getElementById('feed').addEventListener('click',ev=>{
-  const pb=ev.target.closest('.playbtn'); if(!pb)return;
-  const box=pb.closest('.clip'), k=box.dataset.k, id=box.dataset.v;
-  if(!CLIPSRC[k]||!/^[A-Za-z0-9_-]+$/.test(id)) return;
-  const f=document.createElement('iframe');
-  f.src=CLIPSRC[k](id);
-  f.setAttribute('loading','lazy');
-  f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
-  f.allow='accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen';
-  f.setAttribute('allowfullscreen','');
-  f.title=CLIPNAME[k]+' clip';
-  box.innerHTML=''; box.appendChild(f);
-});
 
-document.getElementById('feed').addEventListener('click',async ev=>{
+// These actions all belong to whichever entry is open, so they are bound to
+// the detail pane — the one place an entry is ever acted on now.
+document.getElementById('insight-player').addEventListener('click',async ev=>{
   if(ev.target.closest('.playbtn'))return;
   const b=ev.target.closest('button'); if(!b)return;
   if(b.dataset.drop){
     state.entries=state.entries.filter(x=>x.id!==b.dataset.drop);
+    if(selectedId===b.dataset.drop){ selectedId=null; renderPlayer(); }
     render(); await save();
+  }
+  if(b.dataset.share){
+    const url=location.origin+location.pathname+hashFor(b.dataset.share);
+    const done=()=>{ const t=b.textContent; b.textContent='Copied'; setTimeout(()=>{b.textContent=t;},1400); };
+    try{
+      // Older browsers and any non-secure origin have no clipboard API; fall
+      // back to a selectable prompt rather than failing silently.
+      if(navigator.clipboard&&window.isSecureContext){ await navigator.clipboard.writeText(url); done(); }
+      else window.prompt('Copy this link:',url);
+    }catch(e){ window.prompt('Copy this link:',url); }
   }
   if(b.dataset.viewposts){
     postFilterEvent=b.dataset.viewposts;
     renderPosts();
-    document.getElementById('posts-section').scrollIntoView({behavior:'smooth',block:'start'});
+    showView('posts');
   }
   if(b.dataset.ecadd){
     if(!sb) return;
@@ -2205,7 +2258,7 @@ document.getElementById('feed').addEventListener('click',async ev=>{
     await loadPosts();
   }
 });
-document.getElementById('feed').addEventListener('keydown',ev=>{
+document.getElementById('insight-player').addEventListener('keydown',ev=>{
   if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.ectx){
     const btn=document.querySelector('[data-ecadd="'+ev.target.dataset.ectx+'"]');
     if(btn)btn.click();
