@@ -99,6 +99,35 @@ h1{
 .viewtab:hover{color:var(--ink)}
 .viewtab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--stamp)}
 
+/* ---------- insights layout ---------- */
+/* The Log stays a narrow reading column; Insights becomes a two-pane
+   dashboard, so the page widens only while that tab is open. */
+body.wide .wrap{max-width:1240px}
+#view-insights{display:grid;grid-template-columns:minmax(0,1fr) 372px;gap:22px;align-items:start}
+.insight-main{min-width:0}
+.insight-side{position:sticky;top:14px;min-width:0}
+@media(max-width:1040px){
+  body.wide .wrap{max-width:760px}
+  #view-insights{grid-template-columns:1fr}
+  /* stacked, the pane leads — otherwise a selection lands off-screen */
+  .insight-side{order:-1;position:static}
+}
+
+/* ---------- selected-entry pane ---------- */
+.player{background:var(--card);border:1px solid var(--ink);padding:14px 15px;
+  box-shadow:0 6px 20px -12px var(--shadow)}
+.player .ph{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
+.player h4{font-family:"Oswald",Impact,sans-serif;font-size:15px;letter-spacing:.03em;
+  text-transform:uppercase;margin:11px 0 4px;line-height:1.25}
+.player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
+.player .pstat{font-size:12.5px;color:var(--blue);margin:2px 0 0}
+.player .frame{position:relative;aspect-ratio:16/9;background:#080A0E;border:1px solid var(--rule);
+  overflow:hidden}
+.player .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.player .pactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.player .empty{padding:26px 16px}
+
 /* ---------- insight modules ---------- */
 .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:1px;
   background:var(--rule);border:1px solid var(--rule);margin-bottom:14px}
@@ -121,6 +150,10 @@ h1{
 .rlink:focus-visible{outline:1px solid var(--blue);outline-offset:3px}
 .vc-bar.go{cursor:pointer}
 .vc-bar.go:focus-visible{outline:1px solid var(--blue)}
+/* which row/bar is currently loaded in the pane */
+.vc-bar.sel path{stroke:var(--ink);stroke-width:1.5}
+.rlink.sel .t{color:var(--blue)}
+.rlink.sel::before{content:"▸ ";color:var(--blue)}
 /* brief highlight on the card a jump lands on, so the target is obvious */
 @keyframes entryflash{0%{box-shadow:0 0 0 2px var(--blue)}100%{box-shadow:0 0 0 2px transparent}}
 .entry.flash{animation:entryflash 1.5s ease-out}
@@ -621,6 +654,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   </div>
 
   <div id="view-insights" hidden>
+    <div class="insight-main">
 
   <div class="readout">
     <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
@@ -691,6 +725,11 @@ This log needs JavaScript to render the map and event list.</div></noscript>
     <p class="an-foot">Descriptive only: this reads the entries you've logged, and describes
       what has already been announced. It doesn't forecast where the subject will be.</p>
   </section>
+    </div>
+
+    <aside class="insight-side" aria-label="Selected entry">
+      <div id="insight-player"></div>
+    </aside>
   </div>
 
   <footer>
@@ -1227,8 +1266,53 @@ function ranks(rows){
   ).join('')+'</ul>';
 }
 
-// Filters are cleared first: the target is often hidden by whatever type or
-// window is selected, and silently scrolling to nothing looks broken.
+// Selecting from a chart or a list loads the entry into the side pane rather
+// than scrolling the page to it, so the figure you clicked and the thing it
+// describes stay on screen together.
+let selectedId=null;
+function selectEntry(id){
+  if(!id) return;
+  selectedId=id;
+  renderPlayer();
+  document.querySelectorAll('[data-goto]').forEach(el=>
+    el.classList.toggle('sel',el.dataset.goto===id));
+  // On a stacked layout the pane is above the panels and may be off-screen.
+  const pane=document.getElementById('insight-player');
+  if(pane) pane.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function renderPlayer(){
+  const el=document.getElementById('insight-player'); if(!el) return;
+  const e=selectedId?allEntries().find(x=>x.id===selectedId):null;
+  if(!e){
+    el.innerHTML='<div class="player"><div class="ph">Selected entry</div>'+
+      '<div class="empty"><strong>Nothing picked yet</strong>'+
+      'Choose a month on the chart, or any row in the lists below, to watch it here.</div></div>';
+    return;
+  }
+  // Same validation as everywhere else: only a whitelisted kind and a strict
+  // id ever reach an iframe, and the URL is rebuilt by CLIPSRC.
+  const v=e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?e.video:null;
+  const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
+  el.innerHTML='<div class="player"><div class="ph">Selected entry</div>'+
+    (v?'<div class="frame"><iframe src="'+esc(CLIPSRC[v.kind](v.id))+'" loading="lazy" '+
+      'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
+      'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
+      'title="'+esc(CLIPNAME[v.kind])+' clip"></iframe></div>'
+      :posterHTML(e))+
+    '<h4>'+esc(e.title)+'</h4>'+
+    '<p class="pmeta">'+esc(labels[e.type]||e.type)+' · '+esc(fmt(e.date))+
+    (e.loc?' · '+esc(cityLabel(e.loc)):'')+'</p>'+
+    (Number.isFinite(e.views)?'<p class="pstat">'+esc(nfmt(e.views))+' views at last sync</p>':'')+
+    (e.box&&Number.isFinite(e.box.gate)?'<p class="pstat">'+esc(money(e.box.gate))+' gate'+
+      (Number.isFinite(e.box.attendance)?' · '+esc(cfmt(e.box.attendance))+' in attendance':'')+'</p>':'')+
+    '<div class="pactions">'+ticketHTML(e)+
+    '<button class="mini ghost" data-openlog="'+esc(e.id)+'">Open in the Log</button>'+
+    '</div></div>';
+}
+
+// The full card — comments, fan posts — still lives in the Log, so keep a way
+// through to it rather than duplicating all of that in the pane.
 function goToEntry(id){
   if(!id) return;
   filter='all'; scope='all';
@@ -1556,6 +1640,7 @@ function renderEngagementInsights(){
 }
 
 function renderInsights(){
+  renderPlayer();
   renderViewInsights();
   renderMoneyInsights();
   renderBoxInsights();
@@ -1818,8 +1903,10 @@ function showView(name){
   document.getElementById('view-insights').hidden = name!=='insights';
   document.querySelectorAll('[data-view]').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.view===name)));
+  document.body.classList.toggle('wide',name==='insights');
   if(name==='insights'){
     renderInsights();
+    renderPlayer();
     // The map lives in a hidden container until now, and clientWidth reads 0
     // while hidden, so uiK() would size every pin against a zero-width box and
     // the map would come up looking empty. Re-plot once it is actually visible.
@@ -1832,13 +1919,15 @@ document.querySelectorAll('[data-view]').forEach(b=>
 // Delegated so it covers both the ranked-list buttons and the SVG bars, which
 // are rebuilt on every renderInsights().
 document.getElementById('view-insights').addEventListener('click',ev=>{
+  const openLog=ev.target.closest('[data-openlog]');
+  if(openLog){ goToEntry(openLog.dataset.openlog); return; }
   const t=ev.target.closest('[data-goto]');
-  if(t) goToEntry(t.dataset.goto);
+  if(t) selectEntry(t.dataset.goto);
 });
 document.getElementById('view-insights').addEventListener('keydown',ev=>{
   if(ev.key!=='Enter'&&ev.key!==' ') return;
   const t=ev.target.closest('[data-goto]');
-  if(t){ ev.preventDefault(); goToEntry(t.dataset.goto); }
+  if(t){ ev.preventDefault(); selectEntry(t.dataset.goto); }
 });
 
 let rzt;
