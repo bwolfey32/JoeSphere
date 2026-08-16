@@ -276,6 +276,13 @@ body.m-both #heat{opacity:.8}
 .ticketlink.search::before{content:"⌕ ";font-size:13px}
 .ticketlink.search:hover{color:var(--ink);border-color:var(--ink-soft)}
 
+/* the line where the feed crosses from scheduled into already-released */
+.nowline{display:flex;align-items:center;gap:11px;margin:26px 2px 22px;
+  font-family:"Oswald",Impact,sans-serif;font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--stamp)}
+.nowline::before,.nowline::after{content:"";height:1px;background:var(--rule);flex:1}
+.nowline span{white-space:nowrap}
+
 /* ---------- generated poster (events with no clip) ---------- */
 .poster{position:relative;margin:11px 0 0;aspect-ratio:16/7;overflow:hidden;
   border:1px solid var(--rule);background:
@@ -854,12 +861,15 @@ async function save(){
   catch(e){console.error('Could not save to file',e);}
 }
 
+// One continuous timeline, newest date first. This used to sort upcoming
+// ascending and then past descending — "soonest first, then most recent first"
+// — which reverses direction halfway down and reads as "in 6 days, in 83 days,
+// 2 days ago". Now that scheduled cards and released episodes sit in the same
+// feed, a single consistent rule is easier to follow; render() marks where the
+// list crosses today. The map's route line sorts its own points, so it is
+// unaffected by this order.
 function sorted(){
-  return allEntries().sort((a,b)=>{
-    const fa=daysTo(a.date)>=0, fb=daysTo(b.date)>=0;
-    if(fa!==fb)return fa?-1:1;
-    return fa? a.date.localeCompare(b.date) : b.date.localeCompare(a.date);
-  });
+  return allEntries().sort((a,b)=>b.date.localeCompare(a.date));
 }
 
 function stats(){
@@ -1075,10 +1085,15 @@ function render(){
   const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
   plotMap(rows);
   renderAnalysis(rows);
-  feed.innerHTML=rows.map(e=>{
+  feed.innerHTML=rows.map((e,i)=>{
     const n=daysTo(e.date), past=n<0;
     const when=past?(Math.abs(n)+' days ago'):(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'));
-    return '<article class="entry'+(past?' past':'')+'">'+
+    // Mark the point where the timeline crosses from scheduled into released.
+    // Only when a future row actually precedes it, so the scope filters
+    // ("Upcoming" / "Previous") don't render a stray divider at the top.
+    const crosses=past&&i>0&&daysTo(rows[i-1].date)>=0;
+    return (crosses?'<div class="nowline"><span>Today</span></div>':'')+
+      '<article class="entry'+(past?' past':'')+'">'+
       '<div class="entry-head">'+
       '<div class="tags">'+
         '<span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
