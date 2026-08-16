@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Rogansphere — appearances, clips &amp; fan posts</title>
+<meta name="description" content="The Rogansphere: an unofficial fan hub for Joe Rogan, with a log of his publicly announced appearances (tour dates, scheduled broadcasts, episode releases) plus a public feed of fan-shared clips. Not a live location tracker.">
+<meta name="theme-color" content="#0F1218">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Rogansphere">
+<meta property="og:description" content="Unofficial fan hub: announced appearances plus fan-shared clips and reactions. Not affiliated with Joe Rogan.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230F1218'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23FF4127'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#0F1218;
+  --paper-2:#161B23;
+  --card:#1A202A;
+  --ink:#EDEAE3;
+  --ink-soft:#94A0B4;
+  --stamp:#FF4127;
+  --blue:#3DD6C4;
+  --rule:#2F3846;
+  --shadow:rgba(0,0,0,.7);
+  --lo:#3B6BFF;
+  --mid:#FFB02E;
+  --hi:#FF4127;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),
+    radial-gradient(ellipse at 18% -10%,rgba(61,214,196,.10),transparent 62%);
+  color:var(--ink);
+  font-family:"Courier Prime",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:15px;
+  line-height:1.55;
+  padding:0 0 80px;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+/* ---------- cover ---------- */
+.cover{
+  position:relative;
+  margin:22px 0 0;
+  padding:26px 22px 22px;
+  background:var(--card);
+  border:1px solid var(--rule);
+  box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 10px 30px -14px var(--shadow);
+}
+.cover::after{
+  content:"";position:absolute;left:0;right:0;bottom:-7px;height:7px;
+  background:linear-gradient(180deg,var(--paper-2),transparent);
+}
+.eyebrow{
+  font-family:"Oswald",Impact,"Arial Narrow",sans-serif;
+  font-weight:600;letter-spacing:.22em;text-transform:uppercase;
+  font-size:11px;color:var(--ink-soft);
+}
+h1{
+  font-family:"Oswald",Impact,"Arial Narrow",sans-serif;
+  font-weight:700;text-transform:uppercase;letter-spacing:.02em;
+  font-size:clamp(30px,7.5vw,50px);
+  line-height:.98;margin:10px 0 4px;
+}
+.subject-line{font-size:13px;color:var(--ink-soft);margin:0 0 2px}
+.subject-line b{color:var(--ink)}
+.stamp{
+  position:absolute;top:14px;right:12px;
+  transform:rotate(9deg);
+  border:3px double var(--stamp);color:var(--stamp);background:rgba(255,65,39,.10);
+  font-family:"Oswald",Impact,sans-serif;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;font-size:11px;
+  padding:5px 9px;opacity:1;text-align:center;line-height:1.15;
+  max-width:130px;
+}
+.notice{
+  margin-top:16px;padding:9px 11px;
+  border-left:3px solid var(--blue);
+  background:rgba(61,214,196,.09);
+  font-size:12.5px;color:var(--blue);
+}
+
+/* ---------- readout ---------- */
+.readout{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  margin:26px 0 0;background:var(--rule);
+  border:1px solid var(--rule);
+}
+.cell{background:var(--card);padding:13px 12px}
+.cell .k{
+  font-family:"Oswald",Impact,sans-serif;font-size:10px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
+}
+.cell .v{
+  font-family:"Oswald",Impact,sans-serif;font-weight:700;
+  font-size:26px;line-height:1.1;margin-top:3px;
+}
+.cell .v.small{font-size:15px;line-height:1.25;padding-top:5px}
+
+
+/* ---------- map ---------- */
+.mapcard{background:var(--card);border:1px solid var(--rule);margin:26px 0 0;
+  box-shadow:0 4px 14px -10px var(--shadow)}
+.maphead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+  padding:13px 15px 10px;border-bottom:1px dashed var(--rule)}
+.maphead h3{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
+  letter-spacing:.14em;font-size:12px;margin:0}
+.maphead .sub{font-size:11.5px;color:var(--ink-soft)}
+.mapbody{padding:8px 10px 4px;background:
+  repeating-linear-gradient(0deg,rgba(148,160,180,.10) 0 1px,transparent 1px 34px),
+  repeating-linear-gradient(90deg,rgba(148,160,180,.10) 0 1px,transparent 1px 34px)}
+.mapbody svg{display:block;width:100%;height:auto}
+.brd-state{fill:none;stroke:var(--rule);stroke-width:1;vector-effect:non-scaling-stroke}
+.brd-nation{fill:rgba(255,255,255,.05);stroke:#5C6B80;stroke-width:1.5;
+  stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.route{fill:none;stroke:var(--stamp);stroke-width:1.4;stroke-dasharray:7 6;opacity:.6;
+  vector-effect:non-scaling-stroke}
+.pin{cursor:pointer}
+.pin circle{stroke-width:2}
+.pin .hit{fill:transparent;stroke:none;pointer-events:all}
+.pin.up circle{fill:var(--stamp);stroke:#0F1218}
+.pin.pastpin circle{fill:none;stroke:var(--ink-soft)}
+.pin.sel circle{fill:var(--blue);stroke:#0F1218}
+.pin:focus{outline:none}
+.pin:focus-visible circle{stroke:var(--blue);stroke-width:3}
+.mapfoot{display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  padding:10px 15px 13px;border-top:1px dashed var(--rule);font-size:11.5px;color:var(--ink-soft)}
+.lg{display:flex;align-items:center;gap:5px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.dot.up{background:var(--stamp)}
+.dot.pastpin{border:2px solid var(--ink-soft)}
+.readpin{flex:1 1 100%;color:var(--ink);font-size:12.5px;min-height:1.3em}
+.readpin b{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;letter-spacing:.06em}
+
+
+.rowlab{font-family:"Oswald",Impact,sans-serif;font-size:9.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-soft);margin-right:2px}
+.scoperow{margin-bottom:8px}
+.modes{margin-left:auto;display:flex;gap:5px}
+.modes .tab{padding:5px 10px;font-size:10px}
+#heat circle{mix-blend-mode:screen}
+.hlabel{font-family:"Oswald",Impact,sans-serif;letter-spacing:.09em;
+  fill:#EDEAE3;font-weight:600;dominant-baseline:auto}
+.plaque{fill:#0C0F14;stroke:#5C6B80;stroke-width:1;vector-effect:non-scaling-stroke}
+.ramp{width:52px;height:9px;display:inline-block;border:1px solid var(--rule);
+  background:linear-gradient(90deg,var(--lo),var(--mid),var(--hi))}
+body.m-pins #heat,body.m-pins #heatlabels{display:none}
+body.m-pins .heatlg{display:none}
+body.m-heat #pins,body.m-heat #route{display:none}
+body.m-heat .pinlg{display:none}
+body.m-both #heat{opacity:.8}
+
+
+
+.discuss{margin-top:20px}
+.discuss h3{margin-bottom:10px}
+.dnote{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
+.dnote b{color:var(--ink)}
+.dnote code{color:var(--blue)}
+.dnote ol{margin:9px 0 0;padding-left:20px}
+.dnote li{margin-bottom:4px}
+
+/* ---------- analysis ---------- */
+.analysis{background:var(--card);border:1px solid var(--rule);margin:20px 0 0;
+  padding:16px 16px 14px;box-shadow:0 8px 24px -16px var(--shadow)}
+.analysis h3{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
+  letter-spacing:.14em;font-size:12px;margin:0 0 4px}
+.an-q{font-size:11.5px;color:var(--ink-soft);margin:0 0 14px}
+.an-q b{color:var(--mid)}
+.an-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.an-block h4{font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
+  letter-spacing:.15em;font-size:10px;color:var(--ink-soft);margin:0 0 9px;
+  padding-bottom:5px;border-bottom:1px solid var(--rule)}
+.an-block+.an-block{margin-top:18px}
+.crow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;
+  padding:4px 0;border-bottom:1px dotted var(--rule)}
+.crow:last-child{border-bottom:none}
+.crow .lab{color:var(--ink-soft)}
+.crow .val{font-family:"Oswald",Impact,sans-serif;font-size:13px;white-space:nowrap}
+.crow .val i{font-style:normal;color:var(--ink-soft);font-size:11px}
+.mrow{margin-bottom:9px}
+.mrow .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+.mrow .top b{font-weight:400}
+.mrow .top span{color:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;font-size:11.5px}
+.track{position:relative;height:9px;background:rgba(255,255,255,.05);border:1px solid var(--rule)}
+.fill{position:absolute;top:0;bottom:0;left:0;background:var(--blue)}
+.ci{position:absolute;top:-3px;bottom:-3px;border-left:1px solid var(--mid);
+  border-right:1px solid var(--mid);background:rgba(255,176,46,.14)}
+.months{display:flex;align-items:flex-end;gap:3px;height:74px;margin-top:4px}
+.mo{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+.mo .b{width:100%;background:var(--mid);min-height:2px;opacity:.85}
+.mo .t{font-size:9px;color:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;letter-spacing:.04em}
+.an-foot{font-size:11px;color:var(--ink-soft);margin:14px 0 0;padding-top:10px;
+  border-top:1px solid var(--rule)}
+@media(max-width:560px){.an-grid{grid-template-columns:1fr;gap:18px}}
+
+/* ---------- controls ---------- */
+.bar{
+  display:flex;flex-wrap:wrap;gap:7px;align-items:center;
+  margin:26px 0 14px;
+}
+.tab{
+  font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;padding:7px 11px;cursor:pointer;
+  background:transparent;color:var(--ink-soft);
+  border:1px solid var(--rule);
+}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:2px solid var(--blue);outline-offset:2px;
+}
+.spacer{flex:1}
+.filebtn{
+  font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;padding:8px 13px;cursor:pointer;
+  background:var(--stamp);color:#14171D;border:1px solid var(--stamp);font-weight:700;
+}
+
+/* ---------- entries ---------- */
+.entry{
+  position:relative;background:var(--card);border:1px solid var(--rule);
+  margin-bottom:16px;box-shadow:0 4px 14px -10px var(--shadow);
+}
+.entry.past{opacity:.72}
+.entry-head{padding:15px 16px 13px;border-bottom:1px dashed var(--rule)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:9px}
+.tag{
+  font-family:"Oswald",Impact,sans-serif;font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;padding:3px 7px;border:1px solid currentColor;
+}
+.tag.standup{color:var(--stamp)}
+.tag.broadcast{color:var(--blue)}
+.tag.podcast{color:#7DE38A}
+.tag.demo{color:var(--ink-soft);border-style:dashed}
+.tag.unconf{color:var(--mid)}
+.tag.auto{color:var(--blue)}
+.lockednote{font-size:11px;color:var(--ink-soft);font-style:italic}
+.when{
+  font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-soft);margin-left:auto;
+}
+.entry h2{
+  font-family:"Oswald",Impact,sans-serif;font-weight:600;text-transform:uppercase;
+  font-size:19px;line-height:1.15;margin:0 0 5px;letter-spacing:.01em;
+}
+.loc{font-size:13.5px;color:var(--ink-soft);margin:0}
+.loc::before{content:"◈ ";color:var(--stamp)}
+.note{margin:9px 0 0;font-size:13.5px}
+
+
+.clip{position:relative;margin:11px 0 0;aspect-ratio:16/9;background:#080A0E;
+  border:1px solid var(--rule);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.clip .thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+.clip iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.playbtn{position:relative;z-index:1;font-family:"Oswald",Impact,sans-serif;font-weight:700;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:10px 16px;cursor:pointer;
+  background:var(--stamp);color:#14171D;border:none}
+.playbtn:hover{filter:brightness(1.12)}
+
+/* ---------- annotations ---------- */
+.ann{padding:12px 16px 15px;background:rgba(255,255,255,.028)}
+.ann-h{
+  font-family:"Oswald",Impact,sans-serif;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:9px;
+}
+.c{border-left:2px solid var(--blue);padding:2px 0 2px 10px;margin-bottom:9px}
+.c-meta{font-size:11px;color:var(--ink-soft)}
+.c-meta b{color:var(--blue);font-style:italic}
+.c-body{font-size:13.5px;margin-top:1px;word-wrap:break-word;overflow-wrap:anywhere}
+.c-del{
+  background:none;border:none;color:var(--ink-soft);cursor:pointer;
+  font-family:inherit;font-size:11px;padding:0 0 0 6px;text-decoration:underline;
+}
+.c-form{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.c-form input[type=text]{flex:1 1 200px;min-width:0}
+input[type=text],input[type=date],textarea,select{
+  font-family:inherit;font-size:13.5px;padding:7px 9px;color:var(--ink);
+  background:#11151C;border:1px solid var(--rule);border-radius:0;width:100%;
+}
+textarea{resize:vertical;min-height:64px}
+.mini{
+  font-family:"Oswald",Impact,sans-serif;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;padding:7px 12px;cursor:pointer;
+  background:var(--ink);color:var(--paper);border:1px solid var(--ink);font-weight:700;
+}
+
+/* ---------- fan posts ---------- */
+.authbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:13px}
+.authbar input[type=text]{width:auto;flex:1 1 200px}
+.entry.post{border-left:3px solid var(--blue)}
+.ptag{color:var(--blue);font-size:11px;letter-spacing:.06em;border:1px solid var(--rule);
+  padding:2px 7px;text-transform:none}
+.postactions{display:flex;gap:12px;align-items:center;margin-top:10px}
+.likebtn.liked{color:var(--stamp);border-color:var(--stamp)}
+.postfilter{font-size:12.5px;color:var(--ink-soft);margin-bottom:11px}
+.postfilter b{color:var(--ink)}
+
+/* ---------- form panel ---------- */
+.panel{
+  background:var(--card);border:1px solid var(--ink);
+  padding:17px 16px;margin-bottom:20px;
+  box-shadow:0 6px 20px -12px var(--shadow);
+}
+code{font-family:inherit;color:var(--blue);font-size:12px}
+.panel h3{
+  font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
+  letter-spacing:.09em;font-size:14px;margin:0 0 3px;
+}
+.panel p.hint{font-size:12px;color:var(--ink-soft);margin:0 0 13px}
+.field{margin-bottom:11px}
+.field label{
+  display:block;font-family:"Oswald",Impact,sans-serif;font-size:10px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px;
+}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.actions{display:flex;gap:8px;margin-top:14px}
+.ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--rule)}
+.err{color:var(--stamp);font-size:12.5px;margin-top:9px;display:none}
+
+/* ---------- empty / loading ---------- */
+.empty{
+  border:1px dashed var(--rule);padding:34px 20px;text-align:center;
+  color:var(--ink-soft);font-size:13.5px;background:rgba(255,255,255,.03);
+}
+.empty strong{
+  display:block;font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
+  letter-spacing:.13em;font-size:13px;color:var(--ink);margin-bottom:6px;
+}
+footer{
+  margin-top:34px;padding-top:15px;border-top:1px solid var(--rule);
+  font-size:11.5px;color:var(--ink-soft);
+}
+.hidden{display:none !important}
+
+@media(max-width:520px){
+  .readout{grid-template-columns:1fr 1fr}
+  .readout .cell:last-child{grid-column:1/-1}
+  .row2{grid-template-columns:1fr}
+  .stamp{position:static;display:inline-block;transform:rotate(-1.5deg);margin-bottom:12px}
+  .when{margin-left:0;width:100%}
+}
+@media(prefers-reduced-motion:no-preference){
+  .entry{animation:rise .38s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+}
+</style>
+</head>
+<body class="m-both">
+<noscript><div style="background:#FF4127;color:#14171D;padding:12px 16px;font:14px/1.5 monospace">
+This log needs JavaScript to render the map and event list.</div></noscript>
+<div class="wrap">
+
+  <header class="cover">
+    <div class="stamp">Public<br>Record<br>Only</div>
+    <div class="eyebrow">Fan Intelligence Bureau · File 0917</div>
+    <h1>The<br>Rogansphere</h1>
+    <p class="subject-line">Announced appearances, tour dates &amp; broadcasts — plus a public feed
+      of clips and reactions from other fans.</p>
+    <div class="notice">
+      <b>Unofficial fan project. Not affiliated with, endorsed by, or connected to Joe Rogan.</b><br>
+      The Rogansphere tracks <b>announced public appearances</b> — ticketed dates, scheduled
+      broadcasts, and episode releases — and hosts <b>Fan Posts</b>, a public feed of clips and
+      reactions shared by other fans. It is not a live location feed and never will be. Entries marked
+      <i>Unconfirmed</i> are real scheduled events where his attendance has not been verified.
+    </div>
+  </header>
+
+  <div class="readout">
+    <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
+    <div class="cell"><div class="k">Entries on file</div><div class="v" id="stat-count">—</div></div>
+    <div class="cell"><div class="k">Last known position</div><div class="v small" id="stat-last">—</div></div>
+  </div>
+
+  <section class="panel posts" id="posts-section" aria-label="Fan posts">
+    <h3>Fan Posts</h3>
+    <p class="hint">Share a clip and say something about it. Public — visible to everyone, posted
+      under the name you choose, and not vetted before it appears.</p>
+    <div class="authbar" id="authbar"><span class="hint">Checking sign-in…</span></div>
+
+    <div class="bar" style="margin:0 0 14px">
+      <span class="rowlab">Post</span>
+      <button class="filebtn" id="open-postform">+ Share a clip</button>
+    </div>
+
+    <div class="panel hidden" id="postform-panel" style="margin-bottom:16px">
+      <h3>Share a clip</h3>
+      <p class="hint">Only recognized YouTube, TikTok and Vimeo links are accepted — the same check used
+        for event clips.</p>
+      <div class="field">
+        <label for="p-name">Display name</label>
+        <input type="text" id="p-name" placeholder="How you'll appear on your posts" maxlength="40">
+      </div>
+      <div class="field">
+        <label for="p-vid">Clip link</label>
+        <input type="text" id="p-vid" placeholder="https://youtu.be/…" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="p-cap">Caption</label>
+        <textarea id="p-cap" maxlength="500" placeholder="What's happening in this clip…"></textarea>
+      </div>
+      <div class="field">
+        <label for="p-event">Tag an event <span style="text-transform:none;letter-spacing:0">— optional</span></label>
+        <select id="p-event"><option value="">— none —</option></select>
+      </div>
+      <div class="err" id="p-err"></div>
+      <div class="actions">
+        <button class="mini" id="post-submit">Post</button>
+        <button class="mini ghost" id="post-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <div class="postfilter hidden" id="postfilter">
+      Showing posts tagged to <b id="postfilter-label"></b> ·
+      <button class="mini ghost" id="postfilter-clear">Show all</button>
+    </div>
+
+    <div id="postsfeed"><div class="empty"><strong>Loading…</strong></div></div>
+  </section>
+
+  <section class="mapcard" aria-label="Map of announced appearance locations">
+    <div class="maphead">
+      <h3>Plotted Locations</h3>
+      <span class="sub">Announced venues only</span>
+      <span class="modes">
+        <button class="tab" data-m="both" aria-pressed="true">Both</button>
+        <button class="tab" data-m="pins" aria-pressed="false">Pins</button>
+        <button class="tab" data-m="heat" aria-pressed="false">Heat</button>
+      </span>
+    </div>
+    <div class="mapbody">
+      <svg viewBox="0 0 980.0 619.8" role="img" aria-label="Continental United States with appearance pins">
+        <defs>
+          <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="17"/>
+          </filter>
+          <radialGradient id="h-lo"><stop offset="0%" stop-color="#3B6BFF" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#3B6BFF" stop-opacity="0"/></radialGradient>
+          <radialGradient id="h-mid"><stop offset="0%" stop-color="#FFB02E" stop-opacity=".95"/>
+            <stop offset="100%" stop-color="#FFB02E" stop-opacity="0"/></radialGradient>
+          <radialGradient id="h-hi"><stop offset="0%" stop-color="#FF4127" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#FF4127" stop-opacity="0"/></radialGradient>
+          <clipPath id="usclip"><path d="M823.8,611.9L827.5,609.5L824.8,612.1ZM809.4,617.4L810.6,615.0L813.8,612.7L816.5,610.5L819.7,611.4L821.3,613.0L818.1,614.7L812.2,617.2L809.5,617.9ZM805.2,618.6L808.1,617.7L806.2,619.1ZM792.4,569.4L794.9,573.7L798.6,574.3L795.2,574.5L793.3,571.8L792.4,569.4ZM687.7,123.1L692.8,124.6L690.5,125.7L687.7,123.1ZM732.9,503.5L734.9,502.3L733.1,504.0ZM672.3,131.1L673.0,128.4L674.5,130.6ZM666.2,142.7L667.6,144.6L666.2,142.7ZM651.0,139.2L653.1,137.7L651.9,140.4ZM657.3,500.6L661.3,499.6L658.3,500.8ZM648.2,501.1L651.6,501.1L648.2,501.1ZM646.4,505.8L647.9,508.5L647.3,512.8L647.6,508.8L646.4,505.8ZM643.9,502.1L646.0,501.2L644.3,502.4ZM608.7,82.9L615.0,78.2L617.7,76.1L621.3,74.6L619.1,77.2L617.8,79.1L614.9,80.4L612.6,81.9L610.8,83.9L608.7,82.9ZM636.9,506.3L639.9,503.7L640.4,506.5L637.1,506.8ZM613.4,530.8L616.3,531.3L613.4,530.8ZM587.5,106.7L589.5,105.6L587.9,107.1ZM585.4,104.5L588.9,104.0L587.2,106.2L585.4,104.5ZM585.5,110.1L588.2,107.9L586.7,110.1ZM582.7,520.5L586.1,519.5L588.6,520.5L586.9,523.1L582.4,520.9ZM61.3,377.3L64.1,379.2L66.1,381.9L63.1,381.4L61.9,378.5ZM58.7,387.6L60.3,390.4L62.5,393.6L60.0,392.5L59.0,388.2ZM41.6,377.3L43.7,378.4L41.6,377.3ZM39.8,357.2L41.8,358.3L43.9,359.6L47.1,360.1L44.1,360.5L40.1,359.6ZM33.2,357.3L36.3,357.7L38.2,359.1L34.9,360.4L33.2,357.3ZM29.6,355.5L32.3,356.5L29.6,355.5ZM78.0,39.6L79.8,36.3L80.6,39.6L78.0,40.2ZM83.9,7.7L85.1,10.2L83.9,7.7ZM79.9,18.8L82.2,16.4L84.4,17.9L81.6,19.0L82.4,22.3L83.9,24.4L84.6,26.9L81.6,25.7L81.8,22.2L79.9,18.8ZM80.5,5.2L82.6,7.0L80.5,5.2ZM75.7,8.6L78.0,9.9L80.9,7.2L83.2,9.2L82.1,11.3L80.7,14.2L78.5,13.0L76.0,10.7ZM75.9,6.4L77.5,8.2L75.9,6.4ZM49.6,11.2L51.9,7.9L55.5,10.1L57.2,11.4L59.5,13.0L61.0,14.8L64.0,15.9L66.7,17.2L69.6,18.6L74.1,18.4L74.8,20.9L77.1,22.4L78.3,20.7L79.2,23.0L79.6,26.6L77.5,28.6L76.3,30.6L72.8,31.8L69.7,34.7L68.3,36.8L71.0,37.1L72.7,32.5L74.8,31.5L77.2,30.1L80.6,28.1L81.3,31.0L80.0,33.0L79.0,35.0L77.9,38.6L77.2,41.1L74.9,40.5L74.4,43.6L72.5,40.4L73.5,38.1L72.2,40.0L72.7,43.8L75.9,43.4L77.6,41.1L81.1,40.7L81.4,37.5L82.5,34.7L82.8,31.9L84.1,29.3L85.2,27.2L86.9,25.7L85.5,23.0L84.9,20.1L85.0,23.7L83.3,22.1L83.8,19.4L86.1,18.2L84.4,15.8L82.7,14.5L84.2,12.9L86.1,14.7L87.1,12.6L86.9,9.0L84.7,7.9L83.9,3.8L85.1,1.5L95.1,4.3L100.4,5.9L108.3,8.0L116.1,10.1L126.5,12.8L135.7,15.2L144.8,17.4L154.5,19.8L172.4,24.0L181.9,26.0L200.5,30.0L213.3,32.5L223.9,34.6L234.4,36.5L253.8,39.9L265.5,41.9L278.5,43.8L296.8,46.5L304.7,47.5L321.1,49.6L333.8,51.1L341.9,52.0L358.4,53.6L364.8,54.2L374.2,55.0L384.8,55.9L402.9,57.2L414.9,58.0L420.1,58.2L430.9,58.8L440.0,59.2L447.6,59.5L455.6,59.7L470.0,60.1L486.1,60.3L501.1,60.4L514.0,60.4L513.9,51.3L517.0,51.7L519.1,53.4L520.0,57.4L521.5,63.0L522.2,66.3L525.2,67.4L528.1,67.2L532.3,68.4L535.0,68.8L535.7,71.3L538.3,70.9L540.8,69.5L544.9,68.1L548.4,68.5L552.6,70.3L553.8,72.7L557.0,73.4L558.5,77.6L559.4,75.3L563.4,74.1L564.3,76.3L566.6,77.6L569.3,79.0L571.5,81.2L574.6,80.4L579.0,77.6L582.1,75.9L584.0,77.7L587.2,78.5L590.5,79.0L594.3,78.3L596.6,80.1L599.4,80.3L602.6,80.2L600.0,83.1L597.2,84.8L594.3,85.8L591.6,87.1L588.4,88.3L585.3,90.3L583.2,92.0L579.3,96.0L575.4,101.2L572.5,103.6L571.0,105.4L568.8,107.4L564.8,110.5L565.5,112.9L568.9,113.2L571.7,112.0L576.5,109.8L579.3,109.1L582.3,106.6L586.0,107.7L584.0,110.9L583.1,114.7L586.3,113.4L589.1,114.3L591.5,115.1L593.6,114.0L595.9,112.8L598.0,112.0L599.8,110.3L601.7,108.4L606.1,107.5L610.3,105.8L611.9,103.7L614.9,103.0L617.0,99.6L619.4,97.5L621.8,95.7L623.4,93.4L626.6,91.4L629.8,90.6L634.1,91.2L631.5,92.5L628.9,95.0L627.4,97.1L626.1,99.1L624.6,100.6L623.8,103.0L622.9,106.5L625.0,105.7L626.6,103.9L630.0,104.1L633.1,104.4L635.2,105.6L637.4,106.5L638.8,108.6L640.1,110.4L642.0,112.7L646.0,112.5L648.9,112.9L652.1,112.5L653.2,110.2L654.5,112.4L658.1,109.3L661.3,106.8L665.4,105.9L670.2,105.8L675.3,103.3L678.5,102.9L679.4,106.9L680.8,109.3L683.6,109.7L685.5,108.4L687.0,110.0L689.3,108.0L692.3,107.3L694.3,109.0L695.0,111.4L693.6,113.5L695.9,115.3L698.0,117.7L701.3,118.2L700.5,115.7L703.7,115.3L705.6,117.3L703.7,119.1L700.0,119.0L696.1,119.3L692.7,120.2L689.7,119.8L687.1,118.6L686.0,121.3L684.7,123.2L682.8,121.4L679.0,119.6L676.2,119.1L672.9,119.3L670.8,122.5L667.0,122.9L664.1,123.3L660.8,124.2L659.7,127.9L657.3,129.2L655.7,131.4L655.4,128.5L656.9,126.7L652.7,127.1L652.1,130.3L650.1,131.6L649.4,128.4L648.3,130.7L646.7,132.2L645.4,135.0L644.7,138.0L642.7,141.8L640.6,145.6L640.6,149.1L637.2,150.5L636.4,153.0L635.2,155.7L634.5,159.4L638.3,157.4L639.6,155.2L641.2,152.3L644.0,150.8L645.0,148.4L646.5,146.1L648.6,143.3L649.4,140.7L650.8,142.5L650.0,145.5L648.7,147.5L647.6,150.3L646.2,152.9L645.1,157.0L643.4,164.5L644.1,167.8L642.2,169.7L641.1,175.2L641.9,177.8L640.9,182.4L639.7,187.5L639.4,190.7L640.5,194.7L641.1,197.1L641.7,200.1L642.7,203.1L642.9,208.2L642.6,212.8L645.0,217.2L647.1,221.8L648.6,225.1L650.3,227.2L652.9,228.1L656.5,227.3L659.6,225.4L661.4,224.0L663.2,222.5L664.7,220.5L666.5,215.0L668.3,211.8L669.2,208.9L669.8,203.2L669.4,196.9L668.7,193.2L667.8,190.9L665.1,186.4L663.2,181.8L662.0,179.5L663.0,176.3L662.4,171.0L661.6,168.6L663.8,164.2L664.8,161.8L665.1,156.5L664.2,154.3L665.7,152.6L667.0,150.2L668.1,148.2L670.0,147.1L671.8,144.2L673.0,141.8L674.8,140.1L673.9,142.5L673.6,145.9L673.8,148.8L675.8,147.7L676.5,145.2L676.3,148.4L675.3,150.8L676.9,149.3L677.9,146.4L677.9,142.0L677.5,138.4L679.9,136.1L682.4,135.6L684.6,134.6L681.5,133.0L681.6,129.1L683.3,127.2L685.6,126.1L689.7,126.7L692.8,127.4L697.1,129.1L700.5,130.3L702.9,131.8L706.5,132.9L709.6,134.0L711.0,136.8L713.0,139.9L710.7,139.1L710.4,142.2L712.6,143.4L713.4,146.5L713.5,150.1L713.8,153.7L713.4,156.5L711.3,158.1L710.7,161.0L709.6,163.6L706.8,165.5L705.8,167.9L705.4,171.4L707.5,173.6L710.5,174.6L712.5,171.5L713.5,168.9L715.3,167.3L716.4,164.6L719.7,163.4L722.0,161.5L724.2,162.3L726.5,165.3L728.0,167.9L728.9,172.1L730.4,175.5L731.4,180.5L732.4,183.3L733.8,185.4L733.5,190.4L733.5,193.7L732.5,196.6L730.2,195.8L731.5,194.0L728.6,194.6L727.7,197.9L727.8,201.2L725.1,203.2L724.7,207.9L723.9,210.9L722.0,212.8L720.2,216.1L721.8,218.9L725.1,219.8L728.7,221.5L731.0,220.2L733.7,220.7L735.8,223.2L738.3,223.9L740.7,222.4L743.1,221.2L746.1,219.6L749.6,219.5L752.5,218.0L754.1,216.0L757.8,211.9L762.2,208.9L765.4,207.3L769.2,205.3L772.9,202.9L775.5,200.9L777.2,198.8L779.4,197.5L782.8,195.1L786.8,191.3L788.2,189.2L791.4,187.1L792.5,184.6L794.5,182.0L795.0,179.2L793.4,176.9L791.6,174.6L790.0,170.4L793.5,168.2L796.7,166.6L799.1,165.8L803.4,165.1L810.9,164.4L813.4,165.2L815.8,166.0L818.0,164.5L822.7,163.3L826.1,162.5L828.8,160.7L830.1,158.7L831.7,157.1L833.2,155.5L836.2,154.6L836.3,151.7L835.0,148.2L836.2,145.7L834.5,144.2L832.3,143.3L831.6,139.3L833.9,137.8L836.0,134.8L838.6,132.2L841.0,127.1L842.4,124.7L845.1,121.2L848.5,117.9L850.8,116.1L853.6,115.3L860.0,113.7L863.1,113.0L869.3,111.3L880.2,108.4L886.9,106.7L892.9,105.5L896.2,104.6L906.0,101.8L906.5,98.9L905.5,96.5L907.7,94.3L910.5,94.9L912.0,92.7L914.3,94.0L915.0,90.5L917.6,89.6L915.6,87.6L916.1,84.6L917.6,82.7L919.4,80.5L920.4,76.4L918.7,73.7L919.2,70.4L918.4,67.3L919.7,63.9L919.5,56.9L926.6,36.2L929.6,36.1L930.6,40.0L933.4,41.1L935.9,38.8L937.7,37.1L940.8,36.2L942.6,34.0L946.7,35.6L949.5,37.6L954.7,49.0L959.0,62.4L959.4,65.2L960.8,69.9L964.4,70.5L967.0,69.8L968.2,72.0L969.0,74.8L970.6,79.2L973.6,78.7L976.4,80.1L978.1,82.7L980.0,85.4L979.0,87.5L977.8,90.2L976.2,91.9L975.5,89.4L974.7,92.5L972.8,93.7L972.8,96.7L971.1,95.0L969.2,96.6L968.2,99.5L966.2,101.6L963.7,101.0L964.5,104.4L961.1,105.1L959.5,103.3L959.2,106.5L958.4,109.2L959.4,111.6L957.7,109.2L955.9,107.5L954.7,105.1L953.1,103.6L950.2,104.1L951.6,106.4L951.0,110.1L951.4,112.9L950.3,115.1L949.1,117.0L946.3,116.8L945.9,119.8L943.5,120.6L942.4,123.2L939.3,123.1L937.3,125.3L935.7,127.8L933.9,130.7L934.1,133.9L932.4,135.8L931.8,138.6L931.5,142.8L930.6,145.7L932.1,152.0L935.3,151.9L933.5,154.5L931.4,155.8L931.2,159.0L930.4,161.5L933.5,162.1L936.1,162.9L938.2,165.2L937.8,167.9L940.7,168.5L941.6,171.1L944.2,172.1L947.9,170.9L950.5,169.3L949.5,166.1L947.8,164.0L950.7,166.2L951.9,168.4L952.7,171.0L952.7,174.8L951.8,171.9L947.8,174.0L945.7,175.0L944.1,176.9L940.4,179.5L938.6,181.6L940.2,179.3L941.4,177.0L940.7,174.7L938.1,176.0L936.4,178.4L935.1,180.8L932.8,182.3L931.7,179.1L931.9,181.9L930.5,180.0L931.4,177.3L928.1,176.4L928.4,180.2L928.9,183.0L928.4,185.6L926.0,186.5L922.4,188.8L919.5,189.3L916.6,189.9L913.6,192.2L910.9,193.1L908.5,193.8L904.9,194.8L902.5,196.2L900.6,197.7L898.9,199.1L897.5,201.1L894.7,203.2L893.1,204.9L892.2,207.7L894.1,206.0L896.4,204.9L898.6,204.0L902.4,203.1L908.6,200.7L910.9,199.7L913.3,197.4L914.8,194.8L917.0,196.7L920.0,197.2L922.0,195.3L920.0,197.7L915.8,201.3L913.0,203.4L908.4,206.5L905.5,208.8L903.1,210.3L897.3,212.9L893.5,213.6L890.8,215.4L888.6,213.8L887.3,216.4L885.4,218.0L889.7,218.7L891.6,221.7L891.6,225.5L891.9,230.7L892.4,234.2L891.0,239.6L890.0,242.9L887.3,246.4L885.8,249.0L885.0,251.7L884.3,255.0L882.1,257.0L881.8,252.9L880.2,251.0L877.1,251.9L874.8,250.2L872.7,248.9L870.0,247.2L868.4,244.1L867.5,241.6L866.8,244.3L867.7,247.2L869.5,249.1L872.1,251.3L873.0,255.7L874.9,257.2L878.1,260.9L881.1,263.8L882.3,267.8L882.5,271.8L881.9,276.7L880.6,281.1L879.7,284.0L877.4,285.8L876.8,290.1L876.2,294.2L875.5,298.3L874.9,301.6L872.9,303.3L871.5,301.6L870.8,299.0L870.9,295.8L871.0,292.0L872.4,287.7L874.0,285.0L873.0,282.4L870.6,284.3L869.8,281.6L868.8,279.2L867.9,276.4L866.4,274.3L865.5,277.8L862.1,276.4L859.2,272.7L859.7,269.7L863.2,269.5L861.2,267.9L858.4,267.1L858.6,264.0L856.6,262.3L859.2,260.9L859.7,257.9L858.3,259.8L857.5,257.4L857.5,254.2L858.6,252.1L860.8,251.0L860.5,246.4L858.3,247.3L859.4,249.3L857.0,252.1L856.0,250.0L856.5,252.6L854.5,254.5L853.0,256.6L854.8,259.4L854.4,262.0L854.7,265.7L854.8,269.1L855.7,272.3L858.2,274.8L858.4,277.8L861.2,280.9L858.6,282.3L857.0,280.9L854.4,280.0L851.1,277.9L849.7,279.6L847.2,276.3L844.2,279.0L842.4,276.4L843.5,273.3L841.7,276.3L843.2,279.9L845.3,278.6L847.6,279.5L849.2,281.5L851.8,282.3L855.9,281.8L857.5,283.2L860.4,285.3L864.0,286.4L863.4,290.7L863.1,293.4L860.8,292.6L858.3,290.6L856.2,289.6L853.6,287.7L851.4,286.4L853.6,288.4L855.4,290.4L857.7,291.3L859.7,294.0L864.4,294.4L866.3,298.2L863.1,298.5L864.3,301.1L862.4,302.4L864.6,304.1L867.3,305.4L865.8,307.8L861.9,306.6L859.7,303.7L855.8,304.0L858.3,305.7L860.5,307.9L864.0,309.3L866.8,310.1L868.0,308.2L871.4,308.8L874.3,310.6L875.7,313.2L877.1,315.6L880.0,322.1L881.8,325.1L884.0,327.9L887.5,332.8L885.0,330.0L882.8,328.5L881.4,325.2L879.7,322.3L878.4,319.4L875.4,318.1L877.3,320.8L878.9,323.3L880.8,326.3L878.3,324.4L873.8,323.5L875.2,325.4L873.8,327.5L870.9,327.9L868.3,327.2L871.6,328.5L869.1,330.9L866.3,331.3L863.6,329.1L863.8,326.1L863.0,329.2L865.0,332.4L868.1,333.1L870.4,331.6L874.4,330.6L877.7,330.8L877.3,333.4L878.5,337.7L879.1,335.1L878.6,332.0L879.7,329.8L882.9,331.6L883.7,333.9L884.6,337.4L882.9,339.1L881.0,340.5L880.3,343.3L878.5,345.4L874.6,346.3L870.5,345.6L869.2,343.5L871.4,342.0L868.8,342.9L869.9,346.3L867.3,345.9L862.7,345.7L868.5,347.6L871.7,347.5L872.4,350.1L871.5,353.1L867.8,357.1L863.9,355.5L866.1,357.6L870.8,355.8L873.4,354.6L876.6,355.1L875.6,358.0L874.5,361.1L872.5,362.2L874.6,363.3L875.6,360.5L877.3,357.6L878.6,355.8L881.1,351.6L880.2,353.9L878.8,356.2L876.5,359.7L874.7,364.2L871.4,362.9L868.8,363.5L864.9,365.1L861.8,367.0L859.9,369.1L857.6,371.1L856.1,372.8L854.0,375.5L852.0,379.7L851.2,384.5L850.9,387.5L848.1,386.7L844.6,387.3L838.9,390.0L836.6,391.4L835.0,393.1L833.0,396.0L831.8,398.8L830.2,402.2L830.0,405.9L829.2,409.2L827.5,412.3L824.2,412.2L822.8,414.5L821.7,417.1L819.0,419.9L817.0,423.0L814.4,424.7L810.6,428.0L807.8,428.9L808.8,432.0L806.8,433.6L803.8,432.8L805.1,435.2L802.7,438.2L801.1,439.8L800.3,443.3L798.5,445.6L797.8,448.3L797.8,452.0L796.0,453.3L796.4,456.2L796.5,460.9L795.3,462.8L794.6,465.9L795.4,468.3L794.7,471.7L795.7,475.6L796.8,478.3L797.8,482.4L800.7,490.0L802.0,492.5L805.2,499.2L808.4,504.7L811.3,508.9L817.4,516.4L820.9,520.0L822.4,522.7L821.1,525.2L822.1,529.5L824.5,534.1L828.0,539.0L829.7,542.2L830.8,544.3L832.1,547.0L833.9,549.8L835.6,552.8L836.9,554.8L839.1,559.7L839.8,564.4L839.8,568.0L840.2,572.2L840.4,578.8L841.0,582.2L840.8,585.5L838.4,587.4L837.7,590.0L838.3,593.1L837.9,595.9L840.6,590.7L838.9,597.2L836.9,601.1L834.7,604.3L833.1,605.9L835.1,602.8L836.4,600.7L836.1,598.0L831.9,599.2L828.7,599.7L827.0,601.1L823.2,602.2L820.9,600.1L821.1,597.3L820.0,594.5L818.3,591.9L816.7,589.8L814.4,588.0L810.6,586.8L808.0,586.4L805.9,584.9L804.3,582.1L803.4,578.7L801.9,575.6L799.4,573.7L797.3,572.2L795.3,570.4L796.6,566.3L795.4,563.6L794.6,566.9L792.5,567.8L789.9,564.8L787.4,561.5L784.7,557.1L782.2,554.4L780.5,552.3L782.2,549.8L783.7,547.0L785.3,545.0L785.3,541.8L784.3,543.8L782.7,541.4L779.1,539.7L779.6,542.3L781.9,544.3L781.2,547.1L779.6,549.5L777.8,545.5L776.3,544.0L776.3,540.2L774.9,535.7L776.4,539.2L776.4,536.2L777.4,533.6L778.1,529.9L778.0,526.4L777.4,524.0L775.5,520.5L774.4,517.1L773.3,514.8L769.0,513.6L767.1,512.0L764.8,510.2L763.2,508.3L759.7,506.8L758.9,503.2L756.2,502.3L755.0,500.3L752.6,498.0L750.4,497.0L747.3,495.9L745.2,494.6L742.6,495.7L738.5,497.7L739.3,500.2L735.3,500.5L733.2,502.2L728.8,505.5L723.9,506.5L726.4,508.4L728.5,507.1L730.6,506.0L732.3,504.1L731.0,506.2L729.1,507.3L726.7,508.9L723.8,508.4L720.6,507.6L718.2,506.5L717.6,504.2L718.9,507.2L720.0,504.7L718.5,502.7L715.8,501.5L713.3,499.5L709.4,497.6L706.2,496.0L702.7,494.8L698.3,493.8L691.4,493.7L685.7,494.9L681.0,496.3L678.2,496.7L675.7,497.6L672.9,498.4L668.1,499.8L664.0,500.3L668.7,499.0L667.1,496.6L664.9,494.0L665.0,490.9L662.9,489.4L661.6,492.4L661.5,496.9L659.9,498.4L657.4,497.4L654.2,498.8L651.5,498.2L648.9,498.7L645.5,497.8L641.7,498.7L637.5,500.5L635.1,501.8L631.2,504.4L629.9,506.4L627.3,507.4L628.3,509.8L630.8,511.4L632.3,508.4L634.0,506.1L636.4,506.9L636.7,509.9L638.4,507.8L637.6,510.4L638.2,513.4L635.7,514.0L633.7,515.8L631.0,516.6L631.7,519.9L634.1,520.9L637.3,522.2L640.3,523.9L643.0,525.1L645.4,526.6L644.2,528.8L642.6,530.4L640.4,529.3L638.3,532.2L639.2,529.6L639.6,527.0L637.5,528.5L635.4,526.5L632.9,525.8L627.9,524.5L623.6,528.0L620.4,530.6L619.0,528.4L617.5,525.9L615.7,524.6L613.7,525.7L612.2,527.4L610.6,530.2L608.2,532.3L606.3,530.3L602.2,529.2L599.5,528.4L597.1,526.8L599.0,525.4L600.5,527.4L599.4,524.3L596.3,523.9L594.3,522.8L592.2,519.1L590.7,516.7L587.4,516.7L586.3,514.7L583.3,515.5L580.6,517.1L580.8,520.0L578.0,521.9L570.4,521.1L567.8,520.3L563.5,518.4L558.7,517.1L555.3,517.4L548.3,517.9L545.6,519.0L541.8,519.6L539.1,520.5L529.7,524.9L527.6,526.2L529.7,524.3L526.6,523.6L527.3,521.2L527.5,518.1L524.3,519.0L521.1,520.5L521.7,524.0L523.6,525.8L523.0,529.4L520.9,530.7L518.1,531.7L521.3,531.7L523.9,529.3L526.9,528.2L520.9,532.6L519.1,534.0L516.5,536.4L513.5,539.3L507.2,542.5L504.6,544.1L500.7,545.9L496.1,548.2L493.6,550.0L491.4,552.3L487.5,554.5L485.6,555.9L482.1,559.0L479.6,561.9L477.7,564.8L475.2,569.2L473.3,573.2L472.4,575.7L471.6,579.6L471.5,583.9L472.0,588.0L473.0,592.2L473.9,594.9L475.1,599.6L475.9,604.8L475.0,600.9L474.1,597.1L473.3,594.0L472.2,591.4L471.1,587.9L471.0,582.9L471.9,574.9L473.2,571.3L474.6,568.3L476.5,565.1L478.0,561.8L480.0,560.1L481.4,557.5L483.5,556.4L488.0,553.2L491.5,551.7L488.5,551.5L486.4,552.4L484.6,550.1L483.8,552.9L482.4,555.6L480.5,556.8L478.9,555.3L476.5,556.5L479.2,558.7L475.8,563.7L472.8,562.8L469.3,562.3L470.9,563.8L473.0,566.4L472.8,569.8L471.8,573.5L470.8,575.6L468.8,576.7L466.2,577.4L470.0,577.0L470.0,583.5L469.5,587.7L469.9,592.4L470.5,595.4L472.9,599.8L472.8,603.3L474.9,605.0L476.1,607.9L473.3,608.2L471.2,610.5L469.1,609.4L466.6,608.1L465.3,606.1L462.1,605.1L458.4,605.3L454.6,605.1L451.8,604.0L449.5,602.6L447.9,601.0L445.3,600.2L441.7,598.4L438.9,597.6L436.3,596.6L434.2,595.6L433.1,593.2L432.5,590.3L431.7,587.2L429.9,585.0L428.6,583.1L427.5,580.5L428.1,578.0L426.7,575.7L427.0,572.3L426.6,568.7L424.7,566.8L421.3,564.6L419.1,562.9L418.0,559.5L416.5,556.5L415.2,554.6L412.6,553.4L410.9,551.1L409.9,548.2L409.3,545.7L408.0,543.3L406.8,540.9L406.2,538.1L404.6,536.2L403.9,531.5L401.9,529.6L399.9,526.9L397.2,524.8L396.4,522.6L394.1,521.1L392.6,518.4L390.3,517.4L389.5,515.1L386.8,514.0L383.4,514.6L380.6,513.5L376.8,513.2L373.9,512.0L371.5,511.1L369.5,513.6L367.1,513.1L364.2,514.1L362.1,516.1L360.4,518.8L359.9,521.7L358.4,524.1L356.9,526.8L354.2,528.7L353.2,531.0L349.8,530.8L346.9,529.2L345.0,526.8L342.6,526.1L339.8,523.5L336.0,522.3L333.5,520.2L331.5,518.2L329.0,516.4L325.8,513.2L324.9,510.0L323.7,507.5L323.0,505.0L323.1,501.2L322.2,498.0L321.1,495.6L319.9,490.5L317.9,487.6L316.0,486.0L313.9,484.4L310.4,482.8L307.6,479.3L306.0,476.2L304.2,474.8L302.0,471.6L300.5,469.6L298.0,468.5L295.7,466.7L294.4,464.3L293.4,460.9L291.6,459.1L280.8,457.4L263.8,455.4L256.6,454.4L255.2,465.1L238.5,462.8L233.9,462.2L219.5,460.1L210.3,458.7L198.0,456.8L174.1,443.0L160.0,434.9L153.3,430.8L129.3,416.4L130.0,413.5L132.2,411.5L102.7,408.0L84.6,405.8L84.5,402.5L83.1,400.8L84.0,397.4L84.1,394.0L83.8,391.3L81.5,385.6L80.1,384.0L78.8,381.8L77.3,379.5L75.8,377.9L73.8,375.9L72.5,373.8L69.1,373.6L66.4,372.0L67.4,369.8L66.5,365.8L63.3,364.0L60.5,364.2L57.9,362.4L55.6,360.6L53.5,358.9L53.0,355.8L51.5,354.1L48.9,351.6L46.5,350.5L42.6,349.7L40.5,347.9L38.0,346.9L35.0,346.3L31.6,345.9L30.3,342.8L30.9,339.4L31.6,335.7L31.9,332.3L32.7,329.5L30.9,327.7L29.1,326.5L30.0,322.9L28.0,319.9L26.7,317.4L24.6,314.1L24.0,310.8L22.9,308.7L22.3,305.7L21.0,304.0L19.5,299.3L17.7,297.5L17.1,294.7L17.3,291.6L18.4,288.1L22.2,285.0L21.6,281.7L17.4,279.9L15.9,278.0L15.1,275.6L13.6,272.8L14.7,269.1L14.6,266.0L14.0,263.5L15.4,258.8L17.7,261.1L16.9,263.9L19.8,266.9L21.7,268.6L20.7,265.3L19.8,261.5L19.7,258.4L18.2,255.0L20.8,254.6L20.0,251.1L17.9,252.3L17.1,254.6L16.5,257.8L13.7,255.2L11.8,253.5L10.5,251.3L9.7,248.9L9.9,246.0L9.5,242.7L8.0,238.9L6.2,236.6L4.9,232.4L2.5,228.3L1.7,225.5L3.2,223.4L2.8,218.0L3.8,213.9L5.4,211.5L5.4,207.0L5.1,203.8L3.6,199.4L2.1,196.2L0.0,192.4L0.8,189.7L1.6,186.3L3.1,184.4L7.3,180.0L9.6,176.1L9.9,173.3L13.4,167.0L13.8,164.4L13.8,159.6L14.5,154.8L13.8,152.0L13.2,149.2L13.5,146.1L14.1,142.3L15.8,139.6L15.5,135.4L15.0,132.5L17.7,129.4L18.9,126.9L20.8,123.6L22.8,121.3L24.5,119.0L26.5,115.5L29.1,110.2L30.8,105.9L32.2,102.3L33.9,98.5L35.7,93.6L36.2,91.0L39.3,85.2L40.4,83.0L41.6,80.0L42.6,76.6L44.5,71.5L45.4,67.4L46.7,64.3L47.5,58.2L48.6,60.1L51.6,60.6L54.7,60.0L52.9,58.3L49.5,58.7L48.3,56.6L48.4,52.1L49.2,48.8L48.8,52.1L48.3,54.9L49.5,52.3L50.9,49.3L53.4,48.1L51.2,47.2L49.8,45.1L50.5,42.4L54.6,42.7L52.4,41.0L50.5,39.7L49.4,41.7L50.8,37.0L51.1,33.3L51.0,27.2L51.3,22.3L50.2,19.5L49.3,15.6L49.8,12.6ZM953.1,110.9L954.6,108.7L956.3,111.1L954.1,112.3ZM951.9,107.9L952.4,104.4L952.7,107.8ZM949.3,181.5L952.0,181.1L953.3,178.9L954.9,180.7L952.4,182.3L949.6,181.8ZM939.5,183.1L941.3,180.7L943.4,179.2L945.3,180.7L943.5,182.1L940.9,184.0ZM883.1,330.1L885.5,331.5L883.1,330.1ZM882.1,351.5L885.7,347.7L887.5,346.4L890.0,344.8L889.7,338.1L888.5,335.2L889.8,337.0L890.2,339.7L890.4,345.7L885.8,348.2L883.2,350.4Z"/></clipPath>
+        </defs>
+        <g clip-path="url(#usclip)"><g id="heat" filter="url(#blur)"></g></g>
+        <path class="brd-nation" d="M823.8,611.9L827.5,609.5L824.8,612.1ZM809.4,617.4L810.6,615.0L813.8,612.7L816.5,610.5L819.7,611.4L821.3,613.0L818.1,614.7L812.2,617.2L809.5,617.9ZM805.2,618.6L808.1,617.7L806.2,619.1ZM792.4,569.4L794.9,573.7L798.6,574.3L795.2,574.5L793.3,571.8L792.4,569.4ZM687.7,123.1L692.8,124.6L690.5,125.7L687.7,123.1ZM732.9,503.5L734.9,502.3L733.1,504.0ZM672.3,131.1L673.0,128.4L674.5,130.6ZM666.2,142.7L667.6,144.6L666.2,142.7ZM651.0,139.2L653.1,137.7L651.9,140.4ZM657.3,500.6L661.3,499.6L658.3,500.8ZM648.2,501.1L651.6,501.1L648.2,501.1ZM646.4,505.8L647.9,508.5L647.3,512.8L647.6,508.8L646.4,505.8ZM643.9,502.1L646.0,501.2L644.3,502.4ZM608.7,82.9L615.0,78.2L617.7,76.1L621.3,74.6L619.1,77.2L617.8,79.1L614.9,80.4L612.6,81.9L610.8,83.9L608.7,82.9ZM636.9,506.3L639.9,503.7L640.4,506.5L637.1,506.8ZM613.4,530.8L616.3,531.3L613.4,530.8ZM587.5,106.7L589.5,105.6L587.9,107.1ZM585.4,104.5L588.9,104.0L587.2,106.2L585.4,104.5ZM585.5,110.1L588.2,107.9L586.7,110.1ZM582.7,520.5L586.1,519.5L588.6,520.5L586.9,523.1L582.4,520.9ZM61.3,377.3L64.1,379.2L66.1,381.9L63.1,381.4L61.9,378.5ZM58.7,387.6L60.3,390.4L62.5,393.6L60.0,392.5L59.0,388.2ZM41.6,377.3L43.7,378.4L41.6,377.3ZM39.8,357.2L41.8,358.3L43.9,359.6L47.1,360.1L44.1,360.5L40.1,359.6ZM33.2,357.3L36.3,357.7L38.2,359.1L34.9,360.4L33.2,357.3ZM29.6,355.5L32.3,356.5L29.6,355.5ZM78.0,39.6L79.8,36.3L80.6,39.6L78.0,40.2ZM83.9,7.7L85.1,10.2L83.9,7.7ZM79.9,18.8L82.2,16.4L84.4,17.9L81.6,19.0L82.4,22.3L83.9,24.4L84.6,26.9L81.6,25.7L81.8,22.2L79.9,18.8ZM80.5,5.2L82.6,7.0L80.5,5.2ZM75.7,8.6L78.0,9.9L80.9,7.2L83.2,9.2L82.1,11.3L80.7,14.2L78.5,13.0L76.0,10.7ZM75.9,6.4L77.5,8.2L75.9,6.4ZM49.6,11.2L51.9,7.9L55.5,10.1L57.2,11.4L59.5,13.0L61.0,14.8L64.0,15.9L66.7,17.2L69.6,18.6L74.1,18.4L74.8,20.9L77.1,22.4L78.3,20.7L79.2,23.0L79.6,26.6L77.5,28.6L76.3,30.6L72.8,31.8L69.7,34.7L68.3,36.8L71.0,37.1L72.7,32.5L74.8,31.5L77.2,30.1L80.6,28.1L81.3,31.0L80.0,33.0L79.0,35.0L77.9,38.6L77.2,41.1L74.9,40.5L74.4,43.6L72.5,40.4L73.5,38.1L72.2,40.0L72.7,43.8L75.9,43.4L77.6,41.1L81.1,40.7L81.4,37.5L82.5,34.7L82.8,31.9L84.1,29.3L85.2,27.2L86.9,25.7L85.5,23.0L84.9,20.1L85.0,23.7L83.3,22.1L83.8,19.4L86.1,18.2L84.4,15.8L82.7,14.5L84.2,12.9L86.1,14.7L87.1,12.6L86.9,9.0L84.7,7.9L83.9,3.8L85.1,1.5L95.1,4.3L100.4,5.9L108.3,8.0L116.1,10.1L126.5,12.8L135.7,15.2L144.8,17.4L154.5,19.8L172.4,24.0L181.9,26.0L200.5,30.0L213.3,32.5L223.9,34.6L234.4,36.5L253.8,39.9L265.5,41.9L278.5,43.8L296.8,46.5L304.7,47.5L321.1,49.6L333.8,51.1L341.9,52.0L358.4,53.6L364.8,54.2L374.2,55.0L384.8,55.9L402.9,57.2L414.9,58.0L420.1,58.2L430.9,58.8L440.0,59.2L447.6,59.5L455.6,59.7L470.0,60.1L486.1,60.3L501.1,60.4L514.0,60.4L513.9,51.3L517.0,51.7L519.1,53.4L520.0,57.4L521.5,63.0L522.2,66.3L525.2,67.4L528.1,67.2L532.3,68.4L535.0,68.8L535.7,71.3L538.3,70.9L540.8,69.5L544.9,68.1L548.4,68.5L552.6,70.3L553.8,72.7L557.0,73.4L558.5,77.6L559.4,75.3L563.4,74.1L564.3,76.3L566.6,77.6L569.3,79.0L571.5,81.2L574.6,80.4L579.0,77.6L582.1,75.9L584.0,77.7L587.2,78.5L590.5,79.0L594.3,78.3L596.6,80.1L599.4,80.3L602.6,80.2L600.0,83.1L597.2,84.8L594.3,85.8L591.6,87.1L588.4,88.3L585.3,90.3L583.2,92.0L579.3,96.0L575.4,101.2L572.5,103.6L571.0,105.4L568.8,107.4L564.8,110.5L565.5,112.9L568.9,113.2L571.7,112.0L576.5,109.8L579.3,109.1L582.3,106.6L586.0,107.7L584.0,110.9L583.1,114.7L586.3,113.4L589.1,114.3L591.5,115.1L593.6,114.0L595.9,112.8L598.0,112.0L599.8,110.3L601.7,108.4L606.1,107.5L610.3,105.8L611.9,103.7L614.9,103.0L617.0,99.6L619.4,97.5L621.8,95.7L623.4,93.4L626.6,91.4L629.8,90.6L634.1,91.2L631.5,92.5L628.9,95.0L627.4,97.1L626.1,99.1L624.6,100.6L623.8,103.0L622.9,106.5L625.0,105.7L626.6,103.9L630.0,104.1L633.1,104.4L635.2,105.6L637.4,106.5L638.8,108.6L640.1,110.4L642.0,112.7L646.0,112.5L648.9,112.9L652.1,112.5L653.2,110.2L654.5,112.4L658.1,109.3L661.3,106.8L665.4,105.9L670.2,105.8L675.3,103.3L678.5,102.9L679.4,106.9L680.8,109.3L683.6,109.7L685.5,108.4L687.0,110.0L689.3,108.0L692.3,107.3L694.3,109.0L695.0,111.4L693.6,113.5L695.9,115.3L698.0,117.7L701.3,118.2L700.5,115.7L703.7,115.3L705.6,117.3L703.7,119.1L700.0,119.0L696.1,119.3L692.7,120.2L689.7,119.8L687.1,118.6L686.0,121.3L684.7,123.2L682.8,121.4L679.0,119.6L676.2,119.1L672.9,119.3L670.8,122.5L667.0,122.9L664.1,123.3L660.8,124.2L659.7,127.9L657.3,129.2L655.7,131.4L655.4,128.5L656.9,126.7L652.7,127.1L652.1,130.3L650.1,131.6L649.4,128.4L648.3,130.7L646.7,132.2L645.4,135.0L644.7,138.0L642.7,141.8L640.6,145.6L640.6,149.1L637.2,150.5L636.4,153.0L635.2,155.7L634.5,159.4L638.3,157.4L639.6,155.2L641.2,152.3L644.0,150.8L645.0,148.4L646.5,146.1L648.6,143.3L649.4,140.7L650.8,142.5L650.0,145.5L648.7,147.5L647.6,150.3L646.2,152.9L645.1,157.0L643.4,164.5L644.1,167.8L642.2,169.7L641.1,175.2L641.9,177.8L640.9,182.4L639.7,187.5L639.4,190.7L640.5,194.7L641.1,197.1L641.7,200.1L642.7,203.1L642.9,208.2L642.6,212.8L645.0,217.2L647.1,221.8L648.6,225.1L650.3,227.2L652.9,228.1L656.5,227.3L659.6,225.4L661.4,224.0L663.2,222.5L664.7,220.5L666.5,215.0L668.3,211.8L669.2,208.9L669.8,203.2L669.4,196.9L668.7,193.2L667.8,190.9L665.1,186.4L663.2,181.8L662.0,179.5L663.0,176.3L662.4,171.0L661.6,168.6L663.8,164.2L664.8,161.8L665.1,156.5L664.2,154.3L665.7,152.6L667.0,150.2L668.1,148.2L670.0,147.1L671.8,144.2L673.0,141.8L674.8,140.1L673.9,142.5L673.6,145.9L673.8,148.8L675.8,147.7L676.5,145.2L676.3,148.4L675.3,150.8L676.9,149.3L677.9,146.4L677.9,142.0L677.5,138.4L679.9,136.1L682.4,135.6L684.6,134.6L681.5,133.0L681.6,129.1L683.3,127.2L685.6,126.1L689.7,126.7L692.8,127.4L697.1,129.1L700.5,130.3L702.9,131.8L706.5,132.9L709.6,134.0L711.0,136.8L713.0,139.9L710.7,139.1L710.4,142.2L712.6,143.4L713.4,146.5L713.5,150.1L713.8,153.7L713.4,156.5L711.3,158.1L710.7,161.0L709.6,163.6L706.8,165.5L705.8,167.9L705.4,171.4L707.5,173.6L710.5,174.6L712.5,171.5L713.5,168.9L715.3,167.3L716.4,164.6L719.7,163.4L722.0,161.5L724.2,162.3L726.5,165.3L728.0,167.9L728.9,172.1L730.4,175.5L731.4,180.5L732.4,183.3L733.8,185.4L733.5,190.4L733.5,193.7L732.5,196.6L730.2,195.8L731.5,194.0L728.6,194.6L727.7,197.9L727.8,201.2L725.1,203.2L724.7,207.9L723.9,210.9L722.0,212.8L720.2,216.1L721.8,218.9L725.1,219.8L728.7,221.5L731.0,220.2L733.7,220.7L735.8,223.2L738.3,223.9L740.7,222.4L743.1,221.2L746.1,219.6L749.6,219.5L752.5,218.0L754.1,216.0L757.8,211.9L762.2,208.9L765.4,207.3L769.2,205.3L772.9,202.9L775.5,200.9L777.2,198.8L779.4,197.5L782.8,195.1L786.8,191.3L788.2,189.2L791.4,187.1L792.5,184.6L794.5,182.0L795.0,179.2L793.4,176.9L791.6,174.6L790.0,170.4L793.5,168.2L796.7,166.6L799.1,165.8L803.4,165.1L810.9,164.4L813.4,165.2L815.8,166.0L818.0,164.5L822.7,163.3L826.1,162.5L828.8,160.7L830.1,158.7L831.7,157.1L833.2,155.5L836.2,154.6L836.3,151.7L835.0,148.2L836.2,145.7L834.5,144.2L832.3,143.3L831.6,139.3L833.9,137.8L836.0,134.8L838.6,132.2L841.0,127.1L842.4,124.7L845.1,121.2L848.5,117.9L850.8,116.1L853.6,115.3L860.0,113.7L863.1,113.0L869.3,111.3L880.2,108.4L886.9,106.7L892.9,105.5L896.2,104.6L906.0,101.8L906.5,98.9L905.5,96.5L907.7,94.3L910.5,94.9L912.0,92.7L914.3,94.0L915.0,90.5L917.6,89.6L915.6,87.6L916.1,84.6L917.6,82.7L919.4,80.5L920.4,76.4L918.7,73.7L919.2,70.4L918.4,67.3L919.7,63.9L919.5,56.9L926.6,36.2L929.6,36.1L930.6,40.0L933.4,41.1L935.9,38.8L937.7,37.1L940.8,36.2L942.6,34.0L946.7,35.6L949.5,37.6L954.7,49.0L959.0,62.4L959.4,65.2L960.8,69.9L964.4,70.5L967.0,69.8L968.2,72.0L969.0,74.8L970.6,79.2L973.6,78.7L976.4,80.1L978.1,82.7L980.0,85.4L979.0,87.5L977.8,90.2L976.2,91.9L975.5,89.4L974.7,92.5L972.8,93.7L972.8,96.7L971.1,95.0L969.2,96.6L968.2,99.5L966.2,101.6L963.7,101.0L964.5,104.4L961.1,105.1L959.5,103.3L959.2,106.5L958.4,109.2L959.4,111.6L957.7,109.2L955.9,107.5L954.7,105.1L953.1,103.6L950.2,104.1L951.6,106.4L951.0,110.1L951.4,112.9L950.3,115.1L949.1,117.0L946.3,116.8L945.9,119.8L943.5,120.6L942.4,123.2L939.3,123.1L937.3,125.3L935.7,127.8L933.9,130.7L934.1,133.9L932.4,135.8L931.8,138.6L931.5,142.8L930.6,145.7L932.1,152.0L935.3,151.9L933.5,154.5L931.4,155.8L931.2,159.0L930.4,161.5L933.5,162.1L936.1,162.9L938.2,165.2L937.8,167.9L940.7,168.5L941.6,171.1L944.2,172.1L947.9,170.9L950.5,169.3L949.5,166.1L947.8,164.0L950.7,166.2L951.9,168.4L952.7,171.0L952.7,174.8L951.8,171.9L947.8,174.0L945.7,175.0L944.1,176.9L940.4,179.5L938.6,181.6L940.2,179.3L941.4,177.0L940.7,174.7L938.1,176.0L936.4,178.4L935.1,180.8L932.8,182.3L931.7,179.1L931.9,181.9L930.5,180.0L931.4,177.3L928.1,176.4L928.4,180.2L928.9,183.0L928.4,185.6L926.0,186.5L922.4,188.8L919.5,189.3L916.6,189.9L913.6,192.2L910.9,193.1L908.5,193.8L904.9,194.8L902.5,196.2L900.6,197.7L898.9,199.1L897.5,201.1L894.7,203.2L893.1,204.9L892.2,207.7L894.1,206.0L896.4,204.9L898.6,204.0L902.4,203.1L908.6,200.7L910.9,199.7L913.3,197.4L914.8,194.8L917.0,196.7L920.0,197.2L922.0,195.3L920.0,197.7L915.8,201.3L913.0,203.4L908.4,206.5L905.5,208.8L903.1,210.3L897.3,212.9L893.5,213.6L890.8,215.4L888.6,213.8L887.3,216.4L885.4,218.0L889.7,218.7L891.6,221.7L891.6,225.5L891.9,230.7L892.4,234.2L891.0,239.6L890.0,242.9L887.3,246.4L885.8,249.0L885.0,251.7L884.3,255.0L882.1,257.0L881.8,252.9L880.2,251.0L877.1,251.9L874.8,250.2L872.7,248.9L870.0,247.2L868.4,244.1L867.5,241.6L866.8,244.3L867.7,247.2L869.5,249.1L872.1,251.3L873.0,255.7L874.9,257.2L878.1,260.9L881.1,263.8L882.3,267.8L882.5,271.8L881.9,276.7L880.6,281.1L879.7,284.0L877.4,285.8L876.8,290.1L876.2,294.2L875.5,298.3L874.9,301.6L872.9,303.3L871.5,301.6L870.8,299.0L870.9,295.8L871.0,292.0L872.4,287.7L874.0,285.0L873.0,282.4L870.6,284.3L869.8,281.6L868.8,279.2L867.9,276.4L866.4,274.3L865.5,277.8L862.1,276.4L859.2,272.7L859.7,269.7L863.2,269.5L861.2,267.9L858.4,267.1L858.6,264.0L856.6,262.3L859.2,260.9L859.7,257.9L858.3,259.8L857.5,257.4L857.5,254.2L858.6,252.1L860.8,251.0L860.5,246.4L858.3,247.3L859.4,249.3L857.0,252.1L856.0,250.0L856.5,252.6L854.5,254.5L853.0,256.6L854.8,259.4L854.4,262.0L854.7,265.7L854.8,269.1L855.7,272.3L858.2,274.8L858.4,277.8L861.2,280.9L858.6,282.3L857.0,280.9L854.4,280.0L851.1,277.9L849.7,279.6L847.2,276.3L844.2,279.0L842.4,276.4L843.5,273.3L841.7,276.3L843.2,279.9L845.3,278.6L847.6,279.5L849.2,281.5L851.8,282.3L855.9,281.8L857.5,283.2L860.4,285.3L864.0,286.4L863.4,290.7L863.1,293.4L860.8,292.6L858.3,290.6L856.2,289.6L853.6,287.7L851.4,286.4L853.6,288.4L855.4,290.4L857.7,291.3L859.7,294.0L864.4,294.4L866.3,298.2L863.1,298.5L864.3,301.1L862.4,302.4L864.6,304.1L867.3,305.4L865.8,307.8L861.9,306.6L859.7,303.7L855.8,304.0L858.3,305.7L860.5,307.9L864.0,309.3L866.8,310.1L868.0,308.2L871.4,308.8L874.3,310.6L875.7,313.2L877.1,315.6L880.0,322.1L881.8,325.1L884.0,327.9L887.5,332.8L885.0,330.0L882.8,328.5L881.4,325.2L879.7,322.3L878.4,319.4L875.4,318.1L877.3,320.8L878.9,323.3L880.8,326.3L878.3,324.4L873.8,323.5L875.2,325.4L873.8,327.5L870.9,327.9L868.3,327.2L871.6,328.5L869.1,330.9L866.3,331.3L863.6,329.1L863.8,326.1L863.0,329.2L865.0,332.4L868.1,333.1L870.4,331.6L874.4,330.6L877.7,330.8L877.3,333.4L878.5,337.7L879.1,335.1L878.6,332.0L879.7,329.8L882.9,331.6L883.7,333.9L884.6,337.4L882.9,339.1L881.0,340.5L880.3,343.3L878.5,345.4L874.6,346.3L870.5,345.6L869.2,343.5L871.4,342.0L868.8,342.9L869.9,346.3L867.3,345.9L862.7,345.7L868.5,347.6L871.7,347.5L872.4,350.1L871.5,353.1L867.8,357.1L863.9,355.5L866.1,357.6L870.8,355.8L873.4,354.6L876.6,355.1L875.6,358.0L874.5,361.1L872.5,362.2L874.6,363.3L875.6,360.5L877.3,357.6L878.6,355.8L881.1,351.6L880.2,353.9L878.8,356.2L876.5,359.7L874.7,364.2L871.4,362.9L868.8,363.5L864.9,365.1L861.8,367.0L859.9,369.1L857.6,371.1L856.1,372.8L854.0,375.5L852.0,379.7L851.2,384.5L850.9,387.5L848.1,386.7L844.6,387.3L838.9,390.0L836.6,391.4L835.0,393.1L833.0,396.0L831.8,398.8L830.2,402.2L830.0,405.9L829.2,409.2L827.5,412.3L824.2,412.2L822.8,414.5L821.7,417.1L819.0,419.9L817.0,423.0L814.4,424.7L810.6,428.0L807.8,428.9L808.8,432.0L806.8,433.6L803.8,432.8L805.1,435.2L802.7,438.2L801.1,439.8L800.3,443.3L798.5,445.6L797.8,448.3L797.8,452.0L796.0,453.3L796.4,456.2L796.5,460.9L795.3,462.8L794.6,465.9L795.4,468.3L794.7,471.7L795.7,475.6L796.8,478.3L797.8,482.4L800.7,490.0L802.0,492.5L805.2,499.2L808.4,504.7L811.3,508.9L817.4,516.4L820.9,520.0L822.4,522.7L821.1,525.2L822.1,529.5L824.5,534.1L828.0,539.0L829.7,542.2L830.8,544.3L832.1,547.0L833.9,549.8L835.6,552.8L836.9,554.8L839.1,559.7L839.8,564.4L839.8,568.0L840.2,572.2L840.4,578.8L841.0,582.2L840.8,585.5L838.4,587.4L837.7,590.0L838.3,593.1L837.9,595.9L840.6,590.7L838.9,597.2L836.9,601.1L834.7,604.3L833.1,605.9L835.1,602.8L836.4,600.7L836.1,598.0L831.9,599.2L828.7,599.7L827.0,601.1L823.2,602.2L820.9,600.1L821.1,597.3L820.0,594.5L818.3,591.9L816.7,589.8L814.4,588.0L810.6,586.8L808.0,586.4L805.9,584.9L804.3,582.1L803.4,578.7L801.9,575.6L799.4,573.7L797.3,572.2L795.3,570.4L796.6,566.3L795.4,563.6L794.6,566.9L792.5,567.8L789.9,564.8L787.4,561.5L784.7,557.1L782.2,554.4L780.5,552.3L782.2,549.8L783.7,547.0L785.3,545.0L785.3,541.8L784.3,543.8L782.7,541.4L779.1,539.7L779.6,542.3L781.9,544.3L781.2,547.1L779.6,549.5L777.8,545.5L776.3,544.0L776.3,540.2L774.9,535.7L776.4,539.2L776.4,536.2L777.4,533.6L778.1,529.9L778.0,526.4L777.4,524.0L775.5,520.5L774.4,517.1L773.3,514.8L769.0,513.6L767.1,512.0L764.8,510.2L763.2,508.3L759.7,506.8L758.9,503.2L756.2,502.3L755.0,500.3L752.6,498.0L750.4,497.0L747.3,495.9L745.2,494.6L742.6,495.7L738.5,497.7L739.3,500.2L735.3,500.5L733.2,502.2L728.8,505.5L723.9,506.5L726.4,508.4L728.5,507.1L730.6,506.0L732.3,504.1L731.0,506.2L729.1,507.3L726.7,508.9L723.8,508.4L720.6,507.6L718.2,506.5L717.6,504.2L718.9,507.2L720.0,504.7L718.5,502.7L715.8,501.5L713.3,499.5L709.4,497.6L706.2,496.0L702.7,494.8L698.3,493.8L691.4,493.7L685.7,494.9L681.0,496.3L678.2,496.7L675.7,497.6L672.9,498.4L668.1,499.8L664.0,500.3L668.7,499.0L667.1,496.6L664.9,494.0L665.0,490.9L662.9,489.4L661.6,492.4L661.5,496.9L659.9,498.4L657.4,497.4L654.2,498.8L651.5,498.2L648.9,498.7L645.5,497.8L641.7,498.7L637.5,500.5L635.1,501.8L631.2,504.4L629.9,506.4L627.3,507.4L628.3,509.8L630.8,511.4L632.3,508.4L634.0,506.1L636.4,506.9L636.7,509.9L638.4,507.8L637.6,510.4L638.2,513.4L635.7,514.0L633.7,515.8L631.0,516.6L631.7,519.9L634.1,520.9L637.3,522.2L640.3,523.9L643.0,525.1L645.4,526.6L644.2,528.8L642.6,530.4L640.4,529.3L638.3,532.2L639.2,529.6L639.6,527.0L637.5,528.5L635.4,526.5L632.9,525.8L627.9,524.5L623.6,528.0L620.4,530.6L619.0,528.4L617.5,525.9L615.7,524.6L613.7,525.7L612.2,527.4L610.6,530.2L608.2,532.3L606.3,530.3L602.2,529.2L599.5,528.4L597.1,526.8L599.0,525.4L600.5,527.4L599.4,524.3L596.3,523.9L594.3,522.8L592.2,519.1L590.7,516.7L587.4,516.7L586.3,514.7L583.3,515.5L580.6,517.1L580.8,520.0L578.0,521.9L570.4,521.1L567.8,520.3L563.5,518.4L558.7,517.1L555.3,517.4L548.3,517.9L545.6,519.0L541.8,519.6L539.1,520.5L529.7,524.9L527.6,526.2L529.7,524.3L526.6,523.6L527.3,521.2L527.5,518.1L524.3,519.0L521.1,520.5L521.7,524.0L523.6,525.8L523.0,529.4L520.9,530.7L518.1,531.7L521.3,531.7L523.9,529.3L526.9,528.2L520.9,532.6L519.1,534.0L516.5,536.4L513.5,539.3L507.2,542.5L504.6,544.1L500.7,545.9L496.1,548.2L493.6,550.0L491.4,552.3L487.5,554.5L485.6,555.9L482.1,559.0L479.6,561.9L477.7,564.8L475.2,569.2L473.3,573.2L472.4,575.7L471.6,579.6L471.5,583.9L472.0,588.0L473.0,592.2L473.9,594.9L475.1,599.6L475.9,604.8L475.0,600.9L474.1,597.1L473.3,594.0L472.2,591.4L471.1,587.9L471.0,582.9L471.9,574.9L473.2,571.3L474.6,568.3L476.5,565.1L478.0,561.8L480.0,560.1L481.4,557.5L483.5,556.4L488.0,553.2L491.5,551.7L488.5,551.5L486.4,552.4L484.6,550.1L483.8,552.9L482.4,555.6L480.5,556.8L478.9,555.3L476.5,556.5L479.2,558.7L475.8,563.7L472.8,562.8L469.3,562.3L470.9,563.8L473.0,566.4L472.8,569.8L471.8,573.5L470.8,575.6L468.8,576.7L466.2,577.4L470.0,577.0L470.0,583.5L469.5,587.7L469.9,592.4L470.5,595.4L472.9,599.8L472.8,603.3L474.9,605.0L476.1,607.9L473.3,608.2L471.2,610.5L469.1,609.4L466.6,608.1L465.3,606.1L462.1,605.1L458.4,605.3L454.6,605.1L451.8,604.0L449.5,602.6L447.9,601.0L445.3,600.2L441.7,598.4L438.9,597.6L436.3,596.6L434.2,595.6L433.1,593.2L432.5,590.3L431.7,587.2L429.9,585.0L428.6,583.1L427.5,580.5L428.1,578.0L426.7,575.7L427.0,572.3L426.6,568.7L424.7,566.8L421.3,564.6L419.1,562.9L418.0,559.5L416.5,556.5L415.2,554.6L412.6,553.4L410.9,551.1L409.9,548.2L409.3,545.7L408.0,543.3L406.8,540.9L406.2,538.1L404.6,536.2L403.9,531.5L401.9,529.6L399.9,526.9L397.2,524.8L396.4,522.6L394.1,521.1L392.6,518.4L390.3,517.4L389.5,515.1L386.8,514.0L383.4,514.6L380.6,513.5L376.8,513.2L373.9,512.0L371.5,511.1L369.5,513.6L367.1,513.1L364.2,514.1L362.1,516.1L360.4,518.8L359.9,521.7L358.4,524.1L356.9,526.8L354.2,528.7L353.2,531.0L349.8,530.8L346.9,529.2L345.0,526.8L342.6,526.1L339.8,523.5L336.0,522.3L333.5,520.2L331.5,518.2L329.0,516.4L325.8,513.2L324.9,510.0L323.7,507.5L323.0,505.0L323.1,501.2L322.2,498.0L321.1,495.6L319.9,490.5L317.9,487.6L316.0,486.0L313.9,484.4L310.4,482.8L307.6,479.3L306.0,476.2L304.2,474.8L302.0,471.6L300.5,469.6L298.0,468.5L295.7,466.7L294.4,464.3L293.4,460.9L291.6,459.1L280.8,457.4L263.8,455.4L256.6,454.4L255.2,465.1L238.5,462.8L233.9,462.2L219.5,460.1L210.3,458.7L198.0,456.8L174.1,443.0L160.0,434.9L153.3,430.8L129.3,416.4L130.0,413.5L132.2,411.5L102.7,408.0L84.6,405.8L84.5,402.5L83.1,400.8L84.0,397.4L84.1,394.0L83.8,391.3L81.5,385.6L80.1,384.0L78.8,381.8L77.3,379.5L75.8,377.9L73.8,375.9L72.5,373.8L69.1,373.6L66.4,372.0L67.4,369.8L66.5,365.8L63.3,364.0L60.5,364.2L57.9,362.4L55.6,360.6L53.5,358.9L53.0,355.8L51.5,354.1L48.9,351.6L46.5,350.5L42.6,349.7L40.5,347.9L38.0,346.9L35.0,346.3L31.6,345.9L30.3,342.8L30.9,339.4L31.6,335.7L31.9,332.3L32.7,329.5L30.9,327.7L29.1,326.5L30.0,322.9L28.0,319.9L26.7,317.4L24.6,314.1L24.0,310.8L22.9,308.7L22.3,305.7L21.0,304.0L19.5,299.3L17.7,297.5L17.1,294.7L17.3,291.6L18.4,288.1L22.2,285.0L21.6,281.7L17.4,279.9L15.9,278.0L15.1,275.6L13.6,272.8L14.7,269.1L14.6,266.0L14.0,263.5L15.4,258.8L17.7,261.1L16.9,263.9L19.8,266.9L21.7,268.6L20.7,265.3L19.8,261.5L19.7,258.4L18.2,255.0L20.8,254.6L20.0,251.1L17.9,252.3L17.1,254.6L16.5,257.8L13.7,255.2L11.8,253.5L10.5,251.3L9.7,248.9L9.9,246.0L9.5,242.7L8.0,238.9L6.2,236.6L4.9,232.4L2.5,228.3L1.7,225.5L3.2,223.4L2.8,218.0L3.8,213.9L5.4,211.5L5.4,207.0L5.1,203.8L3.6,199.4L2.1,196.2L0.0,192.4L0.8,189.7L1.6,186.3L3.1,184.4L7.3,180.0L9.6,176.1L9.9,173.3L13.4,167.0L13.8,164.4L13.8,159.6L14.5,154.8L13.8,152.0L13.2,149.2L13.5,146.1L14.1,142.3L15.8,139.6L15.5,135.4L15.0,132.5L17.7,129.4L18.9,126.9L20.8,123.6L22.8,121.3L24.5,119.0L26.5,115.5L29.1,110.2L30.8,105.9L32.2,102.3L33.9,98.5L35.7,93.6L36.2,91.0L39.3,85.2L40.4,83.0L41.6,80.0L42.6,76.6L44.5,71.5L45.4,67.4L46.7,64.3L47.5,58.2L48.6,60.1L51.6,60.6L54.7,60.0L52.9,58.3L49.5,58.7L48.3,56.6L48.4,52.1L49.2,48.8L48.8,52.1L48.3,54.9L49.5,52.3L50.9,49.3L53.4,48.1L51.2,47.2L49.8,45.1L50.5,42.4L54.6,42.7L52.4,41.0L50.5,39.7L49.4,41.7L50.8,37.0L51.1,33.3L51.0,27.2L51.3,22.3L50.2,19.5L49.3,15.6L49.8,12.6ZM953.1,110.9L954.6,108.7L956.3,111.1L954.1,112.3ZM951.9,107.9L952.4,104.4L952.7,107.8ZM949.3,181.5L952.0,181.1L953.3,178.9L954.9,180.7L952.4,182.3L949.6,181.8ZM939.5,183.1L941.3,180.7L943.4,179.2L945.3,180.7L943.5,182.1L940.9,184.0ZM883.1,330.1L885.5,331.5L883.1,330.1ZM882.1,351.5L885.7,347.7L887.5,346.4L890.0,344.8L889.7,338.1L888.5,335.2L889.8,337.0L890.2,339.7L890.4,345.7L885.8,348.2L883.2,350.4Z"/>
+        <path class="brd-state" d="M657.3,500.6L661.3,499.6L657.3,500.6ZM650.6,387.4L660.9,386.3L665.2,385.9L676.3,385.2L682.7,384.6L696.1,383.2L700.3,382.9L702.1,389.3L704.7,398.2L706.8,405.8L708.4,411.6L710.1,417.9L714.1,432.1L716.3,437.3L718.6,439.9L719.3,444.7L718.6,449.2L718.7,453.9L718.5,458.9L720.5,463.8L720.3,469.2L721.9,473.4L718.0,476.4L712.9,477.1L704.9,478.1L692.4,479.4L682.6,480.2L670.6,481.3L672.1,486.4L675.2,488.6L674.9,493.3L674.2,497.1L671.0,499.1L664.0,500.3L668.7,499.0L665.5,495.8L665.0,490.9L661.6,492.4L661.5,496.9L657.4,497.4L655.1,493.1L654.3,485.8L653.2,477.2L651.2,461.5L651.4,455.7L651.7,441.1L652.2,413.7L652.6,397.1L652.8,389.7ZM132.2,411.5L136.1,410.5L137.5,405.0L134.1,402.8L135.6,398.7L139.1,393.1L140.4,389.6L141.2,385.5L143.7,381.9L146.3,379.8L150.5,377.6L147.5,372.3L146.2,365.7L144.7,362.7L144.5,358.4L146.3,355.4L146.7,350.2L146.5,345.9L146.8,340.5L147.0,334.9L149.1,332.1L153.8,332.3L156.5,336.1L160.5,332.8L161.9,327.9L162.8,322.4L164.5,313.6L177.7,316.1L192.4,318.7L213.1,322.2L219.6,323.2L230.2,324.9L246.2,327.4L257.0,328.9L252.3,363.3L251.5,368.1L248.9,387.5L247.2,399.9L246.4,405.1L238.5,462.8L233.9,462.2L219.5,460.1L210.3,458.7L198.0,456.8L174.1,443.0L160.0,434.9L153.3,430.8L129.3,416.4L132.2,411.5ZM270.1,234.1L285.3,236.1L295.1,237.3L315.7,239.7L319.9,240.3L328.6,241.2L343.9,242.7L358.1,243.9L376.0,245.3L384.6,245.9L393.5,246.5L391.9,270.3L391.5,278.1L390.9,287.0L389.1,317.0L387.6,342.2L375.3,341.3L369.6,340.8L356.0,339.8L344.6,338.9L332.3,337.8L309.9,335.5L297.4,334.2L287.2,332.8L271.8,330.9L257.0,328.9L258.7,317.0L260.9,301.3L262.4,288.1L263.1,283.7L268.4,245.9L270.1,234.1ZM823.8,611.9L827.5,609.5L824.8,612.1ZM809.4,617.4L812.0,613.9L816.5,610.5L820.1,612.4L815.7,614.7L812.2,617.2ZM792.4,569.4L794.9,573.7L792.6,570.4ZM722.8,475.9L724.7,480.1L736.3,481.7L755.4,480.4L770.4,479.4L780.3,478.7L781.9,483.5L784.3,481.3L783.3,476.2L784.7,471.8L789.0,472.7L793.3,473.3L795.7,475.6L797.4,480.2L800.7,490.0L802.2,493.5L805.2,499.2L808.4,504.7L811.3,508.9L817.4,516.4L820.9,520.0L821.1,525.2L822.1,529.5L824.5,534.1L828.0,539.0L829.7,542.2L832.1,547.0L833.9,549.8L835.6,552.8L839.1,559.7L839.8,564.4L840.2,572.2L840.4,578.8L841.0,583.8L838.4,587.4L837.8,591.6L839.3,594.8L840.6,590.7L838.9,597.2L836.9,601.1L834.7,604.3L836.4,600.7L831.9,599.2L827.4,600.2L823.2,602.2L820.8,598.5L820.0,594.5L817.3,591.4L814.4,588.0L810.6,586.8L805.9,584.9L803.4,578.7L801.9,575.6L798.6,573.6L795.3,570.4L796.6,566.3L795.6,562.8L794.6,566.9L789.9,564.8L787.4,561.5L784.7,557.1L782.2,554.4L779.6,551.2L783.0,549.1L784.3,545.7L785.3,541.8L779.1,539.7L781.9,544.3L779.7,547.4L777.1,545.0L776.3,540.2L774.9,535.7L776.4,539.2L776.9,534.6L778.1,529.9L777.4,525.1L775.5,520.5L774.4,517.1L773.1,513.8L768.5,514.7L766.0,511.5L763.2,508.3L759.7,506.8L758.0,503.2L755.1,501.2L752.6,498.0L747.3,495.9L742.6,495.7L738.5,497.7L735.3,500.5L728.8,505.5L723.9,506.5L728.5,507.1L732.3,504.1L729.1,507.3L725.8,509.3L722.0,507.6L718.2,506.5L717.1,501.6L713.3,499.5L709.4,497.6L706.2,496.0L702.7,494.8L698.3,493.8L691.4,493.7L685.7,494.9L681.0,496.3L673.7,498.1L675.2,495.0L675.5,490.0L672.4,487.2L670.1,484.5L682.6,480.2L692.4,479.4L704.9,478.1L712.9,477.1L718.0,476.4L722.8,475.9ZM700.3,382.9L712.3,381.4L724.9,379.9L738.3,378.2L748.0,376.6L746.0,379.8L744.2,383.5L746.9,386.1L750.0,388.0L754.2,388.4L756.2,391.4L758.3,395.7L761.0,398.2L764.2,401.3L768.7,403.8L771.1,407.2L774.8,409.4L776.1,412.6L779.2,415.3L782.7,417.6L786.0,419.1L787.2,422.7L788.4,426.2L791.8,429.2L795.0,433.7L796.4,437.3L800.8,440.2L800.1,444.7L797.8,448.3L795.9,452.8L796.3,458.1L795.3,462.8L793.3,466.9L794.7,471.7L789.6,473.1L785.8,471.8L783.2,474.0L784.4,477.9L784.5,482.8L780.9,480.6L770.4,479.4L755.4,480.4L736.3,481.7L726.4,482.4L724.4,478.4L722.5,474.7L720.2,471.8L720.4,465.9L720.0,461.4L717.8,456.4L719.0,452.1L720.4,447.5L719.7,442.2L717.2,438.6L715.6,434.3L710.1,417.9L708.4,411.6L706.8,405.8L704.7,398.2L702.1,389.3L700.3,382.9ZM649.3,226.4L652.9,228.1L659.6,225.4L667.1,223.5L679.5,222.2L691.2,220.9L696.6,220.3L697.4,226.7L700.8,254.8L701.6,263.8L702.7,272.8L703.2,278.4L703.8,283.3L703.4,287.6L704.9,290.7L699.7,292.9L695.2,293.3L694.5,298.0L691.3,300.7L689.3,305.1L686.5,308.0L684.6,312.3L680.2,311.1L678.4,308.0L676.8,311.6L674.6,315.0L670.6,313.7L666.8,315.8L664.9,319.2L661.5,316.8L656.8,316.5L654.8,319.0L650.9,317.1L649.9,320.8L646.8,318.0L648.2,314.8L648.1,309.5L651.2,306.5L653.7,302.7L654.5,298.9L654.8,294.3L654.0,289.6L653.0,284.8L653.6,275.5L652.8,267.4L652.3,261.1L651.9,256.1L649.7,231.6L649.3,226.4ZM391.9,270.3L408.5,271.3L415.2,271.7L432.2,272.5L449.8,273.0L460.3,273.3L478.3,273.7L495.3,273.8L504.6,273.8L513.1,273.8L515.9,276.0L519.8,277.0L519.2,281.4L516.8,284.0L519.0,287.0L520.9,290.8L523.2,293.3L526.2,303.8L526.3,320.6L526.5,337.7L526.6,345.5L509.8,345.6L496.6,345.6L485.3,345.6L470.6,345.4L456.6,345.1L439.3,344.6L432.4,344.3L422.0,343.8L412.0,343.4L398.0,342.8L387.6,342.2L389.0,319.9L390.7,291.0L391.5,278.1L391.9,270.3ZM931.0,143.2L928.2,140.8L925.2,138.0L923.9,133.0L921.4,126.6L915.8,108.0L910.9,93.4L915.0,94.1L914.5,90.1L916.1,84.6L918.3,81.6L919.4,77.6L918.7,73.7L918.1,69.8L919.2,65.2L919.5,56.9L926.6,36.2L930.6,40.0L935.9,38.8L939.3,36.4L942.6,34.0L946.7,35.6L949.5,37.6L954.7,49.0L959.0,62.4L960.6,66.3L962.2,69.8L966.3,70.4L967.7,73.9L970.6,79.2L974.7,78.4L976.8,81.0L979.2,83.2L979.0,87.5L976.6,91.2L973.6,93.8L970.4,95.5L968.7,98.7L966.2,101.6L963.7,104.0L959.5,103.3L958.3,108.4L955.1,105.7L953.5,102.5L950.2,104.1L950.8,108.6L952.0,112.1L950.3,115.1L948.7,118.6L945.0,120.0L942.4,123.2L938.6,124.2L936.0,126.6L933.9,130.7L933.2,135.7L931.8,140.7ZM949.3,181.5L953.0,180.5L949.6,181.8ZM939.5,183.1L942.6,179.0L946.1,181.4L941.7,182.8ZM890.2,161.5L903.8,158.6L915.9,156.0L923.5,154.2L925.4,150.6L928.8,148.1L932.1,152.0L934.9,154.0L931.4,155.8L930.3,159.5L933.5,162.1L936.5,163.8L938.2,167.1L941.6,170.0L944.2,172.1L947.9,170.9L950.7,168.7L948.4,165.0L945.1,163.7L950.7,166.2L952.7,171.0L947.8,174.0L944.7,175.4L942.1,177.7L939.7,180.7L941.4,177.0L939.1,173.7L936.5,177.3L935.1,180.8L932.6,177.4L928.5,175.5L926.1,170.2L919.2,172.3L906.7,174.9L902.8,175.8L898.5,176.8L891.2,178.3L889.9,169.4L890.2,161.5ZM481.4,60.3L486.1,60.3L501.1,60.4L514.0,60.4L513.9,51.3L518.7,52.7L520.0,57.4L521.5,63.0L523.8,67.2L528.8,68.3L535.0,68.8L538.1,71.2L542.7,68.5L548.4,68.5L552.6,70.3L556.1,72.3L558.5,77.6L560.1,74.4L564.3,75.0L566.6,77.6L569.1,79.6L572.7,80.5L579.0,77.6L582.1,75.9L584.3,79.2L589.0,78.7L594.3,78.3L598.6,81.0L602.6,80.2L600.0,83.1L594.3,85.8L590.7,87.3L585.3,90.3L579.3,96.0L575.4,101.2L572.5,103.6L568.8,107.4L564.8,110.5L562.5,113.2L561.7,128.0L558.8,130.6L554.9,132.6L552.6,136.7L553.6,140.5L556.4,143.2L554.7,146.9L555.0,151.2L554.7,156.1L555.6,160.5L558.4,163.0L562.0,164.0L564.2,166.6L568.7,168.3L570.5,172.1L573.4,174.3L578.1,176.5L581.0,180.3L581.5,185.6L570.0,188.9L556.2,189.4L549.1,189.6L535.4,190.0L524.4,190.2L505.2,190.3L492.9,190.3L493.1,165.5L493.1,157.3L493.2,147.5L490.4,145.0L488.0,142.3L489.6,137.3L491.4,132.5L490.9,125.8L488.9,120.6L487.8,116.0L487.7,111.6L487.4,104.6L487.1,100.4L486.9,92.9L485.7,89.2L484.4,85.6L482.7,80.5L482.5,75.3L482.3,70.9L482.5,66.0L481.2,61.1ZM867.3,243.1L868.4,239.6L872.2,236.4L874.1,233.0L876.2,230.4L879.4,227.6L876.1,224.9L872.1,222.8L870.6,219.4L868.1,217.0L869.8,212.2L868.4,209.0L870.7,205.5L871.4,201.6L879.7,201.7L889.0,204.7L888.4,210.5L885.8,214.4L887.0,218.8L890.6,217.8L891.6,221.7L891.9,230.7L891.0,239.6L889.0,244.4L885.8,249.0L884.3,255.0L881.3,256.9L881.8,252.9L878.6,250.8L874.5,249.6L870.8,248.2L868.4,244.1ZM883.1,330.1L885.8,332.5L883.1,330.1ZM882.1,351.5L885.7,347.7L889.2,345.2L889.7,338.1L887.6,333.2L889.8,337.0L890.4,345.7L885.8,348.2L883.2,350.4ZM769.6,335.2L775.2,334.6L785.3,333.4L795.5,332.1L810.0,329.7L828.6,326.3L833.5,325.3L851.0,321.9L858.1,320.5L868.0,318.3L877.4,316.3L880.0,322.1L881.8,325.1L884.0,327.9L887.5,332.8L885.0,330.0L881.4,325.2L879.7,322.3L877.6,319.0L878.9,323.3L880.8,326.3L877.9,323.7L872.8,323.5L875.8,326.3L873.2,328.4L868.3,327.2L871.6,328.5L869.1,330.9L864.9,331.3L863.4,327.8L865.0,332.4L870.4,331.6L874.4,330.6L877.3,333.4L878.5,337.7L878.6,332.0L881.5,329.9L883.7,332.8L884.6,337.4L881.8,339.3L880.3,343.3L878.4,346.0L872.8,346.3L869.2,343.5L866.4,346.3L860.9,345.0L868.5,347.6L872.6,348.8L871.5,353.1L867.8,357.1L863.9,355.5L868.7,358.0L871.7,355.6L874.2,353.5L877.6,355.7L875.8,358.7L874.3,362.6L877.3,357.6L881.1,351.6L878.8,356.2L876.5,359.7L874.7,364.2L868.8,363.5L864.9,365.1L861.8,367.0L857.6,371.1L854.0,375.5L852.0,379.7L851.2,384.5L848.1,386.7L842.5,387.9L832.2,384.2L823.7,378.1L821.2,376.2L814.1,371.1L809.9,371.8L804.9,372.5L792.7,374.3L789.0,368.0L783.0,367.6L775.8,368.4L762.9,369.7L758.5,371.4L754.5,374.1L748.0,376.6L738.2,378.1L724.9,379.9L724.8,374.2L728.4,373.3L729.8,370.1L731.6,366.3L739.0,364.1L741.3,361.6L744.2,359.5L747.7,358.0L748.7,354.2L751.5,351.9L757.0,351.1L758.6,348.2L762.3,346.9L766.2,342.6L769.9,341.2L769.1,336.5ZM374.2,55.0L384.8,55.9L402.9,57.2L414.9,58.0L420.1,58.2L430.9,58.8L440.0,59.2L447.6,59.5L455.6,59.7L470.0,60.1L481.4,60.3L482.5,66.0L482.3,70.9L482.5,75.3L482.7,80.5L483.8,84.9L485.2,88.9L486.7,92.9L486.8,97.3L487.1,102.7L487.3,108.1L488.0,113.9L488.6,119.6L490.9,123.2L491.5,129.6L479.0,132.4L467.9,132.2L460.9,132.0L446.0,131.5L434.6,131.0L424.0,130.5L409.1,129.6L401.8,129.2L384.6,128.0L374.4,127.2L368.2,126.7L373.0,69.6L374.2,55.0ZM369.6,340.8L375.3,341.3L387.6,342.2L398.0,342.8L412.0,343.4L422.0,343.8L432.4,344.3L439.3,344.6L456.6,345.1L470.6,345.4L485.3,345.6L496.6,345.6L509.8,345.6L526.6,345.5L526.7,357.4L527.7,364.3L529.2,374.2L530.7,383.8L530.7,390.3L530.6,395.7L530.6,400.5L530.5,412.5L530.3,425.7L526.0,424.6L522.8,423.3L520.8,420.5L517.6,418.7L514.5,420.2L509.7,420.2L505.4,419.9L499.8,421.2L496.3,423.3L492.3,422.6L488.4,421.0L484.5,420.2L481.3,418.4L479.3,422.0L477.1,419.2L473.9,421.4L471.4,419.0L468.4,417.3L464.9,420.4L462.2,418.4L459.4,414.9L456.1,413.6L452.3,415.2L449.2,412.7L443.9,412.1L439.9,411.1L437.2,407.0L432.5,406.1L427.2,405.0L424.7,402.0L425.3,356.0L417.0,355.6L404.8,355.0L394.7,354.4L382.9,353.7L368.7,352.7L369.6,340.8ZM770.2,204.6L775.5,200.9L779.4,197.5L782.1,195.6L783.1,201.9L798.5,199.2L803.2,198.3L813.5,196.4L828.5,193.4L834.9,192.1L841.8,190.7L852.1,188.5L858.7,187.1L861.0,189.8L864.2,191.4L866.0,194.8L867.8,197.7L872.3,197.9L871.4,201.6L870.7,205.5L868.4,209.0L869.8,212.2L868.1,217.0L870.6,219.4L872.1,222.8L876.1,224.9L879.4,227.6L876.2,230.4L874.1,233.0L872.2,236.4L869.0,238.6L864.5,239.1L862.8,241.9L849.1,244.8L841.6,246.3L832.0,248.3L817.0,251.1L797.5,254.7L786.8,256.5L778.9,257.8L775.4,236.2L770.2,204.6ZM366.0,149.0L367.8,131.3L368.2,126.7L374.4,127.2L384.6,128.0L401.8,129.2L409.1,129.6L424.0,130.5L434.6,131.0L446.0,131.5L460.9,132.0L467.9,132.2L479.0,132.4L491.4,132.5L490.3,136.0L486.8,139.3L488.5,143.8L492.6,146.2L493.1,157.3L493.1,163.4L492.9,190.3L491.6,195.1L492.7,198.6L491.7,202.7L490.4,207.1L491.8,211.0L493.0,214.4L489.7,212.9L486.8,210.1L483.8,207.9L479.7,206.6L476.3,205.3L471.6,205.7L467.7,206.8L463.9,206.1L458.2,202.9L450.7,201.5L439.2,201.1L429.8,200.7L416.5,200.1L403.8,199.5L389.0,198.4L380.2,197.8L362.1,196.3L362.7,189.3L365.8,151.9ZM368.7,352.7L382.9,353.7L394.7,354.4L404.8,355.0L417.0,355.6L425.3,356.0L423.3,402.3L427.2,405.0L430.9,407.1L435.2,405.2L438.4,408.2L440.0,411.5L445.1,412.6L450.7,413.2L453.7,414.7L458.5,414.1L461.4,417.0L464.0,420.5L466.9,418.5L471.4,419.0L473.9,421.4L477.1,419.2L477.9,423.6L480.3,421.1L482.7,418.2L485.4,420.5L489.3,419.8L492.3,422.6L496.3,423.3L498.7,420.9L504.0,421.3L508.5,418.9L513.6,420.4L517.6,418.7L520.8,420.5L522.8,423.3L526.0,424.6L529.7,426.2L532.9,427.9L536.3,426.7L539.4,440.3L539.9,464.8L542.6,467.1L544.4,469.9L544.5,475.1L547.0,477.8L548.3,481.8L550.2,485.8L550.9,489.8L549.1,494.3L547.9,497.7L546.7,502.6L547.6,506.2L547.0,511.5L544.6,515.4L545.2,519.3L539.1,520.5L529.7,524.9L526.9,527.3L529.0,524.7L526.0,523.1L527.6,519.6L522.9,520.5L521.7,524.0L523.7,527.4L520.9,530.7L518.0,533.4L521.3,531.7L523.9,529.3L520.9,532.6L516.5,536.4L513.5,539.3L507.2,542.5L500.7,545.9L496.1,548.2L492.6,550.8L487.5,554.5L482.1,559.0L479.6,561.9L477.7,564.8L475.2,569.2L473.3,573.2L471.6,579.6L472.0,588.0L473.0,592.2L475.1,599.6L475.9,604.8L475.0,600.9L474.1,597.1L471.5,593.6L471.1,587.9L471.0,582.9L471.9,574.9L473.2,571.3L475.7,566.9L477.0,563.5L479.3,561.0L481.4,557.5L484.1,555.3L488.0,553.2L491.5,551.7L486.4,552.4L483.9,554.5L481.1,556.8L476.5,556.5L479.2,558.7L475.8,563.7L472.5,562.4L473.0,566.4L471.8,573.5L469.3,576.1L470.0,583.5L469.5,587.7L469.9,592.4L472.9,599.8L473.4,604.7L476.1,607.9L471.7,608.5L467.9,609.3L465.3,606.1L460.8,605.3L456.1,604.8L451.8,604.0L447.9,601.0L442.9,599.9L440.2,597.3L436.3,596.6L433.9,593.5L432.5,590.3L431.2,585.9L428.6,583.1L427.8,578.5L426.8,574.9L427.2,570.5L425.2,567.8L421.3,564.6L419.2,561.9L416.9,558.2L415.2,554.6L412.3,552.3L409.9,548.2L408.7,544.7L406.8,540.9L405.2,536.2L403.9,531.5L401.5,527.9L398.6,525.3L396.4,523.0L392.4,520.9L390.3,517.4L388.3,514.5L383.4,514.6L378.9,513.7L374.6,513.1L371.5,511.1L367.1,513.1L363.0,514.9L361.3,518.3L359.9,521.7L358.0,524.9L355.5,527.9L353.2,531.0L348.8,529.8L345.0,526.8L341.0,525.2L336.0,522.3L333.5,520.2L331.5,517.7L328.2,515.7L325.8,513.2L324.1,508.8L323.0,505.0L323.3,500.1L321.2,496.2L319.9,490.5L317.9,487.6L315.1,485.7L310.4,482.8L307.6,479.3L306.0,476.2L303.5,473.9L300.6,470.7L298.0,468.5L295.1,464.8L293.4,460.9L290.1,458.5L288.0,455.5L312.5,455.6L330.3,457.3L346.5,458.7L359.6,459.7L361.4,435.0L361.9,429.8L362.9,418.3L363.4,413.5L365.7,382.5L366.5,373.6L367.7,357.0L368.0,352.6ZM366.0,149.0L362.7,189.1L362.1,196.3L358.1,243.9L344.3,242.7L328.6,241.2L319.9,240.3L315.7,239.7L295.1,237.3L285.3,236.1L270.1,234.1L261.5,232.9L252.5,231.6L240.8,229.9L235.0,228.9L236.4,220.0L237.2,215.6L238.8,205.3L241.0,191.6L245.1,166.3L246.7,155.3L247.5,149.9L248.5,143.6L249.3,137.9L254.4,135.4L260.7,136.6L265.5,137.1L270.7,137.9L282.2,139.5L296.0,141.5L314.8,143.8L324.3,145.0L334.9,146.2L344.2,147.0L359.2,148.4L366.0,149.0ZM890.3,178.5L898.5,176.8L902.8,175.8L906.7,174.9L919.0,172.0L921.0,178.8L922.7,186.0L920.7,188.5L917.7,190.2L913.6,192.2L908.8,193.2L904.9,194.8L901.5,198.0L897.6,200.0L894.7,203.2L891.5,201.6L895.1,197.9L892.9,193.0L891.8,187.1L890.3,178.5ZM504.9,259.9L515.6,260.0L525.8,260.0L535.8,259.8L544.1,259.4L560.6,258.7L570.4,258.0L576.8,257.5L579.9,261.0L582.6,262.8L581.2,266.2L581.7,271.1L582.7,275.0L584.2,278.2L587.0,280.8L590.1,284.1L595.2,287.8L596.9,291.4L597.8,295.4L600.3,297.9L602.7,295.7L608.2,298.1L606.6,301.2L606.0,305.9L604.6,309.4L605.9,314.5L609.1,316.9L611.6,319.0L615.4,320.8L618.2,322.9L621.0,324.9L623.2,331.9L622.8,336.6L624.6,340.3L628.6,341.7L630.0,346.3L628.5,351.1L624.8,353.3L623.3,356.4L622.0,359.7L620.5,363.5L607.4,366.5L609.9,362.9L612.0,359.7L611.2,356.0L587.4,355.5L565.5,356.5L556.0,356.8L541.0,357.2L526.7,357.4L526.6,345.5L526.5,339.7L526.3,321.7L526.1,306.3L526.0,294.7L522.9,292.7L520.5,289.2L518.0,286.4L518.3,281.8L521.1,279.2L518.5,276.2L514.2,275.0L511.1,272.7L509.9,267.9L506.8,264.1L504.8,261.2ZM746.3,294.2L751.1,292.9L751.9,289.2L751.8,284.4L753.5,279.9L756.8,281.4L759.2,277.9L759.2,273.2L761.8,269.8L765.6,269.0L768.4,266.3L770.3,263.7L772.9,261.2L773.2,256.9L774.1,252.6L774.4,247.1L774.7,242.0L773.0,238.1L778.9,257.8L786.8,256.5L797.5,254.7L799.5,266.8L801.8,264.1L804.8,261.0L808.0,259.6L810.3,254.8L814.0,256.2L817.3,254.2L820.6,251.1L824.1,252.7L827.5,254.5L829.9,256.8L829.4,263.1L823.6,259.8L818.7,257.0L818.3,262.2L816.6,268.0L814.6,271.4L812.4,275.3L808.6,277.0L807.4,282.7L802.7,284.4L799.1,281.8L798.4,287.1L797.2,290.4L795.5,293.6L793.9,298.5L791.3,303.4L790.8,308.1L788.7,311.9L783.5,314.0L781.0,316.0L777.5,317.2L772.7,316.5L770.4,318.8L767.4,320.7L763.8,319.1L761.8,315.8L758.0,313.4L755.4,311.3L753.1,308.7L750.3,306.3L748.3,302.5L746.9,299.1L746.3,294.2ZM582.6,262.8L583.4,257.5L587.6,255.5L588.5,251.3L590.3,247.3L589.2,243.8L587.6,240.4L589.2,237.3L593.4,236.6L596.5,234.7L600.1,232.9L601.0,228.6L603.0,225.2L602.5,220.2L598.6,218.1L596.7,214.1L593.7,212.3L610.5,210.4L625.8,209.6L637.8,208.6L642.9,208.2L642.6,212.8L645.0,217.2L647.1,221.8L648.6,225.1L649.7,231.6L651.9,256.1L652.3,261.1L652.8,267.1L653.5,275.5L654.2,282.6L652.6,287.1L654.1,291.2L656.0,296.1L654.1,299.6L652.2,303.7L650.6,308.7L648.2,313.5L647.4,317.5L647.9,321.7L646.8,325.8L644.8,328.8L640.8,330.8L641.6,335.1L639.8,338.3L636.1,336.7L632.9,335.3L629.5,338.1L628.6,341.7L625.9,339.9L622.8,336.6L623.2,331.9L621.2,328.7L619.7,324.5L616.6,321.5L612.6,320.9L610.4,317.9L607.4,316.2L604.7,313.5L605.7,307.9L607.3,303.8L608.1,299.3L605.6,296.5L601.5,295.8L597.0,293.7L596.6,289.6L591.2,285.2L588.5,282.5L586.0,279.7L584.1,276.4L582.7,273.1L581.1,267.7L582.1,263.2ZM257.0,328.9L271.8,330.9L287.2,332.8L297.3,334.0L309.9,335.5L330.0,337.5L344.6,338.9L356.0,339.8L369.6,340.8L368.9,350.3L367.7,357.0L366.5,373.6L365.7,382.5L363.4,413.5L362.9,418.3L362.2,426.8L361.4,435.0L359.6,459.7L346.5,458.7L330.3,457.3L312.5,455.6L288.8,453.1L289.8,457.9L274.8,456.7L256.6,454.4L255.2,465.1L238.5,462.8L246.4,405.1L247.2,399.9L248.9,387.5L251.5,368.7L252.3,363.3L257.0,328.9ZM526.7,357.4L541.0,357.2L556.0,356.8L565.5,356.5L587.4,355.5L611.0,354.2L612.6,359.5L609.8,362.4L607.4,366.5L619.6,365.6L620.5,369.5L617.3,372.0L616.2,375.4L614.4,380.2L612.5,382.9L614.6,386.6L612.0,389.4L610.3,393.2L607.2,395.1L606.7,399.2L606.0,404.2L603.7,406.7L600.8,409.7L600.0,414.1L596.6,415.2L597.4,419.2L595.9,422.6L594.1,425.4L596.1,428.5L597.1,433.0L595.3,436.2L580.6,439.3L569.7,439.6L558.6,439.9L552.5,440.0L539.4,440.3L539.1,427.8L534.0,427.1L530.9,425.5L530.5,412.5L530.5,404.0L530.6,395.7L530.7,390.3L530.7,383.8L529.5,375.8L528.2,366.9L527.2,360.1ZM61.3,377.3L64.1,379.2L66.1,381.9L62.8,380.6L61.3,377.3ZM58.7,387.6L62.5,393.6L59.4,390.8ZM39.8,357.2L43.9,359.6L40.3,358.4ZM33.2,357.3L37.0,358.5L33.2,357.3ZM14.7,153.5L24.0,156.4L29.2,157.8L34.3,159.2L41.2,161.2L49.2,163.4L61.2,167.0L68.1,168.9L80.0,172.1L85.6,173.5L78.2,202.3L74.2,218.0L72.1,225.8L69.6,235.1L67.7,242.8L74.6,253.2L80.2,261.7L83.4,266.4L88.3,273.9L94.6,283.3L97.7,288.0L104.2,297.8L120.4,322.2L132.8,340.8L136.5,346.5L144.5,358.4L144.7,362.7L146.2,365.7L147.0,370.9L149.2,374.8L148.4,378.9L144.7,380.1L141.3,383.9L141.0,389.4L139.1,393.1L136.6,395.5L134.9,401.6L136.5,404.6L138.0,407.9L136.1,411.3L102.7,408.0L84.6,405.8L83.0,402.2L84.0,397.4L83.8,391.3L81.5,385.6L79.6,382.8L77.3,379.5L74.9,377.4L72.5,373.8L68.0,373.1L67.0,367.3L63.3,364.0L57.9,362.4L54.8,360.4L53.0,355.8L50.2,352.5L46.5,350.5L42.6,349.7L38.9,347.5L35.0,346.3L31.2,343.7L30.9,339.4L30.7,334.4L32.7,329.5L29.1,326.5L30.1,321.9L26.7,317.4L24.6,314.1L23.2,309.6L22.3,305.7L20.6,301.7L17.7,297.5L17.3,291.6L18.4,288.1L22.2,285.0L21.1,280.6L15.9,278.0L14.3,275.0L14.7,269.1L13.7,264.8L15.0,261.6L17.5,258.6L17.2,263.4L19.8,266.9L20.9,263.0L18.7,259.7L18.2,255.0L21.4,252.4L17.3,253.1L16.5,257.8L13.7,255.2L11.4,252.3L9.7,248.9L9.9,244.0L9.0,240.3L6.2,236.6L4.9,232.4L2.5,228.3L3.1,224.3L2.8,218.0L3.8,213.9L5.4,210.4L5.8,204.8L3.6,199.4L2.1,196.2L0.0,192.4L0.5,188.0L3.1,184.4L7.3,180.0L9.6,176.1L11.2,171.6L13.4,167.0L13.7,161.6L12.5,158.2L14.5,154.8ZM862.8,241.9L864.5,239.1L869.0,238.6L866.5,243.5L867.7,247.2L871.1,250.1L873.0,255.7L875.4,258.6L878.1,260.9L881.1,263.8L882.5,268.6L875.7,270.1L870.9,271.0L863.2,243.6ZM843.1,265.2L845.2,268.3L843.1,265.2ZM492.9,190.3L505.2,190.3L524.4,190.2L535.4,190.0L549.1,189.6L556.2,189.4L570.0,188.9L582.5,188.3L584.6,192.6L583.6,197.0L584.4,201.0L586.2,206.3L591.3,208.1L593.6,210.6L595.2,213.5L597.6,216.6L601.7,219.4L603.1,222.7L602.7,227.5L600.5,230.3L598.1,234.6L594.9,236.2L590.0,237.5L587.6,240.4L589.2,243.8L590.3,247.3L588.5,251.3L587.6,255.5L583.4,257.5L583.4,262.5L579.9,261.0L577.6,258.2L570.4,258.0L560.6,258.7L548.1,259.3L535.8,259.8L525.8,260.0L515.6,260.0L504.9,259.9L502.7,256.6L504.1,252.4L502.8,248.6L502.3,244.5L501.9,238.9L499.3,236.1L499.5,230.8L498.4,226.8L496.0,223.2L494.2,218.5L493.0,214.4L491.8,211.0L489.8,207.7L491.3,204.1L492.8,200.7L491.1,196.9L491.7,192.8ZM629.3,341.4L630.0,336.7L635.1,336.0L638.5,337.4L642.2,336.4L640.2,333.3L641.9,329.8L647.9,328.2L646.2,323.7L648.3,320.3L650.3,317.1L654.9,317.9L658.6,316.0L663.1,317.8L666.2,316.4L669.5,313.9L672.3,315.8L676.1,314.6L677.1,310.7L682.0,312.1L686.6,311.2L687.4,306.4L690.4,304.2L693.2,299.8L693.4,294.0L696.9,293.0L701.8,291.4L705.1,288.8L702.6,284.8L704.8,282.2L708.7,282.9L713.0,284.1L715.1,287.2L718.4,289.6L722.7,290.3L726.2,292.0L728.5,289.9L732.3,291.0L735.9,289.8L739.7,287.1L741.1,290.8L745.1,292.8L746.5,296.1L746.9,300.2L749.1,304.1L751.3,306.5L754.3,311.3L757.6,312.7L754.6,321.0L750.9,323.2L748.3,325.5L746.1,329.2L744.6,332.3L741.8,334.4L738.7,336.7L734.8,338.2L732.0,340.6L726.4,341.1L721.1,341.8L716.0,342.3L710.4,342.7L702.0,343.2L691.8,344.4L682.4,344.8L678.1,345.6L667.8,346.4L661.6,347.0L653.9,347.8L649.8,347.1L650.4,351.4L641.2,352.0L632.7,352.7L627.0,352.9L628.8,349.6L628.8,344.8ZM797.5,254.7L817.0,251.1L832.0,248.3L841.6,246.3L849.1,244.8L862.8,241.9L870.5,269.6L875.7,270.1L882.5,268.6L881.9,276.7L874.5,281.6L870.6,284.3L869.6,280.1L867.9,276.4L864.1,278.0L861.4,275.4L859.2,272.7L860.4,269.1L864.2,270.1L861.2,267.9L857.8,266.1L859.5,262.0L856.8,264.5L857.2,260.1L859.7,257.9L857.5,254.2L860.8,251.0L860.5,246.4L858.7,249.7L855.8,252.0L854.2,256.0L855.6,260.8L854.1,264.7L854.8,269.1L856.4,273.5L859.0,276.0L861.2,280.9L857.5,281.8L854.4,280.0L851.1,277.9L847.2,276.3L844.2,279.0L842.7,274.6L844.0,271.4L847.0,265.4L844.1,263.5L840.4,264.5L836.2,263.1L834.0,259.0L829.8,258.1L827.5,254.5L825.2,252.1L820.6,251.1L817.8,252.9L816.3,256.2L811.5,256.0L808.5,258.4L804.8,261.0L802.6,264.0L800.1,266.6L797.5,254.7ZM687.7,123.1L692.8,124.6L687.7,123.1ZM672.3,131.1L672.9,127.2L674.5,130.6ZM661.4,224.0L664.7,220.5L666.5,215.0L668.3,211.8L669.6,206.8L669.7,202.0L669.4,196.9L667.8,190.9L665.1,186.4L663.2,181.8L661.9,178.5L663.3,175.3L662.4,171.0L663.8,164.2L664.8,159.3L664.2,154.3L666.9,152.2L667.3,148.0L671.0,146.7L673.0,141.8L673.6,145.9L674.5,150.7L675.7,145.6L675.3,150.8L677.9,146.4L677.4,140.3L678.9,137.1L682.4,135.6L680.8,130.7L683.3,127.2L685.9,125.0L689.7,126.7L695.5,127.6L697.5,130.2L702.9,131.8L706.5,132.9L710.3,134.4L713.0,139.9L710.4,142.2L713.0,144.5L713.8,148.7L713.8,153.7L712.8,157.9L710.7,161.0L709.2,164.1L706.1,166.3L705.4,171.4L708.4,173.6L712.5,171.5L713.8,167.1L716.4,164.6L719.7,163.4L724.2,162.3L726.5,165.3L728.9,172.1L730.4,175.5L731.4,180.5L733.8,185.4L733.5,190.4L733.4,195.1L731.0,197.6L729.7,193.8L727.7,197.9L726.9,202.4L724.2,205.3L723.8,209.4L722.0,212.8L720.2,216.1L714.9,218.9L704.5,220.6L696.8,221.8L691.2,220.9L679.5,222.2L667.1,223.5L661.4,224.0ZM608.7,82.9L615.0,78.2L617.7,76.1L621.3,74.6L619.1,77.2L614.9,80.4L610.8,83.9ZM591.9,114.9L595.9,112.8L599.8,110.3L603.6,107.9L610.3,105.8L613.2,103.5L615.6,101.1L619.4,97.5L622.3,94.5L626.6,91.4L632.7,90.5L630.3,92.8L627.4,97.1L625.4,100.0L623.8,103.0L623.3,107.5L626.6,103.9L632.2,103.9L635.2,105.6L637.7,107.7L640.1,110.4L643.5,112.9L647.3,111.5L650.8,113.4L653.2,110.2L658.1,109.3L661.3,106.8L665.4,105.9L670.2,105.8L675.3,103.3L680.3,102.4L679.4,106.9L681.7,109.4L685.5,108.4L690.3,107.4L694.3,106.4L695.0,111.4L693.3,114.9L696.4,116.4L700.0,118.4L703.7,115.3L706.6,117.8L701.9,119.6L696.1,119.3L692.0,120.9L688.7,118.9L686.0,121.3L681.3,120.3L676.2,119.1L671.6,120.9L668.3,122.5L664.1,123.3L660.1,125.1L658.6,128.7L656.4,131.2L656.9,126.7L652.7,127.1L650.4,131.1L648.9,127.8L646.7,132.2L644.7,138.0L642.7,141.8L640.6,145.6L639.0,141.6L635.7,139.9L636.6,136.1L636.1,132.0L632.8,130.3L630.9,127.4L626.1,126.2L621.5,126.6L614.2,123.6L597.0,120.1L595.2,116.2L591.9,114.9ZM596.1,438.6L597.5,434.9L596.2,431.7L597.7,428.4L594.1,425.4L595.4,421.9L598.6,419.7L596.5,415.8L600.0,414.1L601.7,410.7L602.8,407.2L606.0,404.2L605.3,399.6L606.5,395.1L610.3,393.2L625.9,389.3L636.7,388.5L650.6,387.4L652.6,397.1L652.3,410.4L651.7,436.8L651.4,455.7L651.2,461.5L653.2,477.2L654.3,485.8L655.1,493.1L655.7,497.5L652.0,498.8L647.2,497.8L641.7,498.7L637.5,500.5L634.6,503.5L630.7,501.5L629.3,497.5L626.6,494.9L625.9,490.2L627.3,486.7L615.1,485.4L605.4,485.9L589.0,486.8L589.8,482.6L591.3,479.1L590.7,474.2L593.1,471.8L595.5,468.7L597.1,464.5L598.7,461.6L600.3,458.6L601.6,455.4L600.2,451.6L599.3,447.0L596.4,444.7L598.1,441.3L596.1,438.6ZM187.5,27.2L200.5,30.0L213.3,32.5L223.9,34.6L234.4,36.5L253.8,39.9L265.5,41.9L278.5,43.8L296.8,46.5L304.7,47.5L321.1,49.6L333.8,51.1L341.9,52.0L358.4,53.6L364.8,54.2L374.2,55.0L373.0,69.3L368.2,126.7L367.8,131.3L366.3,149.0L359.2,148.4L344.2,147.0L336.3,146.2L324.3,145.0L315.7,144.0L296.0,141.5L282.9,139.7L270.7,137.9L265.5,137.1L261.4,136.6L255.6,135.9L249.9,134.8L248.5,143.6L246.9,146.5L244.4,140.5L240.6,143.0L235.3,144.2L232.0,142.7L227.8,141.5L225.7,144.0L221.3,142.4L218.3,144.4L215.4,142.1L215.3,136.6L213.0,132.7L209.7,131.1L210.6,126.6L208.8,123.1L207.1,119.4L207.5,114.9L205.7,112.1L201.7,112.9L197.8,114.5L194.9,111.5L196.5,108.2L198.5,105.2L198.1,100.3L199.6,96.0L201.8,91.5L203.4,87.8L199.9,86.3L198.0,83.6L195.2,81.5L194.2,77.3L192.6,74.1L190.5,71.3L187.4,67.9L185.0,64.5L186.3,60.7L185.4,56.6L182.5,50.7L183.6,45.2L187.5,27.2ZM906.0,101.8L906.5,97.0L910.5,94.9L915.8,108.0L921.0,124.8L923.4,132.7L924.4,137.1L928.3,139.9L931.0,143.2L930.2,147.1L926.9,149.3L925.1,152.8L915.9,156.0L903.8,158.6L901.4,156.1L902.3,152.0L901.0,146.2L900.7,140.8L900.7,135.6L901.6,131.2L902.5,126.8L901.7,122.0L903.4,118.9L906.2,116.6L907.2,112.8L905.5,108.5L906.7,104.2ZM888.0,213.2L886.2,217.5L888.0,213.2ZM782.1,195.6L786.8,191.3L789.9,187.8L792.5,184.6L794.5,182.0L794.0,177.6L791.6,174.6L790.0,170.4L793.5,168.2L796.7,166.6L801.1,165.3L805.5,164.5L810.9,164.4L815.0,165.9L820.1,164.0L824.0,163.4L827.9,161.7L830.1,158.7L833.2,155.5L836.5,153.5L835.0,148.2L834.5,144.2L831.1,141.8L833.9,137.8L836.0,134.8L838.6,132.2L841.0,127.1L845.1,121.2L848.5,117.9L851.9,115.0L860.0,113.7L869.3,111.3L876.1,109.5L876.5,113.6L877.5,117.6L879.6,121.1L880.8,126.3L880.0,130.5L881.0,134.6L882.9,138.1L882.6,142.6L887.4,149.6L889.1,158.1L890.2,161.5L889.9,169.4L889.7,177.8L891.8,187.1L892.9,193.0L895.1,197.9L891.5,201.6L893.1,204.9L891.4,207.8L894.1,206.0L898.0,204.4L902.4,203.1L908.6,200.7L911.7,199.1L913.6,196.5L916.0,194.1L918.1,196.7L922.0,195.3L915.8,201.3L913.0,203.4L908.4,206.5L905.5,208.8L901.4,211.0L897.3,212.9L893.5,213.6L889.4,215.0L888.4,210.5L889.2,205.0L879.7,201.7L873.4,199.5L869.5,198.3L865.6,195.2L864.2,191.4L861.0,189.8L858.7,187.1L852.1,188.5L841.8,190.7L834.9,192.1L828.5,193.4L813.5,196.4L803.2,198.3L798.5,199.2L783.2,201.9L782.1,195.6ZM696.8,221.8L704.5,220.6L714.9,218.9L720.2,217.9L725.1,219.8L728.7,221.5L733.7,220.7L735.8,223.2L740.7,222.4L746.1,219.6L750.9,219.5L754.1,216.0L757.8,211.9L762.2,208.9L765.4,207.3L769.2,205.3L775.4,236.2L774.7,240.5L775.1,245.3L774.1,249.4L774.0,254.1L772.6,258.0L770.3,263.7L768.4,266.3L765.6,269.0L761.8,269.8L759.8,272.8L758.2,276.6L759.3,280.2L755.4,279.1L752.8,281.8L752.8,286.5L751.2,289.8L749.7,293.3L745.1,292.8L741.1,290.8L739.7,287.1L737.0,288.9L733.5,291.2L729.6,290.4L726.2,292.0L722.7,290.3L718.4,289.6L715.1,287.2L713.0,284.1L710.0,282.2L706.4,283.2L703.2,278.4L702.7,272.8L701.6,263.8L700.8,254.8L697.4,226.7L696.8,221.8ZM54.8,59.8L56.8,63.2L61.1,63.5L63.8,66.8L64.1,71.1L63.8,75.4L67.2,80.2L70.4,82.0L76.8,81.0L81.5,81.1L85.1,82.4L88.1,85.3L92.9,85.7L96.7,85.0L99.8,86.3L104.4,86.7L108.9,85.5L113.8,86.0L120.9,85.7L125.6,85.4L134.9,87.7L149.3,91.1L158.8,93.3L160.3,98.0L163.6,100.7L162.2,105.9L159.1,109.9L157.4,113.8L154.8,116.1L153.8,119.5L150.2,121.8L148.0,125.3L145.7,128.5L146.8,132.3L149.6,135.4L147.7,138.2L146.7,142.3L136.1,185.6L126.0,183.3L109.3,179.5L99.0,176.9L85.6,173.5L80.0,172.1L68.1,168.9L61.2,167.0L51.9,164.2L43.5,161.7L34.3,159.2L29.2,157.8L24.6,156.4L14.7,153.5L13.2,149.2L13.5,144.8L15.8,139.6L14.9,135.1L16.4,131.0L18.5,127.9L20.8,123.6L24.5,119.0L26.5,115.5L29.1,110.2L30.8,105.9L32.2,102.3L33.9,98.5L35.7,93.6L37.2,89.4L39.3,85.2L41.6,80.0L42.8,75.2L44.5,71.5L45.4,67.4L47.4,62.2L50.7,60.1ZM619.6,365.6L621.9,362.6L619.8,360.0L623.0,357.2L624.8,353.3L632.7,352.7L641.2,352.0L650.4,351.4L649.8,347.1L653.9,347.8L661.6,347.0L667.8,346.4L677.6,345.2L682.4,344.8L688.0,344.6L698.3,343.9L706.9,342.8L716.0,342.3L721.1,341.8L726.4,341.1L732.0,340.6L739.7,339.2L750.5,337.8L754.6,337.2L764.7,335.8L770.0,334.5L769.3,338.4L767.5,341.3L764.6,347.0L760.5,347.6L757.0,351.1L751.5,351.9L748.7,354.2L747.7,358.0L744.2,359.5L741.3,361.6L739.0,364.1L733.6,365.0L731.2,367.4L729.2,370.7L726.5,373.6L724.9,379.9L712.3,381.4L703.0,382.6L696.1,383.2L685.2,384.3L676.3,385.2L665.2,385.9L660.9,386.3L650.6,387.1L636.7,388.5L625.9,389.3L610.2,390.3L612.5,387.3L614.3,384.5L613.0,380.1L614.6,376.6L617.9,374.4L619.0,370.3L621.2,367.3ZM187.2,196.4L190.9,197.2L207.1,200.0L219.0,202.0L231.4,204.1L238.8,205.3L237.2,215.6L236.4,220.0L235.0,228.9L240.8,229.9L249.2,231.2L261.5,232.9L270.1,234.1L268.6,245.0L263.1,283.7L262.4,288.1L260.9,298.6L258.8,316.3L257.0,328.9L246.2,327.4L230.6,325.1L219.6,323.2L213.1,322.2L192.4,318.7L177.7,316.1L164.5,313.6L167.9,295.8L169.0,290.1L170.8,280.6L172.1,274.2L178.6,240.7L181.6,225.0L182.7,219.7L187.2,196.4ZM874.0,282.8L881.3,279.3L880.1,283.3L877.4,285.8L876.8,290.1L876.2,294.2L875.5,298.3L874.0,303.2L870.9,300.4L870.9,295.8L871.7,290.2L873.3,286.5ZM760.8,313.5L762.2,317.6L765.9,319.4L770.4,319.5L772.7,316.5L775.6,318.6L779.8,316.3L781.6,313.0L785.9,312.1L791.6,309.4L790.9,305.0L792.3,300.9L794.9,297.2L795.8,292.4L797.9,289.9L799.0,285.7L801.3,282.4L805.9,285.0L807.9,279.8L809.4,275.1L813.2,272.4L815.8,269.3L817.8,265.9L819.4,259.7L829.4,263.1L830.5,258.3L835.6,259.5L838.5,263.0L842.3,264.6L845.2,268.3L844.3,272.3L841.7,276.3L843.2,279.9L846.3,278.4L849.0,280.6L853.4,282.0L857.5,283.2L860.4,285.3L864.0,286.4L863.4,290.7L860.2,293.3L858.3,290.6L853.6,287.7L856.5,290.7L858.8,293.1L862.3,294.3L865.5,296.1L866.1,300.1L863.1,298.5L864.9,301.3L866.7,304.5L865.0,308.7L861.9,306.6L859.7,303.7L854.2,304.5L858.3,305.7L860.5,307.9L864.0,309.3L868.0,308.2L872.4,308.1L875.7,313.2L877.4,316.3L868.0,318.3L860.1,320.0L851.0,321.9L833.5,325.3L828.6,326.3L810.0,329.7L798.7,331.6L787.8,332.9L778.9,334.1L769.6,335.2L764.9,335.2L754.6,337.2L750.5,337.8L740.0,339.3L734.4,339.9L738.7,336.7L741.8,334.4L744.6,332.3L746.1,329.2L748.3,325.5L750.9,323.2L754.6,321.0L760.8,313.5ZM78.0,39.6L79.8,36.3L79.1,40.2ZM79.9,18.8L82.2,16.4L82.4,22.3L84.7,24.9L81.1,24.0L79.9,18.8ZM75.7,8.6L78.8,10.4L80.9,7.2L82.1,11.3L79.6,14.1L76.0,10.7ZM172.4,24.0L171.1,29.6L169.1,38.3L167.8,43.9L164.6,57.7L158.9,83.4L159.1,88.5L158.8,93.3L149.3,91.1L134.9,87.7L125.6,85.4L121.8,86.2L117.0,85.6L111.6,85.6L107.0,86.0L101.1,86.5L97.7,84.5L93.7,85.2L88.9,85.5L86.2,82.4L81.5,81.1L77.7,80.3L73.2,81.8L68.8,80.7L64.8,78.7L63.7,73.5L63.8,68.1L61.1,63.5L56.8,63.2L54.8,59.8L51.5,58.4L48.3,56.6L48.4,52.1L50.9,49.3L49.8,45.1L54.6,42.7L52.6,40.1L49.4,41.7L50.8,37.0L50.2,31.4L51.0,27.2L51.3,22.3L50.1,18.9L49.4,13.6L51.9,7.9L55.5,10.1L59.5,13.0L64.0,15.9L67.8,17.5L71.9,19.2L74.8,20.9L76.8,23.6L79.5,20.8L79.6,26.6L76.3,30.6L72.8,31.8L69.7,34.7L72.3,37.2L72.7,32.5L76.6,31.4L80.6,28.1L80.0,33.0L78.7,37.1L77.1,40.1L74.6,42.7L73.8,38.7L71.6,42.4L74.0,44.7L76.7,42.0L81.1,40.7L81.1,35.1L82.8,31.9L85.2,27.2L85.9,21.6L84.8,16.9L82.7,14.5L86.2,12.4L87.6,8.3L85.0,6.3L84.0,2.2L95.1,4.3L100.4,5.9L108.3,8.0L116.1,10.1L126.5,12.8L135.7,15.2L144.8,17.4L154.5,19.8L172.4,24.0ZM585.5,110.1L588.2,107.9L585.6,110.9ZM565.7,113.0L571.7,112.0L576.5,109.8L579.7,108.4L583.2,106.8L585.3,109.2L583.7,113.1L589.1,114.3L592.3,115.7L597.0,119.5L614.2,123.6L619.5,126.1L624.0,125.7L627.6,127.0L631.0,128.4L633.4,131.1L636.6,132.8L636.5,137.8L639.3,139.9L638.3,144.0L641.0,146.2L638.4,149.5L636.9,152.7L635.2,155.7L635.8,160.1L638.3,157.4L641.2,152.3L644.9,151.3L646.5,146.1L648.6,143.3L650.8,140.7L650.0,145.5L648.0,148.6L646.2,152.9L645.1,157.0L643.4,164.5L642.2,169.7L641.1,175.2L642.0,179.9L640.7,185.2L639.4,190.7L640.5,194.7L641.2,198.8L642.7,203.1L642.9,208.2L637.8,208.6L628.3,209.3L613.7,210.3L596.4,211.2L592.3,208.4L588.3,207.5L585.2,202.8L583.8,199.2L585.5,194.1L582.9,191.9L581.9,187.2L581.7,181.8L579.1,177.6L575.7,176.1L573.2,173.7L570.1,170.4L567.3,167.5L563.4,165.9L558.9,163.9L555.6,160.5L554.7,156.1L555.0,151.2L554.7,146.9L556.4,143.2L554.2,140.3L552.6,136.7L554.9,132.6L558.0,130.3L561.1,128.3L561.2,114.2L564.4,112.0ZM362.1,196.3L380.2,197.8L389.0,198.4L400.0,199.2L416.5,200.1L429.8,200.7L439.2,201.1L450.7,201.5L457.6,201.7L461.7,204.8L465.8,207.5L468.3,205.3L472.7,205.4L477.2,205.5L480.8,207.0L484.3,208.9L488.1,210.1L490.1,214.0L494.1,215.4L495.1,220.6L495.9,224.9L498.2,228.1L499.4,231.8L499.1,237.3L501.9,241.3L503.5,245.8L503.2,250.1L503.7,255.1L505.2,259.3L506.8,263.3L508.7,266.9L511.6,271.0L504.6,273.8L495.3,273.8L478.3,273.7L460.3,273.3L449.8,273.0L432.2,272.5L415.2,271.7L408.5,271.3L391.9,270.3L393.5,246.5L384.6,245.9L376.0,245.3L358.1,243.9L362.1,196.3ZM748.0,376.6L753.9,373.7L758.1,371.4L760.9,369.6L775.8,368.4L783.0,367.6L787.1,368.4L792.5,371.5L804.9,372.5L809.9,371.8L814.1,371.1L821.2,376.2L823.7,378.1L832.2,384.2L839.8,389.6L836.6,391.4L833.0,396.0L830.9,400.2L830.0,405.9L827.8,410.3L825.2,412.9L822.8,416.0L819.0,419.9L817.0,423.0L813.4,426.1L810.6,428.0L808.8,432.0L805.5,434.2L802.7,438.2L798.3,439.5L795.4,436.1L793.6,431.8L790.0,428.9L788.6,425.2L786.9,421.7L784.6,418.5L780.6,416.8L778.1,414.6L776.3,411.9L773.2,407.7L769.9,405.7L766.4,402.1L762.7,400.1L759.9,397.4L757.6,394.4L755.3,390.9L751.7,388.9L748.1,386.1L744.6,384.8L746.0,379.8L748.0,376.6ZM158.8,93.3L159.6,89.4L158.3,84.3L164.5,58.8L167.8,43.9L169.1,38.3L171.1,29.6L172.4,24.0L181.9,26.0L187.5,27.2L184.2,43.1L182.5,50.7L184.1,54.2L185.6,57.6L185.2,61.8L187.3,66.8L190.4,69.7L191.8,72.8L193.3,75.9L195.1,78.7L197.0,83.0L198.8,86.2L203.5,86.6L202.3,90.2L200.3,95.0L198.3,97.5L199.1,102.2L197.0,104.9L196.2,109.1L196.9,113.1L201.7,112.9L204.1,110.1L207.2,112.8L207.1,117.5L208.8,123.1L210.6,126.6L209.7,131.1L213.0,132.7L215.3,136.6L215.4,142.1L217.7,144.8L220.4,141.7L223.8,143.3L227.2,142.1L232.0,142.7L235.3,144.2L239.4,143.6L241.8,141.2L245.7,143.2L248.0,147.1L246.7,155.3L245.1,165.7L241.5,188.3L238.8,205.3L231.4,204.1L219.3,202.2L207.1,200.0L190.9,197.2L187.2,196.4L179.9,194.9L174.1,193.6L170.2,193.0L165.4,192.0L147.4,188.2L136.1,185.6L145.6,143.6L148.0,139.8L149.5,136.0L146.8,132.3L145.1,129.1L147.1,126.4L148.9,123.4L152.3,121.2L154.6,118.3L156.4,114.4L158.3,111.6L161.2,107.3L164.0,104.0L162.8,99.5L159.7,96.3ZM85.6,173.5L99.0,176.9L107.7,179.1L126.0,183.3L136.1,185.6L147.4,188.2L165.4,192.0L170.2,193.0L174.1,193.6L179.9,194.9L187.2,196.4L182.7,219.7L181.6,225.0L179.2,237.7L172.1,274.2L170.8,280.6L169.7,286.6L168.0,295.6L164.5,313.6L162.8,322.4L161.9,327.9L160.9,332.5L158.2,336.2L155.6,334.2L152.1,332.4L147.3,332.4L147.4,337.0L146.4,341.4L145.9,346.5L146.5,353.9L144.5,358.4L136.5,346.5L132.8,340.8L120.4,322.2L104.2,297.8L97.7,288.0L94.6,283.3L88.3,273.9L83.4,266.4L80.2,261.7L74.6,253.2L69.0,244.8L68.9,237.6L72.0,226.1L74.2,218.0L78.1,203.0L85.6,173.5ZM876.1,109.5L880.2,108.4L886.9,106.7L892.9,105.5L906.0,101.8L906.1,107.2L907.5,110.9L906.8,115.6L904.8,118.3L901.5,120.0L902.6,124.4L902.4,129.6L901.0,134.6L900.1,138.7L900.8,143.7L901.5,149.0L902.1,153.0L902.6,158.0L890.2,161.5L889.1,158.1L887.4,149.6L885.8,142.7L882.5,140.3L881.9,135.8L880.6,132.6L879.9,128.6L879.8,124.2L878.0,119.6L877.2,115.8L876.7,111.6ZM646.4,505.8L647.9,510.6L646.4,505.8ZM636.9,506.3L639.9,503.7L638.4,506.9ZM582.7,520.5L587.9,520.7L582.4,520.9ZM539.4,440.3L552.5,440.0L558.6,439.9L569.7,439.6L580.6,439.3L596.1,438.6L598.1,441.3L596.4,444.7L597.5,448.6L600.3,450.7L602.0,454.2L599.6,456.6L597.1,459.4L598.7,462.6L595.5,466.2L593.0,469.6L590.7,472.1L591.9,477.2L589.9,480.5L590.4,485.1L605.4,485.9L615.1,485.4L627.1,484.6L626.3,489.7L626.6,494.9L629.3,497.5L630.7,501.5L630.0,505.6L626.5,508.3L629.0,510.5L632.3,508.4L635.4,506.7L637.7,509.5L636.5,512.8L635.1,516.1L631.0,516.6L633.2,520.0L635.7,522.2L640.3,523.9L643.1,526.3L642.6,530.4L638.3,532.2L639.1,528.5L635.4,526.5L632.1,524.9L627.9,524.5L623.6,528.0L620.4,530.6L618.4,526.4L613.7,525.7L611.5,529.1L608.2,532.3L604.9,529.2L599.5,528.4L599.4,523.5L596.4,521.7L592.2,519.1L588.3,516.5L585.1,514.6L581.6,516.3L582.7,519.9L578.0,521.9L570.4,521.1L563.5,518.4L558.7,517.1L552.6,517.3L548.3,517.9L545.2,519.3L543.4,516.3L545.5,513.9L547.8,510.4L547.5,505.1L547.2,499.6L548.9,495.8L550.3,492.3L550.0,488.0L550.5,483.7L547.4,480.8L546.0,477.1L544.1,474.0L543.3,468.8L540.4,465.0L539.4,440.3ZM931.4,177.3L933.8,181.1L930.9,178.8L930.3,183.2L930.6,178.5ZM922.2,188.5L921.8,181.8L919.7,174.5L926.1,170.2L927.9,174.5L930.7,176.6L927.0,178.2L928.5,181.6L927.6,185.7L924.6,187.6Z"/>
+        <path class="route" id="route" d=""/>
+        <g id="pins"></g>
+        <g id="heatlabels"></g>
+      </svg>
+    </div>
+    <div class="mapfoot">
+      <span class="lg pinlg"><i class="dot up"></i>Upcoming</span>
+      <span class="lg pinlg"><i class="dot pastpin"></i>Past</span>
+      <span class="lg heatlg"><i class="ramp"></i>Fewer → more events</span>
+      <span class="lg" id="topmkt"></span>
+      <span class="lg" id="sync-note"></span>
+      <span class="lg" id="unplotted"></span>
+      <span class="readpin" id="readpin">No pin selected.</span>
+    </div>
+  </section>
+
+
+  <section class="analysis" id="analysis" aria-label="Pattern analysis">
+    <h3>Pattern Analysis</h3>
+    <p class="an-q" id="an-q"></p>
+    <div class="an-grid">
+      <div class="an-block"><h4>Cadence — days between events</h4><div id="an-cad"></div></div>
+      <div class="an-block"><h4>Market share — 95% interval</h4><div id="an-mkt"></div></div>
+    </div>
+    <div class="an-block" style="margin-top:18px"><h4>Seasonality — events by month</h4>
+      <div class="months" id="an-mo"></div></div>
+    <p class="an-foot">Descriptive only: this reads the entries you've logged, and describes
+      what has already been announced. It doesn't forecast where the subject will be.</p>
+  </section>
+
+  <div class="bar scoperow">
+    <span class="rowlab">Window</span>
+    <button class="tab" data-s="all" aria-pressed="true">All time</button>
+    <button class="tab" data-s="upcoming" aria-pressed="false">Upcoming</button>
+    <button class="tab" data-s="past" aria-pressed="false">Previous</button>
+  </div>
+
+  <div class="bar">
+    <span class="rowlab">Type</span>
+    <button class="tab" data-f="all" aria-pressed="true">All</button>
+    <button class="tab" data-f="standup" aria-pressed="false">Stand-up</button>
+    <button class="tab" data-f="broadcast" aria-pressed="false">Broadcast</button>
+    <button class="tab" data-f="podcast" aria-pressed="false">Podcast</button>
+    <span class="spacer"></span>
+    <button class="filebtn" id="open-form">+ Log an appearance</button>
+    <button class="tab" id="open-import">Import</button>
+  </div>
+
+  <div class="panel hidden" id="import-panel">
+    <h3>Import a list</h3>
+    <p class="hint">One per line: <code>date | what it is | city | type</code>. Type is optional
+      (standup, broadcast, podcast). Or just paste raw lines — anything with a readable date
+      ("Aug. 15, 2026", "8/15/2026", "2026-08-15") gets picked up, and a known city is matched
+      out of the text.</p>
+    <textarea id="imp-text" rows="6" spellcheck="false"
+      placeholder="2026-09-12 | Stand-up — Beacon Theatre | New York NY | standup
+2026-09-26 | UFC 331 — main card | Las Vegas NV | broadcast"></textarea>
+    <div class="err" id="imp-err"></div>
+    <div class="actions">
+      <button class="mini" id="do-import">Add entries</button>
+      <button class="mini ghost" id="load-demo">Load demo set</button>
+      <button class="mini ghost" id="clear-demo">Remove demo data</button>
+      <button class="mini ghost" id="export">Export</button>
+      <button class="mini ghost" id="clear-all">Clear everything</button>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="form-panel">
+    <h3>Log an appearance</h3>
+    <p class="hint">For dates that have been publicly announced — a ticket link, a fight card, a posted episode.</p>
+    <div class="field">
+      <label for="f-title">What is it</label>
+      <input type="text" id="f-title" placeholder="e.g. Stand-up — Comedy Mothership">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="f-date">Date</label>
+        <input type="date" id="f-date">
+      </div>
+      <div class="field">
+        <label for="f-type">Category</label>
+        <select id="f-type">
+          <option value="standup">Stand-up</option>
+          <option value="broadcast">Broadcast</option>
+          <option value="podcast">Podcast</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-loc">Where</label>
+      <input type="text" id="f-loc" placeholder="Venue, city">
+    </div>
+    <div class="field">
+      <label for="f-vid">Clip link <span style="text-transform:none;letter-spacing:0">— YouTube, TikTok or Vimeo</span></label>
+      <input type="text" id="f-vid" placeholder="https://youtu.be/…" spellcheck="false">
+    </div>
+    <div class="field">
+      <label for="f-note">Notes</label>
+      <textarea id="f-note" placeholder="Source, ticket link, who's on the card…"></textarea>
+    </div>
+    <div class="err" id="f-err"></div>
+    <div class="actions">
+      <button class="mini" id="save-entry">Save to file</button>
+      <button class="mini ghost" id="cancel-entry">Cancel</button>
+    </div>
+  </div>
+
+  <main id="feed"><div class="empty"><strong>Opening file…</strong>Reading from the cabinet.</div></main>
+
+  <section class="panel discuss" id="discuss">
+    <h3>Open Discussion</h3>
+    <div id="discuss-slot"></div>
+  </section>
+
+  <footer>
+    <b>Unofficial fan project.</b> Not affiliated with or endorsed by Joe Rogan, JRE, or the UFC.
+    All entries come from publicly announced schedules. Nothing here reports a real-time location.<br><br>
+    Private notes attached to an event are stored in your own browser only — they are not published
+    and nobody else sees them. <b>Fan Posts, their comments, and likes are different: they are public</b>,
+    stored off-device, visible to every visitor, attributed to whatever display name the poster typed in,
+    and not reviewed before they appear.<br><br>
+    Entries badged <i>Unconfirmed</i> are real scheduled events whose attendance is unverified;
+    entries badged <i>Demo</i> are generated placeholders, not real dates.<br><br>
+    <span id="store-note"></span>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ── Public discussion ────────────────────────────────────────────────────────
+// Off by default. giscus backs comments with GitHub Discussions: no server to run,
+// and moderation, blocking and reporting come from GitHub rather than being your
+// problem to build. Fill these in from https://giscus.app and set provider:'giscus'.
+const DISCUSSION={
+  provider:null,            // 'giscus' to switch on
+  repo:'',                  // 'you/your-repo'
+  repoId:'',
+  category:'General',
+  categoryId:''
+};
+// ─────────────────────────────────────────────────────────────────────────────
+// ── Fan Posts ────────────────────────────────────────────────────────────────
+// Off by default (SUPABASE.url/anonKey empty). Fan posts are real cross-user
+// content — a clip link + caption, optionally likes and comments — so unlike
+// everything else in this file they need somewhere every visitor can read from
+// and a signed-in visitor can write to. That's a real backend (Supabase:
+// Postgres + auth + a public REST API), which means moderation and abuse
+// handling are now this site owner's problem, not something offloaded the way
+// giscus/GitHub Discussions offloads it above. Chosen anyway because it allows
+// low-friction posting (email sign-in, no GitHub account required).
+//
+// The anon key below is meant to be public — Supabase enforces access with
+// Row Level Security, not by keeping the key secret. Set up a free project at
+// supabase.com, then run this once in its SQL editor before filling in the
+// values below and going live:
+//
+//   create table posts (
+//     id uuid primary key default gen_random_uuid(),
+//     author_id uuid references auth.users not null,
+//     author_label text not null check (char_length(author_label) <= 40),
+//     caption text not null check (char_length(caption) <= 500),
+//     video_kind text not null check (video_kind in ('yt','tt','vm')),
+//     video_id text not null check (video_id ~ '^[A-Za-z0-9_-]+$'),
+//     event_id text,
+//     created_at timestamptz not null default now()
+//   );
+//   create table comments (
+//     id uuid primary key default gen_random_uuid(),
+//     post_id uuid references posts(id) on delete cascade not null,
+//     author_id uuid references auth.users not null,
+//     author_label text not null check (char_length(author_label) <= 40),
+//     body text not null check (char_length(body) <= 500),
+//     created_at timestamptz not null default now()
+//   );
+//   create table likes (
+//     post_id uuid references posts(id) on delete cascade not null,
+//     user_id uuid references auth.users not null,
+//     created_at timestamptz not null default now(),
+//     primary key (post_id, user_id)
+//   );
+//   alter table posts enable row level security;
+//   alter table comments enable row level security;
+//   alter table likes enable row level security;
+//   create policy "public read posts" on posts for select using (true);
+//   create policy "auth insert posts" on posts for insert with check (auth.uid() = author_id);
+//   create policy "own update posts" on posts for update using (auth.uid() = author_id);
+//   create policy "own delete posts" on posts for delete using (auth.uid() = author_id);
+//   create policy "public read comments" on comments for select using (true);
+//   create policy "auth insert comments" on comments for insert with check (auth.uid() = author_id);
+//   create policy "own delete comments" on comments for delete using (auth.uid() = author_id);
+//   create policy "public read likes" on likes for select using (true);
+//   create policy "auth insert likes" on likes for insert with check (auth.uid() = user_id);
+//   create policy "own delete likes" on likes for delete using (auth.uid() = user_id);
+//
+// The DB constraints above are defense in depth only — the page never trusts
+// a stored video_kind/video_id blindly when rendering, even though it wrote
+// them itself, because anyone can INSERT a row straight through Supabase's
+// REST API using the (intentionally public) anon key below, bypassing this
+// page's JS entirely. Every row is re-validated the same way events.json feed
+// data is (see parseVideo0) before its clip link ever reaches an iframe.
+const SUPABASE={
+  url:'https://kjawxrqoqyuoujdwuclq.supabase.co',
+  anonKey:'sb_publishable_Ad4uusJCJjulFLYHtjh_7g_c3qwAZ_L'
+};
+// ─────────────────────────────────────────────────────────────────────────────
+const KEY='rogan-tracker-file';
+// window.storage only exists inside the Anthropic artifact host. When this file is
+// self-hosted, fall back to localStorage so a real deployment actually persists.
+const store=(()=>{
+  const host=(typeof window!=='undefined'&&window.storage&&typeof window.storage.get==='function')
+    ? window.storage : null;
+  if(host) return {kind:'host',get:k=>host.get(k),set:(k,v)=>host.set(k,v)};
+  let ls=null;
+  try{const t='__probe__';window.localStorage.setItem(t,'1');
+      window.localStorage.removeItem(t);ls=window.localStorage;}catch(e){}
+  if(ls) return {kind:'local',
+    get:async k=>{const v=ls.getItem(k);return v==null?null:{key:k,value:v};},
+    set:async(k,v)=>{ls.setItem(k,v);return{key:k,value:v};}};
+  const mem=Object.create(null);
+  return {kind:'memory',
+    get:async k=>(k in mem)?{key:k,value:mem[k]}:null,
+    set:async(k,v)=>{mem[k]=v;return{key:k,value:v};}};
+})();
+const SEED=[
+  {id:'u324',title:'UFC 324 — Gaethje vs. Pimblett',type:'broadcast',date:'2026-01-24',
+   loc:'T-Mobile Arena, Las Vegas NV',note:'Held. Gate $10.95M, attendance 19,481.',flag:'unconfirmed'},
+  {id:'u325',title:'UFC 325 — Volkanovski vs. Lopes 2',type:'broadcast',date:'2026-02-07',
+   loc:'Qudos Bank Arena, Sydney, Australia',note:'International card — outside the US map.',flag:'unconfirmed'},
+  {id:'u274',title:'UFC Fight Night — Sterling vs. Zalal',type:'broadcast',date:'2026-04-25',
+   loc:'Meta Apex, Las Vegas NV',note:'Held at the Apex (Enterprise NV).',flag:'unconfirmed'},
+  {id:'u328',title:'UFC 328 — Chimaev vs. Strickland',type:'broadcast',date:'2026-05-09',
+   loc:'Prudential Center, Newark NJ',note:'',flag:'unconfirmed'},
+  {id:'u276',title:'UFC Fight Night — Allen vs. Costa',type:'broadcast',date:'2026-05-16',
+   loc:'Meta Apex, Las Vegas NV',note:'',flag:'unconfirmed'},
+  {id:'u277',title:'UFC Fight Night 277',type:'broadcast',date:'2026-05-30',
+   loc:'Galaxy Arena, Macau, China',note:'International card.',flag:'unconfirmed'},
+  {id:'u278',title:'UFC Fight Night — Muhammad vs. Bonfim',type:'broadcast',date:'2026-06-06',
+   loc:'Meta Apex, Las Vegas NV',note:'',flag:'unconfirmed'},
+  {id:'u_dc',title:'UFC Freedom 250 — Topuria vs. Gaethje',type:'broadcast',date:'2026-06-14',
+   loc:'The White House, Washington DC',note:'',flag:'unconfirmed'},
+  {id:'u280',title:'UFC Fight Night 280',type:'broadcast',date:'2026-06-27',
+   loc:'National Gymnastics Arena, Baku, Azerbaijan',note:'International card.',flag:'unconfirmed'},
+  {id:'u_okc',title:'UFC Fight Night — du Plessis vs. Usman',type:'broadcast',date:'2026-07-18',
+   loc:'Paycom Center, Oklahoma City OK',note:'',flag:'unconfirmed'},
+  {id:'u282',title:'UFC Fight Night 282',type:'broadcast',date:'2026-07-25',
+   loc:'Etihad Arena, Abu Dhabi, UAE',note:'International card.',flag:'unconfirmed'},
+  {id:'u_gam',title:'UFC Fight Night — Gamrot vs. Salkilld',type:'broadcast',date:'2026-08-08',
+   loc:'Venue not listed',note:'Venue was still unannounced when logged.',flag:'unconfirmed'},
+  {id:'u330',title:'UFC 330 — Makhachev vs. Machado Garry',type:'broadcast',date:'2026-08-15',
+   loc:'Xfinity Mobile Arena, Philadelphia PA',note:'',flag:'unconfirmed'},
+  {id:'u_her',title:'UFC Fight Night — Hernandez vs. Rodrigues',type:'broadcast',date:'2026-08-22',
+   loc:'Venue not listed',note:'',flag:'unconfirmed'},
+  {id:'u_sha',title:'UFC Fight Night — Shanghai',type:'broadcast',date:'2026-08-29',
+   loc:'Oriental Sports Center, Shanghai, China',note:'International card.',flag:'unconfirmed'},
+  {id:'u331',title:'UFC 331',type:'broadcast',date:'2026-09-19',
+   loc:'Crypto.com Arena, Los Angeles CA',note:'Card was still being finalised as of late July.',flag:'unconfirmed'},
+  {id:'u333',title:'UFC 333 — Volkanovski vs. Evloev',type:'broadcast',date:'2026-10-24',
+   loc:'Etihad Arena, Abu Dhabi, UAE',note:'International card.',flag:'unconfirmed'}
+];
+const DEMO_CITIES=[
+  ['Austin TX',9],['Las Vegas NV',7],['Los Angeles CA',4],['New York NY',4],['Houston TX',3],
+  ['Dallas TX',3],['Phoenix AZ',3],['Nashville TN',3],['Denver CO',3],['Chicago IL',2],
+  ['Atlanta GA',2],['Seattle WA',2],['Boston MA',2],['Miami FL',2],['San Diego CA',2],
+  ['Kansas City MO',1],['Salt Lake City UT',1],['Minneapolis MN',1],['New Orleans LA',1],
+  ['Portland OR',1],['Charlotte NC',1],['Columbus OH',1]
+];
+function buildDemo(){
+  const out=[]; let i=0, seed=7;
+  const rnd=()=>{seed=(seed*1103515245+12345)%2147483648; return seed/2147483648;};
+  DEMO_CITIES.forEach(([city,n])=>{
+    for(let k=0;k<n;k++){
+      const type = rnd()<.5?'standup':(rnd()<.55?'broadcast':'podcast');
+      const off = Math.round(-430 + rnd()*560);
+      out.push({id:'d'+(i++),flag:'demo',type,date:addDays(off),loc:city,
+        title:(type==='standup'?'Stand-up — theater date':
+               type==='broadcast'?'Broadcast — commentary desk':'JRE episode drop'),
+        note:'Demo data. Not a real date.'});
+    }
+  });
+  return out;
+}
+let state={entries:[],comments:{}};
+let filter='all', scope='all', mapmode='both', ready=false;
+// Fan Posts: sb stays null (feature stays hidden) until SUPABASE.url/anonKey are filled in.
+const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.supabase)
+  ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
+let session=null, posts=[], postsLoading=false, postFilterEvent=null;
+function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
+// Auto-synced entries are re-derived from events.json on every load and are never
+// written to storage — otherwise a stale copy would outlive the source.
+let auto=[];
+function allEntries(){ return state.entries.concat(auto); }
+
+async function loadFeed(){
+  try{
+    const res=await fetch('events.json',{cache:'no-cache'});
+    if(!res.ok) return;
+    const data=await res.json();
+    if(!data||!Array.isArray(data.events)) return;
+    const mine=new Set(state.entries.map(e=>e.src).filter(Boolean));
+    auto=data.events.filter(e=>e&&e.date&&e.title&&!mine.has(e.src)).map(e=>({
+      id:'a:'+(e.src||uid()), src:e.src||null, date:String(e.date).slice(0,10),
+      title:String(e.title), loc:String(e.loc||''),
+      type:['standup','broadcast','podcast'].includes(e.type)?e.type:'broadcast',
+      note:String(e.note||''), video:parseVideo0(e.video), flag:e.flag==='auto'?'auto':'unconfirmed',
+      locked:true
+    }));
+    const st=document.getElementById('sync-note');
+    if(st) st.textContent=auto.length
+      ? auto.length+' auto-synced · updated '+new Date(data.generated).toLocaleDateString()
+      : '';
+    render();
+  }catch(e){ /* no feed present — the app works fine without one */ }
+}
+// video comes from the feed as {kind,id}; re-validate rather than trusting it
+function parseVideo0(v){
+  if(!v||typeof v!=='object') return null;
+  const k=v.kind, id=String(v.id||'');
+  if(k==='yt'&&/^[A-Za-z0-9_-]{11}$/.test(id)) return {kind:k,id};
+  if((k==='tt'||k==='vm')&&/^\d{6,24}$/.test(id)) return {kind:k,id};
+  return null;
+}
+
+function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function uid(){return Math.random().toString(36).slice(2,10);}
+function today(){return new Date().toISOString().slice(0,10);}
+function fmt(d){
+  const [y,m,dd]=d.split('-').map(Number);
+  return new Date(y,m-1,dd).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+}
+function daysTo(d){
+  const [y,m,dd]=d.split('-').map(Number);
+  const t=new Date(); t.setHours(0,0,0,0);
+  return Math.round((new Date(y,m-1,dd)-t)/86400000);
+}
+
+async function load(){
+  try{
+    const r=await store.get(KEY);
+    const p=r&&r.value?JSON.parse(r.value):null;
+    if(p&&Array.isArray(p.entries)){state={entries:p.entries,comments:p.comments||{}};}
+    else{state={entries:SEED.slice(),comments:{}};}
+  }catch(e){
+    state={entries:SEED.slice(),comments:{}};
+  }
+  ready=true; render(); mountDiscussion(); loadFeed();
+  initAuth().then(loadPosts);
+  const sn=document.getElementById('store-note');
+  if(sn) sn.textContent = store.kind==='memory'
+    ? 'Storage unavailable in this browser — entries will not survive a refresh.'
+    : 'Entries are saved in this browser only. Use Export to keep a copy.';
+  // clientWidth can be 0 before first paint (and fonts can shift layout after),
+  // so re-lay the map overlay once things have actually settled.
+  requestAnimationFrame(()=>{plotMap(lastRows);});
+  setTimeout(()=>plotMap(lastRows),400);
+}
+async function save(){
+  if(!ready)return;
+  try{await store.set(KEY,JSON.stringify(state));}
+  catch(e){console.error('Could not save to file',e);}
+}
+
+function sorted(){
+  return allEntries().sort((a,b)=>{
+    const fa=daysTo(a.date)>=0, fb=daysTo(b.date)>=0;
+    if(fa!==fb)return fa?-1:1;
+    return fa? a.date.localeCompare(b.date) : b.date.localeCompare(a.date);
+  });
+}
+
+function stats(){
+  const all=allEntries();
+  const up=all.filter(e=>daysTo(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
+  const past=all.filter(e=>daysTo(e.date)<0).sort((a,b)=>b.date.localeCompare(a.date));
+  const dEl=document.getElementById('stat-days');
+  if(up.length){const n=daysTo(up[0].date);dEl.textContent=n===0?'Today':(n===1?'Tomorrow':n+' days');}
+  else dEl.textContent='—';
+  document.getElementById('stat-count').textContent=allEntries().length;
+  document.getElementById('stat-last').textContent=past.length?past[0].loc:'No prior entries';
+}
+
+function commentHTML(eid){
+  const list=state.comments[eid]||[];
+  let h='<div class="ann"><div class="ann-h">Private notes · '+list.length+
+        ' <span class="privhint">only you can see these</span></div>';
+  list.forEach(c=>{
+    h+='<div class="c"><div class="c-meta"><b>'+esc(c.author)+'</b> · '+esc(c.ts)+
+       '<button class="c-del" data-del="'+c.id+'" data-e="'+eid+'">remove</button></div>'+
+       '<div class="c-body">'+esc(c.text)+'</div></div>';
+  });
+  h+='<div class="c-form">'+
+     '<input type="text" placeholder="Name" data-au="'+eid+'" aria-label="Your name" style="flex:0 1 110px">'+
+     '<input type="text" placeholder="Add a private note…" data-tx="'+eid+'" aria-label="Private note">'+
+     '<button class="mini" data-add="'+eid+'">Add</button></div></div>';
+  return h;
+}
+
+/* ---------- fan posts (Supabase-backed public content) ---------- */
+function getSavedName(){ try{ return localStorage.getItem('fan-post-name')||''; }catch(e){ return ''; } }
+function setSavedName(n){ try{ localStorage.setItem('fan-post-name',n); }catch(e){} }
+
+function renderAuthBar(){
+  const el=document.getElementById('authbar');
+  if(!el) return;
+  if(!sb){
+    el.innerHTML='<span class="hint">Fan posts are off — not configured yet. See the '+
+      '<code>SUPABASE</code> setup comment near the top of the script.</span>';
+    return;
+  }
+  if(session&&session.user){
+    el.innerHTML='<span>Signed in as <b>'+esc(session.user.email||'you')+'</b></span>'+
+      '<button class="mini ghost" id="auth-signout">Sign out</button>';
+  }else{
+    el.innerHTML='<input type="text" id="auth-email" placeholder="you@example.com" aria-label="Email">'+
+      '<button class="mini" id="auth-signin">Email me a sign-in link</button>'+
+      '<span class="hint" id="auth-msg" style="display:none"></span>';
+  }
+}
+
+async function initAuth(){
+  if(!sb){ renderAuthBar(); return; }
+  sb.auth.onAuthStateChange((_e,s)=>{ session=s; renderAuthBar(); loadPosts(); });
+  const {data}=await sb.auth.getSession();
+  session=data.session;
+  renderAuthBar();
+}
+
+async function loadPosts(){
+  if(!sb){ renderPosts(); return; }
+  postsLoading=true; renderPosts();
+  try{
+    const {data,error}=await sb.from('posts').select('*')
+      .order('created_at',{ascending:false}).limit(100);
+    if(error) throw error;
+    const rows=data||[];
+    const ids=rows.map(r=>r.id);
+    let likeRows=[], commentRows=[];
+    if(ids.length){
+      const [lres,cres]=await Promise.all([
+        sb.from('likes').select('post_id,user_id').in('post_id',ids),
+        sb.from('comments').select('*').in('post_id',ids).order('created_at',{ascending:true})
+      ]);
+      likeRows=lres.data||[]; commentRows=cres.data||[];
+    }
+    const uid=session&&session.user?session.user.id:null;
+    posts=rows.map(r=>({
+      ...r,
+      likeCount:likeRows.filter(l=>l.post_id===r.id).length,
+      likedByMe:!!uid&&likeRows.some(l=>l.post_id===r.id&&l.user_id===uid),
+      comments:commentRows.filter(c=>c.post_id===r.id)
+    }));
+  }catch(e){ console.error('Could not load fan posts',e); posts=[]; }
+  postsLoading=false; renderPosts();
+  render(); // refresh the "N fan posts" count on tracker cards
+}
+
+function populateEventPicker(){
+  const sel=document.getElementById('p-event');
+  if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— none —</option>'+
+    sorted().map(e=>'<option value="'+esc(e.id)+'">'+esc(e.title)+'</option>').join('');
+  sel.value=cur;
+}
+
+// video_kind/video_id come back from Supabase as untrusted as events.json feed
+// data — re-validate with the same charset check before ever building a clip URL.
+function postCard(p){
+  const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
+  const ev=p.event_id?allEntries().find(e=>e.id===p.event_id):null;
+  const mine=!!(session&&session.user&&p.author_id===session.user.id);
+  return '<article class="entry post"><div class="entry-head">'+
+    '<div class="tags">'+
+      (ev?'<span class="tag ptag">'+esc(ev.title)+'</span>':'')+
+      '<span class="when">'+esc(fmt(String(p.created_at).slice(0,10)))+'</span>'+
+    '</div>'+
+    '<p class="loc"><b>'+esc(p.author_label||'Fan')+'</b></p>'+
+    (p.caption?'<p class="note">'+esc(p.caption)+'</p>':'')+
+    (vid&&CLIPSRC[vid.kind]?
+      '<div class="clip" data-k="'+vid.kind+'" data-v="'+vid.id+'">'+
+      (vid.kind==='yt'?'<img class="thumb" loading="lazy" alt="" src="https://i.ytimg.com/vi/'+
+        vid.id+'/hqdefault.jpg">':'')+
+      '<button class="playbtn" type="button" aria-label="Load and play the '+
+      CLIPNAME[vid.kind]+' clip">▶ Play '+CLIPNAME[vid.kind]+' clip</button></div>':'')+
+    '<div class="postactions">'+
+      '<button class="mini ghost likebtn'+(p.likedByMe?' liked':'')+'" data-like="'+p.id+'">'+
+        (p.likedByMe?'♥':'♡')+' '+p.likeCount+'</button>'+
+      (mine?'<button class="c-del" data-delpost="'+p.id+'">delete post</button>':'')+
+    '</div></div>'+
+    '<div class="ann"><div class="ann-h">Comments · '+p.comments.length+'</div>'+
+    p.comments.map(c=>'<div class="c"><div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
+      esc(fmt(String(c.created_at).slice(0,10)))+
+      (session&&session.user&&c.author_id===session.user.id?
+        '<button class="c-del" data-delcomment="'+c.id+'">remove</button>':'')+
+      '</div><div class="c-body">'+esc(c.body)+'</div></div>').join('')+
+    (session&&session.user?
+      '<div class="c-form"><input type="text" placeholder="Add a comment…" data-ctx="'+p.id+
+      '" aria-label="Comment"><button class="mini" data-caddbtn="'+p.id+'">Reply</button></div>'
+      :'<p class="hint" style="margin:9px 0 0">Sign in above to comment.</p>')+
+    '</div></article>';
+}
+
+function renderPosts(){
+  const el=document.getElementById('postsfeed');
+  if(!el) return;
+  if(!sb){
+    el.innerHTML='<div class="dnote"><b>Not switched on yet.</b> Fan posts are backed by Supabase — '+
+      'no server to run, but a free Supabase project is required. See the <code>SUPABASE</code> setup '+
+      'comment near the top of the script for the SQL to run, then fill in <code>SUPABASE.url</code> '+
+      'and <code>SUPABASE.anonKey</code> there.</div>';
+    return;
+  }
+  const pf=document.getElementById('postfilter');
+  if(postFilterEvent){
+    const ev=allEntries().find(e=>e.id===postFilterEvent);
+    document.getElementById('postfilter-label').textContent=ev?ev.title:'this event';
+    pf.classList.remove('hidden');
+  }else{ pf.classList.add('hidden'); }
+  if(postsLoading){ el.innerHTML='<div class="empty"><strong>Loading posts…</strong></div>'; return; }
+  const rows=postFilterEvent?posts.filter(p=>p.event_id===postFilterEvent):posts;
+  if(!rows.length){
+    el.innerHTML='<div class="empty"><strong>No fan posts yet</strong>Be the first to share a clip.</div>';
+    return;
+  }
+  el.innerHTML=rows.map(postCard).join('');
+}
+
+function render(){
+  stats();
+  const feed=document.getElementById('feed');
+  const rows=sorted().filter(e=>{
+    if(filter!=='all'&&e.type!==filter) return false;
+    const n=daysTo(e.date);
+    if(scope==='upcoming'&&n<0) return false;
+    if(scope==='past'&&n>=0) return false;
+    return true;
+  });
+  if(!rows.length){
+    plotMap([]);
+    renderAnalysis([]);
+    feed.innerHTML='<div class="empty"><strong>Nothing on file</strong>'+
+      (scope==='past'?'No previous entries in this category yet.'
+        :scope==='upcoming'?'Nothing announced in this category yet.'
+        :'No entries in this category yet. Use “Log an appearance” to add an announced date.')+'</div>';
+    return;
+  }
+  const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
+  plotMap(rows);
+  renderAnalysis(rows);
+  feed.innerHTML=rows.map(e=>{
+    const n=daysTo(e.date), past=n<0;
+    const when=past?(Math.abs(n)+' days ago'):(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'));
+    return '<article class="entry'+(past?' past':'')+'">'+
+      '<div class="entry-head">'+
+      '<div class="tags">'+
+        '<span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
+        (e.flag==='demo'?'<span class="tag demo">Demo</span>':'')+
+        (e.flag==='auto'?'<span class="tag auto">Auto-synced</span>':'')+
+        (e.flag==='unconfirmed'?'<span class="tag unconf">Unconfirmed</span>':'')+
+        '<span class="when">'+when+'</span>'+
+      '</div>'+
+      '<h2>'+esc(e.title)+'</h2>'+
+      '<p class="loc">'+esc(e.loc||'Location not listed')+' · '+fmt(e.date)+'</p>'+
+      (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
+      (sb?'<button class="mini ghost" data-viewposts="'+e.id+'">💬 '+postCountFor(e.id)+
+        ' fan post'+(postCountFor(e.id)===1?'':'s')+'</button>':'')+
+      (e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?
+        '<div class="clip" data-k="'+e.video.kind+'" data-v="'+e.video.id+'">'+
+        (e.video.kind==='yt'?'<img class="thumb" loading="lazy" alt="" src="https://i.ytimg.com/vi/'+
+          e.video.id+'/hqdefault.jpg">':'')+
+        '<button class="playbtn" type="button" aria-label="Load and play the '+
+        CLIPNAME[e.video.kind]+' clip">▶ Play '+CLIPNAME[e.video.kind]+' clip</button>'+
+        '</div>':'')+
+      (e.locked?'<div style="margin-top:10px" class="lockednote">Auto-synced — edit the source feed</div>'
+        :'<div style="margin-top:10px"><button class="c-del" data-drop="'+e.id+'">Remove entry</button></div>')+
+      '</div>'+commentHTML(e.id)+'</article>';
+  }).join('');
+}
+
+
+/* ---------- map ---------- */
+const MAPX0=-0.3688841452039381, MAPY0=-0.24581291155588159, MAPS=1357.3483645020121;
+const CITIES={"new york": [40.71, -74.01], "brooklyn": [40.68, -73.94], "los angeles": [34.05, -118.24], "chicago": [41.88, -87.63], "houston": [29.76, -95.37], "phoenix": [33.45, -112.07], "philadelphia": [39.95, -75.17], "san antonio": [29.42, -98.49], "san diego": [32.72, -117.16], "dallas": [32.78, -96.8], "fort worth": [32.76, -97.33], "austin": [30.27, -97.74], "jacksonville": [30.33, -81.66], "san jose": [37.34, -121.89], "columbus": [39.96, -83.0], "charlotte": [35.23, -80.84], "indianapolis": [39.77, -86.16], "seattle": [47.61, -122.33], "denver": [39.74, -104.99], "washington": [38.91, -77.04], "boston": [42.36, -71.06], "nashville": [36.16, -86.78], "detroit": [42.33, -83.05], "portland": [45.52, -122.68], "las vegas": [36.17, -115.14], "memphis": [35.15, -90.05], "louisville": [38.25, -85.76], "baltimore": [39.29, -76.61], "milwaukee": [43.04, -87.91], "albuquerque": [35.08, -106.65], "tucson": [32.22, -110.97], "fresno": [36.74, -119.79], "sacramento": [38.58, -121.49], "kansas city": [39.1, -94.58], "mesa": [33.42, -111.83], "atlanta": [33.75, -84.39], "omaha": [41.26, -95.94], "colorado springs": [38.83, -104.82], "raleigh": [35.78, -78.64], "miami": [25.76, -80.19], "virginia beach": [36.85, -75.98], "oakland": [37.8, -122.27], "minneapolis": [44.98, -93.27], "tulsa": [36.15, -95.99], "tampa": [27.95, -82.46], "new orleans": [29.95, -90.07], "wichita": [37.69, -97.34], "cleveland": [41.5, -81.69], "bakersfield": [35.37, -119.02], "aurora": [39.73, -104.83], "anaheim": [33.84, -117.91], "honolulu": [21.31, -157.86], "santa ana": [33.75, -117.87], "riverside": [33.95, -117.4], "corpus christi": [27.8, -97.4], "lexington": [38.04, -84.5], "henderson": [36.04, -114.98], "stockton": [37.96, -121.29], "saint paul": [44.95, -93.09], "cincinnati": [39.1, -84.51], "st louis": [38.63, -90.2], "saint louis": [38.63, -90.2], "pittsburgh": [40.44, -79.996], "greensboro": [36.07, -79.79], "lincoln": [40.81, -96.68], "plano": [33.02, -96.7], "orlando": [28.54, -81.38], "irvine": [33.68, -117.83], "newark": [40.74, -74.17], "durham": [35.99, -78.9], "chula vista": [32.64, -117.08], "toledo": [41.65, -83.54], "fort wayne": [41.08, -85.14], "st petersburg": [27.77, -82.64], "laredo": [27.51, -99.51], "jersey city": [40.73, -74.08], "chandler": [33.31, -111.84], "madison": [43.07, -89.4], "lubbock": [33.58, -101.86], "buffalo": [42.89, -78.88], "reno": [39.53, -119.81], "boise": [43.62, -116.2], "richmond": [37.54, -77.44], "salt lake city": [40.76, -111.89], "birmingham": [33.52, -86.8], "spokane": [47.66, -117.43], "rochester": [43.16, -77.61], "des moines": [41.59, -93.62], "oklahoma city": [35.47, -97.52], "providence": [41.82, -71.41], "salem": [44.94, -123.04], "knoxville": [35.96, -83.92], "grand rapids": [42.96, -85.67], "hartford": [41.76, -72.67], "charleston": [32.78, -79.93], "savannah": [32.08, -81.09], "asheville": [35.6, -82.55], "boulder": [40.01, -105.27], "eugene": [44.05, -123.09], "albany": [42.65, -73.76], "syracuse": [43.05, -76.15], "dayton": [39.76, -84.19], "akron": [41.08, -81.52], "little rock": [34.75, -92.29], "jackson": [32.3, -90.18], "mobile": [30.69, -88.04], "shreveport": [32.53, -93.75], "el paso": [31.76, -106.49], "anchorage": [61.22, -149.9], "missoula": [46.87, -113.99], "billings": [45.78, -108.5], "fargo": [46.88, -96.79], "sioux falls": [43.55, -96.73], "cheyenne": [41.14, -104.82], "santa fe": [35.69, -105.94], "scottsdale": [33.49, -111.93], "tempe": [33.43, -111.94], "san francisco": [37.77, -122.42], "long beach": [33.77, -118.19], "pasadena": [34.15, -118.14], "tacoma": [47.25, -122.44], "irving": [32.81, -96.95], "arlington": [32.74, -97.11], "ann arbor": [42.28, -83.74], "columbia": [34.0, -81.03], "greenville": [34.85, -82.39], "chattanooga": [35.05, -85.31], "huntsville": [34.73, -86.59], "baton rouge": [30.45, -91.19], "tallahassee": [30.44, -84.28], "fort lauderdale": [26.12, -80.14], "west palm beach": [26.71, -80.05], "naples": [26.14, -81.79], "sarasota": [27.34, -82.53], "clearwater": [27.97, -82.8]};
+const CITYKEYS=Object.keys(CITIES).sort((a,b)=>b.length-a.length);
+const P1=29.5*Math.PI/180, P2=45.5*Math.PI/180;
+const LAT0=37.5*Math.PI/180, LON0=-96*Math.PI/180;
+const NN=0.5*(Math.sin(P1)+Math.sin(P2));
+const CC=Math.cos(P1)**2+2*NN*Math.sin(P1);
+const RR0=Math.sqrt(CC-2*NN*Math.sin(LAT0))/NN;
+function project(lat,lon){
+  const la=lat*Math.PI/180, lo=lon*Math.PI/180;
+  const r=Math.sqrt(CC-2*NN*Math.sin(la))/NN, th=NN*(lo-LON0);
+  return [(r*Math.sin(th)-MAPX0)*MAPS, (r*Math.cos(th)-RR0-MAPY0)*MAPS];
+}
+function findCity(loc){
+  if(!loc) return null;
+  const s=loc.toLowerCase().replace(/[.,]/g,' ');
+  for(const k of CITYKEYS){ if(s.includes(k)) return CITIES[k]; }
+  return null;
+}
+function cityLabel(loc){
+  if(!loc) return '—';
+  const s=loc.toLowerCase().replace(/[.,]/g,' ');
+  for(const k of CITYKEYS){ if(s.includes(k)) return k.replace(/\b\w/g,c=>c.toUpperCase()); }
+  return loc;
+}
+const MAPW=980.0;
+// SVG user-units per on-screen pixel. Pins and labels are UI, not geography:
+// they must hold a constant screen size while the map itself scales.
+function uiK(){
+  const s=document.querySelector('.mapbody svg');
+  const w=(s&&(s.clientWidth||s.getBoundingClientRect().width))||760;
+  return MAPW/Math.max(w,200);
+}
+let lastRows=[];
+let selPin=null;
+function plotMap(rows){
+  lastRows=rows;
+  const g=document.getElementById('pins');
+  const pts=[]; let missing=0;
+  rows.forEach(e=>{
+    const c=findCity(e.loc);
+    if(!c){missing++;return;}
+    const [x,y]=project(c[0],c[1]);
+    pts.push({x,y,e,past:daysTo(e.date)<0});
+  });
+  const k=uiK(), rUp=6*k, rPast=4.6*k, rHit=14*k;
+  g.innerHTML=pts.map(p=>
+    '<g class="pin '+(p.past?'pastpin':'up')+(selPin===p.e.id?' sel':'')+
+    '" data-pin="'+p.e.id+'" tabindex="0" role="button" aria-label="'+esc(p.e.title)+'">'+
+    '<circle class="hit" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+rHit.toFixed(1)+'"/>'+
+    '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+
+    (p.past?rPast:rUp).toFixed(1)+'" stroke-width="'+(1.8*k).toFixed(2)+'"/></g>').join('');
+  const up=pts.filter(p=>!p.past).sort((a,b)=>a.e.date.localeCompare(b.e.date));
+  document.getElementById('route').setAttribute('d',
+    up.length>1?'M'+up.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join('L'):'');
+  // heat layer — density of announced events per market
+  const buckets={};
+  pts.forEach(p=>{
+    const k=p.x.toFixed(0)+':'+p.y.toFixed(0);
+    (buckets[k]=buckets[k]||{x:p.x,y:p.y,n:0,name:cityLabel(p.e.loc)}).n++;
+  });
+  const bl=Object.values(buckets);
+  const max=bl.reduce((a,b)=>Math.max(a,b.n),0)||1;
+  document.getElementById('heat').innerHTML=bl.map(b=>{
+    const f=b.n/max, g=f>.66?'h-hi':f>.33?'h-mid':'h-lo';
+    const r=30+18*Math.sqrt(b.n-1);
+    return '<circle cx="'+b.x.toFixed(1)+'" cy="'+b.y.toFixed(1)+'" r="'+r.toFixed(1)+
+           '" fill="url(#'+g+')"/>';
+  }).join('');
+  const lk=uiK(), fs=12*lk, ph=20*lk, gapv=23*lk, placed=[];
+  document.getElementById('heatlabels').innerHTML=bl
+    .sort((a,b)=>b.n-a.n).slice(0,4).map(b=>{
+      const r=30+18*Math.sqrt(b.n-1);
+      const txt=b.name.toUpperCase()+' · '+b.n;
+      const w=txt.length*(7.8*lk)+16*lk;
+      let x=b.x+r+8*lk;
+      if(x+w>MAPW-6) x=b.x-r-8*lk-w;
+      if(x<6) x=6;
+      let y=b.y-ph/2, tries=0;
+      const hits=()=>placed.some(p=>x<p.x+p.w && x+w>p.x && y<p.y+gapv && y+gapv>p.y);
+      while(hits() && tries<8){ y += (tries%2? -1:1)*gapv*Math.ceil((tries+1)/2); tries++; }
+      placed.push({x,y,w});
+      return '<rect class="plaque" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+
+             '" width="'+w.toFixed(1)+'" height="'+ph.toFixed(1)+'" rx="1"/>'+
+             '<text class="hlabel" style="font-size:'+fs.toFixed(1)+'px" x="'+(x+8*lk).toFixed(1)+
+             '" y="'+(y+ph*0.72).toFixed(1)+'">'+esc(txt)+'</text>';
+    }).join('');
+  const top=bl.slice().sort((a,b)=>b.n-a.n)[0];
+  document.getElementById('topmkt').textContent =
+    top&&top.n>1 ? 'Busiest market: '+top.name+' ('+top.n+')' : '';
+
+  const u=document.getElementById('unplotted');
+  u.textContent = missing? missing+' not plotted (outside US map or unknown city)' : '';
+  if(!pts.some(p=>p.e.id===selPin)){selPin=null;
+    document.getElementById('readpin').textContent='No pin selected.';}
+}
+document.getElementById('pins').addEventListener('click',ev=>{
+  const p=ev.target.closest('[data-pin]'); if(!p)return; selectPin(p.dataset.pin);
+});
+document.getElementById('pins').addEventListener('keydown',ev=>{
+  if(ev.key!=='Enter'&&ev.key!==' ')return;
+  const p=ev.target.closest('[data-pin]'); if(!p)return;
+  ev.preventDefault(); selectPin(p.dataset.pin);
+});
+function selectPin(id){
+  const e=allEntries().find(x=>x.id===id); if(!e)return;
+  selPin=id;
+  document.getElementById('readpin').innerHTML='<b>'+esc(e.title)+'</b> — '+
+    esc(e.loc||'location not listed')+' · '+fmt(e.date);
+  render();
+}
+
+
+
+/* ---------- analysis ---------- */
+function quantile(sorted,q){
+  if(!sorted.length) return NaN;
+  const p=(sorted.length-1)*q, lo=Math.floor(p), hi=Math.ceil(p);
+  return sorted[lo]+(sorted[hi]-sorted[lo])*(p-lo);
+}
+// Wilson score interval — behaves under the small n this app will usually have
+function wilson(k,n){
+  if(!n) return [0,0,0];
+  const z=1.96, p=k/n, d=1+z*z/n;
+  const c=(p+z*z/(2*n))/d;
+  const half=(z/d)*Math.sqrt(p*(1-p)/n + z*z/(4*n*n));
+  return [Math.max(0,c-half), p, Math.min(1,c+half)];
+}
+function dayNum(d){const [y,m,dd]=d.split('-').map(Number);return Date.UTC(y,m-1,dd)/86400000;}
+const MONTHS=['J','F','M','A','M','J','J','A','S','O','N','D'];
+
+function renderAnalysis(rows){
+  const q=document.getElementById('an-q');
+  const demo=rows.filter(e=>e.flag==='demo').length;
+  const unconf=rows.filter(e=>e.flag==='unconfirmed').length;
+  const autoN=rows.filter(e=>e.flag==='auto').length;
+  const real=rows.length-demo-unconf-autoN;
+  q.innerHTML = rows.length
+    ? rows.length+' entries in view — '+real+' yours, '+autoN+' auto-synced, '+unconf+' unconfirmed, '+
+      (demo?'<b>'+demo+' demo</b>':'0 demo')+
+      (demo>real ? ' · <b>mostly generated data — these numbers describe the demo set, not reality</b>' : '')
+    : 'Nothing in view.';
+
+  // cadence per type, from sorted event dates
+  const cad=document.getElementById('an-cad');
+  const types={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
+  let out='';
+  Object.keys(types).concat(['__all']).forEach(t=>{
+    const set=(t==='__all'?rows:rows.filter(e=>e.type===t))
+      .map(e=>dayNum(e.date)).sort((a,b)=>a-b);
+    const gaps=[]; for(let i=1;i<set.length;i++) gaps.push(set[i]-set[i-1]);
+    gaps.sort((a,b)=>a-b);
+    const label=t==='__all'?'All events':types[t];
+    if(gaps.length<2){
+      out+='<div class="crow"><span class="lab">'+label+'</span>'+
+           '<span class="val"><i>need '+(3-set.length>0?3-set.length:1)+' more</i></span></div>';
+    }else{
+      const med=quantile(gaps,.5), q1=quantile(gaps,.25), q3=quantile(gaps,.75);
+      out+='<div class="crow"><span class="lab">'+label+'</span><span class="val">'+
+           med.toFixed(0)+'d <i>IQR '+q1.toFixed(0)+'–'+q3.toFixed(0)+' · n='+gaps.length+'</i></span></div>';
+    }
+  });
+  cad.innerHTML=out;
+
+  // market share with Wilson bounds
+  const mk={};
+  rows.forEach(e=>{const c=cityLabel(e.loc); if(c&&c!=='—') mk[c]=(mk[c]||0)+1;});
+  const tot=Object.values(mk).reduce((a,b)=>a+b,0);
+  const top=Object.entries(mk).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  document.getElementById('an-mkt').innerHTML = top.length? top.map(([c,k])=>{
+    const [lo,p,hi]=wilson(k,tot);
+    return '<div class="mrow"><div class="top"><b>'+esc(c)+'</b><span>'+
+      (p*100).toFixed(0)+'% <i style="opacity:.7">('+(lo*100).toFixed(0)+'–'+(hi*100).toFixed(0)+')</i> n='+k+
+      '</span></div><div class="track"><div class="fill" style="width:'+(p*100).toFixed(1)+'%"></div>'+
+      '<div class="ci" style="left:'+(lo*100).toFixed(1)+'%;width:'+((hi-lo)*100).toFixed(1)+'%"></div>'+
+      '</div></div>';
+  }).join('') : '<div class="crow"><span class="lab">No recognized cities in view</span></div>';
+
+  // seasonality
+  const mo=new Array(12).fill(0);
+  rows.forEach(e=>{mo[Number(e.date.split('-')[1])-1]++;});
+  const mx=Math.max(...mo,1);
+  document.getElementById('an-mo').innerHTML=mo.map((v,i)=>
+    '<div class="mo" title="'+v+' in month '+(i+1)+'"><div class="b" style="height:'+
+    (v/mx*58).toFixed(1)+'px"></div><div class="t">'+MONTHS[i]+'</div></div>').join('');
+}
+
+function mountDiscussion(){
+  const slot=document.getElementById('discuss-slot');
+  const g=DISCUSSION;
+  if(g.provider==='giscus'&&g.repo&&g.repoId&&g.categoryId){
+    const s=document.createElement('script');
+    s.src='https://giscus.app/client.js';
+    s.async=true; s.crossOrigin='anonymous';
+    s.setAttribute('data-repo',g.repo);
+    s.setAttribute('data-repo-id',g.repoId);
+    s.setAttribute('data-category',g.category||'General');
+    s.setAttribute('data-category-id',g.categoryId);
+    s.setAttribute('data-mapping','pathname');
+    s.setAttribute('data-reactions-enabled','1');
+    s.setAttribute('data-theme','dark_dimmed');
+    s.setAttribute('data-loading','lazy');
+    slot.appendChild(s);
+    return;
+  }
+  slot.innerHTML='<div class="dnote"><b>Not switched on yet.</b> The notes attached to each '+
+    'event are private to your own browser — they are never published, so this page currently '+
+    'has no shared discussion.<br><br>To open one up, connect <b>giscus</b>, which stores comments '+
+    'as GitHub Discussions. There is no server to run, and moderation, blocking and abuse reporting '+
+    'come from GitHub instead of being yours to build.<ol>'+
+    '<li>Make the site repo public and turn on Discussions.</li>'+
+    '<li>Install the giscus app: <code>github.com/apps/giscus</code></li>'+
+    '<li>Get your IDs from <code>giscus.app</code></li>'+
+    '<li>Fill in <code>DISCUSSION</code> at the top of this file and set '+
+    '<code>provider:\'giscus\'</code></li></ol></div>';
+}
+
+let rzt;
+window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>plotMap(lastRows),150);});
+
+/* events */
+document.querySelectorAll('[data-f]').forEach(t=>t.addEventListener('click',()=>{
+  filter=t.dataset.f;
+  document.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',String(x===t)));
+  render();
+}));
+
+document.querySelectorAll('[data-s]').forEach(t=>t.addEventListener('click',()=>{
+  scope=t.dataset.s;
+  document.querySelectorAll('[data-s]').forEach(x=>x.setAttribute('aria-pressed',String(x===t)));
+  render();
+}));
+document.querySelectorAll('[data-m]').forEach(t=>t.addEventListener('click',()=>{
+  mapmode=t.dataset.m;
+  document.querySelectorAll('[data-m]').forEach(x=>x.setAttribute('aria-pressed',String(x===t)));
+  document.body.classList.remove('m-both','m-pins','m-heat');
+  document.body.classList.add('m-'+mapmode);
+  render();
+}));
+
+const ipanel=document.getElementById('import-panel');
+document.getElementById('open-import').addEventListener('click',()=>{
+  ipanel.classList.toggle('hidden');
+  if(!ipanel.classList.contains('hidden')) document.getElementById('imp-text').focus();
+});
+const TYPES={standup:1,broadcast:1,podcast:1};
+const MO3={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+const p2=n=>String(n).padStart(2,'0');
+function parseDate(s){
+  let m;
+  if(m=s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/)) return m[1]+'-'+p2(+m[2])+'-'+p2(+m[3]);
+  if(m=s.match(/\b([A-Za-z]{3,9})\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})\b/)){
+    const mo=MO3[m[1].slice(0,3).toLowerCase()];
+    if(mo) return m[3]+'-'+p2(mo)+'-'+p2(+m[2]);
+  }
+  if(m=s.match(/\b(\d{1,2})\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})\b/)){
+    const mo=MO3[m[2].slice(0,3).toLowerCase()];
+    if(mo) return m[3]+'-'+p2(mo)+'-'+p2(+m[1]);
+  }
+  if(m=s.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/)) return m[3]+'-'+p2(+m[1])+'-'+p2(+m[2]);
+  return null;
+}
+// Only these hosts, and only an ID matching a strict charset, ever reach an iframe src.
+// The user's URL is never used directly.
+function parseVideo(u){
+  if(!u) return null;
+  let url; try{ url=new URL(u.trim()); }catch(e){ return null; }
+  if(url.protocol!=='https:'&&url.protocol!=='http:') return null;
+  const host=url.hostname.replace(/^www\./,'').toLowerCase();
+  const yt=id=>/^[A-Za-z0-9_-]{11}$/.test(id)?{kind:'yt',id}:null;
+  const num=(k,id)=>/^\d{6,24}$/.test(id)?{kind:k,id}:null;
+  if(host==='youtu.be') return yt(url.pathname.slice(1).split('/')[0]);
+  if(host==='youtube.com'||host==='m.youtube.com'||host==='youtube-nocookie.com'){
+    if(url.pathname==='/watch') return yt(url.searchParams.get('v')||'');
+    const m=url.pathname.match(/^\/(?:shorts|embed|live)\/([^/?#]+)/);
+    if(m) return yt(m[1]);
+    return null;
+  }
+  if(host==='tiktok.com'||host==='vm.tiktok.com'){
+    const m=url.pathname.match(/\/video\/(\d+)/);
+    if(m) return num('tt',m[1]);
+    return null;
+  }
+  if(host==='vimeo.com'||host==='player.vimeo.com'){
+    const m=url.pathname.match(/(?:^|\/)(\d{6,})/);
+    if(m) return num('vm',m[1]);
+    return null;
+  }
+  return null;
+}
+const CLIPSRC={
+  yt:id=>'https://www.youtube-nocookie.com/embed/'+id+'?rel=0',
+  tt:id=>'https://www.tiktok.com/player/v1/'+id,
+  vm:id=>'https://player.vimeo.com/video/'+id
+};
+const CLIPNAME={yt:'YouTube',tt:'TikTok',vm:'Vimeo'};
+function findUrl(s){ const m=s.match(/https?:\/\/[^\s|]+/); return m?m[0]:null; }
+
+function guessType(s){
+  const t=s.toLowerCase();
+  if(/\bufc\b|fight night|octagon|commentat|broadcast|main card/.test(t)) return 'broadcast';
+  if(/podcast|jre|episode|\bep\.?\s*\d/.test(t)) return 'podcast';
+  return 'standup';
+}
+function matchedCityKey(loc){
+  const s=(loc||'').toLowerCase().replace(/[.,]/g,' ');
+  for(const k of CITYKEYS){ if(s.includes(k)) return k; }
+  return null;
+}
+// structured "a | b | c" wins; otherwise pull a date and a known city out of free text
+function parseLine(line){
+  const parts=line.split(/\s*[|\t]\s*/).filter(Boolean);
+  if(parts.length>=3){
+    const d=parseDate(parts[0]);
+    if(d) return {date:d,title:parts[1],loc:parts[2],
+      type:TYPES[(parts[3]||'').toLowerCase()]?parts[3].toLowerCase():guessType(line),
+      video:parseVideo(parts[4]||'')||parseVideo(findUrl(line)||'')};
+  }
+  const d=parseDate(line);
+  if(!d) return null;
+  const key=matchedCityKey(line);
+  let title=line;
+  const dm=line.match(/(\d{4}-\d{1,2}-\d{1,2})|([A-Za-z]{3,9}\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s+\d{4})|(\d{1,2}\s+[A-Za-z]{3,9}\.?,?\s+\d{4})|(\d{1,2}\/\d{1,2}\/\d{4})/);
+  if(dm) title=title.replace(dm[0],' ');
+  title=title.replace(/\s*[|\t,;–—-]\s*$/,'').replace(/^\s*[|\t,;–—-]\s*/,'')
+             .replace(/\s{2,}/g,' ').trim();
+  const loc=key?key.replace(/\b\w/g,c=>c.toUpperCase()):'';
+  if(key){
+    const re=new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'i');
+    title=title.replace(re,' ')
+               .replace(/[\s,;]+[A-Z]{2}\b\s*$/,'')
+               .replace(/\s*[,;]\s*[A-Z]{2}\b/,'')
+               .replace(/\s{2,}/g,' ').replace(/^[\s,;|–—-]+|[\s,;|–—-]+$/g,'').trim();
+  }
+  const vid=parseVideo(findUrl(line)||'');
+  if(vid) title=title.replace(/https?:\/\/[^\s|]+/,'').replace(/\s{2,}/g,' ').trim();
+  return {date:d,title:title||'Untitled entry',loc,type:guessType(line),video:vid};
+}
+document.getElementById('do-import').addEventListener('click',async()=>{
+  const err=document.getElementById('imp-err');
+  const lines=document.getElementById('imp-text').value.split('\n')
+    .map(l=>l.trim()).filter(Boolean);
+  let added=0, nocity=0; const bad=[];
+  lines.forEach((line,i)=>{
+    const p=parseLine(line);
+    if(!p){bad.push(i+1);return;}
+    if(!p.loc) nocity++;
+    state.entries.push({id:uid(),date:p.date,title:p.title,loc:p.loc,type:p.type,
+      note:'',video:p.video||null,flag:null});
+    added++;
+  });
+  if(!added&&!bad.length){err.textContent='Nothing to import — the box is empty.';
+    err.style.display='block';return;}
+  const msgs=[];
+  if(bad.length) msgs.push('Skipped line'+(bad.length>1?'s ':' ')+bad.join(', ')+' — no date found');
+  if(nocity) msgs.push(added+' added, '+nocity+' with no recognized city (they won\'t plot)');
+  if(msgs.length){err.textContent=msgs.join(' · ');err.style.display='block';}
+  else {err.style.display='none';document.getElementById('imp-text').value='';
+        ipanel.classList.add('hidden');}
+  render(); await save();
+});
+document.getElementById('load-demo').addEventListener('click',async()=>{
+  state.entries=state.entries.filter(e=>e.flag!=='demo').concat(buildDemo());
+  render(); await save();
+});
+document.getElementById('clear-demo').addEventListener('click',async()=>{
+  state.entries=state.entries.filter(e=>e.flag!=='demo');
+  render(); await save();
+});
+document.getElementById('export').addEventListener('click',()=>{
+  const out=sorted().map(e=>{
+    const row=[e.date,e.title,e.loc||'',e.type];
+    if(e.video&&CLIPSRC[e.video.kind]) row.push(CLIPSRC[e.video.kind](e.video.id));
+    return row.join(' | ');
+  }).join('\n');
+  const t=document.getElementById('imp-text'); t.value=out; t.select();
+  const err=document.getElementById('imp-err');
+  err.textContent=state.entries.length+' entries written to the box above — copy them out.';
+  err.style.display='block';
+});
+document.getElementById('clear-all').addEventListener('click',async()=>{
+  state.entries=[]; state.comments={}; render(); await save();
+});
+
+const panel=document.getElementById('form-panel');
+document.getElementById('open-form').addEventListener('click',()=>{
+  panel.classList.toggle('hidden');
+  if(!panel.classList.contains('hidden')){
+    document.getElementById('f-date').value=document.getElementById('f-date').value||today();
+    document.getElementById('f-title').focus();
+  }
+});
+document.getElementById('cancel-entry').addEventListener('click',()=>{
+  panel.classList.add('hidden');document.getElementById('f-err').style.display='none';
+});
+document.getElementById('save-entry').addEventListener('click',async()=>{
+  const t=document.getElementById('f-title').value.trim();
+  const d=document.getElementById('f-date').value;
+  const err=document.getElementById('f-err');
+  if(!t||!d){err.textContent='A title and a date are required.';err.style.display='block';return;}
+  err.style.display='none';
+  const vraw=document.getElementById('f-vid').value.trim();
+  const vid=parseVideo(vraw);
+  if(vraw&&!vid){err.textContent='That clip link is not a recognized YouTube, TikTok or Vimeo URL.';
+    err.style.display='block';return;}
+  state.entries.push({id:uid(),title:t,date:d,type:document.getElementById('f-type').value,
+    loc:document.getElementById('f-loc').value.trim(),
+    note:document.getElementById('f-note').value.trim(),video:vid,flag:null});
+  ['f-title','f-loc','f-note','f-vid'].forEach(i=>document.getElementById(i).value='');
+  panel.classList.add('hidden');
+  render(); await save();
+});
+
+document.getElementById('feed').addEventListener('click',ev=>{
+  const pb=ev.target.closest('.playbtn'); if(!pb)return;
+  const box=pb.closest('.clip'), k=box.dataset.k, id=box.dataset.v;
+  if(!CLIPSRC[k]||!/^[A-Za-z0-9_-]+$/.test(id)) return;
+  const f=document.createElement('iframe');
+  f.src=CLIPSRC[k](id);
+  f.setAttribute('loading','lazy');
+  f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+  f.allow='accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen';
+  f.setAttribute('allowfullscreen','');
+  f.title=CLIPNAME[k]+' clip';
+  box.innerHTML=''; box.appendChild(f);
+});
+
+document.getElementById('feed').addEventListener('click',async ev=>{
+  if(ev.target.closest('.playbtn'))return;
+  const b=ev.target.closest('button'); if(!b)return;
+  if(b.dataset.add){
+    const id=b.dataset.add;
+    const tx=document.querySelector('[data-tx="'+id+'"]');
+    const au=document.querySelector('[data-au="'+id+'"]');
+    const text=tx.value.trim(); if(!text)return;
+    (state.comments[id]=state.comments[id]||[]).push({
+      id:uid(),author:au.value.trim()||'Anonymous',text,
+      ts:new Date().toLocaleDateString(undefined,{month:'short',day:'numeric'})
+    });
+    render(); await save();
+  }
+  if(b.dataset.del){
+    const e=b.dataset.e;
+    state.comments[e]=(state.comments[e]||[]).filter(c=>c.id!==b.dataset.del);
+    render(); await save();
+  }
+  if(b.dataset.drop){
+    state.entries=state.entries.filter(x=>x.id!==b.dataset.drop);
+    delete state.comments[b.dataset.drop];
+    render(); await save();
+  }
+  if(b.dataset.viewposts){
+    postFilterEvent=b.dataset.viewposts;
+    renderPosts();
+    document.getElementById('posts-section').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+});
+document.getElementById('feed').addEventListener('keydown',ev=>{
+  if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.tx){
+    const btn=document.querySelector('[data-add="'+ev.target.dataset.tx+'"]');
+    if(btn)btn.click();
+  }
+});
+
+/* ---------- fan posts events ---------- */
+document.getElementById('authbar').addEventListener('click',async ev=>{
+  if(!sb) return;
+  if(ev.target.id==='auth-signin'){
+    const email=document.getElementById('auth-email').value.trim();
+    const msg=document.getElementById('auth-msg');
+    if(!email) return;
+    ev.target.disabled=true; const label=ev.target.textContent; ev.target.textContent='Sending…';
+    const {error}=await sb.auth.signInWithOtp({email});
+    ev.target.disabled=false; ev.target.textContent=label;
+    msg.style.display='inline';
+    msg.textContent=error?error.message:'Check your email for the sign-in link.';
+  }
+  if(ev.target.id==='auth-signout'){ await sb.auth.signOut(); }
+});
+
+document.getElementById('open-postform').addEventListener('click',()=>{
+  const pf=document.getElementById('postform-panel');
+  pf.classList.toggle('hidden');
+  if(!pf.classList.contains('hidden')){
+    document.getElementById('p-name').value=getSavedName();
+    populateEventPicker();
+    document.getElementById('p-vid').focus();
+  }
+});
+document.getElementById('post-cancel').addEventListener('click',()=>{
+  document.getElementById('postform-panel').classList.add('hidden');
+  document.getElementById('p-err').style.display='none';
+});
+document.getElementById('post-submit').addEventListener('click',async()=>{
+  const err=document.getElementById('p-err');
+  const show=msg=>{err.textContent=msg;err.style.display='block';};
+  if(!sb) return show('Fan posts are not configured yet.');
+  if(!session||!session.user) return show('Sign in above first.');
+  const name=document.getElementById('p-name').value.trim()||'Fan';
+  const vraw=document.getElementById('p-vid').value.trim();
+  const vid=parseVideo(vraw);
+  if(!vid) return show('That clip link is not a recognized YouTube, TikTok or Vimeo URL.');
+  const cap=document.getElementById('p-cap').value.trim();
+  if(!cap) return show('Add a short caption.');
+  if(cap.length>500) return show('Captions are capped at 500 characters.');
+  err.style.display='none';
+  setSavedName(name);
+  const btn=document.getElementById('post-submit'); btn.disabled=true;
+  try{
+    const {error}=await sb.from('posts').insert({
+      author_id:session.user.id, author_label:name, caption:cap,
+      video_kind:vid.kind, video_id:vid.id, event_id:document.getElementById('p-event').value||null
+    });
+    if(error) throw error;
+    document.getElementById('p-vid').value=''; document.getElementById('p-cap').value='';
+    document.getElementById('postform-panel').classList.add('hidden');
+    await loadPosts();
+  }catch(e){ show('Could not post: '+(e.message||'unknown error')); }
+  finally{ btn.disabled=false; }
+});
+document.getElementById('postfilter-clear').addEventListener('click',()=>{
+  postFilterEvent=null; renderPosts();
+});
+
+document.getElementById('postsfeed').addEventListener('click',async ev=>{
+  const pb=ev.target.closest('.playbtn');
+  if(pb){
+    const box=pb.closest('.clip'), k=box.dataset.k, id=box.dataset.v;
+    if(!CLIPSRC[k]||!/^[A-Za-z0-9_-]+$/.test(id)) return;
+    const f=document.createElement('iframe');
+    f.src=CLIPSRC[k](id);
+    f.setAttribute('loading','lazy');
+    f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+    f.allow='accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen';
+    f.setAttribute('allowfullscreen','');
+    f.title=CLIPNAME[k]+' clip';
+    box.innerHTML=''; box.appendChild(f);
+    return;
+  }
+  const b=ev.target.closest('button'); if(!b||!sb) return;
+  if(b.dataset.like){
+    if(!session||!session.user){ alert('Sign in above to like a post.'); return; }
+    const pid=b.dataset.like, p=posts.find(x=>x.id===pid); if(!p) return;
+    b.disabled=true;
+    try{
+      if(p.likedByMe) await sb.from('likes').delete().eq('post_id',pid).eq('user_id',session.user.id);
+      else await sb.from('likes').insert({post_id:pid,user_id:session.user.id});
+      await loadPosts();
+    }finally{ b.disabled=false; }
+  }
+  if(b.dataset.delpost){
+    if(!confirm('Delete this post?')) return;
+    await sb.from('posts').delete().eq('id',b.dataset.delpost);
+    await loadPosts();
+  }
+  if(b.dataset.delcomment){
+    await sb.from('comments').delete().eq('id',b.dataset.delcomment);
+    await loadPosts();
+  }
+  if(b.dataset.caddbtn){
+    if(!session||!session.user){ alert('Sign in above to comment.'); return; }
+    const pid=b.dataset.caddbtn;
+    const input=document.querySelector('[data-ctx="'+pid+'"]');
+    const body=input.value.trim(); if(!body) return;
+    if(body.length>500){ alert('Comments are capped at 500 characters.'); return; }
+    b.disabled=true;
+    try{
+      await sb.from('comments').insert({
+        post_id:pid, author_id:session.user.id, author_label:getSavedName()||'Fan', body
+      });
+      await loadPosts();
+    }finally{ b.disabled=false; }
+  }
+});
+document.getElementById('postsfeed').addEventListener('keydown',ev=>{
+  if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.ctx){
+    const btn=document.querySelector('[data-caddbtn="'+ev.target.dataset.ctx+'"]');
+    if(btn)btn.click();
+  }
+});
+
+load();
+</script>
+</body>
+</html>
