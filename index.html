@@ -115,6 +115,16 @@ h1{
 .ranklist .n{font-family:"Oswald",Impact,sans-serif;color:var(--blue);font-size:14.5px;
   white-space:nowrap;margin-left:auto}
 .ranklist .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.rlink{display:flex;align-items:baseline;gap:9px;width:100%;background:none;border:none;
+  padding:0;margin:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.rlink:hover .t,.rlink:focus-visible .t{color:var(--blue);text-decoration:underline}
+.rlink:focus-visible{outline:1px solid var(--blue);outline-offset:3px}
+.vc-bar.go{cursor:pointer}
+.vc-bar.go:focus-visible{outline:1px solid var(--blue)}
+/* brief highlight on the card a jump lands on, so the target is obvious */
+@keyframes entryflash{0%{box-shadow:0 0 0 2px var(--blue)}100%{box-shadow:0 0 0 2px transparent}}
+.entry.flash{animation:entryflash 1.5s ease-out}
+@media(prefers-reduced-motion:reduce){.entry.flash{animation:none;box-shadow:0 0 0 2px var(--blue)}}
 .subhead{font-family:"Oswald",Impact,sans-serif;font-size:12px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-soft);margin:15px 0 7px}
 .srcnote{font-size:12.5px;color:var(--ink-soft);margin-top:14px;font-style:italic;line-height:1.6}
@@ -1204,10 +1214,38 @@ function figs(items){
     '<div class="fig"><div class="k">'+esc(f.k)+'</div><div class="v">'+esc(f.v)+'</div>'+
     (f.s?'<div class="s">'+esc(f.s)+'</div>':'')+'</div>').join('')+'</div>';
 }
+// A row with an id becomes a control that jumps to that entry in the Log,
+// where the card's existing play button is — reading "Elon Musk, 12M" and
+// having no way to get to the episode was the obvious missing step.
 function ranks(rows){
   if(!rows.length) return '';
   return '<ul class="ranklist">'+rows.map(r=>
-    '<li><span class="t">'+esc(r.t)+'</span><span class="n">'+esc(r.n)+'</span></li>').join('')+'</ul>';
+    r.id
+      ? '<li><button class="rlink" data-goto="'+esc(r.id)+'" title="Open this entry in the Log">'+
+        '<span class="t">'+esc(r.t)+'</span><span class="n">'+esc(r.n)+'</span></button></li>'
+      : '<li><span class="t">'+esc(r.t)+'</span><span class="n">'+esc(r.n)+'</span></li>'
+  ).join('')+'</ul>';
+}
+
+// Filters are cleared first: the target is often hidden by whatever type or
+// window is selected, and silently scrolling to nothing looks broken.
+function goToEntry(id){
+  if(!id) return;
+  filter='all'; scope='all';
+  document.querySelectorAll('[data-f]').forEach(x=>
+    x.setAttribute('aria-pressed',String(x.dataset.f==='all')));
+  document.querySelectorAll('[data-s]').forEach(x=>
+    x.setAttribute('aria-pressed',String(x.dataset.s==='all')));
+  render();
+  showView('log');
+  requestAnimationFrame(()=>{
+    const el=document.querySelector('[data-entry="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');
+    if(!el) return;
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.classList.remove('flash');
+    void el.offsetWidth;              // restart the animation if it is re-triggered
+    el.classList.add('flash');
+  });
 }
 function medIQR(vals){
   const s=vals.slice().sort((a,b)=>a-b);
@@ -1248,14 +1286,16 @@ function monthlyViews(eps){
   for(const e of eps){
     const k=e.date.slice(0,7);
     if(!by.has(k)) by.set(k,[]);
-    by.get(k).push(e.views);
+    by.get(k).push(e);
   }
   const nowKey=today().slice(0,7);
   return [...by.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>{
-    const s=v.slice().sort((a,b)=>a-b);
+    const s=v.map(e=>e.views).sort((a,b)=>a-b);
     const [y,m]=k.split('-').map(Number);
+    // clicking a month lands on its best-performing episode
+    const top=v.reduce((a,b)=>b.views>a.views?b:a,v[0]);
     return {
-      key:k, med:quantile(s,.5), n:v.length,
+      key:k, med:quantile(s,.5), n:v.length, topId:top&&top.id, topTitle:top&&top.title,
       label:new Date(y,m-1,1).toLocaleDateString(undefined,{month:'short'})+
         (m===1||k===nowKey?" '"+String(y).slice(2):''),
       // The month in progress is short of episodes and its newest ones are
@@ -1296,9 +1336,11 @@ function viewChartHTML(eps){
   let bars='',labels='';
   rows.forEach((r,i)=>{
     const x=L+i*slot+(slot-bw)/2, h=Math.max(1,base-yOf(r.med)), y=base-h;
-    bars+='<g class="vc-bar'+(r.prov?' prov':'')+'">'+
+    bars+='<g class="vc-bar'+(r.prov?' prov':'')+(r.topId?' go':'')+'"'+
+      (r.topId?' data-goto="'+esc(r.topId)+'" role="button" tabindex="0"':'')+'>'+
       '<title>'+esc(r.label.replace(/ '/,' 20'))+' — median '+esc(nfmt(r.med))+' views across '+
-      r.n+' episode'+(r.n===1?'':'s')+(r.prov?' (month still in progress)':'')+'</title>'+
+      r.n+' episode'+(r.n===1?'':'s')+(r.prov?' (month still in progress)':'')+
+      (r.topTitle?' · click for '+esc(r.topTitle):'')+'</title>'+
       '<path d="'+barPath(x,y,bw,h)+'"'+
       (r.prov?' fill="url(#vc-prov)"':' fill="var(--blue)"')+'/>'+
       // invisible full-height target so the tooltip is reachable on short bars
@@ -1364,10 +1406,10 @@ function renderViewInsights(){
     viewChartHTML(eps)+
     '<div class="subhead">Biggest draws</div>'+
     ranks(eps.slice().sort((a,b)=>b.views-a.views).slice(0,5)
-      .map(e=>({t:e.title,n:nfmt(e.views)})))+
+      .map(e=>({t:e.title,n:nfmt(e.views),id:e.id})))+
     '<div class="subhead">Quietest</div>'+
     ranks(eps.slice().sort((a,b)=>a.views-b.views).slice(0,3)
-      .map(e=>({t:e.title,n:nfmt(e.views)})))+
+      .map(e=>({t:e.title,n:nfmt(e.views),id:e.id})))+
     growth+
     '<p class="srcnote">Views are a snapshot taken at the last sync, and newer '+
     'episodes have had less time to accumulate them — recent titles will read low.</p>';
@@ -1394,10 +1436,10 @@ function renderBoxInsights(){
     ])+
     (gate.length?'<div class="subhead">Top gates</div>'+
       ranks(gate.slice().sort((x,y)=>y.box.gate-x.box.gate).slice(0,5)
-        .map(e=>({t:e.title,n:money(e.box.gate)}))):'')+
+        .map(e=>({t:e.title,n:money(e.box.gate),id:e.id}))):'')+
     (att.length?'<div class="subhead">Biggest crowds</div>'+
       ranks(att.slice().sort((x,y)=>y.box.attendance-x.box.attendance).slice(0,5)
-        .map(e=>({t:e.title,n:cfmt(e.box.attendance)}))):'')+
+        .map(e=>({t:e.title,n:cfmt(e.box.attendance),id:e.id}))):'')+
     '<p class="srcnote">Attendance and gate as reported on each event\'s Wikipedia entry. '+
     'Closed-door Apex cards report no crowd, so they are excluded rather than counted as zero.</p>';
 }
@@ -1436,7 +1478,7 @@ function renderMoneyInsights(){
          s:top.length?'per ticket':''}
       ])+
       '<div class="subhead">Average ticket price by card</div>'+
-      ranks(top.slice(0,6).map(x=>({t:x.e.title,n:'$'+Math.round(x.price)})))+
+      ranks(top.slice(0,6).map(x=>({t:x.e.title,n:'$'+Math.round(x.price),id:x.e.id})))+
       '<p class="srcnote">Gate and attendance as reported on each event\'s Wikipedia entry. '+
       'Average ticket price is gate divided by attendance — a real figure, though it '+
       'flattens every price tier into one number.</p>';
@@ -1496,7 +1538,7 @@ function renderEngagementInsights(){
   comments.filter(c=>c.event_id).forEach(c=>{byEvent[c.event_id]=(byEvent[c.event_id]||0)+1;});
   const talked=Object.keys(byEvent).map(id=>{
     const ev=allEntries().find(e=>e.id===id);
-    return {t:ev?ev.title:'(removed entry)',n:byEvent[id]+' comment'+(byEvent[id]===1?'':'s')};
+    return {t:ev?ev.title:'(removed entry)',n:byEvent[id]+' comment'+(byEvent[id]===1?'':'s'),id:ev?ev.id:null};
   }).sort((x,y)=>parseInt(y.n)-parseInt(x.n)).slice(0,5);
 
   el.innerHTML=
@@ -1550,7 +1592,7 @@ function render(){
     // ("Upcoming" / "Previous") don't render a stray divider at the top.
     const crosses=past&&i>0&&daysTo(rows[i-1].date)>=0;
     return (crosses?'<div class="nowline"><span>Today</span></div>':'')+
-      '<article class="entry'+(past?' past':'')+'">'+
+      '<article class="entry'+(past?' past':'')+'" data-entry="'+esc(e.id)+'">'+
       '<div class="entry-head">'+
       '<div class="tags">'+
         '<span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
@@ -1786,6 +1828,18 @@ function showView(name){
 }
 document.querySelectorAll('[data-view]').forEach(b=>
   b.addEventListener('click',()=>showView(b.dataset.view)));
+
+// Delegated so it covers both the ranked-list buttons and the SVG bars, which
+// are rebuilt on every renderInsights().
+document.getElementById('view-insights').addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-goto]');
+  if(t) goToEntry(t.dataset.goto);
+});
+document.getElementById('view-insights').addEventListener('keydown',ev=>{
+  if(ev.key!=='Enter'&&ev.key!==' ') return;
+  const t=ev.target.closest('[data-goto]');
+  if(t){ ev.preventDefault(); goToEntry(t.dataset.goto); }
+});
 
 let rzt;
 window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>plotMap(lastRows),150);});
