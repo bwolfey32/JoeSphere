@@ -168,10 +168,14 @@ body.drawer-open{overflow:hidden}
 .player .ph{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;
   display:flex;align-items:center;justify-content:space-between;gap:8px}
-.paneclose{background:none;border:none;color:var(--ink-soft);cursor:pointer;
-  font-family:inherit;font-size:16px;line-height:1;letter-spacing:normal;
-  text-transform:none;padding:0;flex:0 0 auto}
-.paneclose:hover{color:var(--ink)}
+/* The one control that dismisses the drawer, so it is sized to be hit
+   without aiming — a 16px glyph in a 34px box was too easy to miss. */
+.paneclose{background:none;border:1px solid var(--rule);color:var(--ink-soft);
+  cursor:pointer;font-family:inherit;font-size:26px;line-height:1;
+  letter-spacing:normal;text-transform:none;padding:0;flex:0 0 auto;
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.paneclose:hover{color:var(--ink);border-color:var(--ink-soft);
+  background:rgba(255,255,255,.06)}
 .player h4{font-family:"Oswald",Impact,sans-serif;font-size:15px;letter-spacing:.03em;
   text-transform:uppercase;margin:11px 0 4px;line-height:1.25}
 .player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
@@ -638,12 +642,14 @@ footer{
 .nowcell:focus-visible,.ppost:focus-visible,.paneclose:focus-visible,
 .linkish:focus-visible,.about>summary:focus-visible,
 .method>summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.paneclose{min-width:34px;min-height:34px}
 @media(max-width:640px){
   .tab,.mini,.viewtab{min-height:40px}
   .nowcell{min-height:56px}
   .ppost{padding:9px 0}
   .feedbar input[type=search],.feedbar select{min-height:40px}
+  /* Bigger again on a phone, where it is thumb-operated and the drawer is
+     full-screen so there is room for it. */
+  .paneclose{width:48px;height:48px;font-size:30px}
 }
 
 /* Insights sub-sections and per-entry context cards. */
