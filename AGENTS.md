@@ -93,7 +93,25 @@ rather than a title/date heuristic so that copies already saved to a visitor's
 storage are also suppressed, and so nothing the visitor logged themselves is
 ever removed. Do not delete `SEED` to "fix" the duplication.
 
-### 9. Disclosure text is load-bearing
+### 9. Estimated money is labelled as estimated, always
+
+The Money panel mixes two kinds of number and the separation is the feature:
+
+- **Reported** — gate, attendance, and the average ticket price derived from
+  them. Real figures, cited on each event's Wikipedia entry.
+- **Estimated** — the YouTube ad-revenue band, computed as views × an assumed
+  $2–$8 per 1,000. It is rendered in its own dashed amber block, always as a
+  range, always with the method and the assumed rate stated inline.
+
+Do not collapse the estimate into a single headline number, move it into a
+stat tile beside the reported figures, or drop the note. Two things make it
+misleading without that framing: the true rate is not public and swings
+widely, and it covers YouTube advertising *only* — the reported Spotify
+licensing deal is worth orders of magnitude more, so this is a narrow slice
+and must never be presented as "what he earns". This is the same guardrail as
+invariant #6, applied to money instead of events.
+
+### 10. Disclosure text is load-bearing
 
 The "unofficial fan project" notices in the header and footer and the
 *Unconfirmed* badge are not boilerplate:

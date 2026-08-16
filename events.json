@@ -1,6 +1,140 @@
 {
-  "generated": "2026-08-16T14:03:05.213Z",
+  "generated": "2026-08-16T14:44:02.817Z",
   "events": [
+    {
+      "src": "wikipedia:ufc-fight-night-tsarukyan-vs-hooker",
+      "date": "2025-11-22",
+      "title": "UFC Fight Night: Tsarukyan vs. Hooker",
+      "loc": "Ali Bin Hamad al-Attiyah Arena, Al Rayyan, Qatar",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-323-dvalishvili-vs-yan-2",
+      "date": "2025-12-06",
+      "title": "UFC 323: Dvalishvili vs. Yan 2",
+      "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 18603,
+        "gate": 4738495
+      }
+    },
+    {
+      "src": "wikipedia:ufc-on-espn-royval-vs-kape",
+      "date": "2025-12-13",
+      "title": "UFC on ESPN: Royval vs. Kape",
+      "loc": "UFC Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-324-gaethje-vs-pimblett",
+      "date": "2026-01-24",
+      "title": "UFC 324: Gaethje vs. Pimblett",
+      "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 19481,
+        "gate": 10951166
+      }
+    },
+    {
+      "src": "wikipedia:ufc-325-volkanovski-vs-lopes-2",
+      "date": "2026-02-01",
+      "title": "UFC 325: Volkanovski vs. Lopes 2",
+      "loc": "Qudos Bank Arena, Sydney, Australia",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 18102,
+        "gate": 10103136
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-bautista-vs-oliveira",
+      "date": "2026-02-07",
+      "title": "UFC Fight Night: Bautista vs. Oliveira",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-strickland-vs-hernandez",
+      "date": "2026-02-21",
+      "title": "UFC Fight Night: Strickland vs. Hernandez",
+      "loc": "Toyota Center, Houston, Texas, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 17160,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-moreno-vs-kavanagh",
+      "date": "2026-02-28",
+      "title": "UFC Fight Night: Moreno vs. Kavanagh",
+      "loc": "Arena CDMX, Mexico City, Mexico",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 16454,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-326-holloway-vs-oliveira-2",
+      "date": "2026-03-07",
+      "title": "UFC 326: Holloway vs. Oliveira 2",
+      "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 19480,
+        "gate": 8305158
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-emmett-vs-vallejos",
+      "date": "2026-03-14",
+      "title": "UFC Fight Night: Emmett vs. Vallejos",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
     {
       "src": "wikipedia:ufc-fight-night-evloev-vs-murphy",
       "date": "2026-03-21",
@@ -54,7 +188,7 @@
       "flag": "unconfirmed",
       "box": {
         "attendance": 17741,
-        "gate": null
+        "gate": 6518684
       }
     },
     {
@@ -110,7 +244,7 @@
       "flag": "unconfirmed",
       "box": {
         "attendance": 17783,
-        "gate": null
+        "gate": 7518918
       }
     },
     {
@@ -159,11 +293,7 @@
       "note": "",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed",
-      "box": {
-        "attendance": 4300,
-        "gate": null
-      }
+      "flag": "unconfirmed"
     },
     {
       "src": "wikipedia:ufc-fight-night-kape-vs-horiguchi",
@@ -214,7 +344,7 @@
       "flag": "unconfirmed",
       "box": {
         "attendance": 17173,
-        "gate": 3187383
+        "gate": null
       }
     },
     {
@@ -228,7 +358,7 @@
         "kind": "yt",
         "id": "wq0o8pFz_gc"
       },
-      "views": 1537889,
+      "views": 1538004,
       "ticket": null,
       "flag": "auto"
     },
@@ -243,7 +373,7 @@
         "kind": "yt",
         "id": "Xq2aJpDHIio"
       },
-      "views": 706152,
+      "views": 706209,
       "ticket": null,
       "flag": "auto"
     },
@@ -258,7 +388,7 @@
         "kind": "yt",
         "id": "uob3BtMixuo"
       },
-      "views": 2051535,
+      "views": 2051701,
       "ticket": null,
       "flag": "auto"
     },
@@ -284,7 +414,7 @@
         "kind": "yt",
         "id": "EvnLN8WETlM"
       },
-      "views": 1706253,
+      "views": 1706437,
       "ticket": null,
       "flag": "auto"
     },
@@ -299,7 +429,7 @@
         "kind": "yt",
         "id": "ur_-7JONZlY"
       },
-      "views": 765520,
+      "views": 765585,
       "ticket": null,
       "flag": "auto"
     },
@@ -314,7 +444,7 @@
         "kind": "yt",
         "id": "wo6K0Bav3K0"
       },
-      "views": 833003,
+      "views": 833075,
       "ticket": null,
       "flag": "auto"
     },
@@ -329,7 +459,7 @@
         "kind": "yt",
         "id": "ZACmIrFbfPU"
       },
-      "views": 941256,
+      "views": 941363,
       "ticket": null,
       "flag": "auto"
     },
@@ -345,7 +475,7 @@
       "flag": "unconfirmed",
       "box": {
         "attendance": 18623,
-        "gate": 2490023
+        "gate": null
       }
     },
     {
@@ -359,7 +489,7 @@
         "kind": "yt",
         "id": "y9KNLlRE2HQ"
       },
-      "views": 438351,
+      "views": 438390,
       "ticket": null,
       "flag": "auto"
     },
@@ -374,7 +504,7 @@
         "kind": "yt",
         "id": "6SxEj1cujQE"
       },
-      "views": 1592232,
+      "views": 1592537,
       "ticket": null,
       "flag": "auto"
     },
@@ -389,7 +519,7 @@
         "kind": "yt",
         "id": "O52aLL8ycGU"
       },
-      "views": 540108,
+      "views": 540177,
       "ticket": null,
       "flag": "auto"
     },
@@ -399,12 +529,12 @@
       "title": "Joe Rogan Experience #2537 - David Sinclair",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 773K views at last sync.",
+      "note": "Episode release · 774K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "hxid7FofhMw"
       },
-      "views": 773372,
+      "views": 773626,
       "ticket": null,
       "flag": "auto"
     },
@@ -430,7 +560,7 @@
         "kind": "yt",
         "id": "xEBeQH39CZI"
       },
-      "views": 248740,
+      "views": 248890,
       "ticket": null,
       "flag": "auto"
     },
@@ -440,12 +570,12 @@
       "title": "Joe Rogan Experience #2538 - Joe DeRosa",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 403K views at last sync.",
+      "note": "Episode release · 404K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "pCH-R3L6QTc"
       },
-      "views": 403284,
+      "views": 403810,
       "ticket": null,
       "flag": "auto"
     },
@@ -460,7 +590,7 @@
         "kind": "yt",
         "id": "OBH4F5a6zAA"
       },
-      "views": 1507292,
+      "views": 1510820,
       "ticket": null,
       "flag": "auto"
     },
@@ -470,12 +600,12 @@
       "title": "Joe Rogan Experience #2540 - Travis Barker",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 446K views at last sync.",
+      "note": "Episode release · 448K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "9iENvZ2siTo"
       },
-      "views": 446135,
+      "views": 448481,
       "ticket": null,
       "flag": "auto"
     },

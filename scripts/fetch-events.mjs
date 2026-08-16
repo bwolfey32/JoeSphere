@@ -154,8 +154,12 @@ function contextNote(title, location) {
   return '';
 }
 
-const PAST_LIMIT = 20;      // recent past cards pulled into the feed
-const GATE_LOOKUPS = 12;    // of those, how many get an article fetch for `gate`
+const PAST_LIMIT = 30;      // recent past cards pulled into the feed
+const GATE_LOOKUPS = 14;    // cap on per-article fetches for `gate`
+// Numbered cards (UFC 329) are pay-per-views and reliably publish a gate;
+// Fight Nights almost never do. Spending the request budget on the ones that
+// actually report turns ~3 gate figures into ~10 for the same number of calls.
+const reportsGate = title => /^UFC\s+\d+/i.test(String(title || ''));
 // Firing the article lookups back to back earns an immediate HTTP 429 and
 // half the gate figures come back empty. Space them out: this job runs twice
 // a week and has no deadline, so there is no reason to hammer the API.
@@ -226,10 +230,12 @@ async function fromWikipedia() {
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, PAST_LIMIT);
 
+  let lookups = 0;
   for (let i = 0; i < past.length; i++) {
     const r = past[i];
     const box = { attendance: parseCount(r.attendance), gate: null };
-    if (i < GATE_LOOKUPS && r._link) {
+    if (lookups < GATE_LOOKUPS && r._link && reportsGate(r.event)) {
+      lookups++;
       try {
         await sleep(REQUEST_GAP_MS);
         const b = await boxOffice(r._link);
@@ -310,6 +316,13 @@ async function fromYouTube() {
   const key = process.env.YOUTUBE_API_KEY;
   if (key) {
     try {
+      channelStats = await fetchChannelStats(key);
+      console.log('    channel: ' + channelStats.subscribers + ' subscribers, ' +
+        channelStats.totalViews + ' lifetime views');
+    } catch (err) {
+      console.error('    (channel stats skipped: ' + err.message + ')');
+    }
+    try {
       const deeper = await fromYouTubeApi(key);
       const have = new Set(events.map(e => e.src));
       let added = 0;
@@ -325,6 +338,29 @@ async function fromYouTube() {
 }
 
 const API_PAGES = 4;   // 50 videos per page
+
+// Channel-level totals are first-party figures from YouTube, not derived from
+// anything: subscribers, lifetime views, upload count. They need the API key —
+// the public RSS feed carries none of it — so this stays null without one and
+// the panel simply omits itself.
+let channelStats = null;
+async function fetchChannelStats(key) {
+  const url = 'https://www.googleapis.com/youtube/v3/channels?' +
+    new URLSearchParams({ key: key, part: 'statistics,snippet', id: JRE_CHANNEL });
+  const res = await fetch(url, { headers: { 'User-Agent': UA } });
+  if (!res.ok) throw new Error('channels ' + res.status);
+  const j = await res.json();
+  const it = j.items && j.items[0];
+  if (!it || !it.statistics) throw new Error('no channel statistics');
+  const n = v => { const x = Number(v); return Number.isFinite(x) && x >= 0 ? x : null; };
+  return {
+    title: (it.snippet && it.snippet.title) || 'PowerfulJRE',
+    subscribers: n(it.statistics.subscriberCount),
+    totalViews: n(it.statistics.viewCount),
+    videos: n(it.statistics.videoCount),
+    fetchedAt: new Date().toISOString()
+  };
+}
 
 async function fromYouTubeApi(key) {
   const yt = async (path, params) => {
@@ -417,6 +453,17 @@ async function recordViewHistory(events) {
     if (series.length > HIST_MAX_SAMPLES) series.splice(0, series.length - HIST_MAX_SAMPLES);
     touched++;
   }
+  // Channel totals get the same treatment: one dated sample per run, so
+  // subscriber and lifetime-view growth become visible over time.
+  if (channelStats && Number.isFinite(channelStats.subscribers)) {
+    const ch = hist.channel || (hist.channel = []);
+    const last = ch[ch.length - 1];
+    const sample = [day, channelStats.subscribers, channelStats.totalViews];
+    if (last && last[0] === day) ch[ch.length - 1] = sample;
+    else if (!last || last[1] !== sample[1] || last[2] !== sample[2]) ch.push(sample);
+    if (ch.length > HIST_MAX_SAMPLES) ch.splice(0, ch.length - HIST_MAX_SAMPLES);
+  }
+
   hist.generated = new Date().toISOString();
   await writeFile(HIST, JSON.stringify(hist, null, 2) + '\n');
   console.log('view-history.json — ' + Object.keys(hist.series).length +
@@ -471,6 +518,15 @@ async function main() {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const payload = { generated: new Date().toISOString(), events: events };
+  // Carry the previous channel block when this run had no key or the call
+  // failed, for the same reason failed sources carry their rows forward.
+  if (channelStats) payload.channel = channelStats;
+  else {
+    try {
+      const prev = JSON.parse(await readFile(OUT, 'utf8'));
+      if (prev && prev.channel) payload.channel = prev.channel;
+    } catch { /* nothing to carry */ }
+  }
   await writeFile(OUT, JSON.stringify(payload, null, 2) + '\n');
   console.log('\nWrote events.json — ' + events.length + ' events, ' +
     failed.length + ' source(s) failed.');

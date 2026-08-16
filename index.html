@@ -118,6 +118,15 @@ h1{
 .subhead{font-family:"Oswald",Impact,sans-serif;font-size:12px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-soft);margin:15px 0 7px}
 .srcnote{font-size:12.5px;color:var(--ink-soft);margin-top:14px;font-style:italic;line-height:1.6}
+/* The estimate must never be mistaken for the reported figures above it, so it
+   sits in its own dashed, amber-keyed block rather than in a stat tile. */
+.estwrap{border:1px dashed var(--mid);background:rgba(255,176,46,.07);padding:13px 15px}
+.estband{font-family:"Oswald",Impact,sans-serif;font-weight:700;font-size:23px;
+  color:var(--mid);line-height:1.15}
+.estband span{display:block;font-size:11.5px;font-weight:400;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-soft);margin-top:3px}
+.estnote{font-size:12.5px;color:var(--ink-soft);line-height:1.65;margin:11px 0 0}
+.estnote b{color:var(--ink)}
 .viewchart{display:block;width:100%;height:auto;margin:2px 0 4px;overflow:visible}
 .vc-ax{fill:var(--ink-soft);font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.05em}
 /* the median label crosses the bars, so it carries a surface-coloured halo */
@@ -656,6 +665,8 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 
   <section class="panel" id="in-box"><h3>Box office</h3><p class="hint">Reported attendance and gate for cards that have already happened.</p><div id="in-box-body"></div></section>
 
+  <section class="panel" id="in-money"><h3>Money</h3><p class="hint">Reported box office, and a clearly-marked estimate for YouTube ads.</p><div id="in-money-body"></div></section>
+
   <section class="panel" id="in-eng"><h3>Site engagement</h3><p class="hint">What visitors here are posting and reacting to.</p><div id="in-eng-body"></div></section>
 
   <section class="analysis" id="analysis" aria-label="Pattern analysis">
@@ -842,6 +853,7 @@ let filter='all', scope='all', mapmode='both', ready=false;
 const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.supabase)
   ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
 let session=null, posts=[], postsLoading=false, postFilterEvent=null, comments=[];
+let channelInfo=null;
 function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
 // Auto-synced entries are re-derived from events.json on every load and are never
 // written to storage — otherwise a stale copy would outlive the source.
@@ -877,6 +889,7 @@ async function loadFeed(){
       views:num0(e.views), box:parseBox(e.box),
       flag:e.flag==='auto'?'auto':'unconfirmed', locked:true
     }));
+    channelInfo=parseChannel(data.channel);
     const st=document.getElementById('sync-note');
     renderInsights();
     if(st) st.textContent=auto.length
@@ -895,6 +908,12 @@ function parseBox(b){
   if(!b||typeof b!=='object') return null;
   const attendance=num0(b.attendance,200000), gate=num0(b.gate,1e10);
   return (attendance==null&&gate==null) ? null : {attendance,gate};
+}
+function parseChannel(c){
+  if(!c||typeof c!=='object') return null;
+  const subscribers=num0(c.subscribers,1e10), totalViews=num0(c.totalViews,1e15);
+  return (subscribers==null&&totalViews==null) ? null
+    : {subscribers,totalViews,videos:num0(c.videos,1e7)};
 }
 // video comes from the feed as {kind,id}; re-validate rather than trusting it
 function parseVideo0(v){
@@ -1167,6 +1186,8 @@ async function loadViewHistory(){
 }
 function nfmt(n){
   if(!Number.isFinite(n)) return '—';
+  // Lifetime channel views run to billions; without this they rendered "8400M".
+  if(n>=1e9) return (n/1e9).toFixed(n>=1e10?0:1).replace(/\.0$/,'')+'B';
   if(n>=1e6) return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';
   if(n>=1e3) return Math.round(n/1e3)+'K';
   return String(Math.round(n));
@@ -1356,6 +1377,81 @@ function renderBoxInsights(){
     'Closed-door Apex cards report no crowd, so they are excluded rather than counted as zero.</p>';
 }
 
+// ── Money ────────────────────────────────────────────────────────────────────
+// Two very different kinds of number live in this panel, and the split is the
+// whole point: gate and attendance are *reported* figures with citations, while
+// ad revenue is *estimated* from views against an assumed rate. They are
+// labelled and separated so a reader is never left guessing which is which.
+//
+// The estimate is deliberately shown as a wide range, never a single headline
+// figure. YouTube RPM for talk content varies with geography, ad load and
+// season, and nobody outside the channel can see the real number. It also
+// covers only YouTube ads: the reported Spotify licensing deal dwarfs it, so
+// this is a slice of the picture, not "what he earns".
+const RPM_LOW=2, RPM_HIGH=8;      // USD per 1000 views
+const REV_WINDOW_DAYS=30;
+
+function renderMoneyInsights(){
+  const el=document.getElementById('in-money-body'); if(!el) return;
+  const gated=allEntries().filter(e=>e.box&&Number.isFinite(e.box.gate));
+  const priced=gated.filter(e=>Number.isFinite(e.box.attendance))
+    .map(e=>({e,price:e.box.gate/e.box.attendance}));
+  let reported='';
+  if(gated.length){
+    const totalGate=gated.reduce((s,e)=>s+e.box.gate,0);
+    const p=priced.length?medIQR(priced.map(x=>x.price)):null;
+    const top=priced.slice().sort((a,b)=>b.price-a.price);
+    reported=
+      figs([
+        {k:'Gate tracked',v:money(totalGate),s:'across '+gated.length+' card'+(gated.length===1?'':'s')},
+        {k:'Median ticket',v:p?'$'+Math.round(p.med):'—',
+         s:p?'IQR $'+Math.round(p.q1)+'–$'+Math.round(p.q3):''},
+        {k:'Biggest gate',v:money(Math.max(...gated.map(e=>e.box.gate))),s:''},
+        {k:'Priciest card',v:top.length?'$'+Math.round(top[0].price):'—',
+         s:top.length?'per ticket':''}
+      ])+
+      '<div class="subhead">Average ticket price by card</div>'+
+      ranks(top.slice(0,6).map(x=>({t:x.e.title,n:'$'+Math.round(x.price)})))+
+      '<p class="srcnote">Gate and attendance as reported on each event\'s Wikipedia entry. '+
+      'Average ticket price is gate divided by attendance — a real figure, though it '+
+      'flattens every price tier into one number.</p>';
+  }else{
+    reported='<div class="empty"><strong>No gate figures yet</strong>'+
+      'Numbered cards publish these after the event.</div>';
+  }
+
+  // Estimated slice — visually and verbally separated from the reported one.
+  const recent=allEntries().filter(e=>e.type==='podcast'&&Number.isFinite(e.views)&&
+    daysTo(e.date)>-REV_WINDOW_DAYS);
+  let est='';
+  if(recent.length){
+    const v=recent.reduce((s,e)=>s+e.views,0);
+    est='<div class="subhead">Estimated YouTube ad revenue</div>'+
+      '<div class="estwrap">'+
+      '<div class="estband">'+esc(money(v/1000*RPM_LOW))+' – '+esc(money(v/1000*RPM_HIGH))+
+      '<span>per month, estimated</span></div>'+
+      '<p class="estnote"><b>This is an estimate, not a reported figure.</b> It takes the '+
+      esc(nfmt(v))+' views across the '+recent.length+' episode'+(recent.length===1?'':'s')+
+      ' released in the last '+REV_WINDOW_DAYS+' days and applies a rate of $'+RPM_LOW+'–$'+
+      RPM_HIGH+' per 1,000 views, a normal band for talk content. The true rate is not public '+
+      'and moves with geography, ad load and season.<br><br>'+
+      'It also covers <b>YouTube advertising only</b>. The reported Spotify licensing deal is '+
+      'worth orders of magnitude more, and tours, sponsorships and the UFC contract are not in '+
+      'here at all — so this is one narrow slice, not what he earns.</p></div>';
+  }
+
+  let scale='';
+  if(channelInfo){
+    scale='<div class="subhead">Channel scale</div>'+
+      figs([
+        {k:'Subscribers',v:nfmt(channelInfo.subscribers),s:'PowerfulJRE'},
+        {k:'Lifetime views',v:nfmt(channelInfo.totalViews),s:''},
+        {k:'Videos',v:channelInfo.videos?cfmt(channelInfo.videos):'—',s:'published'}
+      ]);
+  }
+  el.innerHTML=scale+reported+est;
+}
+
 function renderEngagementInsights(){
   const el=document.getElementById('in-eng-body'); if(!el) return;
   if(!sb){
@@ -1394,6 +1490,7 @@ function renderEngagementInsights(){
 
 function renderInsights(){
   renderViewInsights();
+  renderMoneyInsights();
   renderBoxInsights();
   renderEngagementInsights();
 }

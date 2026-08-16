@@ -29,6 +29,11 @@ jobs:
       # a broken upstream must never blank the site.
       - name: Fetch scheduled events
         run: node scripts/fetch-events.mjs
+        env:
+          # Optional. Without it the run still succeeds — it just uses the
+          # 15-episode RSS window and reports no channel-level figures.
+          # Add under Settings → Secrets and variables → Actions.
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
 
       - name: Commit if changed
         run: |
