@@ -496,7 +496,19 @@ textarea{resize:vertical;min-height:64px}
 /* ---------- fan posts ---------- */
 .ptag{color:var(--blue);font-size:11px;letter-spacing:.06em;border:1px solid var(--rule);
   padding:2px 7px;text-transform:none}
-.likebtn.liked{color:var(--stamp);border-color:var(--stamp)}
+/* Two classes each so this beats .ghost's same-specificity 1px/transparent
+   default regardless of source order — these should read as vote controls
+   at rest, not just when toggled, unlike the plain "Copy link" ghost button
+   next to them. Tint + border follow the same low-opacity-fill convention
+   the Unconfirmed badge already uses (see .stamp), just for a smaller control. */
+.mini.likebtn{color:var(--stamp);border-color:rgba(255,65,39,.45);
+  background:rgba(255,65,39,.10);font-weight:700}
+.mini.dislikebtn{color:var(--blue);border-color:rgba(61,214,196,.45);
+  background:rgba(61,214,196,.10);font-weight:700}
+.mini.likebtn:hover{border-color:var(--stamp);background:rgba(255,65,39,.18)}
+.mini.dislikebtn:hover{border-color:var(--blue);background:rgba(61,214,196,.18)}
+.likebtn.liked{background:var(--stamp);color:var(--paper);border-color:var(--stamp)}
+.dislikebtn.disliked{background:var(--blue);color:var(--paper);border-color:var(--blue)}
 .postfilter{font-size:12.5px;color:var(--ink-soft);margin-bottom:11px}
 .postfilter b{color:var(--ink)}
 
@@ -571,7 +583,8 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   </header>
 
   <nav class="viewtabs" aria-label="Sections">
-    <button class="viewtab" data-view="browse" aria-pressed="true">Browse</button>
+    <button class="viewtab" data-view="browse" aria-pressed="false">Browse</button>
+    <button class="viewtab" data-view="hot" aria-pressed="true">Hot</button>
     <button class="viewtab" data-view="posts" aria-pressed="false">Fan Posts</button>
     <button class="viewtab" data-view="insights" aria-pressed="false">Insights</button>
   </nav>
@@ -623,7 +636,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 
     <div class="app-main">
 
-      <div id="view-browse">
+      <div id="view-browse" hidden>
   <div class="bar scoperow">
     <span class="rowlab">Window</span>
     <button class="tab" data-s="all" aria-pressed="true">All time</button>
@@ -706,6 +719,15 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   </div>
 
   <main id="feed"><div class="empty"><strong>Opening file…</strong>Reading from the cabinet.</div></main>
+      </div>
+
+      <div id="view-hot">
+  <section class="panel" aria-label="Hot feed">
+    <h3>Hot</h3>
+    <p class="hint">Events and Fan Posts ranked together by likes, dislikes and comments —
+      busiest first, freshest first when tied.</p>
+  </section>
+  <main id="hotfeed"><div class="empty"><strong>Loading…</strong></div></main>
       </div>
 
       <div id="view-posts" hidden>
@@ -796,7 +818,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   <footer>
     <b>Unofficial fan project.</b> Not affiliated with or endorsed by Joe Rogan, JRE, or the UFC.
     All entries come from publicly announced schedules. Nothing here reports a real-time location.<br><br>
-    <b>Comments on events, Fan Posts, and likes are all public</b> — visible to every visitor,
+    <b>Comments on events, Fan Posts, and reactions (likes and dislikes) are all public</b> — visible to every visitor,
     attributed to whatever display name the poster typed in, and not reviewed before they appear.<br><br>
     Entries badged <i>Unconfirmed</i> are real scheduled events whose attendance is unverified;
     entries badged <i>Demo</i> are generated placeholders, not real dates.<br><br>
@@ -808,7 +830,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 <script>
 // ── Fan Posts ────────────────────────────────────────────────────────────────
 // Off by default (SUPABASE.url/anonKey empty). Fan posts are real cross-user
-// content — a clip link + caption, optionally likes and comments — so unlike
+// content — a clip link + caption, optionally reactions and comments — so unlike
 // everything else in this file they need somewhere every visitor can read from
 // and a signed-in visitor can write to. That's a real backend (Supabase:
 // Postgres + auth + a public REST API), which means moderation and abuse
@@ -850,15 +872,29 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //       (post_id is null and event_id is not null)
 //     )
 //   );
-//   create table likes (
-//     post_id uuid references posts(id) on delete cascade not null,
+//   -- a reaction targets either a Fan Post (post_id) or a tracker event
+//   -- (event_id), same dual-target shape as comments above — never both,
+//   -- never neither. value is +1 (like) or -1 (dislike); at most one
+//   -- reaction per (target, user), enforced with two partial unique indexes
+//   -- rather than a plain UNIQUE(post_id,user_id), since post_id/event_id
+//   -- are nullable and Postgres treats NULLs as distinct.
+//   create table reactions (
+//     id uuid primary key default gen_random_uuid(),
+//     post_id uuid references posts(id) on delete cascade,
+//     event_id text,
 //     user_id uuid references auth.users not null,
+//     value smallint not null check (value in (1,-1)),
 //     created_at timestamptz not null default now(),
-//     primary key (post_id, user_id)
+//     constraint reactions_one_target check (
+//       (post_id is not null and event_id is null) or
+//       (post_id is null and event_id is not null)
+//     )
 //   );
+//   create unique index reactions_post_user_uniq on reactions(post_id,user_id) where post_id is not null;
+//   create unique index reactions_event_user_uniq on reactions(event_id,user_id) where event_id is not null;
 //   alter table posts enable row level security;
 //   alter table comments enable row level security;
-//   alter table likes enable row level security;
+//   alter table reactions enable row level security;
 //   create policy "public read posts" on posts for select using (true);
 //   create policy "auth insert posts" on posts for insert with check (auth.uid() = author_id);
 //   create policy "own update posts" on posts for update using (auth.uid() = author_id);
@@ -866,9 +902,14 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //   create policy "public read comments" on comments for select using (true);
 //   create policy "auth insert comments" on comments for insert with check (auth.uid() = author_id);
 //   create policy "own delete comments" on comments for delete using (auth.uid() = author_id);
-//   create policy "public read likes" on likes for select using (true);
-//   create policy "auth insert likes" on likes for insert with check (auth.uid() = user_id);
-//   create policy "own delete likes" on likes for delete using (auth.uid() = user_id);
+//   create policy "public read reactions" on reactions for select using (true);
+//   create policy "auth insert reactions" on reactions for insert with check (auth.uid() = user_id);
+//   create policy "own delete reactions" on reactions for delete using (auth.uid() = user_id);
+//   -- Migrating an existing project? Preserve old likes as value=1 reactions
+//   -- instead of dropping them, then rename (not drop) the old table:
+//   --   insert into reactions (post_id, user_id, value, created_at)
+//   --     select post_id, user_id, 1, created_at from likes on conflict do nothing;
+//   --   alter table likes rename to likes_deprecated;
 //
 // The DB constraints above are defense in depth only — the page never trusts
 // a stored video_kind/video_id blindly when rendering, even though it wrote
@@ -962,9 +1003,17 @@ let filter='all', scope='all', mapmode='both', ready=false;
 // Fan Posts: sb stays null (feature stays hidden) until SUPABASE.url/anonKey are filled in.
 const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.supabase)
   ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
-let session=null, posts=[], postsLoading=false, postFilterEvent=null, comments=[];
+let session=null, posts=[], postsLoading=false, postFilterEvent=null, comments=[], reactions=[];
 let channelInfo=null;
 function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
+// Events have no row of their own in Supabase (they live in events.json/
+// localStorage), so their reaction totals are kept in an id-keyed map rather
+// than decorated onto entry objects — allEntries() rebuilds auto[] fresh on
+// every feed sync, independently of loadPosts(), so mutating entries directly
+// would race and lose data the same way embedding comments on them would.
+let eventReactions={};        // eid -> {ups,downs,myVote}
+let eventEngagementAnchor={}; // eid -> ms of earliest comment/reaction on that event
+function eventReactionsFor(eid){ return eventReactions[eid]||{ups:0,downs:0,myVote:0}; }
 // Auto-synced entries are re-derived from events.json on every load and are never
 // written to storage — otherwise a stale copy would outlive the source.
 let auto=[];
@@ -1005,7 +1054,7 @@ async function loadFeed(){
     if(st) st.textContent=auto.length
       ? auto.length+' auto-synced · updated '+new Date(data.generated).toLocaleDateString()
       : '';
-    render();
+    render(); renderHot();
     // A shared link names a feed entry, and the feed is what just arrived —
     // this is the first moment the link can actually resolve.
     if(!selectedId) applyHash();
@@ -1128,7 +1177,7 @@ function setSavedName(n){ try{ localStorage.setItem('fan-post-name',n); }catch(e
 
 // No email/password step — every visitor gets an anonymous Supabase session
 // automatically, the same zero-friction feel as the local "Log an appearance"
-// form. Posts/comments/likes are still tied to that session's user id (RLS
+// form. Posts/comments/reactions are still tied to that session's user id (RLS
 // still requires auth.uid() is not null), just not to a verified identity —
 // there's no spam deterrent beyond that, which is a deliberate trade for
 // removing the email step. Requires "Anonymous Sign-Ins" enabled in the
@@ -1153,25 +1202,46 @@ async function loadPosts(){
       .order('created_at',{ascending:false}).limit(100);
     if(error) throw error;
     const rows=data||[];
-    const ids=rows.map(r=>r.id);
-    // Comments are fetched in full, not just for these posts — event-attached
-    // comments (event_id set, post_id null) aren't tied to any loaded post.
-    let likeRows=[];
-    const [lres,cres]=await Promise.all([
-      ids.length?sb.from('likes').select('post_id,user_id').in('post_id',ids):Promise.resolve({data:[]}),
+    // Comments and reactions are fetched in full, not just for these posts —
+    // event-attached rows (event_id set, post_id null) aren't tied to any
+    // loaded post, and the Hot feed needs every event's numbers too.
+    const [rres,cres]=await Promise.all([
+      sb.from('reactions').select('post_id,event_id,user_id,value,created_at').limit(3000),
       sb.from('comments').select('*').order('created_at',{ascending:true}).limit(1000)
     ]);
-    likeRows=lres.data||[]; comments=cres.data||[];
+    reactions=rres.data||[]; comments=cres.data||[];
     const uid=session&&session.user?session.user.id:null;
-    posts=rows.map(r=>({
-      ...r,
-      likeCount:likeRows.filter(l=>l.post_id===r.id).length,
-      likedByMe:!!uid&&likeRows.some(l=>l.post_id===r.id&&l.user_id===uid),
-      comments:comments.filter(c=>c.post_id===r.id)
-    }));
+    posts=rows.map(r=>{
+      const rx=reactions.filter(x=>x.post_id===r.id);
+      const mine=uid?rx.find(x=>x.user_id===uid):null;
+      return {...r,
+        ups:rx.filter(x=>x.value===1).length,
+        downs:rx.filter(x=>x.value===-1).length,
+        myVote:mine?mine.value:0,
+        comments:comments.filter(c=>c.post_id===r.id)};
+    });
+    // Per-event reaction totals and an "engagement anchor" (earliest
+    // comment/reaction timestamp) for the Hot feed's recency term — see
+    // hotEntries() for why events can't anchor on their own date field alone.
+    eventReactions={}; eventEngagementAnchor={};
+    reactions.forEach(x=>{
+      if(!x.event_id) return;
+      const s=eventReactions[x.event_id]||(eventReactions[x.event_id]={ups:0,downs:0,myVote:0});
+      if(x.value===1) s.ups++; else s.downs++;
+      if(uid&&x.user_id===uid) s.myVote=x.value;
+      const t=Date.parse(x.created_at);
+      if(eventEngagementAnchor[x.event_id]===undefined||t<eventEngagementAnchor[x.event_id])
+        eventEngagementAnchor[x.event_id]=t;
+    });
+    comments.forEach(c=>{
+      if(!c.event_id) return;
+      const t=Date.parse(c.created_at);
+      if(eventEngagementAnchor[c.event_id]===undefined||t<eventEngagementAnchor[c.event_id])
+        eventEngagementAnchor[c.event_id]=t;
+    });
   }catch(e){ console.error('Could not load fan posts',e); posts=[]; }
   postsLoading=false; renderPosts();
-  render(); // refresh row counts: comments and fan posts per entry
+  render(); renderHot(); // refresh row counts and rankings across every list that shows them
   renderInsights();
   // The pane holds a copy of the post it is showing, so a like or a new
   // comment has to be re-read from the reloaded list or the pane keeps
@@ -1209,7 +1279,7 @@ function postRow(p){
         (ev?'<span class="tag ptag">'+esc(ev.title.slice(0,34))+'</span>':'')+
         '<span class="when">'+esc(fmt(String(p.created_at).slice(0,10)))+'</span></span>'+
       '<span class="row-title">'+esc(p.caption||'(no caption)')+'</span>'+
-      '<span class="row-meta">'+esc(p.author_label||'Fan')+' · ♥ '+(p.likeCount||0)+
+      '<span class="row-meta">'+esc(p.author_label||'Fan')+' · ▲'+(p.ups||0)+' ▼'+(p.downs||0)+
         ' · '+p.comments.length+' comment'+(p.comments.length===1?'':'s')+'</span>'+
     '</span></button>';
 }
@@ -1229,8 +1299,8 @@ function postPaneHTML(p){
       esc(fmt(String(p.created_at).slice(0,10)))+'</p>'+
     (ev?'<p class="pstat">Tagged to '+esc(ev.title)+'</p>':'')+
     '<div class="pactions">'+
-      '<button class="mini ghost likebtn'+(p.likedByMe?' liked':'')+'" data-like="'+esc(p.id)+'">'+
-        (p.likedByMe?'♥':'♡')+' '+(p.likeCount||0)+'</button>'+
+      '<button class="mini ghost likebtn'+(p.myVote===1?' liked':'')+'" data-postlike="'+esc(p.id)+'">▲ '+(p.ups||0)+'</button>'+
+      '<button class="mini ghost dislikebtn'+(p.myVote===-1?' disliked':'')+'" data-postdislike="'+esc(p.id)+'">▼ '+(p.downs||0)+'</button>'+
       '<button class="mini ghost" data-sharepost="'+esc(p.id)+'">Copy link</button>'+
       (mine?'<button class="c-del" data-delpost="'+esc(p.id)+'">delete post</button>':'')+
     '</div>'+
@@ -1276,6 +1346,46 @@ function renderPosts(){
     return;
   }
   el.innerHTML=rows.map(postRow).join('');
+}
+
+// Combines events and posts into one score-ordered list — everything is
+// included, not just items with existing engagement, so a brand-new
+// zero-reaction post or event still appears (freshest-first among ties),
+// the same as Reddit's actual "hot" behavior. Events anchor on their
+// earliest comment/reaction timestamp when they have one; with none, they
+// fall back to their own date as the closest available proxy for
+// "freshness" — using date as the *general* recency signal would rank by
+// calendar proximity instead of engagement, but as a fallback for otherwise
+// untouched events it's the only timestamp they have.
+function hotEntries(){
+  const items=[];
+  allEntries().forEach(e=>{
+    const rx=eventReactionsFor(e.id);
+    const anchor=eventEngagementAnchor[e.id]!==undefined
+      ?eventEngagementAnchor[e.id]:Date.parse(e.date);
+    items.push({kind:'event',entry:e,ups:rx.ups,downs:rx.downs,
+      score:hotScore(rx.ups,rx.downs,anchor)});
+  });
+  posts.forEach(p=>{
+    items.push({kind:'post',post:p,ups:p.ups,downs:p.downs,
+      score:hotScore(p.ups,p.downs,Date.parse(p.created_at))});
+  });
+  return items.sort((a,b)=>b.score-a.score);
+}
+function renderHot(){
+  const el=document.getElementById('hotfeed'); if(!el) return;
+  if(!sb){
+    el.innerHTML='<div class="dnote">Hot ranks reactions and comments, which need Fan Posts '+
+      'switched on — see the <code>SUPABASE</code> setup comment near the top of the script.</div>';
+    return;
+  }
+  if(postsLoading){ el.innerHTML='<div class="empty"><strong>Loading…</strong></div>'; return; }
+  const items=hotEntries();
+  if(!items.length){
+    el.innerHTML='<div class="empty"><strong>Nothing on file</strong></div>';
+    return;
+  }
+  el.innerHTML=items.map(it=>it.kind==='event'?eventRow(it.entry):postRow(it.post)).join('');
 }
 
 // A verified link (typed into the form, or supplied by a source) renders as a
@@ -1354,12 +1464,25 @@ function figs(items){
 // having no way to get to the episode was the obvious missing step.
 function ranks(rows){
   if(!rows.length) return '';
-  return '<ul class="ranklist">'+rows.map(r=>
-    r.id
-      ? '<li><button class="rlink" data-goto="'+esc(r.id)+'" title="Open this entry in the Log">'+
+  return '<ul class="ranklist">'+rows.map(r=>{
+    const attr=r.id?' data-goto="'+esc(r.id)+'"':(r.pid?' data-post="'+esc(r.pid)+'"':'');
+    return attr
+      ? '<li><button class="rlink"'+attr+' title="Open this in the '+(r.pid?'Fan Posts feed':'Log')+'">'+
         '<span class="t">'+esc(r.t)+'</span><span class="n">'+esc(r.n)+'</span></button></li>'
-      : '<li><span class="t">'+esc(r.t)+'</span><span class="n">'+esc(r.n)+'</span></li>'
-  ).join('')+'</ul>';
+      : '<li><span class="t">'+esc(r.t)+'</span><span class="n">'+esc(r.n)+'</span></li>';
+  }).join('')+'</ul>';
+}
+
+// Reddit's public "hot" formula: signed log10 of the net score, plus age in
+// seconds over a fixed constant, so a big score dominates early and age
+// gradually overtakes it. The epoch is arbitrary — only relative ordering
+// between items matters, this number is never shown to a user.
+const HOT_EPOCH=Date.UTC(2020,0,1);
+function hotScore(ups,downs,anchorMs){
+  const score=(ups||0)-(downs||0);
+  const order=Math.log10(Math.max(Math.abs(score),1));
+  const sign=score>0?1:(score<0?-1:0);
+  return sign*order+(anchorMs-HOT_EPOCH)/1000/45000;
 }
 
 // Selecting from a chart or a list loads the entry into the side pane rather
@@ -1371,10 +1494,18 @@ let selectedId=null;
 // unrelated fight card sitting in the pane — the selection was stuck between
 // the two modes instead of belonging to either.
 let selectedPostId=null;
+// What selectEntry/selectPost last opened, independent of currentView — the
+// Hot feed mixes both kinds in one list, so which pane to draw can no longer
+// be inferred from which nav tab is active (see renderPlayer()).
+let selectedKind=null; // 'event' | 'post' | null
 function selectPost(id,opts){
   if(!id) return;
-  selectedPostId=id;
+  selectedPostId=id; selectedKind='post';
   renderPlayer();
+  // Clear the other kind's highlight too — harmless while Browse and Fan
+  // Posts were separate lists, but Hot can show a [data-goto] row and a
+  // [data-post] row side by side, so both need to agree on one selection.
+  document.querySelectorAll('[data-goto].sel').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('[data-post]').forEach(el=>
     el.classList.toggle('sel',el.dataset.post===id));
   if(!(opts&&opts.silent)&&location.hash!==hashForPost(id)){
@@ -1386,8 +1517,9 @@ function selectPost(id,opts){
 
 function selectEntry(id,opts){
   if(!id) return;
-  selectedId=id;
+  selectedId=id; selectedKind='event';
   renderPlayer();
+  document.querySelectorAll('[data-post].sel').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('[data-goto]').forEach(el=>
     el.classList.toggle('sel',el.dataset.goto===id));
   // `silent` is for selections that came *from* the URL — rewriting the hash
@@ -1427,18 +1559,20 @@ function paneRefresh(){
     const box=el.querySelector('#pane-thread input[data-ctx],#pane-thread input[data-ectx]');
     if(box) box.focus();
   };
-  if(currentView==='posts'){
+  if(selectedKind==='post'){
     const p=posts.find(x=>x.id===selectedPostId); if(!p) return false;
-    const like=el.querySelector('[data-like]');
-    if(like){
-      like.classList.toggle('liked',!!p.likedByMe);
-      like.textContent=(p.likedByMe?'♥':'♡')+' '+(p.likeCount||0);
-    }
+    const up=el.querySelector('[data-postlike]'), down=el.querySelector('[data-postdislike]');
+    if(up){ up.classList.toggle('liked',p.myVote===1); up.textContent='▲ '+(p.ups||0); }
+    if(down){ down.classList.toggle('disliked',p.myVote===-1); down.textContent='▼ '+(p.downs||0); }
     if(thread) thread.innerHTML=postThreadHTML(p);
     restore();
     return true;
   }
   const e=allEntries().find(x=>x.id===selectedId); if(!e) return false;
+  const rx=eventReactionsFor(e.id);
+  const eup=el.querySelector('[data-eventlike]'), edown=el.querySelector('[data-eventdislike]');
+  if(eup){ eup.classList.toggle('liked',rx.myVote===1); eup.textContent='▲ '+rx.ups; }
+  if(edown){ edown.classList.toggle('disliked',rx.myVote===-1); edown.textContent='▼ '+rx.downs; }
   if(social) social.innerHTML=fanPostsForHTML(e);
   if(thread) thread.innerHTML=eventCommentsHTML(e.id);
   restore();
@@ -1448,52 +1582,60 @@ function paneRefresh(){
 function renderPlayer(){
   const el=document.getElementById('insight-player'); if(!el) return;
 
-  // Same thing still open and already drawn? Update in place.
-  const key=currentView==='posts'?('post:'+selectedPostId):('entry:'+selectedId);
+  // Same thing still open and already drawn? Update in place. Keyed on what
+  // was actually selected, not on currentView — the Hot feed can select
+  // either kind while currentView stays 'hot', so the view name alone can no
+  // longer tell the pane which kind of thing to draw.
+  const key=selectedKind==='post'?('post:'+selectedPostId)
+    :selectedKind==='event'?('entry:'+selectedId):'none';
   if(key===paneKey&&el.querySelector('.player')&&paneRefresh()) return;
   paneKey=key;
 
-  // The pane answers to whichever mode is open, so it can never show a post
-  // while you are browsing events, or the other way round.
-  if(currentView==='posts'){
+  if(selectedKind==='post'){
     const p=selectedPostId?posts.find(x=>x.id===selectedPostId):null;
-    el.innerHTML=p?postPaneHTML(p)
-      :'<div class="player"><div class="ph">Selected post</div>'+
-       '<div class="empty"><strong>Nothing picked yet</strong>'+
-       (posts.length?'Choose a post on the left to watch it here.'
-                   :'No fan posts yet — share a clip to start one.')+'</div></div>';
-    return;
+    if(p){ el.innerHTML=postPaneHTML(p); return; }
   }
-
-  const e=selectedId?allEntries().find(x=>x.id===selectedId):null;
-  if(!e){
-    el.innerHTML='<div class="player"><div class="ph">Selected entry</div>'+
+  if(selectedKind==='event'){
+    const e=selectedId?allEntries().find(x=>x.id===selectedId):null;
+    if(e){
+      // Same validation as everywhere else: only a whitelisted kind and a
+      // strict id ever reach an iframe, and the URL is rebuilt by CLIPSRC.
+      const v=e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?e.video:null;
+      const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
+      const rx=eventReactionsFor(e.id);
+      el.innerHTML='<div class="player"><div class="ph">Selected entry</div>'+
+        (v?'<div class="frame"><iframe src="'+esc(CLIPSRC[v.kind](v.id))+'" loading="lazy" '+
+          'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
+          'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
+          'title="'+esc(CLIPNAME[v.kind])+' clip"></iframe></div>'
+          :posterHTML(e))+
+        '<h4>'+esc(e.title)+'</h4>'+
+        '<p class="pmeta">'+esc(labels[e.type]||e.type)+' · '+esc(fmt(e.date))+
+        (e.loc?' · '+esc(cityLabel(e.loc)):'')+'</p>'+
+        (Number.isFinite(e.views)?'<p class="pstat">'+esc(nfmt(e.views))+' views at last sync</p>':'')+
+        (e.box&&Number.isFinite(e.box.gate)?'<p class="pstat">'+esc(money(e.box.gate))+' gate'+
+          (Number.isFinite(e.box.attendance)?' · '+esc(cfmt(e.box.attendance))+' in attendance':'')+'</p>':'')+
+        '<div class="pactions">'+ticketHTML(e)+shareHTML(e)+
+        (sb?'<button class="mini ghost likebtn'+(rx.myVote===1?' liked':'')+'" data-eventlike="'+esc(e.id)+'">▲ '+rx.ups+'</button>'+
+          '<button class="mini ghost dislikebtn'+(rx.myVote===-1?' disliked':'')+'" data-eventdislike="'+esc(e.id)+'">▼ '+rx.downs+'</button>':'')+
+        (e.locked?'':'<button class="c-del" data-drop="'+esc(e.id)+'">Remove entry</button>')+
+        '</div>'+
+        '<div id="pane-social">'+fanPostsForHTML(e)+'</div>'+
+        '<div id="pane-thread">'+eventCommentsHTML(e.id)+'</div>'+
+        '</div>';
+      return;
+    }
+  }
+  // Nothing selected yet: Fan Posts keeps its own empty copy, everything
+  // else (Browse/Hot/Insights) shares the generic one.
+  el.innerHTML = currentView==='posts'
+    ? '<div class="player"><div class="ph">Selected post</div>'+
+      '<div class="empty"><strong>Nothing picked yet</strong>'+
+      (posts.length?'Choose a post on the left to watch it here.'
+                  :'No fan posts yet — share a clip to start one.')+'</div></div>'
+    : '<div class="player"><div class="ph">Selected entry</div>'+
       '<div class="empty"><strong>Nothing picked yet</strong>'+
       'Choose a row, a pin on the map, or a month on the chart to watch it here.</div></div>';
-    return;
-  }
-  // Same validation as everywhere else: only a whitelisted kind and a strict
-  // id ever reach an iframe, and the URL is rebuilt by CLIPSRC.
-  const v=e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?e.video:null;
-  const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
-  el.innerHTML='<div class="player"><div class="ph">Selected entry</div>'+
-    (v?'<div class="frame"><iframe src="'+esc(CLIPSRC[v.kind](v.id))+'" loading="lazy" '+
-      'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
-      'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
-      'title="'+esc(CLIPNAME[v.kind])+' clip"></iframe></div>'
-      :posterHTML(e))+
-    '<h4>'+esc(e.title)+'</h4>'+
-    '<p class="pmeta">'+esc(labels[e.type]||e.type)+' · '+esc(fmt(e.date))+
-    (e.loc?' · '+esc(cityLabel(e.loc)):'')+'</p>'+
-    (Number.isFinite(e.views)?'<p class="pstat">'+esc(nfmt(e.views))+' views at last sync</p>':'')+
-    (e.box&&Number.isFinite(e.box.gate)?'<p class="pstat">'+esc(money(e.box.gate))+' gate'+
-      (Number.isFinite(e.box.attendance)?' · '+esc(cfmt(e.box.attendance))+' in attendance':'')+'</p>':'')+
-    '<div class="pactions">'+ticketHTML(e)+shareHTML(e)+
-    (e.locked?'':'<button class="c-del" data-drop="'+esc(e.id)+'">Remove entry</button>')+
-    '</div>'+
-    '<div id="pane-social">'+fanPostsForHTML(e)+'</div>'+
-    '<div id="pane-thread">'+eventCommentsHTML(e.id)+'</div>'+
-    '</div>';
 }
 
 // Only feed-backed entries get a share button. A visitor's own logged entries
@@ -1515,7 +1657,7 @@ function fanPostsForHTML(e){
   return '<div class="pposts"><div class="ann-h">Fan posts · '+mine.length+'</div>'+
     mine.slice(0,3).map(p=>'<div class="ppost"><b>'+esc(p.author_label||'Fan')+'</b> '+
       esc((p.caption||'').slice(0,90))+(p.caption&&p.caption.length>90?'…':'')+
-      ' <span class="n">♥ '+(p.likeCount||0)+'</span></div>').join('')+
+      ' <span class="n">▲'+(p.ups||0)+' ▼'+(p.downs||0)+'</span></div>').join('')+
     '<button class="mini ghost" data-viewposts="'+esc(e.id)+'">See all '+mine.length+
     ' in Fan Posts</button></div>';
 }
@@ -1799,7 +1941,8 @@ function renderEngagementInsights(){
       'engagement data to report.</div>';
     return;
   }
-  const likes=posts.reduce((s,p)=>s+(p.likeCount||0),0);
+  const ups=posts.reduce((s,p)=>s+(p.ups||0),0);
+  const downs=posts.reduce((s,p)=>s+(p.downs||0),0);
   const postComments=posts.reduce((s,p)=>s+(p.comments?p.comments.length:0),0);
   const eventComments=comments.filter(c=>c.event_id).length;
   if(!posts.length&&!eventComments){
@@ -1813,19 +1956,23 @@ function renderEngagementInsights(){
     const ev=allEntries().find(e=>e.id===id);
     return {t:ev?ev.title:'(removed entry)',n:byEvent[id]+' comment'+(byEvent[id]===1?'':'s'),id:ev?ev.id:null};
   }).sort((x,y)=>parseInt(y.n)-parseInt(x.n)).slice(0,5);
+  const hot=hotEntries().slice(0,5).map(it=>it.kind==='event'
+    ? {t:it.entry.title,n:'▲'+it.ups+' ▼'+it.downs,id:it.entry.id}
+    : {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''),n:'▲'+it.ups+' ▼'+it.downs,pid:it.post.id});
 
   el.innerHTML=
     figs([
       {k:'Fan posts',v:String(posts.length),s:''},
-      {k:'Likes',v:String(likes),s:posts.length?'across all posts':''},
+      {k:'Reactions',v:String(ups+downs),s:ups+' up · '+downs+' down, across posts'},
       {k:'Comments',v:String(postComments+eventComments),s:postComments+' on posts · '+eventComments+' on events'},
       {k:'Contributors',v:String(new Set(posts.map(p=>p.author_id)).size),s:'distinct posters'}
     ])+
-    (posts.length?'<div class="subhead">Most liked</div>'+
-      ranks(posts.slice().sort((x,y)=>(y.likeCount||0)-(x.likeCount||0)).slice(0,5)
+    (posts.length?'<div class="subhead">Most upvoted posts</div>'+
+      ranks(posts.slice().sort((x,y)=>((y.ups||0)-(y.downs||0))-((x.ups||0)-(x.downs||0))).slice(0,5)
         .map(p=>({t:(p.author_label||'Fan')+' — '+(p.caption||''),
-                  n:(p.likeCount||0)+' like'+(p.likeCount===1?'':'s')}))):'')+
-    (talked.length?'<div class="subhead">Most discussed events</div>'+ranks(talked):'');
+                  n:'▲'+(p.ups||0)+' ▼'+(p.downs||0),pid:p.id}))):'')+
+    (talked.length?'<div class="subhead">Most discussed events</div>'+ranks(talked):'')+
+    (hot.length?'<div class="subhead">Hottest right now</div>'+ranks(hot):'');
 }
 
 function renderInsights(){
@@ -1859,6 +2006,42 @@ function nowlineHTML(nextUp,lastOut){
     '</div>';
 }
 
+// Shared row-builder for a single event, used by both Browse and the Hot
+// feed so the two never drift into duplicated markup (same role postRow()
+// plays for Fan Posts). Browse's "today" divider logic stays out of here —
+// it depends on neighboring rows in a date-sorted list, which Hot's
+// score-sorted list doesn't have.
+function eventRow(e){
+  const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
+  const n=daysTo(e.date), past=n<0;
+  const when=past?(Math.abs(n)+' days ago'):(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'));
+  const yt=e.video&&e.video.kind==='yt'&&/^[A-Za-z0-9_-]{11}$/.test(e.video.id)?e.video.id:null;
+  const cCount=sb?comments.filter(c=>c.event_id===e.id).length:0;
+  const pCount=sb?postCountFor(e.id):0;
+  const rx=sb?eventReactionsFor(e.id):{ups:0,downs:0};
+  const stat=Number.isFinite(e.views)?nfmt(e.views)+' views'
+    :(e.box&&Number.isFinite(e.box.gate)?money(e.box.gate)+' gate':'');
+  return '<button class="row'+(past?' past':'')+(selectedId===e.id?' sel':'')+
+      '" data-entry="'+esc(e.id)+'" data-goto="'+esc(e.id)+'">'+
+    '<span class="row-thumb'+(yt?'':' noimg')+'">'+
+      (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg">'
+         :'<i>'+esc(posterBadge(e.title||'')||labels[e.type]||'')+'</i>')+'</span>'+
+    '<span class="row-body">'+
+      '<span class="row-top"><span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
+      (e.flag==='demo'?'<span class="tag demo">Demo</span>':'')+
+      (e.flag==='unconfirmed'?'<span class="tag unconf">Unconfirmed</span>':'')+
+      '<span class="when">'+esc(when)+'</span></span>'+
+      '<span class="row-title">'+esc(e.title)+'</span>'+
+      '<span class="row-meta">'+esc(fmt(e.date))+
+        (e.loc?' · '+esc(cityLabel(e.loc)):'')+
+        (stat?' · '+esc(stat):'')+
+        ((rx.ups||rx.downs)?' · ▲'+rx.ups+' ▼'+rx.downs:'')+
+        (cCount?' · '+cCount+' comment'+(cCount===1?'':'s'):'')+
+        (pCount?' · '+pCount+' fan post'+(pCount===1?'':'s'):'')+
+      '</span>'+
+    '</span></button>';
+}
+
 function render(){
   stats();
   const feed=document.getElementById('feed');
@@ -1878,7 +2061,6 @@ function render(){
         :'No entries in this category yet. Use “Log an appearance” to add an announced date.')+'</div>';
     return;
   }
-  const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
   plotMap(rows);
   renderAnalysis(rows);
   // Compact rows. The clip, ticket link, comments and delete control all live
@@ -1886,36 +2068,11 @@ function render(){
   // of DOM (an iframe placeholder and a comment form each). A row is a
   // thumbnail, a title and the numbers you'd scan by.
   feed.innerHTML=rows.map((e,i)=>{
-    const n=daysTo(e.date), past=n<0;
-    const when=past?(Math.abs(n)+' days ago'):(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'));
     // Mark the point where the timeline crosses from scheduled into released.
     // Only when a future row actually precedes it, so the scope filters
     // ("Upcoming" / "Previous") don't render a stray divider at the top.
-    const crosses=past&&i>0&&daysTo(rows[i-1].date)>=0;
-    const yt=e.video&&e.video.kind==='yt'&&/^[A-Za-z0-9_-]{11}$/.test(e.video.id)?e.video.id:null;
-    const cCount=sb?comments.filter(c=>c.event_id===e.id).length:0;
-    const pCount=sb?postCountFor(e.id):0;
-    const stat=Number.isFinite(e.views)?nfmt(e.views)+' views'
-      :(e.box&&Number.isFinite(e.box.gate)?money(e.box.gate)+' gate':'');
-    return (crosses?nowlineHTML(rows[i-1],e):'')+
-      '<button class="row'+(past?' past':'')+(selectedId===e.id?' sel':'')+
-        '" data-entry="'+esc(e.id)+'" data-goto="'+esc(e.id)+'">'+
-      '<span class="row-thumb'+(yt?'':' noimg')+'">'+
-        (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg">'
-           :'<i>'+esc(posterBadge(e.title||'')||labels[e.type]||'')+'</i>')+'</span>'+
-      '<span class="row-body">'+
-        '<span class="row-top"><span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
-        (e.flag==='demo'?'<span class="tag demo">Demo</span>':'')+
-        (e.flag==='unconfirmed'?'<span class="tag unconf">Unconfirmed</span>':'')+
-        '<span class="when">'+esc(when)+'</span></span>'+
-        '<span class="row-title">'+esc(e.title)+'</span>'+
-        '<span class="row-meta">'+esc(fmt(e.date))+
-          (e.loc?' · '+esc(cityLabel(e.loc)):'')+
-          (stat?' · '+esc(stat):'')+
-          (cCount?' · '+cCount+' comment'+(cCount===1?'':'s'):'')+
-          (pCount?' · '+pCount+' fan post'+(pCount===1?'':'s'):'')+
-        '</span>'+
-      '</span></button>';
+    const crosses=daysTo(e.date)<0&&i>0&&daysTo(rows[i-1].date)>=0;
+    return (crosses?nowlineHTML(rows[i-1],e):'')+eventRow(e);
   }).join('');
 }
 
@@ -2118,8 +2275,8 @@ function renderAnalysis(rows){
 
 // Bound to [data-view], not to a shared class — same reason as the filter
 // rows (see AGENTS.md #2).
-const VIEWS=['browse','posts','insights'];
-let currentView='browse';
+const VIEWS=['browse','hot','posts','insights'];
+let currentView='hot';
 function showView(name){
   if(!VIEWS.includes(name)) name='browse';
   currentView=name;
@@ -2127,6 +2284,7 @@ function showView(name){
   document.querySelectorAll('[data-view]').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.view===name)));
   if(name==='insights') renderInsights();
+  if(name==='hot') renderHot();
   renderPlayer();
   // The map is outside the mode containers now, so it is never hidden and its
   // width does not change when modes swap — the old re-plot on entering
@@ -2138,20 +2296,28 @@ function showView(name){
 document.querySelectorAll('[data-view]').forEach(b=>
   b.addEventListener('click',()=>showView(b.dataset.view)));
 
-// One delegated handler for every surface that can open an entry — rows,
-// ranked lists, SVG bars — since they are all rebuilt on each render and all
-// route through selectEntry.
+// One delegated handler for every surface that can open an entry or a post —
+// rows, ranked lists, SVG bars — since they are all rebuilt on each render
+// and all route through selectEntry/selectPost. #hotfeed needs both, since
+// it's the one list that mixes events and Fan Posts.
 function onPick(ev){
-  const t=ev.target.closest('[data-goto]');
-  if(t) selectEntry(t.dataset.goto);
+  const g=ev.target.closest('[data-goto]');
+  if(g){ selectEntry(g.dataset.goto); return; }
+  const p=ev.target.closest('[data-post]');
+  if(p) selectPost(p.dataset.post);
 }
 document.getElementById('view-insights').addEventListener('click',onPick);
 document.getElementById('feed').addEventListener('click',onPick);
-document.getElementById('view-insights').addEventListener('keydown',ev=>{
+document.getElementById('hotfeed').addEventListener('click',onPick);
+function onPickKey(ev){
   if(ev.key!=='Enter'&&ev.key!==' ') return;
-  const t=ev.target.closest('[data-goto]');
-  if(t){ ev.preventDefault(); selectEntry(t.dataset.goto); }
-});
+  const g=ev.target.closest('[data-goto]');
+  if(g){ ev.preventDefault(); selectEntry(g.dataset.goto); return; }
+  const p=ev.target.closest('[data-post]');
+  if(p){ ev.preventDefault(); selectPost(p.dataset.post); }
+}
+document.getElementById('view-insights').addEventListener('keydown',onPickKey);
+document.getElementById('hotfeed').addEventListener('keydown',onPickKey);
 
 /* ---------- deep links ---------- */
 // An entry gets its own URL so a find can actually be shared. Feed ids are
@@ -2434,6 +2600,23 @@ document.getElementById('insight-player').addEventListener('click',async ev=>{
     await sb.from('comments').delete().eq('id',b.dataset.ecdel);
     await loadPosts();
   }
+  if(b.dataset.eventlike||b.dataset.eventdislike){
+    if(!sb) return;
+    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
+    const eid=b.dataset.eventlike||b.dataset.eventdislike, val=b.dataset.eventlike?1:-1;
+    const cur=eventReactionsFor(eid).myVote;
+    b.disabled=true;
+    try{
+      // Delete-then-conditionally-insert, same pattern as the old like
+      // toggle: clicking the same reaction again clears it, clicking the
+      // other one switches it. A partial unique index (post/event × user)
+      // guarantees at most one row regardless of value, so no update policy
+      // is needed.
+      await sb.from('reactions').delete().eq('event_id',eid).eq('user_id',session.user.id);
+      if(cur!==val) await sb.from('reactions').insert({event_id:eid,user_id:session.user.id,value:val});
+      await loadPosts();
+    }finally{ b.disabled=false; }
+  }
 });
 document.getElementById('insight-player').addEventListener('keydown',ev=>{
   if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.ectx){
@@ -2506,13 +2689,14 @@ document.getElementById('insight-player').addEventListener('click',async ev=>{
       else window.prompt('Copy this link:',url);
     }catch(e){ window.prompt('Copy this link:',url); }
   }
-  if(b.dataset.like){
+  if(b.dataset.postlike||b.dataset.postdislike){
     if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
-    const pid=b.dataset.like, p=posts.find(x=>x.id===pid); if(!p) return;
+    const pid=b.dataset.postlike||b.dataset.postdislike, p=posts.find(x=>x.id===pid); if(!p) return;
+    const val=b.dataset.postlike?1:-1;
     b.disabled=true;
     try{
-      if(p.likedByMe) await sb.from('likes').delete().eq('post_id',pid).eq('user_id',session.user.id);
-      else await sb.from('likes').insert({post_id:pid,user_id:session.user.id});
+      await sb.from('reactions').delete().eq('post_id',pid).eq('user_id',session.user.id);
+      if(p.myVote!==val) await sb.from('reactions').insert({post_id:pid,user_id:session.user.id,value:val});
       await loadPosts();
     }finally{ b.disabled=false; }
   }
