@@ -314,7 +314,14 @@ async function fromYouTube() {
   // works, just with a shorter window. Never fail the source over a missing or
   // rejected key — it is strictly an enhancement.
   const key = process.env.YOUTUBE_API_KEY;
-  if (key) {
+  if (!key) {
+    // Say so out loud. Silence here is indistinguishable from "the key is set
+    // but rejected", which is exactly the case someone will need to debug.
+    console.log('    no YOUTUBE_API_KEY in the environment — using the 15-episode ' +
+      'RSS window, no channel figures. (In CI, check the secret is named exactly ' +
+      'YOUTUBE_API_KEY and that the workflow passes it through under `env:`.)');
+  } else {
+    console.log('    YOUTUBE_API_KEY present (' + key.length + ' chars)');
     try {
       channelStats = await fetchChannelStats(key);
       console.log('    channel: ' + channelStats.subscribers + ' subscribers, ' +
@@ -344,11 +351,23 @@ const API_PAGES = 4;   // 50 videos per page
 // the public RSS feed carries none of it — so this stays null without one and
 // the panel simply omits itself.
 let channelStats = null;
+// Google returns a specific, actionable reason in the body ("API has not been
+// used in project…", "API key not valid"). Surfacing just the status code
+// turns a fixable setup problem into a guessing game.
+async function ytError(res, path) {
+  let detail = '';
+  try {
+    const body = await res.json();
+    detail = body && body.error && body.error.message ? ' — ' + body.error.message : '';
+  } catch { /* non-JSON body */ }
+  return new Error(path + ' ' + res.status + detail);
+}
+
 async function fetchChannelStats(key) {
   const url = 'https://www.googleapis.com/youtube/v3/channels?' +
     new URLSearchParams({ key: key, part: 'statistics,snippet', id: JRE_CHANNEL });
   const res = await fetch(url, { headers: { 'User-Agent': UA } });
-  if (!res.ok) throw new Error('channels ' + res.status);
+  if (!res.ok) throw await ytError(res, 'channels');
   const j = await res.json();
   const it = j.items && j.items[0];
   if (!it || !it.statistics) throw new Error('no channel statistics');
@@ -367,7 +386,7 @@ async function fromYouTubeApi(key) {
     const url = 'https://www.googleapis.com/youtube/v3/' + path + '?' +
       new URLSearchParams(Object.assign({ key: key }, params));
     const res = await fetch(url, { headers: { 'User-Agent': UA } });
-    if (!res.ok) throw new Error(path + ' ' + res.status);
+    if (!res.ok) throw await ytError(res, path);
     return res.json();
   };
   const ch = await yt('channels', { part: 'contentDetails', id: JRE_CHANNEL });

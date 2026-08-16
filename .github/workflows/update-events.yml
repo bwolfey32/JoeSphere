@@ -18,11 +18,14 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # v5 of these actions runs on the Node 24 runtime. v4 ran on Node 20,
+      # which GitHub now warns is deprecated — that warning is about the
+      # actions' own runtime, not the version used for our script below.
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
 
       # If every source fails the script exits non-zero and writes nothing, so
       # the job fails here and the committed events.json survives untouched —
