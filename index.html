@@ -566,10 +566,8 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   <footer>
     <b>Unofficial fan project.</b> Not affiliated with or endorsed by Joe Rogan, JRE, or the UFC.
     All entries come from publicly announced schedules. Nothing here reports a real-time location.<br><br>
-    Private notes attached to an event are stored in your own browser only — they are not published
-    and nobody else sees them. <b>Fan Posts, their comments, and likes are different: they are public</b>,
-    stored off-device, visible to every visitor, attributed to whatever display name the poster typed in,
-    and not reviewed before they appear.<br><br>
+    <b>Comments on events, Fan Posts, and likes are all public</b> — visible to every visitor,
+    attributed to whatever display name the poster typed in, and not reviewed before they appear.<br><br>
     Entries badged <i>Unconfirmed</i> are real scheduled events whose attendance is unverified;
     entries badged <i>Demo</i> are generated placeholders, not real dates.<br><br>
     <span id="store-note"></span>
@@ -617,13 +615,22 @@ const DISCUSSION={
 //     event_id text,
 //     created_at timestamptz not null default now()
 //   );
+//   -- a comment targets either a Fan Post (post_id) or a tracker event
+//   -- (event_id, a plain string matching that event's client-side id — events
+//   -- live in events.json/localStorage, not in Supabase, so no FK there) —
+//   -- never both, never neither.
 //   create table comments (
 //     id uuid primary key default gen_random_uuid(),
-//     post_id uuid references posts(id) on delete cascade not null,
+//     post_id uuid references posts(id) on delete cascade,
+//     event_id text,
 //     author_id uuid references auth.users not null,
 //     author_label text not null check (char_length(author_label) <= 40),
 //     body text not null check (char_length(body) <= 500),
-//     created_at timestamptz not null default now()
+//     created_at timestamptz not null default now(),
+//     constraint comments_one_target check (
+//       (post_id is not null and event_id is null) or
+//       (post_id is null and event_id is not null)
+//     )
 //   );
 //   create table likes (
 //     post_id uuid references posts(id) on delete cascade not null,
@@ -732,12 +739,12 @@ function buildDemo(){
   });
   return out;
 }
-let state={entries:[],comments:{}};
+let state={entries:[]};
 let filter='all', scope='all', mapmode='both', ready=false;
 // Fan Posts: sb stays null (feature stays hidden) until SUPABASE.url/anonKey are filled in.
 const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.supabase)
   ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
-let session=null, posts=[], postsLoading=false, postFilterEvent=null;
+let session=null, posts=[], postsLoading=false, postFilterEvent=null, comments=[];
 function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
 // Auto-synced entries are re-derived from events.json on every load and are never
 // written to storage — otherwise a stale copy would outlive the source.
@@ -792,10 +799,10 @@ async function load(){
   try{
     const r=await store.get(KEY);
     const p=r&&r.value?JSON.parse(r.value):null;
-    if(p&&Array.isArray(p.entries)){state={entries:p.entries,comments:p.comments||{}};}
-    else{state={entries:SEED.slice(),comments:{}};}
+    if(p&&Array.isArray(p.entries)){state={entries:p.entries};}
+    else{state={entries:SEED.slice()};}
   }catch(e){
-    state={entries:SEED.slice(),comments:{}};
+    state={entries:SEED.slice()};
   }
   ready=true; render(); mountDiscussion(); loadFeed();
   initAuth().then(loadPosts);
@@ -833,19 +840,23 @@ function stats(){
   document.getElementById('stat-last').textContent=past.length?past[0].loc:'No prior entries';
 }
 
-function commentHTML(eid){
-  const list=state.comments[eid]||[];
-  let h='<div class="ann"><div class="ann-h">Private notes · '+list.length+
-        ' <span class="privhint">only you can see these</span></div>';
+// Public comments on tracker events — shares the "comments" table with Fan
+// Posts (see the SUPABASE setup SQL near the top of the script): a comment
+// row targets either a post_id or an event_id, never both.
+function eventCommentsHTML(eid){
+  if(!sb) return '';
+  const list=comments.filter(c=>c.event_id===eid);
+  let h='<div class="ann"><div class="ann-h">Comments · '+list.length+'</div>';
   list.forEach(c=>{
-    h+='<div class="c"><div class="c-meta"><b>'+esc(c.author)+'</b> · '+esc(c.ts)+
-       '<button class="c-del" data-del="'+c.id+'" data-e="'+eid+'">remove</button></div>'+
-       '<div class="c-body">'+esc(c.text)+'</div></div>';
+    h+='<div class="c"><div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
+       esc(fmt(String(c.created_at).slice(0,10)))+
+       (session&&session.user&&c.author_id===session.user.id?
+         '<button class="c-del" data-ecdel="'+c.id+'">remove</button>':'')+
+       '</div><div class="c-body">'+esc(c.body)+'</div></div>';
   });
   h+='<div class="c-form">'+
-     '<input type="text" placeholder="Name" data-au="'+eid+'" aria-label="Your name" style="flex:0 1 110px">'+
-     '<input type="text" placeholder="Add a private note…" data-tx="'+eid+'" aria-label="Private note">'+
-     '<button class="mini" data-add="'+eid+'">Add</button></div></div>';
+     '<input type="text" placeholder="Add a comment…" data-ectx="'+eid+'" aria-label="Comment">'+
+     '<button class="mini" data-ecadd="'+eid+'">Comment</button></div></div>';
   return h;
 }
 
@@ -881,24 +892,24 @@ async function loadPosts(){
     if(error) throw error;
     const rows=data||[];
     const ids=rows.map(r=>r.id);
-    let likeRows=[], commentRows=[];
-    if(ids.length){
-      const [lres,cres]=await Promise.all([
-        sb.from('likes').select('post_id,user_id').in('post_id',ids),
-        sb.from('comments').select('*').in('post_id',ids).order('created_at',{ascending:true})
-      ]);
-      likeRows=lres.data||[]; commentRows=cres.data||[];
-    }
+    // Comments are fetched in full, not just for these posts — event-attached
+    // comments (event_id set, post_id null) aren't tied to any loaded post.
+    let likeRows=[];
+    const [lres,cres]=await Promise.all([
+      ids.length?sb.from('likes').select('post_id,user_id').in('post_id',ids):Promise.resolve({data:[]}),
+      sb.from('comments').select('*').order('created_at',{ascending:true}).limit(1000)
+    ]);
+    likeRows=lres.data||[]; comments=cres.data||[];
     const uid=session&&session.user?session.user.id:null;
     posts=rows.map(r=>({
       ...r,
       likeCount:likeRows.filter(l=>l.post_id===r.id).length,
       likedByMe:!!uid&&likeRows.some(l=>l.post_id===r.id&&l.user_id===uid),
-      comments:commentRows.filter(c=>c.post_id===r.id)
+      comments:comments.filter(c=>c.post_id===r.id)
     }));
   }catch(e){ console.error('Could not load fan posts',e); posts=[]; }
   postsLoading=false; renderPosts();
-  render(); // refresh the "N fan posts" count on tracker cards
+  render(); // refresh event cards: "N fan posts" counts and public comments
 }
 
 function populateEventPicker(){
@@ -1020,7 +1031,7 @@ function render(){
         '</div>':'')+
       (e.locked?'<div style="margin-top:10px" class="lockednote">Auto-synced — edit the source feed</div>'
         :'<div style="margin-top:10px"><button class="c-del" data-drop="'+e.id+'">Remove entry</button></div>')+
-      '</div>'+commentHTML(e.id)+'</article>';
+      '</div>'+eventCommentsHTML(e.id)+'</article>';
   }).join('');
 }
 
@@ -1407,7 +1418,7 @@ document.getElementById('export').addEventListener('click',()=>{
   err.style.display='block';
 });
 document.getElementById('clear-all').addEventListener('click',async()=>{
-  state.entries=[]; state.comments={}; render(); await save();
+  state.entries=[]; render(); await save();
 });
 
 const panel=document.getElementById('form-panel');
@@ -1456,25 +1467,8 @@ document.getElementById('feed').addEventListener('click',ev=>{
 document.getElementById('feed').addEventListener('click',async ev=>{
   if(ev.target.closest('.playbtn'))return;
   const b=ev.target.closest('button'); if(!b)return;
-  if(b.dataset.add){
-    const id=b.dataset.add;
-    const tx=document.querySelector('[data-tx="'+id+'"]');
-    const au=document.querySelector('[data-au="'+id+'"]');
-    const text=tx.value.trim(); if(!text)return;
-    (state.comments[id]=state.comments[id]||[]).push({
-      id:uid(),author:au.value.trim()||'Anonymous',text,
-      ts:new Date().toLocaleDateString(undefined,{month:'short',day:'numeric'})
-    });
-    render(); await save();
-  }
-  if(b.dataset.del){
-    const e=b.dataset.e;
-    state.comments[e]=(state.comments[e]||[]).filter(c=>c.id!==b.dataset.del);
-    render(); await save();
-  }
   if(b.dataset.drop){
     state.entries=state.entries.filter(x=>x.id!==b.dataset.drop);
-    delete state.comments[b.dataset.drop];
     render(); await save();
   }
   if(b.dataset.viewposts){
@@ -1482,10 +1476,30 @@ document.getElementById('feed').addEventListener('click',async ev=>{
     renderPosts();
     document.getElementById('posts-section').scrollIntoView({behavior:'smooth',block:'start'});
   }
+  if(b.dataset.ecadd){
+    if(!sb) return;
+    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
+    const eid=b.dataset.ecadd;
+    const input=document.querySelector('[data-ectx="'+eid+'"]');
+    const body=input.value.trim(); if(!body) return;
+    if(body.length>500){ alert('Comments are capped at 500 characters.'); return; }
+    b.disabled=true;
+    try{
+      await sb.from('comments').insert({
+        event_id:eid, author_id:session.user.id, author_label:getSavedName()||'Fan', body
+      });
+      await loadPosts();
+    }finally{ b.disabled=false; }
+  }
+  if(b.dataset.ecdel){
+    if(!sb) return;
+    await sb.from('comments').delete().eq('id',b.dataset.ecdel);
+    await loadPosts();
+  }
 });
 document.getElementById('feed').addEventListener('keydown',ev=>{
-  if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.tx){
-    const btn=document.querySelector('[data-add="'+ev.target.dataset.tx+'"]');
+  if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.ectx){
+    const btn=document.querySelector('[data-ecadd="'+ev.target.dataset.ectx+'"]');
     if(btn)btn.click();
   }
 });

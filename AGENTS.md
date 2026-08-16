@@ -6,7 +6,12 @@ natively; for Claude Code, symlink or copy this to `CLAUDE.md`.
 ## What this is
 
 A static fan site logging Joe Rogan's **publicly announced** appearances — tour
-dates, scheduled broadcasts, episode releases. Single-page app, no backend.
+dates, scheduled broadcasts, episode releases — plus **Fan Posts**, a public feed
+of fan-submitted clips, and public comments/likes on both. The tracker itself is
+still a single-page app with no backend; Fan Posts and comments are the one piece
+backed by Supabase (Postgres + anonymous auth + RLS), configured near the top of
+`index.html`'s script (`const SUPABASE={...}`, with setup SQL in the comment
+above it).
 
 ```
 index.html                        the entire app (inline CSS + JS)
@@ -27,7 +32,11 @@ charset, and **rebuilds** the embed URL from scratch. Never pass a user-supplied
 string to `src`, and never widen the charset regexes. Attack cases already covered:
 `javascript:`, `data:`, quote-escapes, and lookalike hosts like
 `youtube.com.evil.com`. Feed-supplied video objects go through `parseVideo0()` for
-the same reason — **the feed is untrusted input**.
+the same reason — **the feed is untrusted input**. Fan Posts pulled from Supabase
+are the same trust category: anyone can `INSERT` a row straight through
+Supabase's REST API using the (intentionally public) anon key, bypassing this
+page's JS entirely, so post rows are re-validated with `parseVideo0()` on read
+too, never trusted just because the app itself wrote them.
 
 ### 2. Event listeners bind to data attributes, never `.tab`
 
@@ -66,14 +75,17 @@ to the default seed, and do not expand the seed with unverified events.
 
 ### 7. Disclosure text is load-bearing
 
-The "unofficial fan project" notices in the header and footer, the *Unconfirmed*
-badge, and the "only you can see these" label on private notes are not boilerplate:
+The "unofficial fan project" notices in the header and footer and the
+*Unconfirmed* badge are not boilerplate:
 
 - **Unconfirmed** means the event is real but Rogan's attendance is unverified. He
   calls most US numbered cards, not internationals or most Fight Nights. Clearing
   the badge should mean someone checked.
-- **Private notes** are per-browser and unpublished. The label exists so nobody
-  writes a public-intended comment into a void.
+- **Comments on events, Fan Posts, and likes are all public and unmoderated
+  before appearing** (there used to be a per-browser private-notes feature; it
+  was removed in favor of public comments, so there is no longer a private,
+  unpublished annotation option anywhere on the site). The disclosure must say
+  so plainly — don't let copy drift back into implying anything here is private.
 
 Do not condense these into a single generic disclaimer.
 
