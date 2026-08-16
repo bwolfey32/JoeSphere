@@ -550,7 +550,14 @@ async function main() {
   console.log('\nWrote events.json — ' + events.length + ' events, ' +
     failed.length + ' source(s) failed.');
 
-  await recordViewHistory(events);
+  // events.json is already written and valid at this point. The history file is
+  // a secondary artefact, so a problem writing it is reported but must not fail
+  // the job and make a good fetch look like a broken one.
+  try {
+    await recordViewHistory(events);
+  } catch (err) {
+    console.error('view-history.json could not be updated: ' + (err && err.message));
+  }
 }
 
 main().catch(err => { console.error('fatal:', err); process.exit(1); });
