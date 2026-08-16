@@ -23,16 +23,17 @@ scripts/fetch-events.mjs          scheduled source fetcher
 
 ### Layout
 
-One column, four sections, one drawer. Nothing is a permanent side column any
-more — the map and the detail surface are both summoned, so the feed starts
-inside the first viewport:
+Four sections, a map rail and a drawer. The detail surface is summoned rather
+than resident, so it costs nothing when closed; the map stayed resident,
+because it is navigation and a map you have to go and find is not:
 
 ```
 <header class="topbar">   compact brand + "+ Post"
 <details class="about">   the full disclosure, folded (invariant #12)
 <nav [data-view]>   Home | Explore | Schedule | Insights
 <div class="app"><div class="app-main">
-  #view-home      #nowstrip · #mappeek · filters/sort · #homefeed · Load more
+  #view-home      #nowstrip · .homegrid[ .homecol: filters/sort · #homefeed
+                  · Load more | aside.maprail > #home-map ]
   #view-explore   search · type/date/location filters · #explore-trending
                   · #explore-map (hosts .mapcard) · #explorefeed
   #view-schedule  upcoming/past · list/calendar · #schedulefeed
@@ -44,10 +45,17 @@ inside the first viewport:
 Three things about this shape are load-bearing:
 
 - **`.mapcard` exists exactly once.** `mountMap()` moves that one node between
-  `#explore-map` and `#mappeek-body`. Rendering a second copy would give you
+  `#explore-map` and `#home-map`, and `load()` mounts it to Home at startup —
+  the markup sits inside `#view-explore` in source order, so without that it is
+  invisible until someone opens Explore. Rendering a second copy would give you
   two `#pins`/`#heat`, and `plotMap()` would silently only ever find the first.
   Re-plot after moving or showing it: `uiK()` reads a width that is 0 while
   hidden, so every marker comes out mis-sized (invariant #3).
+- **The map is not decoration.** It was briefly folded into a `<details>` and
+  that was wrong: pins open entries in the drawer and the comment banners show
+  where discussion is, which only works if the pins and the rows are on screen
+  together. It is a sticky rail beside the Home feed above 1040px and stacks
+  above the feed below that. Don't put it back behind a toggle.
 - **Content type decides the surface.** Events and episodes are official
   records with permanent ids; posts are user content with their own shareable
   `#p=` URL; comments belong to a parent and never appear in a feed. If it
