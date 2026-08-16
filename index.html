@@ -315,27 +315,32 @@ body.m-both #heat{opacity:.8}
 .nowline span{white-space:nowrap}
 
 /* ---------- generated poster (events with no clip) ---------- */
-.poster{position:relative;margin:11px 0 0;aspect-ratio:16/7;overflow:hidden;
+/* Height comes from the content, not a video-shaped aspect ratio: a clip
+   thumbnail earns 16/9, a text badge just left a tall empty box that dwarfed
+   the episode cards next to it. */
+.poster{position:relative;margin:11px 0 0;overflow:hidden;
   border:1px solid var(--rule);background:
     repeating-linear-gradient(135deg,rgba(255,255,255,.030) 0 2px,transparent 2px 9px),
     linear-gradient(145deg,#1E2632,#11151C 70%);
-  display:flex;align-items:center;gap:14px;padding:14px 16px}
+  display:flex;align-items:center;gap:13px;padding:10px 14px}
 .poster::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(120% 90% at 100% 0,rgba(255,65,39,.16),transparent 62%)}
 .poster.broadcast::after{background:radial-gradient(120% 90% at 100% 0,rgba(61,214,196,.16),transparent 62%)}
 .poster.podcast::after{background:radial-gradient(120% 90% at 100% 0,rgba(125,227,138,.16),transparent 62%)}
 .poster-num{font-family:"Oswald",Impact,sans-serif;font-weight:700;line-height:.85;
-  font-size:clamp(30px,8vw,54px);color:var(--ink);opacity:.92;letter-spacing:-.01em;
+  font-size:clamp(20px,5vw,30px);color:var(--ink);opacity:.92;letter-spacing:-.01em;
   white-space:nowrap;flex:0 0 auto}
+/* a word badge at the numeral size dwarfs a "330" next to it */
+.poster-num.word{font-size:clamp(12px,2.6vw,15px);letter-spacing:.14em;opacity:.8}
 .poster.standup .poster-num{color:var(--stamp)}
 .poster.broadcast .poster-num{color:var(--blue)}
 .poster.podcast .poster-num{color:#7DE38A}
 .poster-meta{display:flex;flex-direction:column;gap:3px;min-width:0;z-index:1}
-.poster-meta b{font-family:"Oswald",Impact,sans-serif;font-size:13px;letter-spacing:.06em;
+.poster-meta b{font-family:"Oswald",Impact,sans-serif;font-size:12px;letter-spacing:.06em;
   text-transform:uppercase;color:var(--ink);overflow:hidden;text-overflow:ellipsis;
-  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical}
-.poster-meta span{font-size:11.5px;color:var(--ink-soft)}
-@media(max-width:520px){ .poster{aspect-ratio:auto;flex-direction:column;align-items:flex-start;gap:6px} }
+  display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical}
+.poster-meta span{font-size:11px;color:var(--ink-soft)}
+@media(max-width:520px){ .poster{gap:10px;padding:9px 11px} }
 
 /* ---------- annotations ---------- */
 .ann{padding:12px 16px 15px;background:rgba(255,255,255,.028)}
@@ -1122,10 +1127,14 @@ function posterBadge(title){
 }
 function posterHTML(e){
   const badge=posterBadge(e.title||'');
+  const city=e.loc?cityLabel(e.loc):'';
+  // The card header already prints the title, venue and date immediately
+  // above, so the strip carries only the badge and the city — repeating the
+  // whole lot here just read as the same text twice.
+  if(!badge&&!city) return '';
   return '<div class="poster '+e.type+'">'+
-    (badge?'<div class="poster-num">'+esc(badge)+'</div>':'')+
-    '<div class="poster-meta"><b>'+esc(e.title)+'</b>'+
-    '<span>'+esc(cityLabel(e.loc)||'Venue not listed')+' · '+esc(fmt(e.date))+'</span></div>'+
+    (badge?'<div class="poster-num'+(/\d/.test(badge)?'':' word')+'">'+esc(badge)+'</div>':'')+
+    (city?'<div class="poster-meta"><span>'+esc(city)+'</span></div>':'')+
     '</div>';
 }
 
