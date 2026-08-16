@@ -6,10 +6,10 @@ natively; for Claude Code, symlink or copy this to `CLAUDE.md`.
 ## What this is
 
 A static fan site logging Joe Rogan's **publicly announced** appearances — tour
-dates, scheduled broadcasts, JRE episode releases — plus **Fan Posts**, a public feed
-of fan-submitted clips, and public comments/likes on both. The tracker itself is
-still a single-page app with no backend; Fan Posts and comments are the one piece
-backed by Supabase (Postgres + anonymous auth + RLS), configured near the top of
+dates, scheduled broadcasts, JRE episode releases — plus **Posts**, a public feed of
+fan-submitted clips and text, and public comments/reactions on both. The tracker
+itself is still a single-page app with no backend; posts, comments and reactions
+are the one piece backed by Supabase (Postgres + anonymous auth + RLS), configured near the top of
 `index.html`'s script (`const SUPABASE={...}`, with setup SQL in the comment
 above it).
 
@@ -23,18 +23,39 @@ scripts/fetch-events.mjs          scheduled source fetcher
 
 ### Layout
 
-One shell, two columns, three modes. The left column swaps; the detail pane on
-the right is permanent:
+One column, four sections, one drawer. Nothing is a permanent side column any
+more — the map and the detail surface are both summoned, so the feed starts
+inside the first viewport:
 
 ```
-<nav [data-view]>   Browse | Fan Posts | Insights
-<div class="app">                     ← grid, always two-column above 1040px
-  <div class="app-main">
-    #view-browse     filters · log/import panels · #feed (compact rows)
-    #view-posts      composer · #postsfeed
-    #view-insights   readout · map · charts · money · engagement · analysis
-  <aside class="app-side">  #insight-player   ← the one detail surface
+<header class="topbar">   compact brand + "+ Post"
+<details class="about">   the full disclosure, folded (invariant #12)
+<nav [data-view]>   Home | Explore | Schedule | Insights
+<div class="app"><div class="app-main">
+  #view-home      #nowstrip · #mappeek · filters/sort · #homefeed · Load more
+  #view-explore   search · type/date/location filters · #explore-trending
+                  · #explore-map (hosts .mapcard) · #explorefeed
+  #view-schedule  upcoming/past · list/calendar · #schedulefeed
+  #view-insights  [data-in] sections: overview · views · ufc · geo · community
+#drawer     .drawer-panel > #insight-player   ← the one detail surface
+#composer   .drawer-panel > post composer     ← both post flows
 ```
+
+Three things about this shape are load-bearing:
+
+- **`.mapcard` exists exactly once.** `mountMap()` moves that one node between
+  `#explore-map` and `#mappeek-body`. Rendering a second copy would give you
+  two `#pins`/`#heat`, and `plotMap()` would silently only ever find the first.
+  Re-plot after moving or showing it: `uiK()` reads a width that is 0 while
+  hidden, so every marker comes out mis-sized (invariant #3).
+- **Content type decides the surface.** Events and episodes are official
+  records with permanent ids; posts are user content with their own shareable
+  `#p=` URL; comments belong to a parent and never appear in a feed. If it
+  should be findable on its own, it is a post — if it only makes sense where it
+  sits, it is a comment.
+- **The feed is stateful across a detail open.** `openDrawer()` captures scroll
+  and `closeDrawer()` restores it, which is what makes closing a detail land
+  you where you were in a list thousands of rows long.
 
 ## Invariants — do not break these
 
@@ -56,10 +77,13 @@ too, never trusted just because the app itself wrote them.
 
 ### 2. Event listeners bind to data attributes, never `.tab`
 
-Ten controls share `class="tab"`. Binding the type-filter listener to `.tab` made
-clicking *Heat*, *Previous*, or *Import* set `filter = undefined`, silently emptying
-the entire app. Bind to `[data-f]`, `[data-s]`, `[data-m]`. This bug shipped and
-took several rounds to find — do not reintroduce it by "simplifying" the selectors.
+Twenty-odd controls share `class="tab"`. Binding the type-filter listener to
+`.tab` made clicking *Heat*, *Previous*, or *Import* set `filter = undefined`,
+silently emptying the entire app. Every group binds to its own attribute —
+`[data-hf]` `[data-hs]` `[data-xf]` `[data-xv]` `[data-xd]` `[data-sc]`
+`[data-sv]` `[data-in]` `[data-m]` `[data-view]` `[data-pk]` — via `pressGroup()`.
+This bug shipped and took several rounds to find: do not reintroduce it by
+"simplifying" the selectors.
 
 ### 3. Map pins are sized in screen pixels, not viewBox units
 
@@ -111,17 +135,24 @@ ever removed. Do not delete `SEED` to "fix" the duplication.
 
 ### 9. One detail surface, one entry point
 
-`#insight-player` is the only place an entry opens, and `selectEntry(id)` is the
-only way to open one. Browse rows, ranked lists, chart bars and map pins all
-carry `data-goto` and route through it; the pane is where the clip, the ticket
-link, the fan posts, the comments and the delete control live.
+`#insight-player`, inside `#drawer`, is the only place anything opens.
+`selectEntry(id)` and `selectPost(id)` are the only ways to open one. Every
+surface that can open something — feed rows, the now-strip, ranked lists, chart
+bars, map pins, Community Posts, Related posts — carries `data-goto` or
+`data-post` and routes through the shared `onPick`/`onPickKey` delegates bound
+per view container. The drawer is where the clip, the ticket link, the context
+card, Community Posts, Discussion and the delete control live.
 
-This was not the original shape — the feed used to render every entry as a full
-card with its own inline comment form, and the pane only existed inside
-Insights. At 242 entries that was both unscannable and a lot of DOM, and it
-split watching from discussing. Do not reintroduce a second detail surface by
-"restoring" per-row expansion: add to the pane instead. List rows stay cheap on
-purpose — a thumbnail, a title, and counts.
+It has been rebuilt twice and both shapes were worse. First every entry was a
+full card with its own inline comment form: unscannable, a lot of DOM, and it
+split watching from discussing. Then it was a permanent right-hand column,
+which on mobile pinned an empty "Nothing picked yet" card above the actual
+content. It is now a drawer, so it costs nothing when closed and goes
+full-screen on a phone.
+
+Do not reintroduce a second detail surface by "restoring" per-row expansion, and
+do not give the drawer a rival — add to it instead. List rows stay cheap on
+purpose: a thumbnail, a title, and counts.
 
 ### 10. Estimated money is labelled as estimated, always
 
@@ -167,19 +198,27 @@ money, and the labelling is what makes it publishable:
 
 ### 12. Disclosure text is load-bearing
 
-The "unofficial fan project" notices in the header and footer and the
-*Unconfirmed* badge are not boilerplate:
+The "unofficial fan project" notices and the *Unconfirmed* badge are not
+boilerplate:
 
 - **Unconfirmed** means the event is real but Rogan's attendance is unverified. He
   calls most US numbered cards, not internationals or most Fight Nights. Clearing
-  the badge should mean someone checked.
-- **Comments on events, Fan Posts, and likes are all public and unmoderated
-  before appearing** (there used to be a per-browser private-notes feature; it
-  was removed in favor of public comments, so there is no longer a private,
+  the badge should mean someone checked. Schedule groups Upcoming by it, and
+  "Confirmed" there means only "not flagged unconfirmed" — never that anybody
+  verified anything.
+- **Posts, comments and reactions are all public and unmoderated before
+  appearing** (there used to be a per-browser private-notes feature; it was
+  removed in favor of public comments, so there is no longer a private,
   unpublished annotation option anywhere on the site). The disclosure must say
   so plainly — don't let copy drift back into implying anything here is private.
+  It must also keep distinguishing what is public from what is browser-local
+  (self-logged entries, display name, maintenance tools), because the site now
+  holds both.
 
-Do not condense these into a single generic disclaimer.
+The long copy lives in the folded `<details class="about">` panel plus the
+footer. **Folded is not the same as condensed** — it is all still there, and it
+must stay there. Do not condense it into a single generic disclaimer, and do not
+delete a point because the panel is closed by default.
 
 ## Scope boundaries
 
@@ -208,6 +247,15 @@ This tracks **announced, scheduled** events. Do not add:
 
 ## Known gaps
 
+- **The Home/Explore/Schedule/Insights restructure has not been exercised in a
+  browser by the agent that wrote it** — that environment had no Node and no
+  Python, so it was verified by reading plus structural checks (tag/brace/paren
+  balance, every `getElementById` target exists, every called function is
+  defined, every `data-*` attribute both emitted and handled). That catches
+  typos, not behaviour. Treat runtime bugs in the new views as likely.
+- Text posts need `posts.video_kind` / `video_id` to be nullable. The migration
+  is in the schema comment in `index.html`; until it is run, a text post fails
+  on insert while clip posts keep working.
 - `scripts/fetch-events.mjs` **has** been run against both live sources and its
   output inspected: 12 scheduled UFC events (venues and rowspan carry-over
   checked by hand) plus 15 JRE episodes. Tested too: all-sources-fail exits 1
