@@ -47,7 +47,7 @@ body{
 .wrap{max-width:760px;margin:0 auto;padding:0 18px}
 
 /* ---------- section tabs ---------- */
-.viewtabs{display:flex;gap:0;margin:22px 0 0;border-bottom:1px solid var(--rule)}
+.viewtabs{display:flex;gap:0;margin:14px 0 0;border-bottom:1px solid var(--rule)}
 .viewtab{
   font-family:"Oswald",Impact,sans-serif;font-weight:600;font-size:14.5px;
   letter-spacing:.14em;text-transform:uppercase;padding:13px 22px;cursor:pointer;
@@ -56,6 +56,20 @@ body{
 }
 .viewtab:hover{color:var(--ink)}
 .viewtab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--stamp)}
+/* On a phone the section tabs move to the bottom, where a thumb reaches, and
+   stay put while the feed scrolls. Same buttons, same [data-view] bindings —
+   only the placement changes, so there is no second nav to keep in sync. */
+@media(max-width:640px){
+  .viewtabs{position:fixed;left:0;right:0;bottom:0;z-index:50;margin:0;
+    background:var(--paper-2);border-top:1px solid var(--rule);border-bottom:none;
+    padding-bottom:env(safe-area-inset-bottom,0)}
+  .viewtab{flex:1;padding:12px 4px;font-size:11.5px;letter-spacing:.08em;
+    border-bottom:none;border-top:2px solid transparent;margin-bottom:0;
+    min-height:48px}
+  .viewtab[aria-pressed="true"]{border-bottom-color:transparent;border-top-color:var(--stamp)}
+  /* clear the fixed bar so the last row is never trapped under it */
+  body{padding-bottom:76px}
+}
 
 /* ---------- app shell ---------- */
 /* One column. The map used to hold a permanent left column and the detail
@@ -470,7 +484,9 @@ body.m-both #heat{opacity:.8}
 .row.past:hover,.row.sel{opacity:1}
 .row-thumb{flex:0 0 104px;height:59px;position:relative;overflow:hidden;background:#080A0E;
   border:1px solid var(--rule);display:flex;align-items:center;justify-content:center}
+.row-thumb i{display:none}
 .row-thumb img{width:100%;height:100%;object-fit:cover}
+.row-thumb.noimg i{display:block}
 .row-thumb.noimg i{font-family:"Oswald",Impact,sans-serif;font-style:normal;font-weight:700;
   font-size:13px;letter-spacing:.06em;color:var(--blue);text-align:center;padding:0 4px;
   line-height:1.1}
@@ -571,11 +587,33 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
   display:block;font-family:"Oswald",Impact,sans-serif;text-transform:uppercase;
   letter-spacing:.13em;font-size:13px;color:var(--ink);margin-bottom:6px;
 }
+/* A failure is not an empty state — it says so, and offers the retry. */
+.failed{border-color:var(--stamp);color:var(--stamp);background:rgba(255,65,39,.07)}
+.failed strong{color:var(--stamp)}
+/* Skeleton rows keep the feed's shape while data lands, so the page doesn't
+   jump when 25 rows replace a one-line "Loading…". */
+.skel{display:flex;gap:12px;background:var(--card);border:1px solid var(--rule);
+  border-left:3px solid transparent;padding:10px 12px;margin-bottom:7px}
+.skel-thumb{flex:0 0 104px;height:58px}
+.skel-body{flex:1;display:flex;flex-direction:column;gap:7px;justify-content:center}
+.skel-line{height:10px;width:100%}
+.skel-line.short{width:45%}
+.skel-thumb,.skel-line{background:linear-gradient(90deg,
+  rgba(255,255,255,.045) 25%,rgba(255,255,255,.10) 37%,rgba(255,255,255,.045) 63%);
+  background-size:400% 100%}
+@media(prefers-reduced-motion:no-preference){
+  .skel-thumb,.skel-line{animation:shimmer 1.3s linear infinite}
+  @keyframes shimmer{from{background-position:100% 0}to{background-position:0 0}}
+}
+@media(max-width:520px){ .skel-thumb{flex-basis:76px;height:44px} }
 footer{
   margin-top:34px;padding-top:15px;border-top:1px solid var(--rule);
   font-size:11.5px;color:var(--ink-soft);
 }
 .hidden{display:none !important}
+/* Screen-reader-only: keeps live-region announcements out of the layout. */
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 
 @media(max-width:520px){
   .readout{grid-template-columns:1fr 1fr}
@@ -949,11 +987,23 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //     author_id uuid references auth.users not null,
 //     author_label text not null check (char_length(author_label) <= 40),
 //     caption text not null check (char_length(caption) <= 500),
-//     video_kind text not null check (video_kind in ('yt','tt','vm')),
-//     video_id text not null check (video_id ~ '^[A-Za-z0-9_-]+$'),
+//     -- Nullable as a pair: a post is either a clip (both set) or a text
+//     -- post (both null). The caption carries the text either way.
+//     video_kind text check (video_kind in ('yt','tt','vm')),
+//     video_id text check (video_id ~ '^[A-Za-z0-9_-]+$'),
 //     event_id text,
-//     created_at timestamptz not null default now()
+//     created_at timestamptz not null default now(),
+//     constraint posts_video_pair check (
+//       (video_kind is null and video_id is null) or
+//       (video_kind is not null and video_id is not null)
+//     )
 //   );
+//   -- Migrating a project created before text posts existed:
+//   --   alter table posts alter column video_kind drop not null;
+//   --   alter table posts alter column video_id   drop not null;
+//   --   alter table posts add constraint posts_video_pair check (
+//   --     (video_kind is null and video_id is null) or
+//   --     (video_kind is not null and video_id is not null));
 //   -- a comment targets either a Fan Post (post_id) or a tracker event
 //   -- (event_id, a plain string matching that event's client-side id — events
 //   -- live in events.json/localStorage, not in Supabase, so no FK there) —
@@ -1102,7 +1152,7 @@ let mapmode='both', ready=false;
 // Fan Posts: sb stays null (feature stays hidden) until SUPABASE.url/anonKey are filled in.
 const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.supabase)
   ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
-let session=null, posts=[], postsLoading=false, comments=[], reactions=[];
+let session=null, posts=[], postsLoading=false, postsFailed=false, comments=[], reactions=[];
 let channelInfo=null;
 function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
 // Events have no row of their own in Supabase (they live in events.json/
@@ -1271,7 +1321,7 @@ function stats(){
 function eventCommentsHTML(eid){
   if(!sb) return '';
   const list=comments.filter(c=>c.event_id===eid);
-  let h='<div class="ann"><div class="ann-h">Comments · '+list.length+'</div>';
+  let h='<div class="ann"><div class="ann-h">Discussion · '+list.length+'</div>';
   list.forEach(c=>{
     h+='<div class="c"><div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
        esc(fmt(String(c.created_at).slice(0,10)))+
@@ -1310,7 +1360,7 @@ async function initAuth(){
 
 async function loadPosts(){
   if(!sb){ renderFeeds(); return; }
-  postsLoading=true; renderFeeds();
+  postsLoading=true; postsFailed=false; renderFeeds();
   try{
     const {data,error}=await sb.from('posts').select('*')
       .order('created_at',{ascending:false}).limit(100);
@@ -1357,7 +1407,7 @@ async function loadPosts(){
       eventComments[c.event_id]=(eventComments[c.event_id]||0)+1;
       bump(c.event_id,Date.parse(c.created_at));
     });
-  }catch(e){ console.error('Could not load fan posts',e); posts=[]; }
+  }catch(e){ console.error('Could not load fan posts',e); posts=[]; postsFailed=true; }
   postsLoading=false; renderFeeds();
   render(); renderFeeds(); // refresh row counts and rankings across every list that shows them
   renderInsights();
@@ -1404,9 +1454,11 @@ function postRow(p){
   // A text post has no clip; the thumb falls back to a TEXT marker so the row
   // keeps the same shape as every other card in the feed.
   return '<button class="row'+(selectedPostId===p.id?' sel':'')+'" data-post="'+esc(p.id)+'">'+
+    // The text marker is always in the DOM so onerror has something to reveal
+    // when a thumbnail 404s — deleted and private videos do that routinely.
     '<span class="row-thumb'+(yt?'':' noimg')+'">'+
-      (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg">'
-         :'<i>'+esc(vid?CLIPNAME[vid.kind]:'TEXT')+'</i>')+'</span>'+
+      '<i>'+esc(vid?CLIPNAME[vid.kind]:'TEXT')+'</i>'+
+      (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg" onerror="this.closest(\'.row-thumb\').classList.add(\'noimg\');this.remove()">':'')+'</span>'+
     '<span class="row-body">'+
       '<span class="row-top"><span class="tag post">Post</span>'+
         (ev?'<span class="tag ptag">'+esc(ev.title.slice(0,30))+'</span>':'')+
@@ -1465,7 +1517,7 @@ function relatedPostsHTML(p){
 
 // Split out so a new comment can be dropped in without redrawing the embed.
 function postThreadHTML(p){
-  return '<div class="ann"><div class="ann-h">Comments · '+p.comments.length+'</div>'+
+  return '<div class="ann"><div class="ann-h">Discussion · '+p.comments.length+'</div>'+
     p.comments.map(c=>'<div class="c"><div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
       esc(fmt(String(c.created_at).slice(0,10)))+
       (session&&session.user&&c.author_id===session.user.id?
@@ -1512,6 +1564,13 @@ function itemRow(it){ return it.kind==='event'?eventRow(it.entry):postRow(it.pos
 let homeFilter='all', homeSort='hot', homePage=1;
 const PAGE=25;
 
+function skeleton(n){
+  let h='';
+  for(let i=0;i<(n||6);i++) h+='<div class="skel" aria-hidden="true">'+
+    '<div class="skel-thumb"></div><div class="skel-body">'+
+    '<div class="skel-line short"></div><div class="skel-line"></div></div></div>';
+  return '<div role="status" aria-live="polite" class="visually-hidden">Loading</div>'+h;
+}
 // Data arrived or changed — refresh whichever feed is actually on screen.
 // Rendering all three every time was pointless work on a 1,400-row list.
 function renderFeeds(){
@@ -1523,6 +1582,20 @@ function renderFeeds(){
 function renderHome(){
   const el=document.getElementById('homefeed'); if(!el) return;
   renderNowStrip();
+  // Entries come from events.json and render immediately; only the post rows
+  // wait on Supabase. Showing skeletons while that is still in flight beats
+  // rendering the feed twice and having it jump.
+  if(postsLoading&&!posts.length){ el.innerHTML=skeleton(6); return; }
+  if(postsFailed){
+    el.innerHTML='<div class="empty failed"><strong>Couldn’t load posts</strong>'+
+      'Events and episodes are shown below. '+
+      '<button class="linkish" id="retry-posts">Try again</button></div>'+
+      hotEntries().filter(it=>itemMatches(it,homeFilter)).slice(0,PAGE).map(itemRow).join('');
+    const r=document.getElementById('retry-posts');
+    if(r) r.addEventListener('click',()=>{ postsFailed=false; loadPosts(); });
+    document.getElementById('load-more').hidden=true;
+    return;
+  }
   let items=hotEntries().filter(it=>itemMatches(it,homeFilter));
   if(homeSort==='latest') items=items.slice().sort((a,b)=>b.when-a.when);
   if(!items.length){
@@ -2332,8 +2405,8 @@ function eventRow(e){
   return '<button class="row'+(past?' past':'')+(selectedId===e.id?' sel':'')+
       '" data-entry="'+esc(e.id)+'" data-goto="'+esc(e.id)+'">'+
     '<span class="row-thumb'+(yt?'':' noimg')+'">'+
-      (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg">'
-         :'<i>'+esc(posterBadge(e.title||'')||labels[e.type]||'')+'</i>')+'</span>'+
+      '<i>'+esc(posterBadge(e.title||'')||labels[e.type]||'')+'</i>'+
+      (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg" onerror="this.closest(\'.row-thumb\').classList.add(\'noimg\');this.remove()">':'')+'</span>'+
     '<span class="row-body">'+
       '<span class="row-top"><span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
       (e.flag==='demo'?'<span class="tag demo">Demo</span>':'')+
