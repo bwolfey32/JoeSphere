@@ -611,6 +611,33 @@ footer{
   font-size:11.5px;color:var(--ink-soft);
 }
 .hidden{display:none !important}
+/* Focus and touch targets. Every interactive surface added by the restructure
+   needs a visible keyboard ring and a finger-sized hit area on a phone. */
+.nowcell:focus-visible,.ppost:focus-visible,.paneclose:focus-visible,
+.linkish:focus-visible,.about>summary:focus-visible,.mappeek>summary:focus-visible,
+.method>summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.paneclose{min-width:34px;min-height:34px}
+@media(max-width:640px){
+  .tab,.mini,.viewtab{min-height:40px}
+  .nowcell{min-height:56px}
+  .ppost{padding:9px 0}
+  .feedbar input[type=search],.feedbar select{min-height:40px}
+}
+
+/* Insights sub-sections and per-entry context cards. */
+.insec[hidden]{display:none}
+.method{margin:14px 0 0;border:1px solid var(--rule);background:rgba(255,255,255,.02)}
+.method>summary{cursor:pointer;padding:8px 11px;font-family:"Oswald",Impact,sans-serif;
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.method>summary:hover{color:var(--ink)}
+.method p{margin:0 11px 9px;font-size:12.5px;line-height:1.6;color:var(--ink-soft)}
+.player .pinsight{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule)}
+.player .pinsight .figrow{margin-bottom:0}
+.player .pinsight .fig{padding:9px 10px}
+.player .pinsight .fig .v{font-size:18px}
+#explore-trending{margin-bottom:6px}
+#explore-trending[hidden]{display:none}
+
 /* Screen-reader-only: keeps live-region announcements out of the layout. */
 .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
   clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
@@ -662,6 +689,10 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         venues, by contrast, are sourced.</p>
       <p><b>Money figures</b> separate reported gate and attendance from a clearly-marked estimated
         band for YouTube advertising only. The estimate is a range, never a headline number.</p>
+      <p><b>What is public and what is not.</b> Posts, comments and reactions are stored on a
+        shared server and are visible to everyone. Entries you log yourself, your display name,
+        and anything in Maintenance tools stay in this browser and are never uploaded — which
+        also means they vanish if you clear site data, and nobody else can see them.</p>
       <p class="about-store"><span id="store-note"></span></p>
     </div>
   </details>
@@ -717,6 +748,17 @@ This log needs JavaScript to render the map and event list.</div></noscript>
           <button class="tab" data-xv="list" aria-pressed="true">List</button>
           <button class="tab" data-xv="map" aria-pressed="false">Map</button>
         </div>
+        <div class="feedbar">
+          <span class="rowlab">When</span>
+          <button class="tab" data-xd="any" aria-pressed="true">Any time</button>
+          <button class="tab" data-xd="upcoming" aria-pressed="false">Upcoming</button>
+          <button class="tab" data-xd="30" aria-pressed="false">Last 30 days</button>
+          <button class="tab" data-xd="365" aria-pressed="false">Last year</button>
+          <span class="spacer"></span>
+          <span class="rowlab">Where</span>
+          <select id="ex-loc" aria-label="Filter by location"><option value="">Anywhere</option></select>
+        </div>
+        <div id="explore-trending"></div>
         <div id="explore-map">
   <section class="mapcard" aria-label="Map of announced appearance locations">
     <div class="maphead">
@@ -785,39 +827,75 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       </div>
 
       <div id="view-insights" hidden>
-  <div class="readout">
-    <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
-    <div class="cell"><div class="k">Entries on file</div><div class="v" id="stat-count">—</div></div>
-    <div class="cell"><div class="k">Last known position</div><div class="v small" id="stat-last">—</div></div>
-    <div class="cell"><div class="k">Recording base</div><div class="v small" id="stat-base">—</div></div>
+  <div class="feedbar">
+    <span class="rowlab">Section</span>
+    <button class="tab" data-in="overview" aria-pressed="true">Overview</button>
+    <button class="tab" data-in="views" aria-pressed="false">Viewership</button>
+    <button class="tab" data-in="ufc" aria-pressed="false">UFC &amp; box office</button>
+    <button class="tab" data-in="geo" aria-pressed="false">Geography</button>
+    <button class="tab" data-in="community" aria-pressed="false">Community</button>
   </div>
 
-
-  <section class="panel" id="in-view"><h3>Episode viewership</h3><p class="hint">How many people actually watched, from the channel feed.</p><div id="in-view-body"></div></section>
-
-  <section class="panel" id="in-studio"><h3>Studio eras</h3><p class="hint">Which studio each
-    episode was <b>probably</b> recorded in, grouped by release date. Estimated, not sourced —
-    no public source places individual episodes, release date isn't recording date, and some
-    episodes were recorded remotely.</p><div id="in-studio-body"></div></section>
-
-  <section class="panel" id="in-box"><h3>Box office</h3><p class="hint">Reported attendance and gate for cards that have already happened.</p><div id="in-box-body"></div></section>
-
-  <section class="panel" id="in-money"><h3>Money</h3><p class="hint">Reported box office, and a clearly-marked estimate for YouTube ads.</p><div id="in-money-body"></div></section>
-
-  <section class="panel" id="in-eng"><h3>Site engagement</h3><p class="hint">What visitors here are posting and reacting to.</p><div id="in-eng-body"></div></section>
-
-  <section class="analysis" id="analysis" aria-label="Pattern analysis">
-    <h3>Pattern Analysis</h3>
-    <p class="an-q" id="an-q"></p>
-    <div class="an-grid">
-      <div class="an-block"><h4>Cadence — days between events</h4><div id="an-cad"></div></div>
-      <div class="an-block"><h4>Market share — 95% interval</h4><div id="an-mkt"></div></div>
+  <div class="insec" data-insec="overview">
+    <div class="readout">
+      <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
+      <div class="cell"><div class="k">Entries on file</div><div class="v" id="stat-count">—</div></div>
+      <div class="cell"><div class="k">Last known position</div><div class="v small" id="stat-last">—</div></div>
+      <div class="cell"><div class="k">Recording base</div><div class="v small" id="stat-base">—</div></div>
     </div>
-    <div class="an-block" style="margin-top:18px"><h4>Seasonality — events by month</h4>
-      <div class="months" id="an-mo"></div></div>
-    <p class="an-foot">Descriptive only: this reads the entries you've logged, and describes
-      what has already been announced. It doesn't forecast where the subject will be.</p>
-  </section>
+    <section class="panel" id="in-overview"><h3>At a glance</h3>
+      <p class="hint">Headline numbers across everything on file. Each section above goes deeper.</p>
+      <div id="in-overview-body"></div></section>
+  </div>
+
+  <div class="insec" data-insec="views" hidden>
+    <section class="panel" id="in-view"><h3>Episode viewership</h3>
+      <p class="hint">How many people actually watched, from the channel feed.</p>
+      <div id="in-view-body"></div></section>
+  </div>
+
+  <div class="insec" data-insec="ufc" hidden>
+    <section class="panel" id="in-box"><h3>Box office</h3>
+      <p class="hint">Reported attendance and gate for cards that have already happened.</p>
+      <div id="in-box-body"></div></section>
+    <section class="panel" id="in-money"><h3>Money</h3>
+      <p class="hint">Reported box office, and a clearly-marked estimate for YouTube ads.</p>
+      <div id="in-money-body"></div></section>
+  </div>
+
+  <div class="insec" data-insec="geo" hidden>
+    <section class="panel" id="in-studio"><h3>Studio eras</h3><p class="hint">Which studio each
+      episode was <b>probably</b> recorded in, grouped by release date. Estimated, not sourced —
+      no public source places individual episodes, release date isn't recording date, and some
+      episodes were recorded remotely.</p><div id="in-studio-body"></div></section>
+    <section class="analysis" id="analysis" aria-label="Pattern analysis">
+      <h3>Pattern Analysis</h3>
+      <p class="an-q" id="an-q"></p>
+      <div class="an-grid">
+        <div class="an-block"><h4>Cadence — days between events</h4><div id="an-cad"></div></div>
+        <div class="an-block"><h4>Market share — 95% interval</h4><div id="an-mkt"></div></div>
+      </div>
+      <div class="an-block" style="margin-top:18px"><h4>Seasonality — events by month</h4>
+        <div class="months" id="an-mo"></div></div>
+      <details class="method"><summary>How these are calculated</summary>
+        <p>Cadence is the gap in days between consecutive announced dates, reported as a median
+          with an interquartile range rather than a mean — the sample is small and skewed, and a
+          single long off-season would drag an average around.</p>
+        <p>Market share uses a Wilson score interval at 95%, not a plain percentage, because a
+          city with 1 of 2 events is not "50% of his touring" in any useful sense and a normal
+          approximation misbehaves badly at those counts.</p>
+        <p>Seasonality counts announced dates per calendar month across everything on file.</p>
+      </details>
+      <p class="an-foot">Descriptive only: this reads the entries on file, and describes what has
+        already been announced. It doesn't forecast where the subject will be.</p>
+    </section>
+  </div>
+
+  <div class="insec" data-insec="community" hidden>
+    <section class="panel" id="in-eng"><h3>Community activity</h3>
+      <p class="hint">What visitors here are posting and reacting to.</p>
+      <div id="in-eng-body"></div></section>
+  </div>
       </div>
 
     </div>
@@ -1248,6 +1326,14 @@ function fmt(d){
   const [y,m,dd]=d.split('-').map(Number);
   return new Date(y,m-1,dd).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
 }
+// Signed day offset to words. Singular is a real case here — "1 days ago" was
+// showing up daily, since something releases most days.
+function relDay(n){
+  if(n===0) return 'Today';
+  if(n===1) return 'Tomorrow';
+  if(n===-1) return 'Yesterday';
+  return n>0 ? 'In '+n+' days' : Math.abs(n)+' days ago';
+}
 function daysTo(d){
   const [y,m,dd]=d.split('-').map(Number);
   const t=new Date(); t.setHours(0,0,0,0);
@@ -1642,14 +1728,45 @@ function renderNowStrip(){
 }
 
 /* ---------- explore ---------- */
-let exQuery='', exFilter='all', exView='list';
+let exQuery='', exFilter='all', exView='list', exDate='any', exLoc='';
+
+// A post inherits the location of whatever it is attached to — it has none of
+// its own, and dropping every post from a location filter would make "Where"
+// silently mean "events only".
+function itemLoc(it){
+  if(it.kind==='event') return it.entry.loc||'';
+  const ev=it.post.event_id?allEntries().find(e=>e.id===it.post.event_id):null;
+  return ev?(ev.loc||''):'';
+}
+function itemMatchesDate(it,mode){
+  if(mode==='any') return true;
+  const days=(Date.now()-it.when)/DAY;
+  if(mode==='upcoming') return it.when>Date.now();
+  return days>=0&&days<=Number(mode);
+}
+// Only cities that actually appear, so the list can't offer a dead filter.
+function populateLocPicker(){
+  const sel=document.getElementById('ex-loc'); if(!sel) return;
+  const cur=sel.value, seen={};
+  allEntries().forEach(e=>{ if(e.loc){ const c=cityLabel(e.loc); if(c&&c!=='—') seen[c]=(seen[c]||0)+1; } });
+  const names=Object.keys(seen).sort((a,b)=>seen[b]-seen[a]||a.localeCompare(b));
+  sel.innerHTML='<option value="">Anywhere</option>'+
+    names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+' ('+seen[n]+')</option>').join('');
+  sel.value=cur;
+}
+
 function renderExplore(){
   const el=document.getElementById('explorefeed'); if(!el) return;
+  populateLocPicker();
   document.getElementById('explore-map').hidden=(exView!=='map');
   el.hidden=(exView==='map');
+  document.getElementById('explore-trending').hidden=(exView==='map');
   if(exView==='map') return;
   const q=exQuery.trim().toLowerCase();
-  let items=hotEntries().filter(it=>itemMatches(it,exFilter));
+  let items=hotEntries()
+    .filter(it=>itemMatches(it,exFilter))
+    .filter(it=>itemMatchesDate(it,exDate))
+    .filter(it=>!exLoc||cityLabel(itemLoc(it))===exLoc);
   if(q){
     items=items.filter(it=>{
       const hay=it.kind==='post'
@@ -1658,13 +1775,35 @@ function renderExplore(){
       return hay.toLowerCase().includes(q);
     });
   }
+  renderTrending(q||exLoc||exDate!=='any'||exFilter!=='all');
   if(!items.length){
     el.innerHTML='<div class="empty"><strong>No matches</strong>'+
-      (q?'Nothing matches “'+esc(exQuery)+'”.':'Try a different filter.')+'</div>';
+      (q?'Nothing matches “'+esc(exQuery)+'”.':'Nothing fits these filters.')+'</div>';
     return;
   }
-  el.innerHTML='<p class="hint">'+items.length+' result'+(items.length===1?'':'s')+'</p>'+
+  el.innerHTML='<p class="hint">'+items.length+' result'+(items.length===1?'':'s')+
+    (items.length>60?' · showing the first 60':'')+'</p>'+
     items.slice(0,60).map(itemRow).join('');
+}
+
+// Trending is a starting point for an empty Explore, not a competitor to the
+// results list — it hides the moment a filter or query narrows things.
+function renderTrending(narrowed){
+  const el=document.getElementById('explore-trending'); if(!el) return;
+  if(narrowed||!sb){ el.innerHTML=''; return; }
+  const items=hotEntries();
+  const trendingPosts=items.filter(it=>it.kind==='post'&&(it.ups||it.cCount))
+    .slice(0,5);
+  const active=items.filter(it=>(it.cCount||0)>0)
+    .sort((a,b)=>(b.cCount||0)-(a.cCount||0)).slice(0,5);
+  if(!trendingPosts.length&&!active.length){ el.innerHTML=''; return; }
+  const list=(rows)=>ranks(rows.map(it=>it.kind==='post'
+    ? {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''),
+       n:'▲'+it.ups+(it.cCount?' · '+it.cCount+'c':''), pid:it.post.id}
+    : {t:it.entry.title, n:'▲'+it.ups+(it.cCount?' · '+it.cCount+'c':''), id:it.entry.id}));
+  el.innerHTML=
+    (trendingPosts.length?'<div class="subhead">Trending posts</div>'+list(trendingPosts):'')+
+    (active.length?'<div class="subhead">Active discussions</div>'+list(active):'');
 }
 
 /* ---------- schedule ---------- */
@@ -1680,8 +1819,29 @@ function renderSchedule(){
       (schedScope==='upcoming'?'announced':'on record')+'</strong></div>';
     return;
   }
-  if(schedView==='cal'){ el.innerHTML=calendarHTML(rows); return; }
-  el.innerHTML=rows.slice(0,200).map(eventRow).join('');
+  // Confirmed vs unconfirmed is the distinction that matters most on a
+  // schedule, and a badge among other badges was too easy to skim past. On
+  // Upcoming they become two labelled groups. "Confirmed" here means nothing
+  // more than "not flagged unconfirmed" — see the Unconfirmed badge note in
+  // the About panel; it is not a claim that anyone verified attendance.
+  // Past runs to the full episode archive, so both views are capped. Without
+  // it a deep backfill puts ~1,400 rows into one innerHTML.
+  const CAP=200, capped=rows.length>CAP;
+  const note=capped?'<p class="hint">Showing the first '+CAP+' of '+rows.length+
+    '. Narrow it down in Explore.</p>':'';
+  if(schedView==='cal'){ el.innerHTML=note+calendarHTML(rows.slice(0,CAP)); return; }
+  if(schedScope==='upcoming'){
+    const unc=rows.filter(e=>e.flag==='unconfirmed');
+    const con=rows.filter(e=>e.flag!=='unconfirmed');
+    el.innerHTML=
+      (con.length?'<div class="subhead">Confirmed · '+con.length+'</div>'+
+        con.map(eventRow).join(''):'')+
+      (unc.length?'<div class="subhead">Unconfirmed attendance · '+unc.length+'</div>'+
+        '<p class="hint" style="margin:0 0 9px">Real scheduled events. Whether he is on the '+
+        'call has not been verified.</p>'+unc.map(eventRow).join(''):'');
+    return;
+  }
+  el.innerHTML=note+rows.slice(0,CAP).map(eventRow).join('');
 }
 // A month-grouped agenda rather than a true grid: entries are sparse and a
 // 6x7 grid of mostly-empty cells reads worse than a dated list.
@@ -1978,6 +2138,7 @@ function renderPlayer(){
           '<button class="mini ghost dislikebtn'+(rx.myVote===-1?' disliked':'')+'" data-eventdislike="'+esc(e.id)+'">▼ '+rx.downs+'</button>':'')+
         (e.locked?'':'<button class="c-del" data-drop="'+esc(e.id)+'">Remove entry</button>')+
         '</div>'+
+        entryInsightHTML(e)+
         '<div id="pane-social">'+fanPostsForHTML(e)+'</div>'+
         '<div id="pane-thread">'+eventCommentsHTML(e.id)+'</div>'+
         '</div>';
@@ -1993,6 +2154,37 @@ function renderPlayer(){
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
     '<div class="empty"><strong>This item is no longer here</strong>'+
     'It may have been removed, or the link may be out of date.</div></div>';
+}
+
+// A couple of numbers that put this entry in context, on the entry itself
+// rather than only in Insights. Comparisons are against the same kind of
+// thing — an episode against episodes, a card against cards — because "above
+// average" is meaningless across the two. Median, not mean, per the
+// statistics convention in AGENTS.md.
+function entryInsightHTML(e){
+  const bits=[];
+  if(e.type==='podcast'&&Number.isFinite(e.views)&&e.views>0){
+    const peers=allEntries().filter(x=>x.type==='podcast'&&Number.isFinite(x.views)&&x.views>0)
+      .map(x=>x.views);
+    if(peers.length>3){
+      const med=medIQR(peers).med;
+      const pct=Math.round((e.views/med-1)*100);
+      bits.push({k:'vs median episode',v:(pct>=0?'+':'')+pct+'%',
+        s:nfmt(med)+' median of '+peers.length});
+    }
+    const era=studioForEntry(e);
+    if(era) bits.push({k:'Recording base',v:era.label,s:'estimated from release date'});
+  }
+  if(e.box&&Number.isFinite(e.box.gate)){
+    const peers=allEntries().filter(x=>x.box&&Number.isFinite(x.box.gate)).map(x=>x.box.gate);
+    if(peers.length>3){
+      const med=medIQR(peers).med;
+      bits.push({k:'vs median gate',v:(e.box.gate>=med?'+':'')+
+        Math.round((e.box.gate/med-1)*100)+'%',s:money(med)+' median of '+peers.length});
+    }
+  }
+  if(!bits.length) return '';
+  return '<div class="pinsight"><div class="ann-h">In context</div>'+figs(bits)+'</div>';
 }
 
 // Only feed-backed entries get a share button. A visitor's own logged entries
@@ -2349,11 +2541,23 @@ function renderEngagementInsights(){
       'Once people start sharing clips and commenting, the numbers show up here.</div>';
     return;
   }
+  // Comments outlive their event: a cancelled UFC card drops out of the feed
+  // on the next sync but its thread stays in Supabase, keyed to an id nothing
+  // resolves to any more. Those used to render as "(removed entry)" rows that
+  // led nowhere. They are counted in the totals above — the discussion did
+  // happen — but kept out of a ranking whose whole purpose is to be clicked.
+  let orphanEvents=0, orphanComments=0;
   const talked=Object.keys(eventComments).map(id=>{
     const ev=allEntries().find(e=>e.id===id);
     const n=eventComments[id];
-    return {t:ev?ev.title:'(removed entry)',n:n+' comment'+(n===1?'':'s'),id:ev?ev.id:null};
-  }).sort((x,y)=>parseInt(y.n)-parseInt(x.n)).slice(0,5);
+    if(!ev){ orphanEvents++; orphanComments+=n; return null; }
+    return {t:ev.title,n:n+' comment'+(n===1?'':'s'),id:ev.id};
+  }).filter(Boolean).sort((x,y)=>parseInt(y.n)-parseInt(x.n)).slice(0,5);
+  const orphanNote=orphanEvents
+    ? '<p class="hint" style="margin:6px 0 0">'+orphanComments+' comment'+
+      (orphanComments===1?'':'s')+' on '+orphanEvents+' entr'+(orphanEvents===1?'y':'ies')+
+      ' no longer in the feed — cancelled or rescheduled, so there is nothing to link to.</p>'
+    : '';
   // Comments count toward the ranking, so they have to show in the readout
   // too — otherwise an item sitting at #1 on a comment thread alone reads
   // as "▲0 ▼0" and the order looks arbitrary.
@@ -2373,17 +2577,50 @@ function renderEngagementInsights(){
       ranks(posts.slice().sort((x,y)=>((y.ups||0)-(y.downs||0))-((x.ups||0)-(x.downs||0))).slice(0,5)
         .map(p=>({t:(p.author_label||'Fan')+' — '+(p.caption||''),
                   n:'▲'+(p.ups||0)+' ▼'+(p.downs||0),pid:p.id}))):'')+
-    (talked.length?'<div class="subhead">Most discussed events</div>'+ranks(talked):'')+
+    (talked.length?'<div class="subhead">Most discussed events</div>'+ranks(talked)+orphanNote
+      :orphanNote)+
     (hot.length?'<div class="subhead">Hottest right now</div>'+ranks(hot):'');
 }
 
+let inSection='overview';
+function showInsightSection(name){
+  inSection=name;
+  document.querySelectorAll('[data-insec]').forEach(s=>{ s.hidden=s.dataset.insec!==name; });
+  document.querySelectorAll('[data-in]').forEach(b=>
+    b.setAttribute('aria-pressed',String(b.dataset.in===name)));
+  // The charts size themselves off their container, which is 0-wide while
+  // hidden — redraw the section that just became visible.
+  renderInsights();
+}
 function renderInsights(){
   renderPlayer();
+  renderOverviewInsights();
   renderViewInsights();
   renderStudioInsights();
   renderMoneyInsights();
   renderBoxInsights();
   renderEngagementInsights();
+}
+
+// Overview is a summary with a way into each section, not a sixth analysis.
+function renderOverviewInsights(){
+  const el=document.getElementById('in-overview-body'); if(!el) return;
+  const all=allEntries();
+  const eps=all.filter(e=>e.type==='podcast');
+  const evs=all.filter(e=>e.type!=='podcast');
+  const withViews=eps.filter(e=>Number.isFinite(e.views)&&e.views>0).map(e=>e.views);
+  const gates=all.filter(e=>e.box&&Number.isFinite(e.box.gate)).map(e=>e.box.gate);
+  const cCount=comments.length;
+  el.innerHTML=figs([
+    {k:'Episodes',v:String(eps.length),
+     s:withViews.length?nfmt(medIQR(withViews).med)+' median views':''},
+    {k:'Events',v:String(evs.length),
+     s:evs.filter(e=>daysTo(e.date)>=0).length+' still upcoming'},
+    {k:'Reported gate',v:gates.length?money(gates.reduce((a,b)=>a+b,0)):'—',
+     s:gates.length?'across '+gates.length+' card'+(gates.length===1?'':'s'):'no figures yet'},
+    {k:'Community',v:String(posts.length+cCount),
+     s:posts.length+' post'+(posts.length===1?'':'s')+' · '+cCount+' comment'+(cCount===1?'':'s')}
+  ]);
 }
 
 
@@ -2395,7 +2632,7 @@ function renderInsights(){
 function eventRow(e){
   const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
   const n=daysTo(e.date), past=n<0;
-  const when=past?(Math.abs(n)+' days ago'):(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'));
+  const when=relDay(n);
   const yt=e.video&&e.video.kind==='yt'&&/^[A-Za-z0-9_-]{11}$/.test(e.video.id)?e.video.id:null;
   const cCount=sb?eventCommentCount(e.id):0;
   const pCount=sb?postCountFor(e.id):0;
@@ -2853,6 +3090,15 @@ document.querySelectorAll('[data-xv]').forEach(t=>t.addEventListener('click',()=
   exView=t.dataset.xv; pressGroup('data-xv',t); renderExplore();
   if(exView==='map') requestAnimationFrame(()=>plotMap(lastRows));
 }));
+document.querySelectorAll('[data-in]').forEach(t=>t.addEventListener('click',()=>{
+  showInsightSection(t.dataset.in);
+}));
+document.querySelectorAll('[data-xd]').forEach(t=>t.addEventListener('click',()=>{
+  exDate=t.dataset.xd; pressGroup('data-xd',t); renderExplore();
+}));
+document.getElementById('ex-loc').addEventListener('change',ev=>{
+  exLoc=ev.target.value; renderExplore();
+});
 let exT;
 document.getElementById('ex-q').addEventListener('input',ev=>{
   exQuery=ev.target.value; clearTimeout(exT); exT=setTimeout(renderExplore,140);
