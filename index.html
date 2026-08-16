@@ -122,6 +122,8 @@ body.wide .wrap{max-width:1240px}
   text-transform:uppercase;margin:11px 0 4px;line-height:1.25}
 .player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
 .player .pstat{font-size:12.5px;color:var(--blue);margin:2px 0 0}
+.player .ptalk{font-size:12.5px;color:var(--ink-soft);margin:8px 0 0;
+  padding-top:8px;border-top:1px dashed var(--rule)}
 .player .frame{position:relative;aspect-ratio:16/9;background:#080A0E;border:1px solid var(--rule);
   overflow:hidden}
 .player .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -1281,6 +1283,19 @@ function selectEntry(id){
   if(pane) pane.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+// How much conversation an entry has attracted. Both counts come from data
+// already loaded for the feed, so this costs no extra request — and it stays
+// silent rather than showing "0 comments" when Fan Posts isn't configured.
+function talkHTML(e){
+  if(!sb) return '';
+  const c=comments.filter(x=>x.event_id===e.id).length, p=postCountFor(e.id);
+  const bits=[];
+  if(c) bits.push(c+' comment'+(c===1?'':'s'));
+  if(p) bits.push(p+' fan post'+(p===1?'':'s'));
+  return '<p class="ptalk">'+(bits.length?'💬 '+esc(bits.join(' · '))
+    :'No comments yet — be the first in the Log.')+'</p>';
+}
+
 function renderPlayer(){
   const el=document.getElementById('insight-player'); if(!el) return;
   const e=selectedId?allEntries().find(x=>x.id===selectedId):null;
@@ -1306,6 +1321,7 @@ function renderPlayer(){
     (Number.isFinite(e.views)?'<p class="pstat">'+esc(nfmt(e.views))+' views at last sync</p>':'')+
     (e.box&&Number.isFinite(e.box.gate)?'<p class="pstat">'+esc(money(e.box.gate))+' gate'+
       (Number.isFinite(e.box.attendance)?' · '+esc(cfmt(e.box.attendance))+' in attendance':'')+'</p>':'')+
+    talkHTML(e)+
     '<div class="pactions">'+ticketHTML(e)+
     '<button class="mini ghost" data-openlog="'+esc(e.id)+'">Open in the Log</button>'+
     '</div></div>';
@@ -1818,6 +1834,8 @@ function selectPin(id){
   document.getElementById('readpin').innerHTML='<b>'+esc(e.title)+'</b> — '+
     esc(e.loc||'location not listed')+' · '+fmt(e.date);
   render();
+  // A pin is a pick like any other, so it fills the side pane too.
+  selectEntry(id);
 }
 
 
