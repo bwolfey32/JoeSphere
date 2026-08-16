@@ -11,7 +11,7 @@
 //
 // No dependencies, no build step. Requires Node 18+ (global fetch).
 
-import { writeFile } from 'node:fs/promises';
+import { writeFile, readFile } from 'node:fs/promises';
 
 const UA = 'JoeSphere/1.0 (unofficial Joe Rogan fan site; scheduled event sync)';
 const WIKI = 'https://en.wikipedia.org/w/api.php';
@@ -148,11 +148,81 @@ async function fromWikipedia() {
   return events;
 }
 
-const SOURCES = [{ name: 'wikipedia:List_of_UFC_events', run: fromWikipedia }];
+// ── JRE episode releases ─────────────────────────────────────────────────────
+// The channel's Atom feed is public and needs no API key or quota. It carries
+// the video id, which the page already knows how to turn into a thumbnail and
+// an embed (parseVideo0 + CLIPSRC), so episodes arrive with artwork for free.
+//
+// Unlike a fight card, these are *released*, not scheduled: the date is in the
+// past and his participation is not in question — it is his own show — so they
+// ship flagged "auto" rather than "unconfirmed". They also carry no venue. The
+// studio's city is public, but asserting he was physically somewhere on a given
+// day is a location claim this project does not make, so loc stays empty.
+const JRE_CHANNEL = 'UCzQUP1qoWDoEbmsQxvdjxgQ';   // PowerfulJRE
+
+function approxViews(n) {
+  const v = Number(n);
+  if (!Number.isFinite(v) || v <= 0) return '';
+  if (v >= 1e6) return (v / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (v >= 1e3) return Math.round(v / 1e3) + 'K';
+  return String(v);
+}
+
+async function fromYouTube() {
+  const url = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + JRE_CHANNEL;
+  const res = await fetch(url, { headers: { 'User-Agent': UA } });
+  if (!res.ok) throw new Error('youtube feed ' + res.status);
+  const xml = await res.text();
+
+  const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map(m => m[1]);
+  if (!entries.length) throw new Error('no <entry> elements — feed shape changed');
+
+  const events = [];
+  for (const en of entries) {
+    const id = (en.match(/<yt:videoId>([^<]+)<\/yt:videoId>/) || [])[1] || '';
+    // Same charset the page enforces before anything reaches an iframe. A feed
+    // that hands us something else is skipped, not coerced.
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) continue;
+    const title = clean((en.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '');
+    const date = ((en.match(/<published>(\d{4}-\d{2}-\d{2})/) || [])[1]) || '';
+    if (!title || !date) continue;
+    const views = approxViews((en.match(/views="(\d+)"/) || [])[1]);
+    events.push({
+      src: 'youtube:' + id,
+      date,
+      title,
+      loc: '',
+      type: 'podcast',
+      note: views ? 'Episode release · ' + views + ' views at last sync.' : 'Episode release.',
+      video: { kind: 'yt', id },
+      ticket: null,
+      flag: 'auto'
+    });
+  }
+  if (!events.length) throw new Error('parsed 0 episodes — feed shape probably changed');
+  return events;
+}
+
+// `prefix` is how a source's own rows are recognised in an existing
+// events.json, so a source that fails this run can have its previous rows
+// carried forward instead of vanishing (see main()).
+const SOURCES = [
+  { name: 'wikipedia:List_of_UFC_events', prefix: 'wikipedia:', run: fromWikipedia },
+  { name: 'youtube:PowerfulJRE', prefix: 'youtube:', run: fromYouTube }
+];
+
+const OUT = new URL('../events.json', import.meta.url);
+
+async function readExisting() {
+  try {
+    const prev = JSON.parse(await readFile(OUT, 'utf8'));
+    return Array.isArray(prev.events) ? prev.events : [];
+  } catch { return []; }   // first run, or unreadable: nothing to carry
+}
 
 async function main() {
   const all = [];
-  const failures = [];
+  const failed = [];
   for (const s of SOURCES) {
     try {
       const got = await s.run();
@@ -160,13 +230,29 @@ async function main() {
       all.push(...got);
     } catch (err) {
       console.error('ERR ' + s.name + ': ' + err.message);
-      failures.push(s.name);
+      failed.push(s);
     }
   }
 
-  if (failures.length === SOURCES.length) {
+  if (failed.length === SOURCES.length) {
     console.error('\nAll sources failed — leaving the existing events.json untouched.');
     process.exit(1);
+  }
+
+  // One source being down must not delete the other's content. Without this,
+  // a single flaky fetch republishes the file without those rows and the site
+  // silently loses a whole category until the next run days later. Carried
+  // rows are last-known-good, so a cancelled event can linger for one cycle —
+  // that is the lesser of the two failures, and it self-corrects next run.
+  if (failed.length) {
+    const prev = await readExisting();
+    for (const s of failed) {
+      const kept = prev.filter(e => typeof e.src === 'string' && e.src.startsWith(s.prefix));
+      if (kept.length) {
+        console.log('  ↳ carried forward ' + kept.length + ' previous rows from ' + s.name);
+        all.push(...kept);
+      }
+    }
   }
 
   const seen = new Set();
@@ -175,10 +261,9 @@ async function main() {
     .sort((a, b) => a.date.localeCompare(b.date));
 
   const payload = { generated: new Date().toISOString(), events: events };
-  await writeFile(new URL('../events.json', import.meta.url),
-    JSON.stringify(payload, null, 2) + '\n');
+  await writeFile(OUT, JSON.stringify(payload, null, 2) + '\n');
   console.log('\nWrote events.json — ' + events.length + ' events, ' +
-    failures.length + ' source(s) failed.');
+    failed.length + ' source(s) failed.');
 }
 
 main().catch(err => { console.error('fatal:', err); process.exit(1); });

@@ -6,7 +6,7 @@ natively; for Claude Code, symlink or copy this to `CLAUDE.md`.
 ## What this is
 
 A static fan site logging Joe Rogan's **publicly announced** appearances — tour
-dates, scheduled broadcasts, episode releases — plus **Fan Posts**, a public feed
+dates, scheduled broadcasts, JRE episode releases — plus **Fan Posts**, a public feed
 of fan-submitted clips, and public comments/likes on both. The tracker itself is
 still a single-page app with no backend; Fan Posts and comments are the one piece
 backed by Supabase (Postgres + anonymous auth + RLS), configured near the top of
@@ -127,14 +127,28 @@ This tracks **announced, scheduled** events. Do not add:
   or means — sample sizes here are small and skewed. Verified against reference
   values; keep the tests if you refactor.
 - `scripts/fetch-events.mjs` must exit non-zero if **all** sources fail, so CI keeps
-  the last good `events.json` rather than blanking the site.
+  the last good `events.json` rather than blanking the site. When only *some*
+  sources fail it still writes, but first carries forward the failed sources'
+  previous rows (matched by their `src` prefix) — otherwise one flaky fetch
+  republishes the file without that source's rows and the site silently loses a
+  whole category until the next run, days later. Keep the `prefix` field on every
+  entry in `SOURCES` or that carry-forward silently stops working.
 
 ## Known gaps
 
-- `scripts/fetch-events.mjs` **has** been run against live wikipedia.org and its
-  output inspected (12 scheduled events, venues and rowspan carry-over verified
-  by hand). The all-sources-fail path was tested too: it exits 1 and leaves
-  `events.json` byte-identical. It has **not** yet run inside GitHub Actions.
+- `scripts/fetch-events.mjs` **has** been run against both live sources and its
+  output inspected: 12 scheduled UFC events (venues and rowspan carry-over
+  checked by hand) plus 15 JRE episodes. Tested too: all-sources-fail exits 1
+  leaving `events.json` byte-identical, and a single-source failure carries the
+  dead source's rows forward instead of dropping them. It has **not** yet run
+  inside GitHub Actions.
+- JRE episodes are *releases*, not scheduled appearances: they are dated in the
+  past, flagged `auto` rather than `unconfirmed` (it is his own show, so there is
+  no attendance to verify), and deliberately carry **no** `loc`. The studio's
+  city is public, but stamping a location on a given day is a claim this project
+  does not make. `stats()` therefore walks back to the most recent entry that
+  actually has a `loc` for "Last known position" — don't "simplify" it back to
+  `past[0].loc` or it renders blank.
 - The schedule table uses `rowspan` — a venue cell can cover several rows, and
   the rows beneath omit that cell entirely. `parseTable()` tracks the carry-over
   in a grid for exactly this reason; walking cells positionally instead silently

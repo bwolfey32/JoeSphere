@@ -870,7 +870,10 @@ function stats(){
   if(up.length){const n=daysTo(up[0].date);dEl.textContent=n===0?'Today':(n===1?'Tomorrow':n+' days');}
   else dEl.textContent='—';
   document.getElementById('stat-count').textContent=allEntries().length;
-  document.getElementById('stat-last').textContent=past.length?past[0].loc:'No prior entries';
+  // Episode releases carry no venue on purpose, so the most recent entry is
+  // often locationless — walk back to the last one that actually has a place.
+  const lastPlaced=past.find(e=>e.loc&&e.loc.trim());
+  document.getElementById('stat-last').textContent=lastPlaced?lastPlaced.loc:'No prior entries';
 }
 
 // Public comments on tracker events — shares the "comments" table with Fan
