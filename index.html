@@ -143,6 +143,19 @@ body{
   .drawer{justify-content:stretch}
   .drawer-panel{width:100%;border-left:none;padding:10px}
 }
+/* Above phone width the detail drawer is not modal: no dimming, no blur, and
+   the page keeps scrolling underneath, because there is room to read the feed
+   beside it and that is the point of having both. pointer-events has to be
+   released on the container too — it spans the viewport, so it would swallow
+   every click on the feed otherwise.
+   #composer stays modal: it is a form to finish or cancel, not something to
+   read alongside anything. */
+@media(min-width:641px){
+  #drawer{pointer-events:none}
+  #drawer .drawer-scrim{display:none}
+  #drawer .drawer-panel{pointer-events:auto;
+    box-shadow:-22px 0 52px -20px #000,0 0 0 1px rgba(0,0,0,.5)}
+}
 body.drawer-open{overflow:hidden}
 .linkish{background:none;border:none;color:var(--blue);cursor:pointer;font:inherit;
   text-decoration:underline;padding:0}
@@ -2027,10 +2040,19 @@ let selectedKind=null; // 'event' | 'post' | null
 // disturb the feed underneath: the scroll position is captured here and
 // restored on close, which is what makes Back-from-a-detail land where you
 // left off rather than at the top of a 1,400-row list.
-let feedScroll=0;
+let feedScroll=0, drawerLocked=false;
+// Only the phone-width drawer is modal. Above that the page stays scrollable,
+// so there is no lock to apply and — importantly — nothing to restore on
+// close: the visitor may have deliberately scrolled somewhere else while
+// reading, and yanking them back would undo it.
+const drawerIsModal=()=>window.matchMedia('(max-width:640px)').matches;
 function openDrawer(){
   const d=document.getElementById('drawer');
-  if(d.hidden){ feedScroll=window.scrollY; d.hidden=false; document.body.classList.add('drawer-open'); }
+  if(d.hidden){
+    drawerLocked=drawerIsModal();
+    if(drawerLocked){ feedScroll=window.scrollY; document.body.classList.add('drawer-open'); }
+    d.hidden=false;
+  }
   d.querySelector('.drawer-panel').scrollTop=0;
 }
 function closeDrawer(){
@@ -2038,7 +2060,7 @@ function closeDrawer(){
   if(d.hidden) return;
   d.hidden=true;
   if(document.getElementById('composer').hidden) document.body.classList.remove('drawer-open');
-  window.scrollTo({top:feedScroll});
+  if(drawerLocked){ window.scrollTo({top:feedScroll}); drawerLocked=false; }
 }
 function selectPost(id,opts){
   if(!id) return;
@@ -3436,7 +3458,11 @@ function openComposer(eventId){
 }
 function closeComposer(){
   document.getElementById('composer').hidden=true;
-  if(document.getElementById('drawer').hidden) document.body.classList.remove('drawer-open');
+  // Release the scroll lock unless a *modal* drawer is still holding it —
+  // "Post about this" opens the composer over an already-open drawer, and on
+  // desktop that drawer never locked, so the lock must not outlive the form.
+  const d=document.getElementById('drawer');
+  if(d.hidden||!drawerLocked) document.body.classList.remove('drawer-open');
 }
 document.querySelectorAll('[data-pk]').forEach(b=>
   b.addEventListener('click',()=>setPostKind(b.dataset.pk)));

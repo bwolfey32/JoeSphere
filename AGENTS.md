@@ -61,9 +61,15 @@ Three things about this shape are load-bearing:
   `#p=` URL; comments belong to a parent and never appear in a feed. If it
   should be findable on its own, it is a post — if it only makes sense where it
   sits, it is a comment.
-- **The feed is stateful across a detail open.** `openDrawer()` captures scroll
-  and `closeDrawer()` restores it, which is what makes closing a detail land
-  you where you were in a list thousands of rows long.
+- **The detail drawer is modal only at phone width.** Above 640px it drops the
+  scrim, the blur and the scroll lock, and releases `pointer-events` on the
+  full-viewport container so the feed underneath stays clickable — reading a
+  detail beside the list is the point. Only the modal case captures scroll in
+  `openDrawer()` and restores it in `closeDrawer()`; restoring after a
+  non-modal open would yank the visitor back from wherever they deliberately
+  scrolled. `#composer` stays modal at every width: it is a form to finish or
+  cancel. The two share the `drawer-open` lock, so whichever closes first must
+  not release a lock the other still needs.
 
 ## Invariants — do not break these
 
