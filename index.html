@@ -128,6 +128,11 @@ h1{
        grid-template-areas:"side" "map" "main"}
   /* stacked, the pane leads — otherwise a selection lands off-screen */
   .app-side{position:sticky;top:0;z-index:5;background:var(--paper);padding-bottom:8px}
+  /* ...but with nothing selected it is a "Nothing picked yet" card pinned
+     above the actual content, so it only earns that slot once it has
+     something in it. On desktop the pane is a permanent side column and the
+     empty state explains what the column is for, so this is mobile-only. */
+  body.pane-empty .app-side{display:none}
   .app-map{position:static}
 }
 
@@ -582,7 +587,10 @@ footer{
 }
 </style>
 </head>
-<body class="m-both">
+<!-- pane-empty starts on so the mobile layout doesn't flash an empty detail
+     pane above the content before renderPlayer() first runs; it comes off
+     the moment something is actually selected. -->
+<body class="m-both pane-empty">
 <noscript><div style="background:#FF4127;color:#14171D;padding:12px 16px;font:14px/1.5 monospace">
 This log needs JavaScript to render the map and event list.</div></noscript>
 <div class="wrap">
@@ -1669,7 +1677,7 @@ function renderPlayer(){
 
   if(selectedKind==='post'){
     const p=selectedPostId?posts.find(x=>x.id===selectedPostId):null;
-    if(p){ el.innerHTML=postPaneHTML(p); return; }
+    if(p){ el.innerHTML=postPaneHTML(p); document.body.classList.remove('pane-empty'); return; }
   }
   if(selectedKind==='event'){
     const e=selectedId?allEntries().find(x=>x.id===selectedId):null;
@@ -1700,11 +1708,15 @@ function renderPlayer(){
         '<div id="pane-social">'+fanPostsForHTML(e)+'</div>'+
         '<div id="pane-thread">'+eventCommentsHTML(e.id)+'</div>'+
         '</div>';
+      document.body.classList.remove('pane-empty');
       return;
     }
   }
   // Nothing selected yet: Fan Posts keeps its own empty copy, everything
-  // else (Browse/Hot/Insights) shares the generic one.
+  // else (Browse/Hot/Insights) shares the generic one. The flag is set here
+  // rather than off selectedKind, because a selection pointing at an entry
+  // that no longer exists lands on this empty state too.
+  document.body.classList.add('pane-empty');
   el.innerHTML = currentView==='posts'
     ? '<div class="player"><div class="ph">Selected post</div>'+
       '<div class="empty"><strong>Nothing picked yet</strong>'+
