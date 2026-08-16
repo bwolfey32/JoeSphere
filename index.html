@@ -1037,9 +1037,14 @@ function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
 // than decorated onto entry objects — allEntries() rebuilds auto[] fresh on
 // every feed sync, independently of loadPosts(), so mutating entries directly
 // would race and lose data the same way embedding comments on them would.
-let eventReactions={};        // eid -> {ups,downs,myVote}
-let eventEngagementAnchor={}; // eid -> ms of earliest comment/reaction on that event
+let eventReactions={};     // eid -> {ups,downs,myVote}
+let eventLastActivity={};  // eid -> ms of the most recent comment/reaction
+let eventComments={};      // eid -> comment count
 function eventReactionsFor(eid){ return eventReactions[eid]||{ups:0,downs:0,myVote:0}; }
+// Counting comments per event was being redone with a fresh comments.filter()
+// in three separate places (rows, map pins, ranking) — 242 entries against a
+// 1000-row comment list each time. Tallied once in loadPosts() instead.
+function eventCommentCount(eid){ return eventComments[eid]||0; }
 // Auto-synced entries are re-derived from events.json on every load and are never
 // written to storage — otherwise a stale copy would outlive the source.
 let auto=[];
@@ -1240,30 +1245,34 @@ async function loadPosts(){
     posts=rows.map(r=>{
       const rx=reactions.filter(x=>x.post_id===r.id);
       const mine=uid?rx.find(x=>x.user_id===uid):null;
+      const cs=comments.filter(c=>c.post_id===r.id);
+      // Last activity, not creation time: an old clip that people are still
+      // arguing about is more current than one nobody has touched since.
+      let last=Date.parse(r.created_at);
+      rx.forEach(x=>{ const t=Date.parse(x.created_at); if(t>last) last=t; });
+      cs.forEach(c=>{ const t=Date.parse(c.created_at); if(t>last) last=t; });
       return {...r,
         ups:rx.filter(x=>x.value===1).length,
         downs:rx.filter(x=>x.value===-1).length,
         myVote:mine?mine.value:0,
-        comments:comments.filter(c=>c.post_id===r.id)};
+        comments:cs, lastActivity:last};
     });
-    // Per-event reaction totals and an "engagement anchor" (earliest
-    // comment/reaction timestamp) for the Hot feed's recency term — see
-    // hotEntries() for why events can't anchor on their own date field alone.
-    eventReactions={}; eventEngagementAnchor={};
+    // Per-event tallies for the Hot feed and the row/pin badges: reaction
+    // totals, comment count, and the most recent activity timestamp.
+    eventReactions={}; eventLastActivity={}; eventComments={};
+    const bump=(id,t)=>{ if(eventLastActivity[id]===undefined||t>eventLastActivity[id])
+      eventLastActivity[id]=t; };
     reactions.forEach(x=>{
       if(!x.event_id) return;
       const s=eventReactions[x.event_id]||(eventReactions[x.event_id]={ups:0,downs:0,myVote:0});
       if(x.value===1) s.ups++; else s.downs++;
       if(uid&&x.user_id===uid) s.myVote=x.value;
-      const t=Date.parse(x.created_at);
-      if(eventEngagementAnchor[x.event_id]===undefined||t<eventEngagementAnchor[x.event_id])
-        eventEngagementAnchor[x.event_id]=t;
+      bump(x.event_id,Date.parse(x.created_at));
     });
     comments.forEach(c=>{
       if(!c.event_id) return;
-      const t=Date.parse(c.created_at);
-      if(eventEngagementAnchor[c.event_id]===undefined||t<eventEngagementAnchor[c.event_id])
-        eventEngagementAnchor[c.event_id]=t;
+      eventComments[c.event_id]=(eventComments[c.event_id]||0)+1;
+      bump(c.event_id,Date.parse(c.created_at));
     });
   }catch(e){ console.error('Could not load fan posts',e); posts=[]; }
   postsLoading=false; renderPosts();
@@ -1380,26 +1389,21 @@ function renderPosts(){
 }
 
 // Combines events and posts into one score-ordered list — everything is
-// included, not just items with existing engagement, so a brand-new
-// zero-reaction post or event still appears (freshest-first among ties),
-// the same as Reddit's actual "hot" behavior. Events anchor on their
-// earliest comment/reaction timestamp when they have one; with none, they
-// fall back to their own date as the closest available proxy for
-// "freshness" — using date as the *general* recency signal would rank by
-// calendar proximity instead of engagement, but as a fallback for otherwise
-// untouched events it's the only timestamp they have.
+// included, so an untouched post or event still appears, just below
+// everything anyone has actually engaged with. See hotScore() for the
+// tiering and for why a plain Reddit-style age blend doesn't work on a list
+// whose items are dated years apart and often in the future.
 function hotEntries(){
   const items=[];
   allEntries().forEach(e=>{
     const rx=eventReactionsFor(e.id);
-    const anchor=eventEngagementAnchor[e.id]!==undefined
-      ?eventEngagementAnchor[e.id]:Date.parse(e.date);
-    items.push({kind:'event',entry:e,ups:rx.ups,downs:rx.downs,
-      score:hotScore(rx.ups,rx.downs,anchor)});
+    const cCount=eventCommentCount(e.id);
+    items.push({kind:'event',entry:e,ups:rx.ups,downs:rx.downs,cCount,
+      score:hotScore(rx.ups,rx.downs,cCount,eventLastActivity[e.id],Date.parse(e.date))});
   });
   posts.forEach(p=>{
-    items.push({kind:'post',post:p,ups:p.ups,downs:p.downs,
-      score:hotScore(p.ups,p.downs,Date.parse(p.created_at))});
+    items.push({kind:'post',post:p,ups:p.ups,downs:p.downs,cCount:p.comments.length,
+      score:hotScore(p.ups,p.downs,p.comments.length,p.lastActivity,Date.parse(p.created_at))});
   });
   return items.sort((a,b)=>b.score-a.score);
 }
@@ -1514,16 +1518,33 @@ function ranks(rows){
   }).join('')+'</ul>';
 }
 
-// Reddit's public "hot" formula: signed log10 of the net score, plus age in
-// seconds over a fixed constant, so a big score dominates early and age
-// gradually overtakes it. The epoch is arbitrary — only relative ordering
-// between items matters, this number is never shown to a user.
-const HOT_EPOCH=Date.UTC(2020,0,1);
-function hotScore(ups,downs,anchorMs){
-  const score=(ups||0)-(downs||0);
-  const order=Math.log10(Math.max(Math.abs(score),1));
-  const sign=score>0?1:(score<0?-1:0);
-  return sign*order+(anchorMs-HOT_EPOCH)/1000/45000;
+// Two tiers: anything people have actually reacted to or discussed ranks
+// above anything they haven't.
+//
+// This started as Reddit's log-score-plus-age formula and that was wrong
+// here. Reddit's blend assumes every item was submitted at roughly the same
+// time, so a few hours of age trades against a 10x score difference. This
+// list mixes fan posts from today with fight cards *scheduled months into
+// the future*, and a future date read as enormously "fresh" — every
+// untouched UFC card rode its own schedule straight to the top while a clip
+// with real votes and a comment thread sank. Reacting to an event actually
+// demoted it, by moving its anchor from the far future back to now.
+//
+//   engaged → votes and comments lead, most recent activity breaks ties
+//   quiet   → closest to today first, all of them below the engaged tier
+const DAY=86400000;
+// Always greater than 0 and at most 1, decaying with distance from now in
+// either direction — so it can only ever break a tie between equal scores,
+// never outweigh one.
+function recency(ms){
+  return Number.isFinite(ms) ? 1/(1+Math.abs(Date.now()-ms)/DAY) : 0;
+}
+function hotScore(ups,downs,cCount,lastActivityMs,dateMs){
+  const touched=(ups||0)+(downs||0)+(cCount||0);
+  if(!touched) return -1000+recency(dateMs);
+  // Comments count the same as an upvote: on a site this small a thread is
+  // the strongest signal there is that something landed.
+  return (ups||0)-(downs||0)+(cCount||0)+recency(lastActivityMs);
 }
 
 // Selecting from a chart or a list loads the entry into the side pane rather
@@ -2000,27 +2021,32 @@ function renderEngagementInsights(){
   const ups=posts.reduce((s,p)=>s+(p.ups||0),0);
   const downs=posts.reduce((s,p)=>s+(p.downs||0),0);
   const postComments=posts.reduce((s,p)=>s+(p.comments?p.comments.length:0),0);
-  const eventComments=comments.filter(c=>c.event_id).length;
-  if(!posts.length&&!eventComments){
+  // Named apart from the global eventComments map — a local of that name
+  // would shadow it and quietly break the "Most discussed" tally below.
+  const eventCommentTotal=comments.filter(c=>c.event_id).length;
+  if(!posts.length&&!eventCommentTotal){
     el.innerHTML='<div class="empty"><strong>Nothing posted yet</strong>'+
       'Once people start sharing clips and commenting, the numbers show up here.</div>';
     return;
   }
-  const byEvent={};
-  comments.filter(c=>c.event_id).forEach(c=>{byEvent[c.event_id]=(byEvent[c.event_id]||0)+1;});
-  const talked=Object.keys(byEvent).map(id=>{
+  const talked=Object.keys(eventComments).map(id=>{
     const ev=allEntries().find(e=>e.id===id);
-    return {t:ev?ev.title:'(removed entry)',n:byEvent[id]+' comment'+(byEvent[id]===1?'':'s'),id:ev?ev.id:null};
+    const n=eventComments[id];
+    return {t:ev?ev.title:'(removed entry)',n:n+' comment'+(n===1?'':'s'),id:ev?ev.id:null};
   }).sort((x,y)=>parseInt(y.n)-parseInt(x.n)).slice(0,5);
+  // Comments count toward the ranking, so they have to show in the readout
+  // too — otherwise an item sitting at #1 on a comment thread alone reads
+  // as "▲0 ▼0" and the order looks arbitrary.
+  const hotN=it=>'▲'+it.ups+' ▼'+it.downs+(it.cCount?' · '+it.cCount+'c':'');
   const hot=hotEntries().slice(0,5).map(it=>it.kind==='event'
-    ? {t:it.entry.title,n:'▲'+it.ups+' ▼'+it.downs,id:it.entry.id}
-    : {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''),n:'▲'+it.ups+' ▼'+it.downs,pid:it.post.id});
+    ? {t:it.entry.title,n:hotN(it),id:it.entry.id}
+    : {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''),n:hotN(it),pid:it.post.id});
 
   el.innerHTML=
     figs([
       {k:'Fan posts',v:String(posts.length),s:''},
       {k:'Reactions',v:String(ups+downs),s:ups+' up · '+downs+' down, across posts'},
-      {k:'Comments',v:String(postComments+eventComments),s:postComments+' on posts · '+eventComments+' on events'},
+      {k:'Comments',v:String(postComments+eventCommentTotal),s:postComments+' on posts · '+eventCommentTotal+' on events'},
       {k:'Contributors',v:String(new Set(posts.map(p=>p.author_id)).size),s:'distinct posters'}
     ])+
     (posts.length?'<div class="subhead">Most upvoted posts</div>'+
@@ -2072,7 +2098,7 @@ function eventRow(e){
   const n=daysTo(e.date), past=n<0;
   const when=past?(Math.abs(n)+' days ago'):(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'));
   const yt=e.video&&e.video.kind==='yt'&&/^[A-Za-z0-9_-]{11}$/.test(e.video.id)?e.video.id:null;
-  const cCount=sb?comments.filter(c=>c.event_id===e.id).length:0;
+  const cCount=sb?eventCommentCount(e.id):0;
   const pCount=sb?postCountFor(e.id):0;
   const rx=sb?eventReactionsFor(e.id):{ups:0,downs:0};
   const stat=Number.isFinite(e.views)?nfmt(e.views)+' views'
@@ -2185,15 +2211,10 @@ function plotMap(rows){
     const [x,y]=project(c[0],c[1]);
     pts.push({x,y,e,past:daysTo(e.date)<0});
   });
-  // Precompute per-event comment counts once (mirrors the byEvent tally in
-  // renderEngagementInsights()) rather than filtering `comments` inside the
-  // per-pin map below.
-  const commentCounts={};
-  comments.forEach(c=>{ if(c.event_id) commentCounts[c.event_id]=(commentCounts[c.event_id]||0)+1; });
   const k=uiK(), rUp=6*k, rPast=4.6*k, rHit=14*k;
   g.innerHTML=pts.map(p=>{
     const r=p.past?rPast:rUp;
-    const n=commentCounts[p.e.id];
+    const n=eventCommentCount(p.e.id);
     // A small pennant banner above-right of the pin, sized in screen pixels
     // like everything else on the map (AGENTS.md invariant #3) — fill-only,
     // no stroke, so there's no viewBox-unit stroke-width to hardcode.
