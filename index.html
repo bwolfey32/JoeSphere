@@ -1506,7 +1506,8 @@ document.getElementById('authbar').addEventListener('click',async ev=>{
     const msg=document.getElementById('auth-msg');
     if(!email) return;
     ev.target.disabled=true; const label=ev.target.textContent; ev.target.textContent='Sending…';
-    const {error}=await sb.auth.signInWithOtp({email});
+    const {error}=await sb.auth.signInWithOtp({email,
+      options:{emailRedirectTo:location.origin+location.pathname}});
     ev.target.disabled=false; ev.target.textContent=label;
     msg.style.display='inline';
     msg.textContent=error?error.message:'Check your email for the sign-in link.';
