@@ -265,12 +265,41 @@ body.m-both #heat{opacity:.8}
   background:var(--stamp);color:#14171D;border:none}
 .playbtn:hover{filter:brightness(1.12)}
 
-.ticketlink{display:inline-flex;align-items:center;gap:7px;margin:11px 0 0;
+.cardactions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:11px}
+.cardactions .mini{margin:0}
+.ticketlink{display:inline-flex;align-items:center;gap:7px;
   font-family:"Oswald",Impact,sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;
   text-transform:uppercase;padding:8px 12px;background:var(--ink);color:var(--paper);
   text-decoration:none}
 .ticketlink:hover{filter:brightness(1.12)}
 .ticketlink img{width:16px;height:16px;border-radius:2px}
+/* the search fallback is deliberately quieter than a verified ticket link */
+.ticketlink.search{background:transparent;color:var(--ink-soft);border:1px solid var(--rule)}
+.ticketlink.search::before{content:"⌕ ";font-size:13px}
+.ticketlink.search:hover{color:var(--ink);border-color:var(--ink-soft)}
+
+/* ---------- generated poster (events with no clip) ---------- */
+.poster{position:relative;margin:11px 0 0;aspect-ratio:16/7;overflow:hidden;
+  border:1px solid var(--rule);background:
+    repeating-linear-gradient(135deg,rgba(255,255,255,.030) 0 2px,transparent 2px 9px),
+    linear-gradient(145deg,#1E2632,#11151C 70%);
+  display:flex;align-items:center;gap:14px;padding:14px 16px}
+.poster::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 100% 0,rgba(255,65,39,.16),transparent 62%)}
+.poster.broadcast::after{background:radial-gradient(120% 90% at 100% 0,rgba(61,214,196,.16),transparent 62%)}
+.poster.podcast::after{background:radial-gradient(120% 90% at 100% 0,rgba(125,227,138,.16),transparent 62%)}
+.poster-num{font-family:"Oswald",Impact,sans-serif;font-weight:700;line-height:.85;
+  font-size:clamp(30px,8vw,54px);color:var(--ink);opacity:.92;letter-spacing:-.01em;
+  white-space:nowrap;flex:0 0 auto}
+.poster.standup .poster-num{color:var(--stamp)}
+.poster.broadcast .poster-num{color:var(--blue)}
+.poster.podcast .poster-num{color:#7DE38A}
+.poster-meta{display:flex;flex-direction:column;gap:3px;min-width:0;z-index:1}
+.poster-meta b{font-family:"Oswald",Impact,sans-serif;font-size:13px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);overflow:hidden;text-overflow:ellipsis;
+  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical}
+.poster-meta span{font-size:11.5px;color:var(--ink-soft)}
+@media(max-width:520px){ .poster{aspect-ratio:auto;flex-direction:column;align-items:flex-start;gap:6px} }
 
 /* ---------- annotations ---------- */
 .ann{padding:12px 16px 15px;background:rgba(255,255,255,.028)}
@@ -760,7 +789,18 @@ function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
 // Auto-synced entries are re-derived from events.json on every load and are never
 // written to storage — otherwise a stale copy would outlive the source.
 let auto=[];
-function allEntries(){ return state.entries.concat(auto); }
+// SEED is the offline fallback — what the page shows before (or instead of)
+// events.json. Once the live feed loads, the same cards would appear twice:
+// the feed's "UFC 331: Van vs. Pantoja 2" is the seed's "UFC 331". Feed data is
+// fresher and carries a real source, so it wins and seed rows step aside. Keyed
+// by id rather than a title/date guess, and it still matches copies already
+// written to a visitor's storage from an earlier visit. Anything the visitor
+// logged themselves is never touched.
+const SEED_IDS=new Set(SEED.map(e=>e.id));
+function allEntries(){
+  const mine=auto.length ? state.entries.filter(e=>!SEED_IDS.has(e.id)) : state.entries;
+  return mine.concat(auto);
+}
 
 async function loadFeed(){
   try{
@@ -994,6 +1034,40 @@ function renderPosts(){
   el.innerHTML=rows.map(postCard).join('');
 }
 
+// A verified link (typed into the form, or supplied by a source) renders as a
+// real "Get tickets" button. Everything else falls back to a search, labelled
+// as a search — a fabricated vendor URL that lands on the wrong event, or on a
+// scalper page, would be worse than no link at all.
+function ticketHTML(e){
+  if(e.ticket) return '<a class="ticketlink" href="'+esc(e.ticket.href)+'" target="_blank" '+
+    'rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain='+
+    esc(e.ticket.host)+'&sz=64" alt="" loading="lazy">Get tickets — '+esc(e.ticket.host)+'</a>';
+  if(daysTo(e.date)<0) return '';   // nothing to buy for a date that has passed
+  const q=encodeURIComponent([e.title,cityLabel(e.loc),'tickets'].filter(Boolean).join(' '));
+  return '<a class="ticketlink search" href="https://www.google.com/search?q='+esc(q)+'" '+
+    'target="_blank" rel="noopener noreferrer">Search tickets</a>';
+}
+
+// Events without a clip would otherwise render as a wall of text. Rather than
+// hotlinking copyrighted promo art, build a poster out of the entry's own data
+// — nothing fetched, nothing invented, and it degrades to plain text.
+function posterBadge(title){
+  let m=title.match(/UFC\s+(\d{2,4})\b/i);        if(m) return m[1];
+  m=title.match(/Fight\s*Night\s+(\d{1,4})\b/i);  if(m) return 'FN '+m[1];
+  if(/fight\s*night/i.test(title)) return 'FIGHT NIGHT';
+  if(/\bjre\b|podcast|episode/i.test(title)) return 'JRE';
+  if(/stand-?up|comedy|theat/i.test(title)) return 'LIVE';
+  return '';
+}
+function posterHTML(e){
+  const badge=posterBadge(e.title||'');
+  return '<div class="poster '+e.type+'">'+
+    (badge?'<div class="poster-num">'+esc(badge)+'</div>':'')+
+    '<div class="poster-meta"><b>'+esc(e.title)+'</b>'+
+    '<span>'+esc(cityLabel(e.loc)||'Venue not listed')+' · '+esc(fmt(e.date))+'</span></div>'+
+    '</div>';
+}
+
 function render(){
   stats();
   const feed=document.getElementById('feed');
@@ -1031,18 +1105,17 @@ function render(){
       '<h2>'+esc(e.title)+'</h2>'+
       '<p class="loc">'+esc(e.loc||'Location not listed')+' · '+fmt(e.date)+'</p>'+
       (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
-      (e.ticket?'<a class="ticketlink" href="'+esc(e.ticket.href)+'" target="_blank" '+
-        'rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain='+
-        esc(e.ticket.host)+'&sz=64" alt="" loading="lazy">Get tickets — '+esc(e.ticket.host)+'</a>':'')+
-      (sb?'<button class="mini ghost" data-viewposts="'+e.id+'">💬 '+postCountFor(e.id)+
-        ' fan post'+(postCountFor(e.id)===1?'':'s')+'</button>':'')+
       (e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?
         '<div class="clip" data-k="'+e.video.kind+'" data-v="'+e.video.id+'">'+
         (e.video.kind==='yt'?'<img class="thumb" loading="lazy" alt="" src="https://i.ytimg.com/vi/'+
           e.video.id+'/hqdefault.jpg">':'')+
         '<button class="playbtn" type="button" aria-label="Load and play the '+
         CLIPNAME[e.video.kind]+' clip">▶ Play '+CLIPNAME[e.video.kind]+' clip</button>'+
-        '</div>':'')+
+        '</div>'
+        :posterHTML(e))+
+      '<div class="cardactions">'+ticketHTML(e)+
+      (sb?'<button class="mini ghost" data-viewposts="'+e.id+'">💬 '+postCountFor(e.id)+
+        ' fan post'+(postCountFor(e.id)===1?'':'s')+'</button>':'')+'</div>'+
       (e.locked?'<div style="margin-top:10px" class="lockednote">Auto-synced — edit the source feed</div>'
         :'<div style="margin-top:10px"><button class="c-del" data-drop="'+e.id+'">Remove entry</button></div>')+
       '</div>'+eventCommentsHTML(e.id)+'</article>';

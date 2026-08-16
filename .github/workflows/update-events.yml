@@ -1,0 +1,43 @@
+name: Update events.json
+
+on:
+  schedule:
+    # Twice a week — the UFC schedule doesn't move faster than this, and a
+    # lighter cadence keeps the commit history readable.
+    - cron: '17 6 * * 1,4'
+  workflow_dispatch:        # run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-events
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # If every source fails the script exits non-zero and writes nothing, so
+      # the job fails here and the committed events.json survives untouched —
+      # a broken upstream must never blank the site.
+      - name: Fetch scheduled events
+        run: node scripts/fetch-events.mjs
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- events.json; then
+            echo "No schedule changes."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add events.json
+          git commit -m "Update events.json from scheduled sources"
+          git push

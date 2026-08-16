@@ -1,0 +1,137 @@
+{
+  "generated": "2026-08-16T04:44:57.609Z",
+  "events": [
+    {
+      "src": "wikipedia:ufc-fight-night-hernandez-vs-rodrigues",
+      "date": "2026-08-22",
+      "title": "UFC Fight Night: Hernandez vs. Rodrigues",
+      "loc": "Golden 1 Center, Sacramento, California, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-nurmagomedov-vs-song",
+      "date": "2026-08-29",
+      "title": "UFC Fight Night: Nurmagomedov vs. Song",
+      "loc": "SPD Bank Oriental Sports Center, Shanghai, China",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-hooker-vs-parnasse",
+      "date": "2026-09-05",
+      "title": "UFC Fight Night: Hooker vs. Parnasse",
+      "loc": "Accor Arena, Paris, France",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-rodr-guez-vs-silva",
+      "date": "2026-09-12",
+      "title": "UFC Fight Night: Rodríguez vs. Silva",
+      "loc": "Desert Diamond Arena, Glendale, Arizona, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-331-van-vs-pantoja-2",
+      "date": "2026-09-19",
+      "title": "UFC 331: Van vs. Pantoja 2",
+      "loc": "Crypto.com Arena, Los Angeles, California, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-289",
+      "date": "2026-09-26",
+      "title": "UFC Fight Night 289",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-332",
+      "date": "2026-10-03",
+      "title": "UFC 332",
+      "loc": "Delta Center, Salt Lake City, Utah, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-290",
+      "date": "2026-10-10",
+      "title": "UFC Fight Night 290",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-buckley-vs-malott",
+      "date": "2026-10-17",
+      "title": "UFC Fight Night: Buckley vs. Malott",
+      "loc": "Rogers Place, Edmonton, Alberta, Canada",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-333",
+      "date": "2026-10-24",
+      "title": "UFC 333",
+      "loc": "Etihad Arena, Abu Dhabi, United Arab Emirates",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-292",
+      "date": "2026-10-31",
+      "title": "UFC Fight Night 292",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-293",
+      "date": "2026-11-07",
+      "title": "UFC Fight Night 293",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    }
+  ]
+}

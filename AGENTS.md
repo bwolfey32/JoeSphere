@@ -73,7 +73,27 @@ absent.
 invented appearances for a real living person is misinformation — do not restore it
 to the default seed, and do not expand the seed with unverified events.
 
-### 7. Disclosure text is load-bearing
+### 7. Ticket links are verified-or-labelled, never guessed
+
+A real "Get tickets" button renders **only** from a URL someone actually
+supplied (`e.ticket`, validated by `parseTicketLink()` — scheme restricted to
+http/https, rebuilt from the parsed URL). Everything else falls back to a
+visibly-labelled *Search tickets* link. Do not "improve" this by constructing
+a plausible vendor URL (`ticketmaster.com/event/<guess>`): a fabricated link
+that lands on the wrong event — or on a scalper page — is worse than no link,
+and it is the same misinformation problem as invariant #6.
+
+### 8. SEED is a fallback; the live feed wins
+
+`SEED` exists so the page renders something with no `events.json` (offline, or
+a fresh clone). When the feed loads, `allEntries()` drops entries whose id is in
+`SEED_IDS`, because the feed's "UFC 331: Van vs. Pantoja 2" *is* the seed's
+"UFC 331" and both would otherwise render as separate cards. It filters by id
+rather than a title/date heuristic so that copies already saved to a visitor's
+storage are also suppressed, and so nothing the visitor logged themselves is
+ever removed. Do not delete `SEED` to "fix" the duplication.
+
+### 9. Disclosure text is load-bearing
 
 The "unofficial fan project" notices in the header and footer and the
 *Unconfirmed* badge are not boilerplate:
@@ -111,11 +131,20 @@ This tracks **announced, scheduled** events. Do not add:
 
 ## Known gaps
 
-- The fetch parsers were tested against fixtures only — youtube.com and
-  wikipedia.org were unreachable in the environment where they were written. **Run
-  the workflow manually and inspect `events.json` before trusting the cron.**
-- Wikipedia table structure shifts occasionally; the parser is defensive but will
-  need attention when it does.
+- `scripts/fetch-events.mjs` **has** been run against live wikipedia.org and its
+  output inspected (12 scheduled events, venues and rowspan carry-over verified
+  by hand). The all-sources-fail path was tested too: it exits 1 and leaves
+  `events.json` byte-identical. It has **not** yet run inside GitHub Actions.
+- The schedule table uses `rowspan` — a venue cell can cover several rows, and
+  the rows beneath omit that cell entirely. `parseTable()` tracks the carry-over
+  in a grid for exactly this reason; walking cells positionally instead silently
+  reads the citation column as the venue. Dates come from each cell's
+  `data-sort-value` (machine-readable) rather than the visible "Nov 7, 2026".
+- Wikipedia table structure shifts occasionally; the parser resolves the section
+  by name and throws rather than guessing when columns go missing, but it will
+  still need attention when the shape changes.
+- The fetcher has exactly one source today. `SOURCES` is an array so a second can
+  be added; note the all-fail contract only trips when *every* source fails.
 - `index.html` is a monolith. Splitting CSS/JS into separate files is a reasonable
   first refactor — but re-verify invariants 1–3 afterwards, since all three live in
   code that a mechanical split will move.
