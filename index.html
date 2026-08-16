@@ -49,8 +49,8 @@ body{
 /* ---------- cover ---------- */
 .cover{
   position:relative;
-  margin:22px 0 0;
-  padding:26px 22px 22px;
+  margin:16px 0 0;
+  padding:18px 18px 16px;
   background:var(--card);
   border:1px solid var(--rule);
   box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 10px 30px -14px var(--shadow);
@@ -61,31 +61,31 @@ body{
 }
 .eyebrow{
   font-family:"Oswald",Impact,"Arial Narrow",sans-serif;
-  font-weight:600;letter-spacing:.22em;text-transform:uppercase;
-  font-size:11px;color:var(--ink-soft);
+  font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+  font-size:10px;color:var(--ink-soft);
 }
 h1{
   font-family:"Oswald",Impact,"Arial Narrow",sans-serif;
   font-weight:700;text-transform:uppercase;letter-spacing:.02em;
-  font-size:clamp(30px,7.5vw,50px);
-  line-height:.98;margin:10px 0 4px;
+  font-size:clamp(23px,5.5vw,36px);
+  line-height:.98;margin:7px 0 3px;
 }
-.subject-line{font-size:13px;color:var(--ink-soft);margin:0 0 2px}
+.subject-line{font-size:12px;color:var(--ink-soft);margin:0 0 2px}
 .subject-line b{color:var(--ink)}
 .stamp{
-  position:absolute;top:14px;right:12px;
+  position:absolute;top:10px;right:10px;
   transform:rotate(9deg);
   border:3px double var(--stamp);color:var(--stamp);background:rgba(255,65,39,.10);
   font-family:"Oswald",Impact,sans-serif;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;font-size:11px;
-  padding:5px 9px;opacity:1;text-align:center;line-height:1.15;
-  max-width:130px;
+  letter-spacing:.11em;text-transform:uppercase;font-size:9.5px;
+  padding:4px 7px;opacity:1;text-align:center;line-height:1.15;
+  max-width:112px;
 }
 .notice{
-  margin-top:16px;padding:9px 11px;
+  margin-top:12px;padding:7px 9px;
   border-left:3px solid var(--blue);
   background:rgba(61,214,196,.09);
-  font-size:12.5px;color:var(--blue);
+  font-size:11.5px;color:var(--blue);
 }
 
 /* ---------- section tabs ---------- */
@@ -145,7 +145,12 @@ h1{
 .player{background:var(--card);border:1px solid var(--ink);padding:14px 15px;
   box-shadow:0 6px 20px -12px var(--shadow)}
 .player .ph{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px}
+.paneclose{background:none;border:none;color:var(--ink-soft);cursor:pointer;
+  font-family:inherit;font-size:16px;line-height:1;letter-spacing:normal;
+  text-transform:none;padding:0;flex:0 0 auto}
+.paneclose:hover{color:var(--ink)}
 .player h4{font-family:"Oswald",Impact,sans-serif;font-size:15px;letter-spacing:.03em;
   text-transform:uppercase;margin:11px 0 4px;line-height:1.25}
 .player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
@@ -262,12 +267,18 @@ h1{
 .pin.sel circle{fill:var(--blue);stroke:#0F1218}
 .pin:focus{outline:none}
 .pin:focus-visible circle{stroke:var(--blue);stroke-width:3}
+/* "Has comments" banner — color only, size is set in JS via uiK() (invariant
+   #3). pointer-events:none so it doesn't create a second dead zone inside
+   the pin's existing hit-circle. */
+.pin .pin-cmt{fill:var(--mid);pointer-events:none}
 .mapfoot{display:flex;gap:14px;flex-wrap:wrap;align-items:center;
   padding:11px 15px 14px;border-top:1px dashed var(--rule);font-size:12.5px;color:var(--ink-soft)}
 .lg{display:flex;align-items:center;gap:5px}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
 .dot.up{background:var(--stamp)}
 .dot.pastpin{border:2px solid var(--ink-soft)}
+.cmtdot{width:9px;height:7px;display:inline-block;background:var(--mid);
+  clip-path:polygon(0 0,100% 0,100% 70%,50% 100%,0 70%)}
 
 
 .rowlab{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.16em;
@@ -461,6 +472,15 @@ body.m-both #heat{opacity:.8}
   text-transform:uppercase;color:var(--ink);line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .row-meta{font-size:12px;color:var(--ink-soft)}
+/* Engagement pills — same outlined-pill shape as .tag, plus the tint-fill
+   .likebtn/.dislikebtn already use, so a row with reactions/comments reads
+   as visually distinct from plain metadata text rather than blending in. */
+.row-stats{display:flex;gap:5px;flex-wrap:wrap;margin-top:1px}
+.stat-pill{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.04em;
+  padding:2px 7px;border:1px solid currentColor;font-weight:700;display:inline-flex;align-items:center}
+.stat-pill.up{color:var(--stamp);border-color:rgba(255,65,39,.45);background:rgba(255,65,39,.10)}
+.stat-pill.down{color:var(--blue);border-color:rgba(61,214,196,.45);background:rgba(61,214,196,.10)}
+.stat-pill.comments{color:var(--mid);border-color:rgba(255,176,46,.45);background:rgba(255,176,46,.10)}
 @media(max-width:520px){
   .row-thumb{flex-basis:76px;height:44px}
   .row-title{font-size:13px}
@@ -626,6 +646,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
     <div class="mapfoot">
       <span class="lg pinlg"><i class="dot up"></i>Upcoming</span>
       <span class="lg pinlg"><i class="dot pastpin"></i>Past</span>
+      <span class="lg pinlg"><i class="cmtdot"></i>Has comments</span>
       <span class="lg heatlg"><i class="ramp"></i>Fewer → more events</span>
       <span class="lg" id="topmkt"></span>
       <span class="lg" id="sync-note"></span>
@@ -722,6 +743,11 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       </div>
 
       <div id="view-hot">
+  <section class="panel" id="today-panel" hidden>
+    <h3>Today</h3>
+    <p class="hint">Events happening today, pinned above the ranked list below.</p>
+    <main id="hottoday"></main>
+  </section>
   <section class="panel" aria-label="Hot feed">
     <h3>Hot</h3>
     <p class="hint">Events and Fan Posts ranked together by likes, dislikes and comments —
@@ -1279,8 +1305,12 @@ function postRow(p){
         (ev?'<span class="tag ptag">'+esc(ev.title.slice(0,34))+'</span>':'')+
         '<span class="when">'+esc(fmt(String(p.created_at).slice(0,10)))+'</span></span>'+
       '<span class="row-title">'+esc(p.caption||'(no caption)')+'</span>'+
-      '<span class="row-meta">'+esc(p.author_label||'Fan')+' · ▲'+(p.ups||0)+' ▼'+(p.downs||0)+
-        ' · '+p.comments.length+' comment'+(p.comments.length===1?'':'s')+'</span>'+
+      '<span class="row-meta">'+esc(p.author_label||'Fan')+'</span>'+
+      ((p.ups||p.downs||p.comments.length)?'<span class="row-stats">'+
+        (p.ups?'<span class="stat-pill up">▲ '+p.ups+'</span>':'')+
+        (p.downs?'<span class="stat-pill down">▼ '+p.downs+'</span>':'')+
+        (p.comments.length?'<span class="stat-pill comments">'+p.comments.length+' comment'+(p.comments.length===1?'':'s')+'</span>':'')+
+      '</span>':'')+
     '</span></button>';
 }
 
@@ -1288,7 +1318,8 @@ function postPaneHTML(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
   const ev=p.event_id?allEntries().find(e=>e.id===p.event_id):null;
   const mine=!!(session&&session.user&&p.author_id===session.user.id);
-  return '<div class="player"><div class="ph">Selected post</div>'+
+  return '<div class="player"><div class="ph"><span>Selected post</span>'+
+    '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
     (vid&&CLIPSRC[vid.kind]?
       '<div class="frame"><iframe src="'+esc(CLIPSRC[vid.kind](vid.id))+'" loading="lazy" '+
       'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
@@ -1374,18 +1405,28 @@ function hotEntries(){
 }
 function renderHot(){
   const el=document.getElementById('hotfeed'); if(!el) return;
+  // Today's events get their own pinned section above the ranked list, and
+  // are pulled out of that list so they don't render twice on the same
+  // page. This works even when Fan Posts isn't configured — it only needs
+  // allEntries()/daysTo(), no Supabase data — so it runs before the sb/
+  // postsLoading guards below.
+  const items=hotEntries();
+  const today=items.filter(it=>it.kind==='event'&&daysTo(it.entry.date)===0);
+  document.getElementById('today-panel').hidden=!today.length;
+  document.getElementById('hottoday').innerHTML=today.map(it=>eventRow(it.entry)).join('');
+
   if(!sb){
     el.innerHTML='<div class="dnote">Hot ranks reactions and comments, which need Fan Posts '+
       'switched on — see the <code>SUPABASE</code> setup comment near the top of the script.</div>';
     return;
   }
   if(postsLoading){ el.innerHTML='<div class="empty"><strong>Loading…</strong></div>'; return; }
-  const items=hotEntries();
-  if(!items.length){
+  const rest=items.filter(it=>!(it.kind==='event'&&daysTo(it.entry.date)===0));
+  if(!rest.length){
     el.innerHTML='<div class="empty"><strong>Nothing on file</strong></div>';
     return;
   }
-  el.innerHTML=items.map(it=>it.kind==='event'?eventRow(it.entry):postRow(it.post)).join('');
+  el.innerHTML=rest.map(it=>it.kind==='event'?eventRow(it.entry):postRow(it.post)).join('');
 }
 
 // A verified link (typed into the form, or supplied by a source) renders as a
@@ -1541,6 +1582,20 @@ function selectEntry(id,opts){
   if(pane) pane.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+// The × in the pane header. Mirrors the hash-writing in selectEntry/
+// selectPost with history.replaceState (not location.hash='') so this
+// doesn't fire hashchange and re-trigger applyHash() right back into a
+// selection. Also resets the map's own independent selected-pin state —
+// without that, closing the pane would leave a pin highlighted blue for a
+// selection that no longer exists.
+function clearSelection(){
+  selectedId=null; selectedPostId=null; selectedKind=null;
+  document.querySelectorAll('[data-goto].sel').forEach(el=>el.classList.remove('sel'));
+  document.querySelectorAll('[data-post].sel').forEach(el=>el.classList.remove('sel'));
+  if(location.hash) history.replaceState(null,'',location.pathname+location.search);
+  if(selPin){ selPin=null; plotMap(lastRows); }
+  renderPlayer();
+}
 
 // What the pane is currently showing. Rebuilding its innerHTML replaces the
 // <iframe>, which stops playback dead — and re-inserting the old node doesn't
@@ -1603,7 +1658,8 @@ function renderPlayer(){
       const v=e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?e.video:null;
       const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
       const rx=eventReactionsFor(e.id);
-      el.innerHTML='<div class="player"><div class="ph">Selected entry</div>'+
+      el.innerHTML='<div class="player"><div class="ph"><span>Selected entry</span>'+
+        '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
         (v?'<div class="frame"><iframe src="'+esc(CLIPSRC[v.kind](v.id))+'" loading="lazy" '+
           'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
           'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
@@ -2035,10 +2091,13 @@ function eventRow(e){
       '<span class="row-meta">'+esc(fmt(e.date))+
         (e.loc?' · '+esc(cityLabel(e.loc)):'')+
         (stat?' · '+esc(stat):'')+
-        ((rx.ups||rx.downs)?' · ▲'+rx.ups+' ▼'+rx.downs:'')+
-        (cCount?' · '+cCount+' comment'+(cCount===1?'':'s'):'')+
         (pCount?' · '+pCount+' fan post'+(pCount===1?'':'s'):'')+
       '</span>'+
+      ((rx.ups||rx.downs||cCount)?'<span class="row-stats">'+
+        (rx.ups?'<span class="stat-pill up">▲ '+rx.ups+'</span>':'')+
+        (rx.downs?'<span class="stat-pill down">▼ '+rx.downs+'</span>':'')+
+        (cCount?'<span class="stat-pill comments">'+cCount+' comment'+(cCount===1?'':'s')+'</span>':'')+
+      '</span>':'')+
     '</span></button>';
 }
 
@@ -2126,13 +2185,30 @@ function plotMap(rows){
     const [x,y]=project(c[0],c[1]);
     pts.push({x,y,e,past:daysTo(e.date)<0});
   });
+  // Precompute per-event comment counts once (mirrors the byEvent tally in
+  // renderEngagementInsights()) rather than filtering `comments` inside the
+  // per-pin map below.
+  const commentCounts={};
+  comments.forEach(c=>{ if(c.event_id) commentCounts[c.event_id]=(commentCounts[c.event_id]||0)+1; });
   const k=uiK(), rUp=6*k, rPast=4.6*k, rHit=14*k;
-  g.innerHTML=pts.map(p=>
-    '<g class="pin '+(p.past?'pastpin':'up')+(selPin===p.e.id?' sel':'')+
-    '" data-pin="'+p.e.id+'" tabindex="0" role="button" aria-label="'+esc(p.e.title)+'">'+
+  g.innerHTML=pts.map(p=>{
+    const r=p.past?rPast:rUp;
+    const n=commentCounts[p.e.id];
+    // A small pennant banner above-right of the pin, sized in screen pixels
+    // like everything else on the map (AGENTS.md invariant #3) — fill-only,
+    // no stroke, so there's no viewBox-unit stroke-width to hardcode.
+    const bw=9*k, bh=6*k, bx=p.x+r*0.5, by=p.y-r*0.5-bh;
+    const banner=n?'<polygon class="pin-cmt" points="'+
+      bx.toFixed(1)+','+by.toFixed(1)+' '+(bx+bw).toFixed(1)+','+by.toFixed(1)+' '+
+      (bx+bw).toFixed(1)+','+(by+bh*0.7).toFixed(1)+' '+(bx+bw/2).toFixed(1)+','+(by+bh).toFixed(1)+' '+
+      bx.toFixed(1)+','+(by+bh*0.7).toFixed(1)+'"/>':'';
+    return '<g class="pin '+(p.past?'pastpin':'up')+(selPin===p.e.id?' sel':'')+
+    '" data-pin="'+p.e.id+'" tabindex="0" role="button" aria-label="'+esc(p.e.title)+
+    (n?' · '+n+' comment'+(n===1?'':'s'):'')+'">'+
     '<circle class="hit" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+rHit.toFixed(1)+'"/>'+
-    '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+
-    (p.past?rPast:rUp).toFixed(1)+'" stroke-width="'+(1.8*k).toFixed(2)+'"/></g>').join('');
+    '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+r.toFixed(1)+
+    '" stroke-width="'+(1.8*k).toFixed(2)+'"/>'+banner+'</g>';
+  }).join('');
   const up=pts.filter(p=>!p.past).sort((a,b)=>a.e.date.localeCompare(b.e.date));
   document.getElementById('route').setAttribute('d',
     up.length>1?'M'+up.map(p=>p.x.toFixed(1)+','+p.y.toFixed(1)).join('L'):'');
@@ -2309,6 +2385,7 @@ function onPick(ev){
 document.getElementById('view-insights').addEventListener('click',onPick);
 document.getElementById('feed').addEventListener('click',onPick);
 document.getElementById('hotfeed').addEventListener('click',onPick);
+document.getElementById('hottoday').addEventListener('click',onPick);
 function onPickKey(ev){
   if(ev.key!=='Enter'&&ev.key!==' ') return;
   const g=ev.target.closest('[data-goto]');
@@ -2318,6 +2395,7 @@ function onPickKey(ev){
 }
 document.getElementById('view-insights').addEventListener('keydown',onPickKey);
 document.getElementById('hotfeed').addEventListener('keydown',onPickKey);
+document.getElementById('hottoday').addEventListener('keydown',onPickKey);
 
 /* ---------- deep links ---------- */
 // An entry gets its own URL so a find can actually be shared. Feed ids are
@@ -2560,6 +2638,7 @@ document.getElementById('save-entry').addEventListener('click',async()=>{
 // the detail pane — the one place an entry is ever acted on now.
 document.getElementById('insight-player').addEventListener('click',async ev=>{
   const b=ev.target.closest('button'); if(!b)return;
+  if(b.dataset.closepane){ clearSelection(); return; }
   if(b.dataset.drop){
     state.entries=state.entries.filter(x=>x.id!==b.dataset.drop);
     if(selectedId===b.dataset.drop){ selectedId=null; renderPlayer(); }
