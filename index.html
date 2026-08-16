@@ -160,8 +160,6 @@ body.m-both #heat{opacity:.8}
 
 
 
-.discuss{margin-top:20px}
-.discuss h3{margin-bottom:10px}
 .dnote{font-size:12.5px;color:var(--ink-soft);line-height:1.6}
 .dnote b{color:var(--ink)}
 .dnote code{color:var(--blue)}
@@ -598,10 +596,6 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 
   <main id="feed"><div class="empty"><strong>Opening file…</strong>Reading from the cabinet.</div></main>
 
-  <section class="panel discuss" id="discuss">
-    <h3>Open Discussion</h3>
-    <div id="discuss-slot"></div>
-  </section>
 
   <footer>
     <b>Unofficial fan project.</b> Not affiliated with or endorsed by Joe Rogan, JRE, or the UFC.
@@ -616,26 +610,14 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-// ── Public discussion ────────────────────────────────────────────────────────
-// Off by default. giscus backs comments with GitHub Discussions: no server to run,
-// and moderation, blocking and reporting come from GitHub rather than being your
-// problem to build. Fill these in from https://giscus.app and set provider:'giscus'.
-const DISCUSSION={
-  provider:null,            // 'giscus' to switch on
-  repo:'',                  // 'you/your-repo'
-  repoId:'',
-  category:'General',
-  categoryId:''
-};
-// ─────────────────────────────────────────────────────────────────────────────
 // ── Fan Posts ────────────────────────────────────────────────────────────────
 // Off by default (SUPABASE.url/anonKey empty). Fan posts are real cross-user
 // content — a clip link + caption, optionally likes and comments — so unlike
 // everything else in this file they need somewhere every visitor can read from
 // and a signed-in visitor can write to. That's a real backend (Supabase:
 // Postgres + auth + a public REST API), which means moderation and abuse
-// handling are now this site owner's problem, not something offloaded the way
-// giscus/GitHub Discussions offloads it above. Posting uses Supabase's
+// handling are now this site owner's problem, rather than being offloaded to a
+// host like giscus/GitHub Discussions. Posting uses Supabase's
 // anonymous auth (no email, no account) for zero-friction posting — the
 // trade-off is there's no identity check at all beyond a per-browser session,
 // so there's less spam protection than an email- or GitHub-gated approach.
@@ -855,7 +837,7 @@ async function load(){
   }catch(e){
     state={entries:SEED.slice()};
   }
-  ready=true; render(); mountDiscussion(); loadFeed();
+  ready=true; render(); loadFeed();
   initAuth().then(loadPosts);
   const sn=document.getElementById('store-note');
   if(sn) sn.textContent = store.kind==='memory'
@@ -1311,35 +1293,6 @@ function renderAnalysis(rows){
     (v/mx*58).toFixed(1)+'px"></div><div class="t">'+MONTHS[i]+'</div></div>').join('');
 }
 
-function mountDiscussion(){
-  const slot=document.getElementById('discuss-slot');
-  const g=DISCUSSION;
-  if(g.provider==='giscus'&&g.repo&&g.repoId&&g.categoryId){
-    const s=document.createElement('script');
-    s.src='https://giscus.app/client.js';
-    s.async=true; s.crossOrigin='anonymous';
-    s.setAttribute('data-repo',g.repo);
-    s.setAttribute('data-repo-id',g.repoId);
-    s.setAttribute('data-category',g.category||'General');
-    s.setAttribute('data-category-id',g.categoryId);
-    s.setAttribute('data-mapping','pathname');
-    s.setAttribute('data-reactions-enabled','1');
-    s.setAttribute('data-theme','dark_dimmed');
-    s.setAttribute('data-loading','lazy');
-    slot.appendChild(s);
-    return;
-  }
-  slot.innerHTML='<div class="dnote"><b>Not switched on yet.</b> The notes attached to each '+
-    'event are private to your own browser — they are never published, so this page currently '+
-    'has no shared discussion.<br><br>To open one up, connect <b>giscus</b>, which stores comments '+
-    'as GitHub Discussions. There is no server to run, and moderation, blocking and abuse reporting '+
-    'come from GitHub instead of being yours to build.<ol>'+
-    '<li>Make the site repo public and turn on Discussions.</li>'+
-    '<li>Install the giscus app: <code>github.com/apps/giscus</code></li>'+
-    '<li>Get your IDs from <code>giscus.app</code></li>'+
-    '<li>Fill in <code>DISCUSSION</code> at the top of this file and set '+
-    '<code>provider:\'giscus\'</code></li></ol></div>';
-}
 
 let rzt;
 window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>plotMap(lastRows),150);});
