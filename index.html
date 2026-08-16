@@ -265,6 +265,13 @@ body.m-both #heat{opacity:.8}
   background:var(--stamp);color:#14171D;border:none}
 .playbtn:hover{filter:brightness(1.12)}
 
+.ticketlink{display:inline-flex;align-items:center;gap:7px;margin:11px 0 0;
+  font-family:"Oswald",Impact,sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;padding:8px 12px;background:var(--ink);color:var(--paper);
+  text-decoration:none}
+.ticketlink:hover{filter:brightness(1.12)}
+.ticketlink img{width:16px;height:16px;border-radius:2px}
+
 /* ---------- annotations ---------- */
 .ann{padding:12px 16px 15px;background:rgba(255,255,255,.028)}
 .ann-h{
@@ -542,6 +549,10 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       <input type="text" id="f-loc" placeholder="Venue, city">
     </div>
     <div class="field">
+      <label for="f-ticket">Ticket link <span style="text-transform:none;letter-spacing:0">— optional</span></label>
+      <input type="text" id="f-ticket" placeholder="https://…" spellcheck="false">
+    </div>
+    <div class="field">
       <label for="f-vid">Clip link <span style="text-transform:none;letter-spacing:0">— YouTube, TikTok or Vimeo</span></label>
       <input type="text" id="f-vid" placeholder="https://youtu.be/…" spellcheck="false">
     </div>
@@ -762,8 +773,8 @@ async function loadFeed(){
       id:'a:'+(e.src||uid()), src:e.src||null, date:String(e.date).slice(0,10),
       title:String(e.title), loc:String(e.loc||''),
       type:['standup','broadcast','podcast'].includes(e.type)?e.type:'broadcast',
-      note:String(e.note||''), video:parseVideo0(e.video), flag:e.flag==='auto'?'auto':'unconfirmed',
-      locked:true
+      note:String(e.note||''), video:parseVideo0(e.video), ticket:parseTicketLink(e.ticket),
+      flag:e.flag==='auto'?'auto':'unconfirmed', locked:true
     }));
     const st=document.getElementById('sync-note');
     if(st) st.textContent=auto.length
@@ -1020,6 +1031,9 @@ function render(){
       '<h2>'+esc(e.title)+'</h2>'+
       '<p class="loc">'+esc(e.loc||'Location not listed')+' · '+fmt(e.date)+'</p>'+
       (e.note?'<p class="note">'+esc(e.note)+'</p>':'')+
+      (e.ticket?'<a class="ticketlink" href="'+esc(e.ticket.href)+'" target="_blank" '+
+        'rel="noopener noreferrer"><img src="https://www.google.com/s2/favicons?domain='+
+        esc(e.ticket.host)+'&sz=64" alt="" loading="lazy">Get tickets — '+esc(e.ticket.host)+'</a>':'')+
       (sb?'<button class="mini ghost" data-viewposts="'+e.id+'">💬 '+postCountFor(e.id)+
         ' fan post'+(postCountFor(e.id)===1?'':'s')+'</button>':'')+
       (e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?
@@ -1333,6 +1347,16 @@ const CLIPSRC={
   vm:id=>'https://player.vimeo.com/video/'+id
 };
 const CLIPNAME={yt:'YouTube',tt:'TikTok',vm:'Vimeo'};
+// Ticket links go in a plain <a href>, never an iframe, so there's no host
+// whitelist (any ticket vendor is fine) — but the scheme is still restricted
+// to http/https so a javascript:/data: URL can never end up in an href, and
+// the link is rebuilt from the parsed URL rather than the raw typed string.
+function parseTicketLink(u){
+  if(!u) return null;
+  let url; try{ url=new URL(u.trim()); }catch(e){ return null; }
+  if(url.protocol!=='https:'&&url.protocol!=='http:') return null;
+  return {href:url.href, host:url.hostname.replace(/^www\./,'')};
+}
 function findUrl(s){ const m=s.match(/https?:\/\/[^\s|]+/); return m?m[0]:null; }
 
 function guessType(s){
@@ -1442,10 +1466,14 @@ document.getElementById('save-entry').addEventListener('click',async()=>{
   const vid=parseVideo(vraw);
   if(vraw&&!vid){err.textContent='That clip link is not a recognized YouTube, TikTok or Vimeo URL.';
     err.style.display='block';return;}
+  const traw=document.getElementById('f-ticket').value.trim();
+  const ticket=parseTicketLink(traw);
+  if(traw&&!ticket){err.textContent='That ticket link doesn\'t look like a valid http(s) URL.';
+    err.style.display='block';return;}
   state.entries.push({id:uid(),title:t,date:d,type:document.getElementById('f-type').value,
     loc:document.getElementById('f-loc').value.trim(),
-    note:document.getElementById('f-note').value.trim(),video:vid,flag:null});
-  ['f-title','f-loc','f-note','f-vid'].forEach(i=>document.getElementById(i).value='');
+    note:document.getElementById('f-note').value.trim(),video:vid,ticket,flag:null});
+  ['f-title','f-loc','f-note','f-vid','f-ticket'].forEach(i=>document.getElementById(i).value='');
   panel.classList.add('hidden');
   render(); await save();
 });
