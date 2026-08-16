@@ -262,6 +262,14 @@ async function fromWikipedia() {
 // ship flagged "auto" rather than "unconfirmed". They also carry no venue. The
 // studio's city is public, but asserting he was physically somewhere on a given
 // day is a location claim this project does not make, so loc stays empty.
+//
+// `loc` staying empty is load-bearing and is not the thing to change if you
+// want studio geography on the map. The site derives an *estimated* recording
+// base from the release date via STUDIO_ERAS in index.html, keeps it in its own
+// clearly-labelled channel, and leaves `loc` for real sourced venues — which is
+// what lets "Last known position" still report an actual place. Writing a
+// studio into `loc` here would publish a per-episode location claim as if it
+// were sourced, and would mask that readout behind ~4 releases a week.
 const JRE_CHANNEL = 'UCzQUP1qoWDoEbmsQxvdjxgQ';   // PowerfulJRE
 
 function approxViews(n) {
@@ -436,9 +444,21 @@ async function fromYouTubeApi(key) {
 // `prefix` is how a source's own rows are recognised in an existing
 // events.json, so a source that fails this run can have its previous rows
 // carried forward instead of vanishing (see main()).
+//
+// `accrue` marks a source whose rows are an accumulating archive rather than a
+// current snapshot. It exists because fromYouTube() deliberately *succeeds*
+// with a short RSS window when the API key is missing or rejected — which is
+// right (the site should still work) but means a keyless run would otherwise
+// replace the whole episode archive with 15 rows. Carry-forward only covers
+// sources that *failed*, so it would not catch that.
+//
+// Only correct for released episodes, which are immutable — an episode that
+// went out in 2021 will always have gone out in 2021. UFC rows must NOT accrue:
+// a cancelled or rescheduled card has to be able to disappear, which is exactly
+// what replacing them every run achieves.
 const SOURCES = [
   { name: 'wikipedia:List_of_UFC_events', prefix: 'wikipedia:', run: fromWikipedia },
-  { name: 'youtube:PowerfulJRE', prefix: 'youtube:', run: fromYouTube }
+  { name: 'youtube:PowerfulJRE', prefix: 'youtube:', run: fromYouTube, accrue: true }
 ];
 
 const OUT = new URL('../events.json', import.meta.url);
@@ -515,13 +535,17 @@ async function main() {
     process.exit(1);
   }
 
+  // Accruing sources need the previous file even on a clean run, so read it
+  // once here and share it with the carry-forward below.
+  const accruing = SOURCES.filter(s => s.accrue && !failed.includes(s));
+  const prev = (failed.length || accruing.length) ? await readExisting() : [];
+
   // One source being down must not delete the other's content. Without this,
   // a single flaky fetch republishes the file without those rows and the site
   // silently loses a whole category until the next run days later. Carried
   // rows are last-known-good, so a cancelled event can linger for one cycle —
   // that is the lesser of the two failures, and it self-corrects next run.
   if (failed.length) {
-    const prev = await readExisting();
     for (const s of failed) {
       const kept = prev.filter(e => typeof e.src === 'string' && e.src.startsWith(s.prefix));
       if (kept.length) {
@@ -531,6 +555,23 @@ async function main() {
     }
   }
 
+  // An accruing source keeps everything it has ever published (see SOURCES).
+  // This run's rows are already in `all` and appear first, so the dedupe below
+  // keeps them — and their refreshed view counts — while rows that only exist
+  // in the previous file survive rather than being dropped. That is what makes
+  // a run without YOUTUBE_API_KEY harmless: it contributes its 15 RSS rows and
+  // the rest of the archive stays put.
+  for (const s of accruing) {
+    const older = prev.filter(e => typeof e.src === 'string' && e.src.startsWith(s.prefix));
+    if (older.length) {
+      console.log('  ↳ archive: kept ' + older.length + ' previously published rows from ' +
+        s.name + ' (this run\'s rows win where they overlap)');
+      all.push(...older);
+    }
+  }
+
+  // First occurrence wins, which is why fresh rows are pushed before archived
+  // ones above.
   const seen = new Set();
   const events = all
     .filter(e => !seen.has(e.src) && seen.add(e.src))

@@ -141,7 +141,31 @@ licensing deal is worth orders of magnitude more, so this is a narrow slice
 and must never be presented as "what he earns". This is the same guardrail as
 invariant #6, applied to money instead of events.
 
-### 11. Disclosure text is load-bearing
+### 11. Studio locations are estimated, and say so
+
+Episode releases have no sourced location, so the recording base shown on the
+map and in Insights is **derived from the release date** via `STUDIO_ERAS` in
+`index.html`. It is the same guardrail as #10, applied to place instead of
+money, and the labelling is what makes it publishable:
+
+- The map footer note, the "Studio (est.)" legend entry, the `(est.)` suffix on
+  the *Recording base* readout, and the Insights panel's hint all state that it
+  is estimated. Do not drop any of them, and do not relabel it as a known
+  location.
+- Three things make it an estimate and none are fixable from public data:
+  Wikipedia has **no** JRE episode list at all and hedges even on eras ("some
+  episodes" at the Ice House, "the majority" at Woodland Hills); release date is
+  not recording date (one documented gap ran ~10 months); and ~17 episodes in
+  2020 were recorded remotely with no public list of which.
+- Episodes still carry **no `loc`** — see Known gaps. The estimate lives in its
+  own channel precisely so `loc` stays reserved for real sourced venues.
+- On the map, studios collapse to **one marker per studio city** and contribute
+  **one event's worth** to the heat layer, not their episode count. With the
+  real count the global `max` jumps from ~17 into the hundreds, every actual
+  tour market flattens into the lowest colour tier, and the studio's blur covers
+  over half the map. The true figure goes on the studio plaque instead.
+
+### 12. Disclosure text is load-bearing
 
 The "unofficial fan project" notices in the header and footer and the
 *Unconfirmed* badge are not boilerplate:
@@ -197,6 +221,12 @@ This tracks **announced, scheduled** events. Do not add:
   does not make. `stats()` therefore walks back to the most recent entry that
   actually has a `loc` for "Last known position" — don't "simplify" it back to
   `past[0].loc` or it renders blank.
+  An *estimated* studio is shown as well (invariant #11), derived from the
+  release date in `index.html` rather than written into `loc`. Keeping it out of
+  `loc` is what preserves both readouts: "Last known position" continues to name
+  a real sourced venue instead of being masked by ~4 releases a week, and the
+  estimate stays in a channel that is labelled as an estimate. Don't consolidate
+  the two.
 - The schedule table uses `rowspan` — a venue cell can cover several rows, and
   the rows beneath omit that cell entirely. `parseTable()` tracks the carry-over
   in a grid for exactly this reason; walking cells positionally instead silently
@@ -205,8 +235,18 @@ This tracks **announced, scheduled** events. Do not add:
 - Wikipedia table structure shifts occasionally; the parser resolves the section
   by name and throws rather than guessing when columns go missing, but it will
   still need attention when the shape changes.
-- The fetcher has exactly one source today. `SOURCES` is an array so a second can
-  be added; note the all-fail contract only trips when *every* source fails.
+- The fetcher has two sources today (UFC via Wikipedia, JRE episodes via the
+  PowerfulJRE channel); note the all-fail contract only trips when *every* source
+  fails.
+- A source can be marked `accrue: true` in `SOURCES`, meaning its rows are an
+  accumulating archive: the previous file's rows are merged back in and this
+  run's win where they overlap. The YouTube source needs it because
+  `fromYouTube()` deliberately *succeeds* with a 15-episode RSS window when
+  `YOUTUBE_API_KEY` is missing or rejected, and carry-forward only covers
+  sources that **failed** — so without `accrue` a keyless run would replace the
+  whole episode archive with 15 rows. Only safe for immutable rows: released
+  episodes never change, whereas a cancelled UFC card must be able to disappear,
+  which is why the Wikipedia source must keep being replaced wholesale.
 - `index.html` is a monolith. Splitting CSS/JS into separate files is a reasonable
   first refactor — but re-verify invariants 1–3 afterwards, since all three live in
   code that a mechanical split will move.
