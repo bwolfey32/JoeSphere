@@ -1,6 +1,222 @@
 {
-  "generated": "2026-08-16T13:36:17.130Z",
+  "generated": "2026-08-16T14:03:05.213Z",
   "events": [
+    {
+      "src": "wikipedia:ufc-fight-night-evloev-vs-murphy",
+      "date": "2026-03-21",
+      "title": "UFC Fight Night: Evloev vs. Murphy",
+      "loc": "The O2 Arena, London, England",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 18629,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-adesanya-vs-pyfer",
+      "date": "2026-03-28",
+      "title": "UFC Fight Night: Adesanya vs. Pyfer",
+      "loc": "Climate Pledge Arena, Seattle, Washington, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 17854,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-moicano-vs-duncan",
+      "date": "2026-04-04",
+      "title": "UFC Fight Night: Moicano vs. Duncan",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-327-proch-zka-vs-ulberg",
+      "date": "2026-04-11",
+      "title": "UFC 327: Procházka vs. Ulberg",
+      "loc": "Kaseya Center, Miami, Florida, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 17741,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-burns-vs-malott",
+      "date": "2026-04-18",
+      "title": "UFC Fight Night: Burns vs. Malott",
+      "loc": "Canada Life Centre, Winnipeg, Manitoba, Canada",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 14051,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-sterling-vs-zalal",
+      "date": "2026-04-25",
+      "title": "UFC Fight Night: Sterling vs. Zalal",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-della-maddalena-vs-prates",
+      "date": "2026-05-02",
+      "title": "UFC Fight Night: Della Maddalena vs. Prates",
+      "loc": "RAC Arena, Perth, Australia",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 13839,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-328-chimaev-vs-strickland",
+      "date": "2026-05-09",
+      "title": "UFC 328: Chimaev vs. Strickland",
+      "loc": "Prudential Center, Newark, New Jersey, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 17783,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-allen-vs-costa",
+      "date": "2026-05-16",
+      "title": "UFC Fight Night: Allen vs. Costa",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-song-vs-figueiredo",
+      "date": "2026-05-30",
+      "title": "UFC Fight Night: Song vs. Figueiredo",
+      "loc": "Galaxy Arena, Macau SAR, China",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 12647,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-muhammad-vs-bonfim",
+      "date": "2026-06-06",
+      "title": "UFC Fight Night: Muhammad vs. Bonfim",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-freedom-250",
+      "date": "2026-06-14",
+      "title": "UFC Freedom 250",
+      "loc": "White House, Washington, D.C., U.S.",
+      "type": "broadcast",
+      "note": "",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 4300,
+        "gate": null
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-kape-vs-horiguchi",
+      "date": "2026-06-20",
+      "title": "UFC Fight Night: Kape vs. Horiguchi",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-fiziev-vs-torres",
+      "date": "2026-06-27",
+      "title": "UFC Fight Night: Fiziev vs. Torres",
+      "loc": "National Gymnastics Arena, Baku, Azerbaijan",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
+    },
+    {
+      "src": "wikipedia:ufc-329-mcgregor-vs-holloway-2",
+      "date": "2026-07-11",
+      "title": "UFC 329: McGregor vs. Holloway 2",
+      "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 20078,
+        "gate": 26430566
+      }
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-du-plessis-vs-usman",
+      "date": "2026-07-18",
+      "title": "UFC Fight Night: du Plessis vs. Usman",
+      "loc": "Paycom Center, Oklahoma City, Oklahoma, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 17173,
+        "gate": 3187383
+      }
+    },
     {
       "src": "youtube:wq0o8pFz_gc",
       "date": "2026-07-21",
@@ -12,6 +228,7 @@
         "kind": "yt",
         "id": "wq0o8pFz_gc"
       },
+      "views": 1537889,
       "ticket": null,
       "flag": "auto"
     },
@@ -26,6 +243,7 @@
         "kind": "yt",
         "id": "Xq2aJpDHIio"
       },
+      "views": 706152,
       "ticket": null,
       "flag": "auto"
     },
@@ -40,8 +258,20 @@
         "kind": "yt",
         "id": "uob3BtMixuo"
       },
+      "views": 2051535,
       "ticket": null,
       "flag": "auto"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-ankalaev-vs-guskov",
+      "date": "2026-07-25",
+      "title": "UFC Fight Night: Ankalaev vs. Guskov",
+      "loc": "Etihad Arena, Abu Dhabi, United Arab Emirates",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
     },
     {
       "src": "youtube:EvnLN8WETlM",
@@ -54,6 +284,7 @@
         "kind": "yt",
         "id": "EvnLN8WETlM"
       },
+      "views": 1706253,
       "ticket": null,
       "flag": "auto"
     },
@@ -63,11 +294,12 @@
       "title": "Joe Rogan Experience #2532 - Tim Robbins",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 765K views at last sync.",
+      "note": "Episode release · 766K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "ur_-7JONZlY"
       },
+      "views": 765520,
       "ticket": null,
       "flag": "auto"
     },
@@ -82,6 +314,7 @@
         "kind": "yt",
         "id": "wo6K0Bav3K0"
       },
+      "views": 833003,
       "ticket": null,
       "flag": "auto"
     },
@@ -96,8 +329,24 @@
         "kind": "yt",
         "id": "ZACmIrFbfPU"
       },
+      "views": 941256,
       "ticket": null,
       "flag": "auto"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-medi-vs-rodriguez",
+      "date": "2026-08-01",
+      "title": "UFC Fight Night: Medić vs. Rodriguez",
+      "loc": "Belgrade Arena, Belgrade, Serbia",
+      "type": "broadcast",
+      "note": "International card — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 18623,
+        "gate": 2490023
+      }
     },
     {
       "src": "youtube:y9KNLlRE2HQ",
@@ -110,6 +359,7 @@
         "kind": "yt",
         "id": "y9KNLlRE2HQ"
       },
+      "views": 438351,
       "ticket": null,
       "flag": "auto"
     },
@@ -124,6 +374,7 @@
         "kind": "yt",
         "id": "6SxEj1cujQE"
       },
+      "views": 1592232,
       "ticket": null,
       "flag": "auto"
     },
@@ -138,6 +389,7 @@
         "kind": "yt",
         "id": "O52aLL8ycGU"
       },
+      "views": 540108,
       "ticket": null,
       "flag": "auto"
     },
@@ -152,8 +404,20 @@
         "kind": "yt",
         "id": "hxid7FofhMw"
       },
+      "views": 773372,
       "ticket": null,
       "flag": "auto"
+    },
+    {
+      "src": "wikipedia:ufc-fight-night-gamrot-vs-salkilld",
+      "date": "2026-08-08",
+      "title": "UFC Fight Night: Gamrot vs. Salkilld",
+      "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
+      "type": "broadcast",
+      "note": "Fight Night — historically not one he calls.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
     },
     {
       "src": "youtube:xEBeQH39CZI",
@@ -166,6 +430,7 @@
         "kind": "yt",
         "id": "xEBeQH39CZI"
       },
+      "views": 248740,
       "ticket": null,
       "flag": "auto"
     },
@@ -180,6 +445,7 @@
         "kind": "yt",
         "id": "pCH-R3L6QTc"
       },
+      "views": 403284,
       "ticket": null,
       "flag": "auto"
     },
@@ -194,6 +460,7 @@
         "kind": "yt",
         "id": "OBH4F5a6zAA"
       },
+      "views": 1507292,
       "ticket": null,
       "flag": "auto"
     },
@@ -203,13 +470,25 @@
       "title": "Joe Rogan Experience #2540 - Travis Barker",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 444K views at last sync.",
+      "note": "Episode release · 446K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "9iENvZ2siTo"
       },
+      "views": 446135,
       "ticket": null,
       "flag": "auto"
+    },
+    {
+      "src": "wikipedia:ufc-330-makhachev-vs-machado-garry",
+      "date": "2026-08-15",
+      "title": "UFC 330: Makhachev vs. Machado Garry",
+      "loc": "Xfinity Mobile Arena, Philadelphia, Pennsylvania, U.S.",
+      "type": "broadcast",
+      "note": "US numbered card — the type he has historically called.",
+      "video": null,
+      "ticket": null,
+      "flag": "unconfirmed"
     },
     {
       "src": "wikipedia:ufc-fight-night-hernandez-vs-rodrigues",
