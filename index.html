@@ -293,8 +293,6 @@ textarea{resize:vertical;min-height:64px}
 }
 
 /* ---------- fan posts ---------- */
-.authbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:13px}
-.authbar input[type=text]{width:auto;flex:1 1 200px}
 .entry.post{border-left:3px solid var(--blue)}
 .ptag{color:var(--blue);font-size:11px;letter-spacing:.06em;border:1px solid var(--rule);
   padding:2px 7px;text-transform:none}
@@ -383,7 +381,6 @@ This log needs JavaScript to render the map and event list.</div></noscript>
     <h3>Fan Posts</h3>
     <p class="hint">Share a clip and say something about it. Public — visible to everyone, posted
       under the name you choose, and not vetted before it appears.</p>
-    <div class="authbar" id="authbar"><span class="hint">Checking sign-in…</span></div>
 
     <div class="bar" style="margin:0 0 14px">
       <span class="rowlab">Post</span>
@@ -600,8 +597,10 @@ const DISCUSSION={
 // and a signed-in visitor can write to. That's a real backend (Supabase:
 // Postgres + auth + a public REST API), which means moderation and abuse
 // handling are now this site owner's problem, not something offloaded the way
-// giscus/GitHub Discussions offloads it above. Chosen anyway because it allows
-// low-friction posting (email sign-in, no GitHub account required).
+// giscus/GitHub Discussions offloads it above. Posting uses Supabase's
+// anonymous auth (no email, no account) for zero-friction posting — the
+// trade-off is there's no identity check at all beyond a per-browser session,
+// so there's less spam protection than an email- or GitHub-gated approach.
 //
 // The anon key below is meant to be public — Supabase enforces access with
 // Row Level Security, not by keeping the key secret. Set up a free project at
@@ -854,30 +853,23 @@ function commentHTML(eid){
 function getSavedName(){ try{ return localStorage.getItem('fan-post-name')||''; }catch(e){ return ''; } }
 function setSavedName(n){ try{ localStorage.setItem('fan-post-name',n); }catch(e){} }
 
-function renderAuthBar(){
-  const el=document.getElementById('authbar');
-  if(!el) return;
-  if(!sb){
-    el.innerHTML='<span class="hint">Fan posts are off — not configured yet. See the '+
-      '<code>SUPABASE</code> setup comment near the top of the script.</span>';
-    return;
-  }
-  if(session&&session.user){
-    el.innerHTML='<span>Signed in as <b>'+esc(session.user.email||'you')+'</b></span>'+
-      '<button class="mini ghost" id="auth-signout">Sign out</button>';
-  }else{
-    el.innerHTML='<input type="text" id="auth-email" placeholder="you@example.com" aria-label="Email">'+
-      '<button class="mini" id="auth-signin">Email me a sign-in link</button>'+
-      '<span class="hint" id="auth-msg" style="display:none"></span>';
-  }
-}
-
+// No email/password step — every visitor gets an anonymous Supabase session
+// automatically, the same zero-friction feel as the local "Log an appearance"
+// form. Posts/comments/likes are still tied to that session's user id (RLS
+// still requires auth.uid() is not null), just not to a verified identity —
+// there's no spam deterrent beyond that, which is a deliberate trade for
+// removing the email step. Requires "Anonymous Sign-Ins" enabled in the
+// Supabase dashboard (Authentication → Sign In / Providers).
 async function initAuth(){
-  if(!sb){ renderAuthBar(); return; }
-  sb.auth.onAuthStateChange((_e,s)=>{ session=s; renderAuthBar(); loadPosts(); });
+  if(!sb) return;
+  sb.auth.onAuthStateChange((_e,s)=>{ session=s; loadPosts(); });
   const {data}=await sb.auth.getSession();
   session=data.session;
-  renderAuthBar();
+  if(!session){
+    const {data:anon,error}=await sb.auth.signInAnonymously();
+    if(error){ console.error('Could not start an anonymous session',error); return; }
+    session=anon.session;
+  }
 }
 
 async function loadPosts(){
@@ -951,7 +943,7 @@ function postCard(p){
     (session&&session.user?
       '<div class="c-form"><input type="text" placeholder="Add a comment…" data-ctx="'+p.id+
       '" aria-label="Comment"><button class="mini" data-caddbtn="'+p.id+'">Reply</button></div>'
-      :'<p class="hint" style="margin:9px 0 0">Sign in above to comment.</p>')+
+      :'<p class="hint" style="margin:9px 0 0">Comments aren\'t available right now — try reloading.</p>')+
     '</div></article>';
 }
 
@@ -1499,21 +1491,6 @@ document.getElementById('feed').addEventListener('keydown',ev=>{
 });
 
 /* ---------- fan posts events ---------- */
-document.getElementById('authbar').addEventListener('click',async ev=>{
-  if(!sb) return;
-  if(ev.target.id==='auth-signin'){
-    const email=document.getElementById('auth-email').value.trim();
-    const msg=document.getElementById('auth-msg');
-    if(!email) return;
-    ev.target.disabled=true; const label=ev.target.textContent; ev.target.textContent='Sending…';
-    const {error}=await sb.auth.signInWithOtp({email,
-      options:{emailRedirectTo:location.origin+location.pathname}});
-    ev.target.disabled=false; ev.target.textContent=label;
-    msg.style.display='inline';
-    msg.textContent=error?error.message:'Check your email for the sign-in link.';
-  }
-  if(ev.target.id==='auth-signout'){ await sb.auth.signOut(); }
-});
 
 document.getElementById('open-postform').addEventListener('click',()=>{
   const pf=document.getElementById('postform-panel');
@@ -1532,7 +1509,7 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
   const err=document.getElementById('p-err');
   const show=msg=>{err.textContent=msg;err.style.display='block';};
   if(!sb) return show('Fan posts are not configured yet.');
-  if(!session||!session.user) return show('Sign in above first.');
+  if(!session||!session.user) return show('Still connecting — try again in a second.');
   const name=document.getElementById('p-name').value.trim()||'Fan';
   const vraw=document.getElementById('p-vid').value.trim();
   const vid=parseVideo(vraw);
@@ -1576,7 +1553,7 @@ document.getElementById('postsfeed').addEventListener('click',async ev=>{
   }
   const b=ev.target.closest('button'); if(!b||!sb) return;
   if(b.dataset.like){
-    if(!session||!session.user){ alert('Sign in above to like a post.'); return; }
+    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
     const pid=b.dataset.like, p=posts.find(x=>x.id===pid); if(!p) return;
     b.disabled=true;
     try{
@@ -1595,7 +1572,7 @@ document.getElementById('postsfeed').addEventListener('click',async ev=>{
     await loadPosts();
   }
   if(b.dataset.caddbtn){
-    if(!session||!session.user){ alert('Sign in above to comment.'); return; }
+    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
     const pid=b.dataset.caddbtn;
     const input=document.querySelector('[data-ctx="'+pid+'"]');
     const body=input.value.trim(); if(!body) return;
