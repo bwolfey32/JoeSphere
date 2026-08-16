@@ -1234,7 +1234,13 @@ function postPaneHTML(p){
       '<button class="mini ghost" data-sharepost="'+esc(p.id)+'">Copy link</button>'+
       (mine?'<button class="c-del" data-delpost="'+esc(p.id)+'">delete post</button>':'')+
     '</div>'+
-    '<div class="ann"><div class="ann-h">Comments · '+p.comments.length+'</div>'+
+    '<div id="pane-thread">'+postThreadHTML(p)+'</div>'+
+    '</div>';
+}
+
+// Split out so a new comment can be dropped in without redrawing the embed.
+function postThreadHTML(p){
+  return '<div class="ann"><div class="ann-h">Comments · '+p.comments.length+'</div>'+
     p.comments.map(c=>'<div class="c"><div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
       esc(fmt(String(c.created_at).slice(0,10)))+
       (session&&session.user&&c.author_id===session.user.id?
@@ -1244,7 +1250,7 @@ function postPaneHTML(p){
       '<div class="c-form"><input type="text" placeholder="Add a comment…" data-ctx="'+esc(p.id)+
       '" aria-label="Comment"><button class="mini" data-caddbtn="'+esc(p.id)+'">Reply</button></div>'
       :'<p class="hint" style="margin:9px 0 0">Comments aren\'t available right now — try reloading.</p>')+
-    '</div></div>';
+    '</div>';
 }
 
 function renderPosts(){
@@ -1404,8 +1410,48 @@ function selectEntry(id,opts){
 }
 
 
+// What the pane is currently showing. Rebuilding its innerHTML replaces the
+// <iframe>, which stops playback dead — and re-inserting the old node doesn't
+// help, because moving an iframe in the DOM reloads it too. So when the same
+// thing is still open, only the parts that actually change are rewritten and
+// the frame is left strictly alone.
+let paneKey=null;
+function paneRefresh(){
+  const el=document.getElementById('insight-player');
+  const social=el.querySelector('#pane-social');
+  const thread=el.querySelector('#pane-thread');
+  // Replacing the thread destroys the box you just typed into, so if that is
+  // where you were, put the cursor back in the fresh one.
+  const wasTyping=!!(thread&&document.activeElement&&thread.contains(document.activeElement));
+  const restore=()=>{ if(!wasTyping) return;
+    const box=el.querySelector('#pane-thread input[data-ctx],#pane-thread input[data-ectx]');
+    if(box) box.focus();
+  };
+  if(currentView==='posts'){
+    const p=posts.find(x=>x.id===selectedPostId); if(!p) return false;
+    const like=el.querySelector('[data-like]');
+    if(like){
+      like.classList.toggle('liked',!!p.likedByMe);
+      like.textContent=(p.likedByMe?'♥':'♡')+' '+(p.likeCount||0);
+    }
+    if(thread) thread.innerHTML=postThreadHTML(p);
+    restore();
+    return true;
+  }
+  const e=allEntries().find(x=>x.id===selectedId); if(!e) return false;
+  if(social) social.innerHTML=fanPostsForHTML(e);
+  if(thread) thread.innerHTML=eventCommentsHTML(e.id);
+  restore();
+  return true;
+}
+
 function renderPlayer(){
   const el=document.getElementById('insight-player'); if(!el) return;
+
+  // Same thing still open and already drawn? Update in place.
+  const key=currentView==='posts'?('post:'+selectedPostId):('entry:'+selectedId);
+  if(key===paneKey&&el.querySelector('.player')&&paneRefresh()) return;
+  paneKey=key;
 
   // The pane answers to whichever mode is open, so it can never show a post
   // while you are browsing events, or the other way round.
@@ -1445,8 +1491,8 @@ function renderPlayer(){
     '<div class="pactions">'+ticketHTML(e)+shareHTML(e)+
     (e.locked?'':'<button class="c-del" data-drop="'+esc(e.id)+'">Remove entry</button>')+
     '</div>'+
-    fanPostsForHTML(e)+
-    eventCommentsHTML(e.id)+
+    '<div id="pane-social">'+fanPostsForHTML(e)+'</div>'+
+    '<div id="pane-thread">'+eventCommentsHTML(e.id)+'</div>'+
     '</div>';
 }
 
