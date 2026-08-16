@@ -1238,16 +1238,42 @@ function barPath(x,y,w,h){
   return 'M'+n(x)+','+n(y+h)+'V'+n(y+r)+'Q'+n(x)+','+n(y)+' '+n(x+r)+','+n(y)+
          'H'+n(x+w-r)+'Q'+n(x+w)+','+n(y)+' '+n(x+w)+','+n(y+r)+'V'+n(y+h)+'Z';
 }
+// Aggregated by month, not one bar per episode. With the API key supplying a
+// year of back-catalogue there are ~200 episodes: drawn individually that is a
+// 3px-wide bar each and about fifty date labels stacked on top of one another.
+// A monthly median is readable, and it answers the actual question — whether
+// viewership is moving — better than 200 spikes ever could.
+function monthlyViews(eps){
+  const by=new Map();
+  for(const e of eps){
+    const k=e.date.slice(0,7);
+    if(!by.has(k)) by.set(k,[]);
+    by.get(k).push(e.views);
+  }
+  const nowKey=today().slice(0,7);
+  return [...by.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>{
+    const s=v.slice().sort((a,b)=>a-b);
+    const [y,m]=k.split('-').map(Number);
+    return {
+      key:k, med:quantile(s,.5), n:v.length,
+      label:new Date(y,m-1,1).toLocaleDateString(undefined,{month:'short'})+
+        (m===1||k===nowKey?" '"+String(y).slice(2):''),
+      // The month in progress is short of episodes and its newest ones are
+      // still gaining views, so it is never a like-for-like comparison.
+      prov:k===nowKey
+    };
+  });
+}
 function viewChartHTML(eps){
-  const rows=eps.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const rows=monthlyViews(eps);
   if(rows.length<3) return '';
   const W=680,H=182,L=48,R=10,T=16,B=32;
   const pw=W-L-R, ph=H-T-B, base=T+ph;
-  const max=niceMax(Math.max(...rows.map(e=>e.views)));
-  const med=quantile(rows.map(e=>e.views).slice().sort((a,b)=>a-b),.5);
+  const max=niceMax(Math.max(...rows.map(r=>r.med)));
+  const med=quantile(eps.map(e=>e.views).slice().sort((a,b)=>a-b),.5);
   const yOf=v=>base-(v/max)*ph;
   const slot=pw/rows.length, bw=Math.max(3,slot-4);
-  const peak=rows.reduce((a,b)=>b.views>a.views?b:a,rows[0]);
+  const peak=rows.reduce((a,b)=>b.med>a.med?b:a,rows[0]);
 
   let g='';
   [0,.5,1].forEach(f=>{
@@ -1265,31 +1291,31 @@ function viewChartHTML(eps){
     'opacity=".75"/><text x="'+(W-R)+'" y="'+(yOf(med)-5).toFixed(1)+
     '" text-anchor="end" class="vc-med">median '+esc(nfmt(med))+'</text>';
 
+  // Label every nth month so the axis never overlaps itself, whatever the span
+  const step=Math.max(1,Math.ceil(rows.length/8));
   let bars='',labels='';
-  rows.forEach((e,i)=>{
-    const x=L+i*slot+(slot-bw)/2, h=Math.max(1,base-yOf(e.views)), y=base-h;
-    const prov=daysTo(e.date)>-PROVISIONAL_DAYS;
-    bars+='<g class="vc-bar'+(prov?' prov':'')+'">'+
-      '<title>'+esc(e.title)+' — '+esc(nfmt(e.views))+' views, '+esc(shortDate(e.date))+
-      (prov?' (still accumulating)':'')+'</title>'+
+  rows.forEach((r,i)=>{
+    const x=L+i*slot+(slot-bw)/2, h=Math.max(1,base-yOf(r.med)), y=base-h;
+    bars+='<g class="vc-bar'+(r.prov?' prov':'')+'">'+
+      '<title>'+esc(r.label.replace(/ '/,' 20'))+' — median '+esc(nfmt(r.med))+' views across '+
+      r.n+' episode'+(r.n===1?'':'s')+(r.prov?' (month still in progress)':'')+'</title>'+
       '<path d="'+barPath(x,y,bw,h)+'"'+
-      (prov?' fill="url(#vc-prov)"':' fill="var(--blue)"')+'/>'+
+      (r.prov?' fill="url(#vc-prov)"':' fill="var(--blue)"')+'/>'+
       // invisible full-height target so the tooltip is reachable on short bars
       '<rect x="'+x.toFixed(1)+'" y="'+T+'" width="'+bw.toFixed(1)+'" height="'+ph+
       '" fill="transparent"/></g>';
-    if(i===0||i===rows.length-1||i%4===0)
+    if(i===rows.length-1||i%step===0)
       labels+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(base+16)+'" text-anchor="middle" '+
-        'class="vc-ax">'+esc(shortDate(e.date))+'</text>';
+        'class="vc-ax">'+esc(r.label)+'</text>';
   });
   // one direct label, on the peak only — never a number on every bar
   const pi=rows.indexOf(peak), px=L+pi*slot+slot/2;
-  labels+='<text x="'+px.toFixed(1)+'" y="'+(yOf(peak.views)-6).toFixed(1)+'" text-anchor="'+
-    (pi>rows.length-3?'end':(pi<2?'start':'middle'))+'" class="vc-peak">'+esc(nfmt(peak.views))+'</text>';
+  labels+='<text x="'+px.toFixed(1)+'" y="'+(yOf(peak.med)-6).toFixed(1)+'" text-anchor="'+
+    (pi>rows.length-3?'end':(pi<2?'start':'middle'))+'" class="vc-peak">'+esc(nfmt(peak.med))+'</text>';
 
-  return '<div class="subhead">Views by release date</div>'+
+  return '<div class="subhead">Median views by month</div>'+
     '<svg class="viewchart" viewBox="0 0 '+W+' '+H+'" role="img" '+
-    'aria-label="Bar chart of view counts for the '+rows.length+' most recent episodes, '+
-    esc(shortDate(rows[0].date))+' to '+esc(shortDate(rows[rows.length-1].date))+'">'+
+    'aria-label="Bar chart of median episode views per month across '+rows.length+' months">'+
     '<defs><pattern id="vc-prov" width="5" height="5" patternUnits="userSpaceOnUse" '+
     'patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--ink-soft)" opacity=".18"/>'+
     '<line x1="0" y1="0" x2="0" y2="5" stroke="var(--ink-soft)" stroke-width="2" opacity=".5"/>'+
@@ -1297,9 +1323,8 @@ function viewChartHTML(eps){
     g+bars+medLayer+
     '<line x1="'+L+'" y1="'+base+'" x2="'+(W-R)+'" y2="'+base+'" stroke="var(--rule)"/>'+
     labels+'</svg>'+
-    '<div class="vc-key"><span><i class="sw"></i>Settled</span>'+
-    '<span><i class="sw prov"></i>Released in the last '+PROVISIONAL_DAYS+
-    ' days — still accumulating</span></div>';
+    '<div class="vc-key"><span><i class="sw"></i>Complete month</span>'+
+    '<span><i class="sw prov"></i>Month in progress — fewer episodes, views still rising</span></div>';
 }
 
 function renderViewInsights(){
