@@ -46,48 +46,6 @@ body{
 }
 .wrap{max-width:760px;margin:0 auto;padding:0 18px}
 
-/* ---------- cover ---------- */
-.cover{
-  position:relative;
-  margin:16px 0 0;
-  padding:18px 18px 16px;
-  background:var(--card);
-  border:1px solid var(--rule);
-  box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 10px 30px -14px var(--shadow);
-}
-.cover::after{
-  content:"";position:absolute;left:0;right:0;bottom:-7px;height:7px;
-  background:linear-gradient(180deg,var(--paper-2),transparent);
-}
-.eyebrow{
-  font-family:"Oswald",Impact,"Arial Narrow",sans-serif;
-  font-weight:600;letter-spacing:.2em;text-transform:uppercase;
-  font-size:10px;color:var(--ink-soft);
-}
-h1{
-  font-family:"Oswald",Impact,"Arial Narrow",sans-serif;
-  font-weight:700;text-transform:uppercase;letter-spacing:.02em;
-  font-size:clamp(23px,5.5vw,36px);
-  line-height:.98;margin:7px 0 3px;
-}
-.subject-line{font-size:12px;color:var(--ink-soft);margin:0 0 2px}
-.subject-line b{color:var(--ink)}
-.stamp{
-  position:absolute;top:10px;right:10px;
-  transform:rotate(9deg);
-  border:3px double var(--stamp);color:var(--stamp);background:rgba(255,65,39,.10);
-  font-family:"Oswald",Impact,sans-serif;font-weight:700;
-  letter-spacing:.11em;text-transform:uppercase;font-size:9.5px;
-  padding:4px 7px;opacity:1;text-align:center;line-height:1.15;
-  max-width:112px;
-}
-.notice{
-  margin-top:12px;padding:7px 9px;
-  border-left:3px solid var(--blue);
-  background:rgba(61,214,196,.09);
-  font-size:11.5px;color:var(--blue);
-}
-
 /* ---------- section tabs ---------- */
 .viewtabs{display:flex;gap:0;margin:22px 0 0;border-bottom:1px solid var(--rule)}
 .viewtab{
@@ -100,53 +58,75 @@ h1{
 .viewtab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--stamp)}
 
 /* ---------- app shell ---------- */
-/* One layout for the whole site: whatever the left column is showing, the
-   detail pane on the right is the single place an entry opens. */
-.wrap{max-width:1580px}
-/* Three columns: the map is a fixed fixture on the left, the mode content
-   flexes in the middle, the detail pane holds the right. The map earns a
-   permanent slot because clicking a pin selects an entry — it is navigation,
-   not decoration. */
-.app{display:grid;gap:20px;align-items:start;margin-top:18px;
-  grid-template-columns:342px minmax(0,1fr) 372px;
-  grid-template-areas:"map main side"}
-.app-map{grid-area:map;position:sticky;top:14px;min-width:0}
-.app-main{grid-area:main;min-width:0}
-.app-side{grid-area:side;position:sticky;top:14px;min-width:0}
+/* One column. The map used to hold a permanent left column and the detail
+   pane a permanent right one; both are now summoned rather than resident, so
+   the feed starts inside the first viewport instead of below the fold. */
+.wrap{max-width:900px}
+.app{margin-top:14px}
+.app-main{min-width:0}
+@media(max-width:1040px){ .wrap{max-width:820px} }
 
-/* Not enough room for three: the map drops above the mode content and the
-   detail pane keeps its own full-height column. */
-@media(max-width:1360px){
-  .wrap{max-width:1100px}
-  .app{grid-template-columns:minmax(0,1fr) 372px;
-       grid-template-areas:"map side" "main side"}
-  .app-map{position:static}
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;gap:12px;padding:14px 0 10px}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand-name{font-family:"Oswald",Impact,"Arial Narrow",sans-serif;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;font-size:20px;line-height:1.05}
+.brand-sub{font-size:11px;color:var(--ink-soft);letter-spacing:.04em}
+.topbar #open-post{margin-left:auto;flex:0 0 auto}
+
+/* The disclosure is folded, never dropped — invariant #12. */
+.about{border:1px solid var(--rule);background:var(--card);margin-bottom:4px}
+.about>summary{cursor:pointer;padding:9px 12px;font-family:"Oswald",Impact,sans-serif;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.about>summary:hover{color:var(--ink)}
+.about-body{padding:0 12px 12px;font-size:12.5px;line-height:1.6;color:var(--ink-soft)}
+.about-body p{margin:0 0 9px}
+.about-body b{color:var(--ink)}
+.about-store{color:var(--blue)}
+
+/* ---------- home: now strip, map peek, feed bar ---------- */
+.nowstrip{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:12px}
+.nowcell{background:var(--card);padding:10px 12px;text-align:left;font:inherit;color:inherit;
+  cursor:pointer;min-width:0;display:block}
+.nowcell:hover{background:var(--paper-2)}
+.nowcell .k{font-family:"Oswald",Impact,sans-serif;font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-soft)}
+.nowcell .t{font-size:13px;color:var(--ink);margin-top:3px;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nowcell .s{font-size:11.5px;color:var(--blue);margin-top:2px}
+.mappeek{border:1px solid var(--rule);background:var(--card);margin-bottom:12px}
+.mappeek>summary{cursor:pointer;padding:9px 12px;font-family:"Oswald",Impact,sans-serif;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.mappeek>summary:hover{color:var(--ink)}
+.mappeek-body{padding:0 10px 10px}
+.feedbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:0 0 12px}
+.feedbar input[type=search]{flex:1 1 220px}
+.morewrap{display:flex;justify-content:center;padding:14px 0 4px}
+
+/* ---------- drawer (the one detail surface) ---------- */
+.drawer{position:fixed;inset:0;z-index:60;display:flex;justify-content:flex-end}
+.drawer[hidden]{display:none}
+.drawer-scrim{position:absolute;inset:0;background:rgba(6,8,12,.66);backdrop-filter:blur(2px)}
+.drawer-panel{position:relative;width:min(560px,100%);height:100%;overflow-y:auto;
+  background:var(--paper);border-left:1px solid var(--rule);
+  box-shadow:-18px 0 44px -22px #000;padding:12px}
+.drawer .player{border:none;box-shadow:none;padding:0;background:transparent}
+@media(prefers-reduced-motion:no-preference){
+  .drawer-panel{animation:slidein .22s ease both}
+  @keyframes slidein{from{transform:translateX(18px);opacity:.4}to{transform:none;opacity:1}}
 }
-@media(max-width:1040px){
-  .wrap{max-width:820px}
-  .app{grid-template-columns:1fr;gap:16px;
-       grid-template-areas:"side" "map" "main"}
-  /* stacked, the pane leads — otherwise a selection lands off-screen */
-  .app-side{position:sticky;top:0;z-index:5;background:var(--paper);padding-bottom:8px}
-  /* ...but with nothing selected it is a "Nothing picked yet" card pinned
-     above the actual content, so it only earns that slot once it has
-     something in it. On desktop the pane is a permanent side column and the
-     empty state explains what the column is for, so this is mobile-only. */
-  body.pane-empty .app-side{display:none}
-  .app-map{position:static}
+/* Full-screen on a phone rather than a sliver of a panel. */
+@media(max-width:640px){
+  .drawer{justify-content:stretch}
+  .drawer-panel{width:100%;border-left:none;padding:10px}
 }
+body.drawer-open{overflow:hidden}
+.linkish{background:none;border:none;color:var(--blue);cursor:pointer;font:inherit;
+  text-decoration:underline;padding:0}
 
-/* the map has to read at a third of its old width */
-.app-map .mapcard{margin:0}
-.app-map .maphead{padding:11px 12px 9px;gap:6px}
-.app-map .maphead h3{font-size:12.5px;letter-spacing:.1em}
-.app-map .maphead .sub{display:none}
-.app-map .modes{margin-left:auto}
-.app-map .modes .tab{padding:5px 9px;font-size:10.5px}
-.app-map .mapbody{padding:6px 7px 2px}
-.app-map .mapfoot{padding:9px 12px 11px;gap:9px;font-size:11.5px}
-
-/* ---------- selected-entry pane ---------- */
+/* the map reads at a narrower width inside Explore and the Home peek */
+.mappeek .mapcard,#explore-map .mapcard{margin:0}
 .player{background:var(--card);border:1px solid var(--ink);padding:14px 15px;
   box-shadow:0 6px 20px -12px var(--shadow)}
 .player .ph{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.16em;
@@ -161,15 +141,19 @@ h1{
 .player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
 .player .pstat{font-size:12.5px;color:var(--blue);margin:2px 0 0}
 .player .pposts{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule)}
-.player .ppost{font-size:12.5px;color:var(--ink-soft);padding:4px 0;
-  border-bottom:1px dotted var(--rule)}
+/* A community post is its own thing with its own URL, so each row here opens
+   it rather than being inert text. */
+.player .ppost{display:block;width:100%;text-align:left;background:none;font:inherit;
+  cursor:pointer;font-size:12.5px;color:var(--ink-soft);padding:5px 0;
+  border:none;border-bottom:1px dotted var(--rule)}
+.player .ppost:hover{color:var(--ink)}
 .player .ppost:last-of-type{border-bottom:none}
 .player .ppost b{color:var(--blue);font-style:italic}
 .player .ppost .n{color:var(--stamp);white-space:nowrap}
 /* the pane can get tall with a long comment thread — keep it scrollable
    rather than letting it run past the viewport on a sticky element */
-.app-side .player{max-height:calc(100vh - 28px);overflow-y:auto}
-@media(max-width:1040px){.app-side .player{max-height:none}}
+/* The drawer already scrolls; this only needs to not fight it. */
+.drawer .player{max-height:none}
 .player .frame{position:relative;aspect-ratio:16/9;background:#080A0E;border:1px solid var(--rule);
   overflow:hidden}
 .player .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -396,6 +380,7 @@ body.m-both #heat{opacity:.8}
 .tag.demo{color:var(--ink-soft);border-style:dashed}
 .tag.unconf{color:var(--mid)}
 .tag.auto{color:var(--blue)}
+.tag.post{color:#C99BFF}
 .when{
   font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-soft);margin-left:auto;
@@ -596,7 +581,7 @@ footer{
   .readout{grid-template-columns:1fr 1fr}
   .readout .cell:last-child{grid-column:1/-1}
   .row2{grid-template-columns:1fr}
-  .stamp{position:static;display:inline-block;transform:rotate(-1.5deg);margin-bottom:12px}
+
   .when{margin-left:0;width:100%}
 }
 @media(prefers-reduced-motion:no-preference){
@@ -605,40 +590,96 @@ footer{
 }
 </style>
 </head>
-<!-- pane-empty starts on so the mobile layout doesn't flash an empty detail
-     pane above the content before renderPlayer() first runs; it comes off
-     the moment something is actually selected. -->
-<body class="m-both pane-empty">
+<body class="m-both">
 <noscript><div style="background:#FF4127;color:#14171D;padding:12px 16px;font:14px/1.5 monospace">
 This log needs JavaScript to render the map and event list.</div></noscript>
 <div class="wrap">
 
-  <header class="cover">
-    <div class="stamp">Public<br>Record<br>Only</div>
-    <div class="eyebrow">Fan Intelligence Bureau · File 0917</div>
-    <h1>The<br>Rogansphere</h1>
-    <p class="subject-line">Announced appearances, tour dates &amp; broadcasts — plus a public feed
-      of clips and reactions from other fans.</p>
-    <div class="notice">
-      <b>Unofficial fan project. Not affiliated with, endorsed by, or connected to Joe Rogan.</b><br>
-      The Rogansphere tracks <b>announced public appearances</b> — ticketed dates, scheduled
-      broadcasts, and episode releases — and hosts <b>Fan Posts</b>, a public feed of clips and
-      reactions shared by other fans. It is not a live location feed and never will be. Entries marked
-      <i>Unconfirmed</i> are real scheduled events where his attendance has not been verified.
-      Studio locations on the map are <i>estimated</i> from episode release dates, not sourced
-      per episode.
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-name">The Rogansphere</span>
+      <span class="brand-sub">Unofficial fan project</span>
     </div>
+    <button class="mini ghost" id="open-post" data-post-new="1">+ Post</button>
   </header>
 
+  <!-- The long disclosure that used to sit above the fold. It is still here in
+       full — invariant #12 — just folded, so the feed is the first thing you
+       see. Do not condense the contents to make it shorter. -->
+  <details class="about" id="about">
+    <summary>About this project &amp; how the numbers are made</summary>
+    <div class="about-body">
+      <p><b>Unofficial fan project. Not affiliated with, endorsed by, or connected to Joe Rogan.</b>
+        The Rogansphere tracks <b>announced public appearances</b> — ticketed dates, scheduled
+        broadcasts, and episode releases — and hosts <b>Posts</b>, a public feed of clips and
+        reactions shared by other fans. It is not a live location feed and never will be.</p>
+      <p>Entries marked <i>Unconfirmed</i> are real scheduled events where his attendance has not
+        been verified. Entries badged <i>Demo</i> are generated placeholders, not real dates.</p>
+      <p><b>Comments, posts and reactions are all public</b> — visible to every visitor, attributed
+        to whatever display name the poster typed in, and not reviewed before they appear. Nothing
+        you write here is private.</p>
+      <p><b>Studio locations are an estimate.</b> No public source places individual episodes, so
+        the recording base shown on the map and in Insights is derived from each episode's release
+        date — which is not its recording date, and some episodes were recorded remotely. Event
+        venues, by contrast, are sourced.</p>
+      <p><b>Money figures</b> separate reported gate and attendance from a clearly-marked estimated
+        band for YouTube advertising only. The estimate is a range, never a headline number.</p>
+      <p class="about-store"><span id="store-note"></span></p>
+    </div>
+  </details>
+
   <nav class="viewtabs" aria-label="Sections">
-    <button class="viewtab" data-view="browse" aria-pressed="false">Browse</button>
-    <button class="viewtab" data-view="hot" aria-pressed="true">Hot</button>
-    <button class="viewtab" data-view="posts" aria-pressed="false">Fan Posts</button>
+    <button class="viewtab" data-view="home" aria-pressed="true">Home</button>
+    <button class="viewtab" data-view="explore" aria-pressed="false">Explore</button>
+    <button class="viewtab" data-view="schedule" aria-pressed="false">Schedule</button>
     <button class="viewtab" data-view="insights" aria-pressed="false">Insights</button>
   </nav>
 
   <div class="app">
-    <aside class="app-map">
+    <div class="app-main">
+
+      <div id="view-home">
+        <div class="nowstrip" id="nowstrip"></div>
+
+        <details class="mappeek" id="mappeek">
+          <summary>Map preview</summary>
+          <div id="mappeek-body" class="mappeek-body"></div>
+        </details>
+
+        <div class="feedbar">
+          <span class="rowlab">Show</span>
+          <button class="tab" data-hf="all" aria-pressed="true">Everything</button>
+          <button class="tab" data-hf="post" aria-pressed="false">Posts</button>
+          <button class="tab" data-hf="podcast" aria-pressed="false">Episodes</button>
+          <button class="tab" data-hf="event" aria-pressed="false">Events</button>
+          <button class="tab" data-hf="discussed" aria-pressed="false">Discussions</button>
+          <span class="spacer"></span>
+          <span class="rowlab">Sort</span>
+          <button class="tab" data-hs="hot" aria-pressed="true">Hot</button>
+          <button class="tab" data-hs="latest" aria-pressed="false">Latest</button>
+        </div>
+
+        <main id="homefeed"><div class="empty"><strong>Loading…</strong></div></main>
+        <div class="morewrap"><button class="mini ghost" id="load-more" hidden>Load more</button></div>
+      </div>
+
+      <div id="view-explore" hidden>
+        <div class="feedbar">
+          <input type="search" id="ex-q" placeholder="Search events, episodes and posts…"
+            aria-label="Search" spellcheck="false">
+        </div>
+        <div class="feedbar">
+          <span class="rowlab">Type</span>
+          <button class="tab" data-xf="all" aria-pressed="true">All</button>
+          <button class="tab" data-xf="post" aria-pressed="false">Posts</button>
+          <button class="tab" data-xf="podcast" aria-pressed="false">Episodes</button>
+          <button class="tab" data-xf="event" aria-pressed="false">Events</button>
+          <span class="spacer"></span>
+          <span class="rowlab">View</span>
+          <button class="tab" data-xv="list" aria-pressed="true">List</button>
+          <button class="tab" data-xv="map" aria-pressed="false">Map</button>
+        </div>
+        <div id="explore-map">
   <section class="mapcard" aria-label="Map of announced appearance locations">
     <div class="maphead">
       <h3>Plotted Locations</h3>
@@ -686,29 +727,88 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         and some episodes were recorded remotely.</span>
     </div>
   </section>
-    </aside>
+        </div>
+        <main id="explorefeed"></main>
+      </div>
 
-    <div class="app-main">
+      <div id="view-schedule" hidden>
+        <div class="feedbar">
+          <span class="rowlab">Window</span>
+          <button class="tab" data-sc="upcoming" aria-pressed="true">Upcoming</button>
+          <button class="tab" data-sc="past" aria-pressed="false">Past</button>
+          <span class="spacer"></span>
+          <span class="rowlab">View</span>
+          <button class="tab" data-sv="list" aria-pressed="true">List</button>
+          <button class="tab" data-sv="cal" aria-pressed="false">Calendar</button>
+        </div>
+        <p class="hint" id="sched-note">Official records only — scheduled events and episode
+          releases. Community posts live in Home.</p>
+        <main id="schedulefeed"></main>
+      </div>
 
-      <div id="view-browse" hidden>
-  <div class="bar scoperow">
-    <span class="rowlab">Window</span>
-    <button class="tab" data-s="all" aria-pressed="true">All time</button>
-    <button class="tab" data-s="upcoming" aria-pressed="false">Upcoming</button>
-    <button class="tab" data-s="past" aria-pressed="false">Previous</button>
+      <div id="view-insights" hidden>
+  <div class="readout">
+    <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
+    <div class="cell"><div class="k">Entries on file</div><div class="v" id="stat-count">—</div></div>
+    <div class="cell"><div class="k">Last known position</div><div class="v small" id="stat-last">—</div></div>
+    <div class="cell"><div class="k">Recording base</div><div class="v small" id="stat-base">—</div></div>
   </div>
 
-  <div class="bar">
-    <span class="rowlab">Type</span>
-    <button class="tab" data-f="all" aria-pressed="true">All</button>
-    <button class="tab" data-f="standup" aria-pressed="false">Stand-up</button>
-    <button class="tab" data-f="broadcast" aria-pressed="false">Broadcast</button>
-    <button class="tab" data-f="podcast" aria-pressed="false">Podcast</button>
-    <span class="spacer"></span>
-    <button class="filebtn" id="open-form">+ Log an appearance</button>
-    <button class="tab" id="open-import">Import</button>
+
+  <section class="panel" id="in-view"><h3>Episode viewership</h3><p class="hint">How many people actually watched, from the channel feed.</p><div id="in-view-body"></div></section>
+
+  <section class="panel" id="in-studio"><h3>Studio eras</h3><p class="hint">Which studio each
+    episode was <b>probably</b> recorded in, grouped by release date. Estimated, not sourced —
+    no public source places individual episodes, release date isn't recording date, and some
+    episodes were recorded remotely.</p><div id="in-studio-body"></div></section>
+
+  <section class="panel" id="in-box"><h3>Box office</h3><p class="hint">Reported attendance and gate for cards that have already happened.</p><div id="in-box-body"></div></section>
+
+  <section class="panel" id="in-money"><h3>Money</h3><p class="hint">Reported box office, and a clearly-marked estimate for YouTube ads.</p><div id="in-money-body"></div></section>
+
+  <section class="panel" id="in-eng"><h3>Site engagement</h3><p class="hint">What visitors here are posting and reacting to.</p><div id="in-eng-body"></div></section>
+
+  <section class="analysis" id="analysis" aria-label="Pattern analysis">
+    <h3>Pattern Analysis</h3>
+    <p class="an-q" id="an-q"></p>
+    <div class="an-grid">
+      <div class="an-block"><h4>Cadence — days between events</h4><div id="an-cad"></div></div>
+      <div class="an-block"><h4>Market share — 95% interval</h4><div id="an-mkt"></div></div>
+    </div>
+    <div class="an-block" style="margin-top:18px"><h4>Seasonality — events by month</h4>
+      <div class="months" id="an-mo"></div></div>
+    <p class="an-foot">Descriptive only: this reads the entries you've logged, and describes
+      what has already been announced. It doesn't forecast where the subject will be.</p>
+  </section>
+      </div>
+
+    </div>
   </div>
 
+  <footer>
+    <b>Unofficial fan project.</b> Not affiliated with or endorsed by Joe Rogan, JRE, or the UFC.
+    All entries come from publicly announced schedules. Nothing here reports a real-time location.<br><br>
+    <b>Comments, posts, and reactions (likes and dislikes) are all public</b> — visible to every visitor,
+    attributed to whatever display name the poster typed in, and not reviewed before they appear.<br><br>
+    Entries badged <i>Unconfirmed</i> are real scheduled events whose attendance is unverified;
+    entries badged <i>Demo</i> are generated placeholders, not real dates.<br><br>
+    <b>Studio locations are an estimate.</b> No public source places individual episodes, so the
+    recording base shown on the map and in Insights is derived from each episode's release date —
+    which is not its recording date, and some episodes were recorded remotely. Event venues, by
+    contrast, are sourced.<br><br>
+    <button class="linkish" id="open-admin">Maintenance tools</button>
+  </footer>
+
+  <!-- Import, export, demo data and manual entry are maintenance tools, not
+       part of the public interface. They write to this browser only. Hidden
+       behind a toggle so the public surface stays read-and-post. -->
+  <div class="panel hidden" id="admin-panel">
+    <h3>Maintenance tools</h3>
+    <p class="hint">These write to <b>this browser only</b> — nothing here is published or shared.</p>
+    <div class="bar" style="margin:0 0 12px">
+      <button class="filebtn" id="open-form">+ Log an appearance</button>
+      <button class="tab" id="open-import">Import / export</button>
+    </div>
   <div class="panel hidden" id="import-panel">
     <h3>Import a list</h3>
     <p class="hint">One per line: <code>date | what it is | city | type</code>. Type is optional
@@ -771,128 +871,58 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       <button class="mini ghost" id="cancel-entry">Cancel</button>
     </div>
   </div>
+  </div>
+</div>
 
-  <main id="feed"><div class="empty"><strong>Opening file…</strong>Reading from the cabinet.</div></main>
+<!-- One detail surface, one entry point — still invariant #9, now a drawer
+     instead of a permanent column so it costs nothing when nothing is open.
+     Full-screen on mobile; see the media query. -->
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer-scrim" data-closedrawer="1"></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Details">
+    <div id="insight-player"></div>
+  </div>
+</div>
+
+<!-- Composer. One markup block for both flows: the global "+ Post" button and
+     the "Post about this" button on an event or episode, which just presets
+     the association. -->
+<div class="drawer" id="composer" hidden>
+  <div class="drawer-scrim" data-closecomposer="1"></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="New post">
+    <div class="player">
+      <div class="ph"><span>New post</span>
+        <button class="paneclose" data-closecomposer="1" aria-label="Close">×</button></div>
+      <div class="bar" style="margin:0 0 12px">
+        <span class="rowlab">Kind</span>
+        <button class="tab" data-pk="clip" aria-pressed="true">Clip</button>
+        <button class="tab" data-pk="text" aria-pressed="false">Text</button>
       </div>
-
-      <div id="view-hot">
-  <section class="panel" id="today-panel" hidden>
-    <h3>Today</h3>
-    <p class="hint">Events happening today, pinned above the ranked list below.</p>
-    <main id="hottoday"></main>
-  </section>
-  <section class="panel" aria-label="Hot feed">
-    <h3>Hot</h3>
-    <p class="hint">Events and Fan Posts ranked together by likes, dislikes and comments —
-      busiest first, freshest first when tied.</p>
-  </section>
-  <main id="hotfeed"><div class="empty"><strong>Loading…</strong></div></main>
-      </div>
-
-      <div id="view-posts" hidden>
-  <section class="panel posts" id="posts-section" aria-label="Fan posts">
-    <h3>Fan Posts</h3>
-    <p class="hint">Share a clip and say something about it. Public — visible to everyone, posted
-      under the name you choose, and not vetted before it appears.</p>
-
-    <div class="bar" style="margin:0 0 14px">
-      <span class="rowlab">Post</span>
-      <button class="filebtn" id="open-postform">+ Share a clip</button>
-    </div>
-
-    <div class="panel hidden" id="postform-panel" style="margin-bottom:16px">
-      <h3>Share a clip</h3>
-      <p class="hint">Only recognized YouTube, TikTok and Vimeo links are accepted — the same check used
-        for event clips.</p>
       <div class="field">
         <label for="p-name">Display name</label>
         <input type="text" id="p-name" placeholder="How you'll appear on your posts" maxlength="40">
       </div>
-      <div class="field">
+      <div class="field" id="p-vid-field">
         <label for="p-vid">Clip link</label>
         <input type="text" id="p-vid" placeholder="https://youtu.be/…" spellcheck="false">
       </div>
       <div class="field">
-        <label for="p-cap">Caption</label>
+        <label for="p-cap" id="p-cap-label">Caption</label>
         <textarea id="p-cap" maxlength="500" placeholder="What's happening in this clip…"></textarea>
       </div>
       <div class="field">
-        <label for="p-event">Tag an event <span style="text-transform:none;letter-spacing:0">— optional</span></label>
+        <label for="p-event">Attach to an event or episode
+          <span style="text-transform:none;letter-spacing:0">— optional</span></label>
+        <input type="search" id="p-event-q" placeholder="Search to attach…" spellcheck="false">
         <select id="p-event"><option value="">— none —</option></select>
       </div>
       <div class="err" id="p-err"></div>
       <div class="actions">
-        <button class="mini" id="post-submit">Post</button>
-        <button class="mini ghost" id="post-cancel">Cancel</button>
+        <button class="mini" id="post-submit">Publish</button>
+        <button class="mini ghost" data-closecomposer="1">Cancel</button>
       </div>
     </div>
-
-    <div class="postfilter hidden" id="postfilter">
-      Showing posts tagged to <b id="postfilter-label"></b> ·
-      <button class="mini ghost" id="postfilter-clear">Show all</button>
-    </div>
-
-    <div id="postsfeed"><div class="empty"><strong>Loading…</strong></div></div>
-  </section>
-
-      </div>
-
-      <div id="view-insights" hidden>
-  <div class="readout">
-    <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
-    <div class="cell"><div class="k">Entries on file</div><div class="v" id="stat-count">—</div></div>
-    <div class="cell"><div class="k">Last known position</div><div class="v small" id="stat-last">—</div></div>
-    <div class="cell"><div class="k">Recording base</div><div class="v small" id="stat-base">—</div></div>
   </div>
-
-
-  <section class="panel" id="in-view"><h3>Episode viewership</h3><p class="hint">How many people actually watched, from the channel feed.</p><div id="in-view-body"></div></section>
-
-  <section class="panel" id="in-studio"><h3>Studio eras</h3><p class="hint">Which studio each
-    episode was <b>probably</b> recorded in, grouped by release date. Estimated, not sourced —
-    no public source places individual episodes, release date isn't recording date, and some
-    episodes were recorded remotely.</p><div id="in-studio-body"></div></section>
-
-  <section class="panel" id="in-box"><h3>Box office</h3><p class="hint">Reported attendance and gate for cards that have already happened.</p><div id="in-box-body"></div></section>
-
-  <section class="panel" id="in-money"><h3>Money</h3><p class="hint">Reported box office, and a clearly-marked estimate for YouTube ads.</p><div id="in-money-body"></div></section>
-
-  <section class="panel" id="in-eng"><h3>Site engagement</h3><p class="hint">What visitors here are posting and reacting to.</p><div id="in-eng-body"></div></section>
-
-  <section class="analysis" id="analysis" aria-label="Pattern analysis">
-    <h3>Pattern Analysis</h3>
-    <p class="an-q" id="an-q"></p>
-    <div class="an-grid">
-      <div class="an-block"><h4>Cadence — days between events</h4><div id="an-cad"></div></div>
-      <div class="an-block"><h4>Market share — 95% interval</h4><div id="an-mkt"></div></div>
-    </div>
-    <div class="an-block" style="margin-top:18px"><h4>Seasonality — events by month</h4>
-      <div class="months" id="an-mo"></div></div>
-    <p class="an-foot">Descriptive only: this reads the entries you've logged, and describes
-      what has already been announced. It doesn't forecast where the subject will be.</p>
-  </section>
-      </div>
-
-    </div>
-
-    <aside class="app-side" aria-label="Selected entry">
-      <div id="insight-player"></div>
-    </aside>
-  </div>
-
-  <footer>
-    <b>Unofficial fan project.</b> Not affiliated with or endorsed by Joe Rogan, JRE, or the UFC.
-    All entries come from publicly announced schedules. Nothing here reports a real-time location.<br><br>
-    <b>Comments on events, Fan Posts, and reactions (likes and dislikes) are all public</b> — visible to every visitor,
-    attributed to whatever display name the poster typed in, and not reviewed before they appear.<br><br>
-    Entries badged <i>Unconfirmed</i> are real scheduled events whose attendance is unverified;
-    entries badged <i>Demo</i> are generated placeholders, not real dates.<br><br>
-    <b>Studio locations are an estimate.</b> No public source places individual episodes, so the
-    recording base shown on the map and in Insights is derived from each episode's release date —
-    which is not its recording date, and some episodes were recorded remotely. Event venues, by
-    contrast, are sourced.<br><br>
-    <span id="store-note"></span>
-  </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1068,11 +1098,11 @@ function buildDemo(){
   return out;
 }
 let state={entries:[]};
-let filter='all', scope='all', mapmode='both', ready=false;
+let mapmode='both', ready=false;
 // Fan Posts: sb stays null (feature stays hidden) until SUPABASE.url/anonKey are filled in.
 const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.supabase)
   ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
-let session=null, posts=[], postsLoading=false, postFilterEvent=null, comments=[], reactions=[];
+let session=null, posts=[], postsLoading=false, comments=[], reactions=[];
 let channelInfo=null;
 function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
 // Events have no row of their own in Supabase (they live in events.json/
@@ -1128,7 +1158,7 @@ async function loadFeed(){
     if(st) st.textContent=auto.length
       ? auto.length+' auto-synced · updated '+new Date(data.generated).toLocaleDateString()
       : '';
-    render(); renderHot();
+    render(); renderFeeds();
     // A shared link names a feed entry, and the feed is what just arrived —
     // this is the first moment the link can actually resolve.
     if(!selectedId) applyHash();
@@ -1279,8 +1309,8 @@ async function initAuth(){
 }
 
 async function loadPosts(){
-  if(!sb){ renderPosts(); return; }
-  postsLoading=true; renderPosts();
+  if(!sb){ renderFeeds(); return; }
+  postsLoading=true; renderFeeds();
   try{
     const {data,error}=await sb.from('posts').select('*')
       .order('created_at',{ascending:false}).limit(100);
@@ -1328,8 +1358,8 @@ async function loadPosts(){
       bump(c.event_id,Date.parse(c.created_at));
     });
   }catch(e){ console.error('Could not load fan posts',e); posts=[]; }
-  postsLoading=false; renderPosts();
-  render(); renderHot(); // refresh row counts and rankings across every list that shows them
+  postsLoading=false; renderFeeds();
+  render(); renderFeeds(); // refresh row counts and rankings across every list that shows them
   renderInsights();
   // The pane holds a copy of the post it is showing, so a like or a new
   // comment has to be re-read from the reloaded list or the pane keeps
@@ -1339,12 +1369,25 @@ async function loadPosts(){
   if(!selectedPostId) applyHash();
 }
 
-function populateEventPicker(){
+// `q` narrows the list as you type. With a deep episode archive an unfiltered
+// select is thousands of options long, which is unusable on a phone; the
+// currently-selected entry is always kept in the list so a preset association
+// can't be silently dropped by a filter that doesn't match it.
+function populateEventPicker(q){
   const sel=document.getElementById('p-event');
   if(!sel) return;
   const cur=sel.value;
+  const needle=(q||'').trim().toLowerCase();
+  let rows=sorted();
+  if(needle) rows=rows.filter(e=>e.id===cur||e.title.toLowerCase().includes(needle)||
+    (e.loc||'').toLowerCase().includes(needle));
+  rows=rows.slice(0,200);
+  if(cur&&!rows.some(e=>e.id===cur)){
+    const keep=allEntries().find(e=>e.id===cur);
+    if(keep) rows.unshift(keep);
+  }
   sel.innerHTML='<option value="">— none —</option>'+
-    sorted().map(e=>'<option value="'+esc(e.id)+'">'+esc(e.title)+'</option>').join('');
+    rows.map(e=>'<option value="'+esc(e.id)+'">'+esc(e.title)+'</option>').join('');
   sel.value=cur;
 }
 
@@ -1358,13 +1401,15 @@ function postRow(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
   const ev=p.event_id?allEntries().find(e=>e.id===p.event_id):null;
   const yt=vid&&vid.kind==='yt'?vid.id:null;
+  // A text post has no clip; the thumb falls back to a TEXT marker so the row
+  // keeps the same shape as every other card in the feed.
   return '<button class="row'+(selectedPostId===p.id?' sel':'')+'" data-post="'+esc(p.id)+'">'+
     '<span class="row-thumb'+(yt?'':' noimg')+'">'+
       (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg">'
-         :'<i>'+esc(vid?CLIPNAME[vid.kind]:'CLIP')+'</i>')+'</span>'+
+         :'<i>'+esc(vid?CLIPNAME[vid.kind]:'TEXT')+'</i>')+'</span>'+
     '<span class="row-body">'+
-      '<span class="row-top">'+
-        (ev?'<span class="tag ptag">'+esc(ev.title.slice(0,34))+'</span>':'')+
+      '<span class="row-top"><span class="tag post">Post</span>'+
+        (ev?'<span class="tag ptag">'+esc(ev.title.slice(0,30))+'</span>':'')+
         '<span class="when">'+esc(fmt(String(p.created_at).slice(0,10)))+'</span></span>'+
       '<span class="row-title">'+esc(p.caption||'(no caption)')+'</span>'+
       '<span class="row-meta">'+esc(p.author_label||'Fan')+'</span>'+
@@ -1390,7 +1435,9 @@ function postPaneHTML(p){
     '<h4>'+esc(p.caption||'(no caption)')+'</h4>'+
     '<p class="pmeta">'+esc(p.author_label||'Fan')+' · '+
       esc(fmt(String(p.created_at).slice(0,10)))+'</p>'+
-    (ev?'<p class="pstat">Tagged to '+esc(ev.title)+'</p>':'')+
+    // The association is a way through to the parent, not just a label.
+    (ev?'<p class="pstat"><button class="linkish" data-goto="'+esc(ev.id)+'">'+
+      esc(ev.title)+'</button></p>':'')+
     '<div class="pactions">'+
       '<button class="mini ghost likebtn'+(p.myVote===1?' liked':'')+'" data-postlike="'+esc(p.id)+'">▲ '+(p.ups||0)+'</button>'+
       '<button class="mini ghost dislikebtn'+(p.myVote===-1?' disliked':'')+'" data-postdislike="'+esc(p.id)+'">▼ '+(p.downs||0)+'</button>'+
@@ -1398,6 +1445,21 @@ function postPaneHTML(p){
       (mine?'<button class="c-del" data-delpost="'+esc(p.id)+'">delete post</button>':'')+
     '</div>'+
     '<div id="pane-thread">'+postThreadHTML(p)+'</div>'+
+    relatedPostsHTML(p)+
+    '</div>';
+}
+
+// Other posts on the same event or episode. Only meaningful for an attached
+// post — an unattached one has no defensible "related" set, so it gets none
+// rather than a padded-out guess.
+function relatedPostsHTML(p){
+  if(!p.event_id) return '';
+  const sibs=posts.filter(x=>x.event_id===p.event_id&&x.id!==p.id);
+  if(!sibs.length) return '';
+  return '<div class="pposts"><div class="ann-h">Related posts · '+sibs.length+'</div>'+
+    sibs.slice(0,5).map(x=>'<button class="ppost" data-post="'+esc(x.id)+'"><b>'+
+      esc(x.author_label||'Fan')+'</b> '+esc((x.caption||'').slice(0,80))+
+      (x.caption&&x.caption.length>80?'…':'')+'</button>').join('')+
     '</div>';
 }
 
@@ -1416,74 +1478,152 @@ function postThreadHTML(p){
     '</div>';
 }
 
-function renderPosts(){
-  const el=document.getElementById('postsfeed');
-  if(!el) return;
-  if(!sb){
-    el.innerHTML='<div class="dnote"><b>Not switched on yet.</b> Fan posts are backed by Supabase — '+
-      'no server to run, but a free Supabase project is required. See the <code>SUPABASE</code> setup '+
-      'comment near the top of the script for the SQL to run, then fill in <code>SUPABASE.url</code> '+
-      'and <code>SUPABASE.anonKey</code> there.</div>';
-    return;
-  }
-  const pf=document.getElementById('postfilter');
-  if(postFilterEvent){
-    const ev=allEntries().find(e=>e.id===postFilterEvent);
-    document.getElementById('postfilter-label').textContent=ev?ev.title:'this event';
-    pf.classList.remove('hidden');
-  }else{ pf.classList.add('hidden'); }
-  if(postsLoading){ el.innerHTML='<div class="empty"><strong>Loading posts…</strong></div>'; return; }
-  const rows=postFilterEvent?posts.filter(p=>p.event_id===postFilterEvent):posts;
-  if(!rows.length){
-    el.innerHTML='<div class="empty"><strong>No fan posts yet</strong>Be the first to share a clip.</div>';
-    return;
-  }
-  el.innerHTML=rows.map(postRow).join('');
-}
-
-// Combines events and posts into one score-ordered list — everything is
-// included, so an untouched post or event still appears, just below
-// everything anyone has actually engaged with. See hotScore() for the
-// tiering and for why a plain Reddit-style age blend doesn't work on a list
-// whose items are dated years apart and often in the future.
+/* ---------- unified feed ---------- */
+// Events, episodes and posts in one list. Comments are deliberately absent:
+// they are responses that only make sense inside their parent, so they never
+// become feed items — see the Discussion section of each detail view.
 function hotEntries(){
   const items=[];
   allEntries().forEach(e=>{
     const rx=eventReactionsFor(e.id);
     const cCount=eventCommentCount(e.id);
     items.push({kind:'event',entry:e,ups:rx.ups,downs:rx.downs,cCount,
+      when:Date.parse(e.date),
       score:hotScore(rx.ups,rx.downs,cCount,eventLastActivity[e.id],Date.parse(e.date))});
   });
   posts.forEach(p=>{
     items.push({kind:'post',post:p,ups:p.ups,downs:p.downs,cCount:p.comments.length,
+      when:Date.parse(p.created_at),
       score:hotScore(p.ups,p.downs,p.comments.length,p.lastActivity,Date.parse(p.created_at))});
   });
   return items.sort((a,b)=>b.score-a.score);
 }
-function renderHot(){
-  const el=document.getElementById('hotfeed'); if(!el) return;
-  // Today's events get their own pinned section above the ranked list, and
-  // are pulled out of that list so they don't render twice on the same
-  // page. This works even when Fan Posts isn't configured — it only needs
-  // allEntries()/daysTo(), no Supabase data — so it runs before the sb/
-  // postsLoading guards below.
-  const items=hotEntries();
-  const today=items.filter(it=>it.kind==='event'&&daysTo(it.entry.date)===0);
-  document.getElementById('today-panel').hidden=!today.length;
-  document.getElementById('hottoday').innerHTML=today.map(it=>eventRow(it.entry)).join('');
+function itemType(it){ return it.kind==='post' ? 'post' : it.entry.type; }
+function itemMatches(it,f){
+  if(f==='all') return true;
+  if(f==='post') return it.kind==='post';
+  if(f==='podcast') return it.kind==='event'&&it.entry.type==='podcast';
+  if(f==='event') return it.kind==='event'&&it.entry.type!=='podcast';
+  if(f==='discussed') return (it.cCount||0)>0;
+  return true;
+}
+function itemRow(it){ return it.kind==='event'?eventRow(it.entry):postRow(it.post); }
 
-  if(!sb){
-    el.innerHTML='<div class="dnote">Hot ranks reactions and comments, which need Fan Posts '+
-      'switched on — see the <code>SUPABASE</code> setup comment near the top of the script.</div>';
+let homeFilter='all', homeSort='hot', homePage=1;
+const PAGE=25;
+
+// Data arrived or changed — refresh whichever feed is actually on screen.
+// Rendering all three every time was pointless work on a 1,400-row list.
+function renderFeeds(){
+  if(currentView==='home') renderHome();
+  else if(currentView==='explore') renderExplore();
+  else if(currentView==='schedule') renderSchedule();
+}
+
+function renderHome(){
+  const el=document.getElementById('homefeed'); if(!el) return;
+  renderNowStrip();
+  let items=hotEntries().filter(it=>itemMatches(it,homeFilter));
+  if(homeSort==='latest') items=items.slice().sort((a,b)=>b.when-a.when);
+  if(!items.length){
+    el.innerHTML='<div class="empty"><strong>Nothing here yet</strong>'+
+      (sb?'Try a different filter.':'Posts and reactions need Supabase switched on — see the '+
+      'SUPABASE setup comment near the top of the script.')+'</div>';
+    document.getElementById('load-more').hidden=true;
     return;
   }
-  if(postsLoading){ el.innerHTML='<div class="empty"><strong>Loading…</strong></div>'; return; }
-  const rest=items.filter(it=>!(it.kind==='event'&&daysTo(it.entry.date)===0));
-  if(!rest.length){
-    el.innerHTML='<div class="empty"><strong>Nothing on file</strong></div>';
+  const shown=items.slice(0,homePage*PAGE);
+  el.innerHTML=shown.map(itemRow).join('');
+  const more=document.getElementById('load-more');
+  more.hidden=shown.length>=items.length;
+  more.textContent='Load more ('+(items.length-shown.length)+' left)';
+}
+
+// The compact "what is going on right now" strip above the feed.
+function renderNowStrip(){
+  const el=document.getElementById('nowstrip'); if(!el) return;
+  const all=allEntries();
+  const past=all.filter(e=>daysTo(e.date)<0).sort((a,b)=>b.date.localeCompare(a.date));
+  const up=all.filter(e=>daysTo(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
+  const lastEp=past.find(e=>e.type==='podcast');
+  const nextEv=up.find(e=>e.type!=='podcast')||up[0];
+  // "Most active" is whatever currently has the most comments, event or post.
+  const busiest=hotEntries().filter(it=>(it.cCount||0)>0)
+    .sort((a,b)=>(b.cCount||0)-(a.cCount||0))[0];
+  const cell=(k,t,s,attr)=>'<button class="nowcell"'+attr+'><span class="k">'+esc(k)+
+    '</span><span class="t">'+esc(t)+'</span>'+(s?'<span class="s">'+esc(s)+'</span>':'')+'</button>';
+  let h='';
+  if(lastEp) h+=cell('Latest episode',lastEp.title,fmt(lastEp.date),
+    ' data-goto="'+esc(lastEp.id)+'"');
+  if(nextEv){
+    const n=daysTo(nextEv.date);
+    h+=cell('Next scheduled',nextEv.title,n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'),
+      ' data-goto="'+esc(nextEv.id)+'"');
+  }
+  if(busiest) h+=cell('Most active',
+    busiest.kind==='post'?(busiest.post.caption||'(no caption)'):busiest.entry.title,
+    busiest.cCount+' comment'+(busiest.cCount===1?'':'s'),
+    busiest.kind==='post'?' data-post="'+esc(busiest.post.id)+'"'
+                         :' data-goto="'+esc(busiest.entry.id)+'"');
+  el.innerHTML=h;
+}
+
+/* ---------- explore ---------- */
+let exQuery='', exFilter='all', exView='list';
+function renderExplore(){
+  const el=document.getElementById('explorefeed'); if(!el) return;
+  document.getElementById('explore-map').hidden=(exView!=='map');
+  el.hidden=(exView==='map');
+  if(exView==='map') return;
+  const q=exQuery.trim().toLowerCase();
+  let items=hotEntries().filter(it=>itemMatches(it,exFilter));
+  if(q){
+    items=items.filter(it=>{
+      const hay=it.kind==='post'
+        ? (it.post.caption||'')+' '+(it.post.author_label||'')
+        : it.entry.title+' '+(it.entry.loc||'');
+      return hay.toLowerCase().includes(q);
+    });
+  }
+  if(!items.length){
+    el.innerHTML='<div class="empty"><strong>No matches</strong>'+
+      (q?'Nothing matches “'+esc(exQuery)+'”.':'Try a different filter.')+'</div>';
     return;
   }
-  el.innerHTML=rest.map(it=>it.kind==='event'?eventRow(it.entry):postRow(it.post)).join('');
+  el.innerHTML='<p class="hint">'+items.length+' result'+(items.length===1?'':'s')+'</p>'+
+    items.slice(0,60).map(itemRow).join('');
+}
+
+/* ---------- schedule ---------- */
+// Official records only. Posts are community content and stay in Home.
+let schedScope='upcoming', schedView='list';
+function renderSchedule(){
+  const el=document.getElementById('schedulefeed'); if(!el) return;
+  const rows=allEntries().filter(e=>schedScope==='upcoming'?daysTo(e.date)>=0:daysTo(e.date)<0)
+    .sort((a,b)=>schedScope==='upcoming'
+      ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
+  if(!rows.length){
+    el.innerHTML='<div class="empty"><strong>Nothing '+
+      (schedScope==='upcoming'?'announced':'on record')+'</strong></div>';
+    return;
+  }
+  if(schedView==='cal'){ el.innerHTML=calendarHTML(rows); return; }
+  el.innerHTML=rows.slice(0,200).map(eventRow).join('');
+}
+// A month-grouped agenda rather than a true grid: entries are sparse and a
+// 6x7 grid of mostly-empty cells reads worse than a dated list.
+function calendarHTML(rows){
+  const months={};
+  rows.forEach(e=>{ (months[e.date.slice(0,7)]=months[e.date.slice(0,7)]||[]).push(e); });
+  const keys=Object.keys(months).sort((a,b)=>
+    schedScope==='upcoming'?a.localeCompare(b):b.localeCompare(a));
+  const MN=['January','February','March','April','May','June','July','August','September',
+    'October','November','December'];
+  return keys.map(k=>{
+    const [y,m]=k.split('-');
+    return '<div class="subhead">'+esc(MN[Number(m)-1]+' '+y)+'</div>'+
+      months[k].map(eventRow).join('');
+  }).join('');
 }
 
 // A verified link (typed into the form, or supplied by a source) renders as a
@@ -1613,27 +1753,44 @@ let selectedPostId=null;
 // Hot feed mixes both kinds in one list, so which pane to draw can no longer
 // be inferred from which nav tab is active (see renderPlayer()).
 let selectedKind=null; // 'event' | 'post' | null
+// The drawer is the one detail surface (invariant #9). Opening it must not
+// disturb the feed underneath: the scroll position is captured here and
+// restored on close, which is what makes Back-from-a-detail land where you
+// left off rather than at the top of a 1,400-row list.
+let feedScroll=0;
+function openDrawer(){
+  const d=document.getElementById('drawer');
+  if(d.hidden){ feedScroll=window.scrollY; d.hidden=false; document.body.classList.add('drawer-open'); }
+  d.querySelector('.drawer-panel').scrollTop=0;
+}
+function closeDrawer(){
+  const d=document.getElementById('drawer');
+  if(d.hidden) return;
+  d.hidden=true;
+  if(document.getElementById('composer').hidden) document.body.classList.remove('drawer-open');
+  window.scrollTo({top:feedScroll});
+}
 function selectPost(id,opts){
   if(!id) return;
   selectedPostId=id; selectedKind='post';
   renderPlayer();
-  // Clear the other kind's highlight too — harmless while Browse and Fan
-  // Posts were separate lists, but Hot can show a [data-goto] row and a
-  // [data-post] row side by side, so both need to agree on one selection.
+  openDrawer();
+  // Clear the other kind's highlight too — one list can show a [data-goto]
+  // row and a [data-post] row side by side, so both must agree on one
+  // selection.
   document.querySelectorAll('[data-goto].sel').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('[data-post]').forEach(el=>
     el.classList.toggle('sel',el.dataset.post===id));
   if(!(opts&&opts.silent)&&location.hash!==hashForPost(id)){
     history.replaceState(null,'',hashForPost(id));
   }
-  const pane=document.getElementById('insight-player');
-  if(pane) pane.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function selectEntry(id,opts){
   if(!id) return;
   selectedId=id; selectedKind='event';
   renderPlayer();
+  openDrawer();
   document.querySelectorAll('[data-post].sel').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('[data-goto]').forEach(el=>
     el.classList.toggle('sel',el.dataset.goto===id));
@@ -1642,18 +1799,6 @@ function selectEntry(id,opts){
   if(!(opts&&opts.silent)&&shareable({id:id})&&location.hash!==hashFor(id)){
     history.replaceState(null,'',hashFor(id));
   }
-  // Browse should agree with the pane: a pin or a chart bar can select an
-  // entry sitting hundreds of rows down, and leaving the list parked where it
-  // was made the highlighted row impossible to find. 'nearest' means clicking
-  // a row that is already visible doesn't jolt the list.
-  if(currentView==='browse'){
-    const row=document.querySelector('#feed [data-entry="'+
-      (window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');
-    if(row) row.scrollIntoView({behavior:'smooth',block:'nearest'});
-  }
-  // On a stacked layout the pane is above the panels and may be off-screen.
-  const pane=document.getElementById('insight-player');
-  if(pane) pane.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // The × in the pane header. Mirrors the hash-writing in selectEntry/
@@ -1669,7 +1814,17 @@ function clearSelection(){
   if(location.hash) history.replaceState(null,'',location.pathname+location.search);
   if(selPin){ selPin=null; plotMap(lastRows); }
   renderPlayer();
+  closeDrawer();
 }
+// Scrim, close button and Escape all mean the same thing.
+document.getElementById('drawer').addEventListener('click',ev=>{
+  if(ev.target.closest('[data-closedrawer]')) clearSelection();
+});
+document.addEventListener('keydown',ev=>{
+  if(ev.key!=='Escape') return;
+  if(!document.getElementById('composer').hidden){ closeComposer(); return; }
+  if(!document.getElementById('drawer').hidden) clearSelection();
+});
 
 // What the pane is currently showing. Rebuilding its innerHTML replaces the
 // <iframe>, which stops playback dead — and re-inserting the old node doesn't
@@ -1722,7 +1877,7 @@ function renderPlayer(){
 
   if(selectedKind==='post'){
     const p=selectedPostId?posts.find(x=>x.id===selectedPostId):null;
-    if(p){ el.innerHTML=postPaneHTML(p); document.body.classList.remove('pane-empty'); return; }
+    if(p){ el.innerHTML=postPaneHTML(p); return; }
   }
   if(selectedKind==='event'){
     const e=selectedId?allEntries().find(x=>x.id===selectedId):null;
@@ -1753,23 +1908,18 @@ function renderPlayer(){
         '<div id="pane-social">'+fanPostsForHTML(e)+'</div>'+
         '<div id="pane-thread">'+eventCommentsHTML(e.id)+'</div>'+
         '</div>';
-      document.body.classList.remove('pane-empty');
+     
       return;
     }
   }
-  // Nothing selected yet: Fan Posts keeps its own empty copy, everything
-  // else (Browse/Hot/Insights) shares the generic one. The flag is set here
-  // rather than off selectedKind, because a selection pointing at an entry
-  // that no longer exists lands on this empty state too.
-  document.body.classList.add('pane-empty');
-  el.innerHTML = currentView==='posts'
-    ? '<div class="player"><div class="ph">Selected post</div>'+
-      '<div class="empty"><strong>Nothing picked yet</strong>'+
-      (posts.length?'Choose a post on the left to watch it here.'
-                  :'No fan posts yet — share a clip to start one.')+'</div></div>'
-    : '<div class="player"><div class="ph">Selected entry</div>'+
-      '<div class="empty"><strong>Nothing picked yet</strong>'+
-      'Choose a row, a pin on the map, or a month on the chart to watch it here.</div></div>';
+  // Reached only when a selection points at something that no longer exists —
+  // a deleted post, or a feed entry that has since dropped out. The drawer is
+  // never opened empty otherwise, so this is a recovery state, not a resting
+  // one: say what happened and give a way out.
+  el.innerHTML='<div class="player"><div class="ph"><span>Not found</span>'+
+    '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
+    '<div class="empty"><strong>This item is no longer here</strong>'+
+    'It may have been removed, or the link may be out of date.</div></div>';
 }
 
 // Only feed-backed entries get a share button. A visitor's own logged entries
@@ -1782,18 +1932,22 @@ function shareHTML(e){
     ? '<button class="mini ghost" data-share="'+esc(e.id)+'">Copy link</button>' : '';
 }
 
-// A compact peek at the fan posts tagged to this entry, with a way through to
-// the full feed filtered to it (postFilterEvent already drives that).
+// Community Posts: the posts attached to this entry, kept visibly separate
+// from Discussion below it. Posts are standalone content with their own URL,
+// so each one opens in its own right; comments never appear here.
 function fanPostsForHTML(e){
   if(!sb) return '';
   const mine=posts.filter(p=>p.event_id===e.id);
-  if(!mine.length) return '';
-  return '<div class="pposts"><div class="ann-h">Fan posts · '+mine.length+'</div>'+
-    mine.slice(0,3).map(p=>'<div class="ppost"><b>'+esc(p.author_label||'Fan')+'</b> '+
-      esc((p.caption||'').slice(0,90))+(p.caption&&p.caption.length>90?'…':'')+
-      ' <span class="n">▲'+(p.ups||0)+' ▼'+(p.downs||0)+'</span></div>').join('')+
-    '<button class="mini ghost" data-viewposts="'+esc(e.id)+'">See all '+mine.length+
-    ' in Fan Posts</button></div>';
+  return '<div class="pposts"><div class="ann-h">Community Posts · '+mine.length+'</div>'+
+    (mine.length
+      ? mine.map(p=>'<button class="ppost" data-post="'+esc(p.id)+'"><b>'+
+          esc(p.author_label||'Fan')+'</b> '+esc((p.caption||'').slice(0,90))+
+          (p.caption&&p.caption.length>90?'…':'')+
+          ' <span class="n">▲'+(p.ups||0)+' ▼'+(p.downs||0)+
+          (p.comments.length?' · '+p.comments.length+'c':'')+'</span></button>').join('')
+      : '<p class="hint" style="margin:4px 0 0">No posts about this yet.</p>')+
+    '<button class="mini ghost" data-postabout="'+esc(e.id)+'" style="margin-top:9px">'+
+    'Post about this</button></div>';
 }
 
 function medIQR(vals){
@@ -2159,28 +2313,6 @@ function renderInsights(){
   renderEngagementInsights();
 }
 
-// The line where the list stops being a schedule and starts being a record.
-// Everything above it is announced and hasn't happened; everything below it
-// has. It names the two entries either side of the crossing, because the
-// interesting thing about the present is what it sits between.
-function nowlineHTML(nextUp,lastOut){
-  const d=new Date();
-  const stamp=d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'});
-  const nd=nextUp?daysTo(nextUp.date):null;
-  const ld=lastOut?Math.abs(daysTo(lastOut.date)):null;
-  const soon=nd===0?'today':(nd===1?'tomorrow':'in '+nd+' days');
-  const ago=ld===0?'today':(ld===1?'yesterday':ld+' days ago');
-  return '<div class="nowline">'+
-    '<div class="nl-head"><span class="nl-now"><i></i>Today</span>'+
-      '<span class="nl-date">'+esc(stamp)+'</span></div>'+
-    (nextUp?'<div class="nl-side up"><span class="nl-lab">Next up</span>'+
-      '<span class="nl-t">'+esc(nextUp.title)+'</span>'+
-      '<span class="nl-w">'+esc(soon)+'</span></div>':'')+
-    (lastOut?'<div class="nl-side down"><span class="nl-lab">Latest out</span>'+
-      '<span class="nl-t">'+esc(lastOut.title)+'</span>'+
-      '<span class="nl-w">'+esc(ago)+'</span></div>':'')+
-    '</div>';
-}
 
 // Shared row-builder for a single event, used by both Browse and the Hot
 // feed so the two never drift into duplicated markup (same role postRow()
@@ -2221,38 +2353,15 @@ function eventRow(e){
     '</span></button>';
 }
 
+// render() no longer owns a list of its own — the feeds do. It keeps the
+// things that are derived from the whole entry set regardless of which view
+// is open: the readout, the map and the analysis panel.
 function render(){
   stats();
-  const feed=document.getElementById('feed');
-  const rows=sorted().filter(e=>{
-    if(filter!=='all'&&e.type!==filter) return false;
-    const n=daysTo(e.date);
-    if(scope==='upcoming'&&n<0) return false;
-    if(scope==='past'&&n>=0) return false;
-    return true;
-  });
-  if(!rows.length){
-    plotMap([]);
-    renderAnalysis([]);
-    feed.innerHTML='<div class="empty"><strong>Nothing on file</strong>'+
-      (scope==='past'?'No previous entries in this category yet.'
-        :scope==='upcoming'?'Nothing announced in this category yet.'
-        :'No entries in this category yet. Use “Log an appearance” to add an announced date.')+'</div>';
-    return;
-  }
+  const rows=allEntries();
   plotMap(rows);
   renderAnalysis(rows);
-  // Compact rows. The clip, ticket link, comments and delete control all live
-  // in the detail pane now — 242 of those inline was both unscannable and a lot
-  // of DOM (an iframe placeholder and a comment form each). A row is a
-  // thumbnail, a title and the numbers you'd scan by.
-  feed.innerHTML=rows.map((e,i)=>{
-    // Mark the point where the timeline crosses from scheduled into released.
-    // Only when a future row actually precedes it, so the scope filters
-    // ("Upcoming" / "Previous") don't render a stray divider at the top.
-    const crosses=daysTo(e.date)<0&&i>0&&daysTo(rows[i-1].date)>=0;
-    return (crosses?nowlineHTML(rows[i-1],e):'')+eventRow(e);
-  }).join('');
+  renderFeeds();
 }
 
 
@@ -2559,41 +2668,51 @@ function renderAnalysis(rows){
 
 // Bound to [data-view], not to a shared class — same reason as the filter
 // rows (see AGENTS.md #2).
-const VIEWS=['browse','hot','posts','insights'];
-let currentView='hot';
+const VIEWS=['home','explore','schedule','insights'];
+let currentView='home';
+// The single map node moves between Home's preview and Explore rather than
+// being duplicated — two copies would mean two #pins/#heat and plotMap() would
+// only ever find the first.
+function mountMap(hostId){
+  const card=document.querySelector('.mapcard'), host=document.getElementById(hostId);
+  if(!card||!host||card.parentNode===host) return;
+  host.appendChild(card);
+}
 function showView(name){
-  if(!VIEWS.includes(name)) name='browse';
+  if(!VIEWS.includes(name)) name='home';
   currentView=name;
   VIEWS.forEach(v=>{ document.getElementById('view-'+v).hidden = v!==name; });
   document.querySelectorAll('[data-view]').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.view===name)));
   if(name==='insights') renderInsights();
-  if(name==='hot') renderHot();
-  renderPlayer();
-  // The map is outside the mode containers now, so it is never hidden and its
-  // width does not change when modes swap — the old re-plot on entering
-  // Insights is no longer needed. Sizing is still handled where it can
-  // actually change: after first paint in load(), and on resize (which is also
-  // what fires when the layout crosses a breakpoint and the map column
-  // resizes). See invariant #3.
+  if(name==='home') renderHome();
+  if(name==='explore'){ mountMap('explore-map'); renderExplore(); }
+  if(name==='schedule') renderSchedule();
+  // The map only has a real width once its host is visible, and uiK() reads
+  // that width — so re-plot after the swap or every marker is mis-sized
+  // (invariant #3).
+  if(name==='explore'||name==='home') requestAnimationFrame(()=>plotMap(lastRows));
 }
 document.querySelectorAll('[data-view]').forEach(b=>
   b.addEventListener('click',()=>showView(b.dataset.view)));
 
+// Home's map preview borrows the same node; give it back to Explore when
+// collapsed so there is only ever one live map.
+document.getElementById('mappeek').addEventListener('toggle',function(){
+  mountMap(this.open?'mappeek-body':'explore-map');
+  requestAnimationFrame(()=>plotMap(lastRows));
+});
+
 // One delegated handler for every surface that can open an entry or a post —
-// rows, ranked lists, SVG bars — since they are all rebuilt on each render
-// and all route through selectEntry/selectPost. #hotfeed needs both, since
-// it's the one list that mixes events and Fan Posts.
+// rows, ranked lists, SVG bars — since they are all rebuilt on each render and
+// all route through selectEntry/selectPost. Bound per view container so every
+// feed gets it without re-binding after each render.
 function onPick(ev){
   const g=ev.target.closest('[data-goto]');
   if(g){ selectEntry(g.dataset.goto); return; }
   const p=ev.target.closest('[data-post]');
   if(p) selectPost(p.dataset.post);
 }
-document.getElementById('view-insights').addEventListener('click',onPick);
-document.getElementById('feed').addEventListener('click',onPick);
-document.getElementById('hotfeed').addEventListener('click',onPick);
-document.getElementById('hottoday').addEventListener('click',onPick);
 function onPickKey(ev){
   if(ev.key!=='Enter'&&ev.key!==' ') return;
   const g=ev.target.closest('[data-goto]');
@@ -2601,9 +2720,11 @@ function onPickKey(ev){
   const p=ev.target.closest('[data-post]');
   if(p){ ev.preventDefault(); selectPost(p.dataset.post); }
 }
-document.getElementById('view-insights').addEventListener('keydown',onPickKey);
-document.getElementById('hotfeed').addEventListener('keydown',onPickKey);
-document.getElementById('hottoday').addEventListener('keydown',onPickKey);
+['view-home','view-explore','view-schedule','view-insights'].forEach(id=>{
+  const el=document.getElementById(id); if(!el) return;
+  el.addEventListener('click',onPick);
+  el.addEventListener('keydown',onPickKey);
+});
 
 /* ---------- deep links ---------- */
 // An entry gets its own URL so a find can actually be shared. Feed ids are
@@ -2611,13 +2732,15 @@ document.getElementById('hottoday').addEventListener('keydown',onPickKey);
 // what makes them safe to put in a link at all.
 function hashFor(id){ return '#e='+encodeURIComponent(id); }
 function hashForPost(id){ return '#p='+encodeURIComponent(id); }
+// A shared link opens the item over whatever view the visitor lands on —
+// Home by default. There is no longer a "wrong" tab for an entry or a post to
+// open from, because the drawer sits above all of them.
 function applyHash(){
   const h=location.hash||'';
   const mp=/^#p=(.+)$/.exec(h);
   if(mp){
     let id; try{ id=decodeURIComponent(mp[1]); }catch(e){ return false; }
     if(!posts.some(x=>x.id===id)) return false;   // posts may not have loaded yet
-    showView('posts');
     selectPost(id,{silent:true});
     return true;
   }
@@ -2625,7 +2748,6 @@ function applyHash(){
   if(!m) return false;
   let id; try{ id=decodeURIComponent(m[1]); }catch(e){ return false; }
   if(!allEntries().some(x=>x.id===id)) return false;
-  if(currentView==='posts') showView('browse');   // an entry link belongs to browse
   selectEntry(id,{silent:true});
   return true;
 }
@@ -2635,16 +2757,38 @@ let rzt;
 window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>plotMap(lastRows),150);});
 
 /* events */
-document.querySelectorAll('[data-f]').forEach(t=>t.addEventListener('click',()=>{
-  filter=t.dataset.f;
-  document.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',String(x===t)));
-  render();
+// Every control group binds to its own data-attribute, never a shared class —
+// ten controls carry class="tab" and binding to that once emptied the whole
+// app (AGENTS.md #2).
+function pressGroup(attr,el){
+  document.querySelectorAll('['+attr+']').forEach(x=>
+    x.setAttribute('aria-pressed',String(x===el)));
+}
+document.querySelectorAll('[data-hf]').forEach(t=>t.addEventListener('click',()=>{
+  homeFilter=t.dataset.hf; homePage=1; pressGroup('data-hf',t); renderHome();
 }));
-
-document.querySelectorAll('[data-s]').forEach(t=>t.addEventListener('click',()=>{
-  scope=t.dataset.s;
-  document.querySelectorAll('[data-s]').forEach(x=>x.setAttribute('aria-pressed',String(x===t)));
-  render();
+document.querySelectorAll('[data-hs]').forEach(t=>t.addEventListener('click',()=>{
+  homeSort=t.dataset.hs; homePage=1; pressGroup('data-hs',t); renderHome();
+}));
+document.getElementById('load-more').addEventListener('click',()=>{
+  homePage++; renderHome();
+});
+document.querySelectorAll('[data-xf]').forEach(t=>t.addEventListener('click',()=>{
+  exFilter=t.dataset.xf; pressGroup('data-xf',t); renderExplore();
+}));
+document.querySelectorAll('[data-xv]').forEach(t=>t.addEventListener('click',()=>{
+  exView=t.dataset.xv; pressGroup('data-xv',t); renderExplore();
+  if(exView==='map') requestAnimationFrame(()=>plotMap(lastRows));
+}));
+let exT;
+document.getElementById('ex-q').addEventListener('input',ev=>{
+  exQuery=ev.target.value; clearTimeout(exT); exT=setTimeout(renderExplore,140);
+});
+document.querySelectorAll('[data-sc]').forEach(t=>t.addEventListener('click',()=>{
+  schedScope=t.dataset.sc; pressGroup('data-sc',t); renderSchedule();
+}));
+document.querySelectorAll('[data-sv]').forEach(t=>t.addEventListener('click',()=>{
+  schedView=t.dataset.sv; pressGroup('data-sv',t); renderSchedule();
 }));
 document.querySelectorAll('[data-m]').forEach(t=>t.addEventListener('click',()=>{
   mapmode=t.dataset.m;
@@ -2654,6 +2798,13 @@ document.querySelectorAll('[data-m]').forEach(t=>t.addEventListener('click',()=>
   render();
 }));
 
+// Maintenance tools live behind a footer toggle rather than in the nav: they
+// write to this browser only and mean nothing to a visitor.
+const apanel=document.getElementById('admin-panel');
+document.getElementById('open-admin').addEventListener('click',()=>{
+  apanel.classList.toggle('hidden');
+  if(!apanel.classList.contains('hidden')) apanel.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
 const ipanel=document.getElementById('import-panel');
 document.getElementById('open-import').addEventListener('click',()=>{
   ipanel.classList.toggle('hidden');
@@ -2862,11 +3013,8 @@ document.getElementById('insight-player').addEventListener('click',async ev=>{
       else window.prompt('Copy this link:',url);
     }catch(e){ window.prompt('Copy this link:',url); }
   }
-  if(b.dataset.viewposts){
-    postFilterEvent=b.dataset.viewposts;
-    renderPosts();
-    showView('posts');
-  }
+  // "Post about this" — same composer, association already filled in.
+  if(b.dataset.postabout) openComposer(b.dataset.postabout);
   if(b.dataset.ecadd){
     if(!sb) return;
     if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
@@ -2912,58 +3060,80 @@ document.getElementById('insight-player').addEventListener('keydown',ev=>{
   }
 });
 
-/* ---------- fan posts events ---------- */
-
-document.getElementById('open-postform').addEventListener('click',()=>{
-  const pf=document.getElementById('postform-panel');
-  pf.classList.toggle('hidden');
-  if(!pf.classList.contains('hidden')){
-    document.getElementById('p-name').value=getSavedName();
-    populateEventPicker();
-    document.getElementById('p-vid').focus();
-  }
-});
-document.getElementById('post-cancel').addEventListener('click',()=>{
-  document.getElementById('postform-panel').classList.add('hidden');
+/* ---------- composer (posts) ---------- */
+// One composer, two entry points: the global "+ Post" button and the
+// "Post about this" button inside an event or episode drawer, which only
+// differs by presetting the association.
+let postKind='clip';
+function setPostKind(k){
+  postKind=(k==='text')?'text':'clip';
+  document.querySelectorAll('[data-pk]').forEach(b=>
+    b.setAttribute('aria-pressed',String(b.dataset.pk===postKind)));
+  document.getElementById('p-vid-field').hidden=(postKind==='text');
+  document.getElementById('p-cap-label').textContent=postKind==='text'?'Your post':'Caption';
+  document.getElementById('p-cap').placeholder=postKind==='text'
+    ? 'Say something worth its own thread…' : "What's happening in this clip…";
+}
+function openComposer(eventId){
+  if(!sb){ alert('Posting is not configured yet.'); return; }
+  populateEventPicker();
+  const sel=document.getElementById('p-event');
+  sel.value=eventId||'';
+  document.getElementById('p-name').value=getSavedName();
   document.getElementById('p-err').style.display='none';
+  const d=document.getElementById('composer');
+  d.hidden=false; document.body.classList.add('drawer-open');
+  (postKind==='text'?document.getElementById('p-cap'):document.getElementById('p-vid')).focus();
+}
+function closeComposer(){
+  document.getElementById('composer').hidden=true;
+  if(document.getElementById('drawer').hidden) document.body.classList.remove('drawer-open');
+}
+document.querySelectorAll('[data-pk]').forEach(b=>
+  b.addEventListener('click',()=>setPostKind(b.dataset.pk)));
+document.getElementById('open-post').addEventListener('click',()=>openComposer(''));
+document.getElementById('composer').addEventListener('click',ev=>{
+  if(ev.target.closest('[data-closecomposer]')) closeComposer();
+});
+// Typing filters the attach list rather than making you scroll 1,400 options.
+document.getElementById('p-event-q').addEventListener('input',ev=>{
+  populateEventPicker(ev.target.value);
 });
 document.getElementById('post-submit').addEventListener('click',async()=>{
   const err=document.getElementById('p-err');
   const show=msg=>{err.textContent=msg;err.style.display='block';};
-  if(!sb) return show('Fan posts are not configured yet.');
+  if(!sb) return show('Posting is not configured yet.');
   if(!session||!session.user) return show('Still connecting — try again in a second.');
   const name=document.getElementById('p-name').value.trim()||'Fan';
-  const vraw=document.getElementById('p-vid').value.trim();
-  const vid=parseVideo(vraw);
-  if(!vid) return show('That clip link is not a recognized YouTube, TikTok or Vimeo URL.');
   const cap=document.getElementById('p-cap').value.trim();
-  if(!cap) return show('Add a short caption.');
-  if(cap.length>500) return show('Captions are capped at 500 characters.');
+  let vid=null;
+  if(postKind==='clip'){
+    vid=parseVideo(document.getElementById('p-vid').value.trim());
+    if(!vid) return show('That clip link is not a recognized YouTube, TikTok or Vimeo URL.');
+    if(!cap) return show('Add a short caption.');
+  }else{
+    // A text post has to carry its own weight — it is a thread starter, not a
+    // comment. Comments are the short-form channel and live on the parent.
+    if(cap.length<40) return show('A text post needs a bit more to it — under 40 characters, '+
+      'add it as a comment on an event or post instead.');
+  }
+  if(cap.length>500) return show('Posts are capped at 500 characters.');
   err.style.display='none';
   setSavedName(name);
   const btn=document.getElementById('post-submit'); btn.disabled=true;
   try{
     const {error}=await sb.from('posts').insert({
       author_id:session.user.id, author_label:name, caption:cap,
-      video_kind:vid.kind, video_id:vid.id, event_id:document.getElementById('p-event').value||null
+      video_kind:vid?vid.kind:null, video_id:vid?vid.id:null,
+      event_id:document.getElementById('p-event').value||null
     });
     if(error) throw error;
     document.getElementById('p-vid').value=''; document.getElementById('p-cap').value='';
-    document.getElementById('postform-panel').classList.add('hidden');
+    closeComposer();
     await loadPosts();
   }catch(e){ show('Could not post: '+(e.message||'unknown error')); }
   finally{ btn.disabled=false; }
 });
-document.getElementById('postfilter-clear').addEventListener('click',()=>{
-  postFilterEvent=null; renderPosts();
-});
-
-// Selecting a post is the list's only job now.
-document.getElementById('postsfeed').addEventListener('click',ev=>{
-  const r=ev.target.closest('[data-post]');
-  if(r) selectPost(r.dataset.post);
-});
-
 // Everything you can do to a post happens in the pane, where it is open.
 document.getElementById('insight-player').addEventListener('click',async ev=>{
   const b=ev.target.closest('button'); if(!b||!sb) return;
