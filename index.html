@@ -1516,7 +1516,10 @@ async function load(){
   // until the visitor happens to open Explore.
   mountMap('home-map');
   render(); loadFeed(); loadViewHistory();
-  initAuth().then(loadPosts);
+  // finally, not then: posts are publicly readable, so a failed or hanging
+  // sign-in must not stop them loading. It only costs the visitor the ability
+  // to post or react, which the UI already handles.
+  initAuth().catch(e=>console.error('Auth setup failed',e)).finally(loadPosts);
   const sn=document.getElementById('store-note');
   if(sn) sn.textContent = store.kind==='memory'
     ? 'Storage unavailable in this browser — entries will not survive a refresh.'
@@ -1601,30 +1604,46 @@ function setSavedName(n){ try{ localStorage.setItem('fan-post-name',n); }catch(e
 async function initAuth(){
   if(!sb) return;
   sb.auth.onAuthStateChange((_e,s)=>{ session=s; loadPosts(); });
-  const {data}=await sb.auth.getSession();
+  // Both of these touch supabase-js's storage, which some browsers deny; a
+  // deadline keeps a stalled sign-in from stalling the whole page.
+  const {data}=await withTimeout(sb.auth.getSession(),'session lookup');
   session=data.session;
   if(!session){
-    const {data:anon,error}=await sb.auth.signInAnonymously();
+    const {data:anon,error}=await withTimeout(sb.auth.signInAnonymously(),'anonymous sign-in');
     if(error){ console.error('Could not start an anonymous session',error); return; }
     session=anon.session;
   }
+}
+
+// A request that never settles would leave postsLoading true for the life of
+// the page. supabase-js can do exactly that on a browser where its storage is
+// denied — Safari private browsing, or tracking protection — so every call
+// gets a deadline and a rejection we can actually show.
+const POSTS_TIMEOUT=12000;
+function withTimeout(p,label){
+  let t;
+  return Promise.race([
+    Promise.resolve(p).finally(()=>clearTimeout(t)),
+    new Promise((_,reject)=>{ t=setTimeout(()=>
+      reject(new Error((label||'request')+' timed out after '+POSTS_TIMEOUT+'ms')),POSTS_TIMEOUT); })
+  ]);
 }
 
 async function loadPosts(){
   if(!sb){ renderFeeds(); return; }
   postsLoading=true; postsFailed=false; renderFeeds();
   try{
-    const {data,error}=await sb.from('posts').select('*')
-      .order('created_at',{ascending:false}).limit(100);
+    const {data,error}=await withTimeout(sb.from('posts').select('*')
+      .order('created_at',{ascending:false}).limit(100),'posts');
     if(error) throw error;
     const rows=data||[];
     // Comments and reactions are fetched in full, not just for these posts —
     // event-attached rows (event_id set, post_id null) aren't tied to any
     // loaded post, and the Hot feed needs every event's numbers too.
-    const [rres,cres]=await Promise.all([
+    const [rres,cres]=await withTimeout(Promise.all([
       sb.from('reactions').select('post_id,event_id,user_id,value,created_at').limit(3000),
       sb.from('comments').select('*').order('created_at',{ascending:true}).limit(1000)
-    ]);
+    ]),'reactions and comments');
     reactions=rres.data||[]; comments=cres.data||[];
     const uid=session&&session.user?session.user.id:null;
     posts=rows.map(r=>{
@@ -1871,36 +1890,45 @@ function renderFeeds(){
 function renderHome(){
   const el=document.getElementById('homefeed'); if(!el) return;
   renderNowStrip();
-  // Entries come from events.json and render immediately; only the post rows
-  // wait on Supabase. Showing skeletons while that is still in flight beats
-  // rendering the feed twice and having it jump.
-  if(postsLoading&&!posts.length){ el.innerHTML=skeleton(6); return; }
-  if(postsFailed){
-    const items=homeItems();
-    el.innerHTML='<div class="empty failed"><strong>Couldn’t load posts</strong>'+
-      'Events and episodes are shown below. '+
-      '<button class="linkish" id="retry-posts">Try again</button></div>'+
-      items.slice(0,PAGE).map(itemRow).join('');
-    const r=document.getElementById('retry-posts');
-    if(r) r.addEventListener('click',()=>{ postsFailed=false; loadPosts(); });
-    document.getElementById('load-more').hidden=true;
-    plotMap(homeMapRows(items));
-    return;
-  }
   const items=homeItems();
-  plotMap(homeMapRows(items));
+  // Events and episodes come from events.json and are ready immediately; only
+  // post rows wait on Supabase. Skeletons therefore only stand in when there
+  // is genuinely nothing to show yet — gating the whole feed on the slower
+  // half meant anything going wrong in Supabase (a blocked request, storage
+  // denied in private browsing) left a permanently skeleton feed instead of
+  // the events we already had.
+  if(!items.length&&postsLoading){ el.innerHTML=skeleton(6); return; }
   if(!items.length){
     el.innerHTML='<div class="empty"><strong>Nothing here yet</strong>'+
       (sb?'Clear the search or filters to see more.':'Posts and reactions need Supabase switched on — see the '+
       'SUPABASE setup comment near the top of the script.')+'</div>';
     document.getElementById('load-more').hidden=true;
+    drawFeedMap(items);
     return;
   }
   const shown=items.slice(0,homePage*PAGE);
-  el.innerHTML=shown.map(itemRow).join('');
+  // Paint the feed before anything else can fail. The map used to be drawn
+  // first, so one exception in plotMap left the skeleton on screen and the
+  // whole page looked dead.
+  el.innerHTML=
+    (postsFailed?'<div class="empty failed"><strong>Couldn’t load posts</strong>'+
+      'Events and episodes are shown below. '+
+      '<button class="linkish" id="retry-posts">Try again</button></div>':'')+
+    (postsLoading&&!posts.length?'<p class="hint">Loading posts…</p>':'')+
+    shown.map(itemRow).join('');
+  const r=document.getElementById('retry-posts');
+  if(r) r.addEventListener('click',()=>{ postsFailed=false; loadPosts(); });
   const more=document.getElementById('load-more');
   more.hidden=shown.length>=items.length;
   more.textContent='Load more ('+(items.length-shown.length)+' left)';
+  drawFeedMap(items);
+}
+
+// The map is secondary to the feed, so it is never allowed to take the feed
+// down with it: it draws last and its failures are reported, not propagated.
+function drawFeedMap(items){
+  try{ plotMap(homeMapRows(items)); }
+  catch(err){ console.error('Map could not be drawn',err); }
 }
 
 // Three fast orientation points. These are deliberately summaries rather than
