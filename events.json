@@ -1,9 +1,8 @@
 {
-  "generated": "2026-08-16T17:15:03.241Z",
+  "generated": "2026-08-17T07:17:04.705Z",
   "events": [
     {
       "src": "youtube:ajMlhHjt3gk",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-01",
       "title": "Joe Rogan Experience #2359 - Mike Maxwell",
       "loc": "",
@@ -13,13 +12,13 @@
         "kind": "yt",
         "id": "ajMlhHjt3gk"
       },
-      "views": 544541,
+      "views": 544552,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:X-MwP-HotfE",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-05",
       "title": "Joe Rogan Experience #2360 - Caroline Fraser",
       "loc": "",
@@ -29,29 +28,29 @@
         "kind": "yt",
         "id": "X-MwP-HotfE"
       },
-      "views": 692001,
+      "views": 692011,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:03V2ZnXyEDA",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-06",
       "title": "Joe Rogan Experience #2361 - Graham Linehan",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 952K views at last sync.",
+      "note": "Episode release · 953K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "03V2ZnXyEDA"
       },
-      "views": 952495,
+      "views": 952528,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:jvksIC1Nolo",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-08",
       "title": "Joe Rogan Experience #2362 - Ralph Barbosa",
       "loc": "",
@@ -61,13 +60,13 @@
         "kind": "yt",
         "id": "jvksIC1Nolo"
       },
-      "views": 1157312,
+      "views": 1157420,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:VJNaciADLVs",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-09",
       "title": "Joe Rogan Experience #2363 - David Kipping",
       "loc": "",
@@ -77,13 +76,13 @@
         "kind": "yt",
         "id": "VJNaciADLVs"
       },
-      "views": 1357175,
+      "views": 1357362,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:m9qJki__i1k",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-12",
       "title": "Joe Rogan Experience #2364 - Brandon Epstein",
       "loc": "",
@@ -93,13 +92,13 @@
         "kind": "yt",
         "id": "m9qJki__i1k"
       },
-      "views": 601827,
+      "views": 601838,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:v-yPOBaYDOo",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-13",
       "title": "Joe Rogan Experience #2365 - Rep. Anna Paulina Luna",
       "loc": "",
@@ -109,13 +108,13 @@
         "kind": "yt",
         "id": "v-yPOBaYDOo"
       },
-      "views": 2166672,
+      "views": 2166806,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:kExttMUph4U",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-14",
       "title": "JRE MMA Show #169 - Protect Ya Neck",
       "loc": "",
@@ -125,13 +124,13 @@
         "kind": "yt",
         "id": "kExttMUph4U"
       },
-      "views": 747426,
+      "views": 747439,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Rx8BcDThVeQ",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-15",
       "title": "Joe Rogan Experience #2366 - Sam Tripoli",
       "loc": "",
@@ -141,13 +140,13 @@
         "kind": "yt",
         "id": "Rx8BcDThVeQ"
       },
-      "views": 1048700,
+      "views": 1048747,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:VB5V6ciwu2s",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-19",
       "title": "Joe Rogan Experience #2367 - Jesse Welles",
       "loc": "",
@@ -157,13 +156,13 @@
         "kind": "yt",
         "id": "VB5V6ciwu2s"
       },
-      "views": 861960,
+      "views": 862065,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wiaA9s-OBoQ",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-20",
       "title": "Joe Rogan Experience #2368 - Michael Button",
       "loc": "",
@@ -173,13 +172,13 @@
         "kind": "yt",
         "id": "wiaA9s-OBoQ"
       },
-      "views": 1339226,
+      "views": 1339810,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:j7Bxv_auSSk",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-22",
       "title": "Joe Rogan Experience #2369 - Ed Calderon",
       "loc": "",
@@ -189,13 +188,13 @@
         "kind": "yt",
         "id": "j7Bxv_auSSk"
       },
-      "views": 1717312,
+      "views": 1717423,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:U-4tp0XJ1O8",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-26",
       "title": "Joe Rogan Experience #2370 - Dave Smith",
       "loc": "",
@@ -205,13 +204,13 @@
         "kind": "yt",
         "id": "U-4tp0XJ1O8"
       },
-      "views": 2122124,
+      "views": 2122148,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:gT5oTp-3VuI",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-27",
       "title": "Joe Rogan Experience #2371 - Fedor Gorst",
       "loc": "",
@@ -221,13 +220,13 @@
         "kind": "yt",
         "id": "gT5oTp-3VuI"
       },
-      "views": 424893,
+      "views": 424930,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:B7y3qcgSRY8",
-      "firstSeen": "2025-01-01",
       "date": "2025-08-28",
       "title": "Joe Rogan Experience #2372 - Garry Nolan",
       "loc": "",
@@ -237,13 +236,13 @@
         "kind": "yt",
         "id": "B7y3qcgSRY8"
       },
-      "views": 1307412,
+      "views": 1307528,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:2k8xnF1tg-g",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-02",
       "title": "Joe Rogan Experience #2373 - Dave Landau",
       "loc": "",
@@ -253,13 +252,13 @@
         "kind": "yt",
         "id": "2k8xnF1tg-g"
       },
-      "views": 781612,
+      "views": 781645,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:KOVGNkSk5CQ",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-03",
       "title": "Joe Rogan Experience #2374 - Ben van Kerkwyk",
       "loc": "",
@@ -269,13 +268,13 @@
         "kind": "yt",
         "id": "KOVGNkSk5CQ"
       },
-      "views": 2385146,
+      "views": 2385689,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:uB8BcRimf78",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-04",
       "title": "Joe Rogan Experience #2375 - Tim Dillon",
       "loc": "",
@@ -285,13 +284,13 @@
         "kind": "yt",
         "id": "uB8BcRimf78"
       },
-      "views": 3257000,
+      "views": 3257273,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:2yRz_hRFVoU",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-07",
       "title": "JRE Fight Companion - September 6, 2025",
       "loc": "",
@@ -301,13 +300,13 @@
         "kind": "yt",
         "id": "2yRz_hRFVoU"
       },
-      "views": 570168,
+      "views": 570188,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:By17xYkP6jg",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-09",
       "title": "Joe Rogan Experience #2376 - Brigham Buhler",
       "loc": "",
@@ -317,13 +316,13 @@
         "kind": "yt",
         "id": "By17xYkP6jg"
       },
-      "views": 719453,
+      "views": 719488,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:q8mveWHwC4E",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-10",
       "title": "Joe Rogan Experience #2377 - Carrot Top",
       "loc": "",
@@ -333,13 +332,13 @@
         "kind": "yt",
         "id": "q8mveWHwC4E"
       },
-      "views": 732272,
+      "views": 732323,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:sRj5pxG2JPk",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-11",
       "title": "Joe Rogan Experience #2378 - Charlie Sheen",
       "loc": "",
@@ -349,13 +348,13 @@
         "kind": "yt",
         "id": "sRj5pxG2JPk"
       },
-      "views": 5790721,
+      "views": 5791277,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:GqsA7DYn5BA",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-16",
       "title": "Joe Rogan Experience #2379 - Matthew McConaughey",
       "loc": "",
@@ -365,13 +364,13 @@
         "kind": "yt",
         "id": "GqsA7DYn5BA"
       },
-      "views": 4741453,
+      "views": 4742581,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:laLx9PryjFE",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-17",
       "title": "Joe Rogan Experience #2380 - Jordan Jensen",
       "loc": "",
@@ -381,13 +380,13 @@
         "kind": "yt",
         "id": "laLx9PryjFE"
       },
-      "views": 1267801,
+      "views": 1268270,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:nwvOXG9ViRM",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-18",
       "title": "Joe Rogan Experience #2381 - Taylor Kitsch",
       "loc": "",
@@ -397,13 +396,13 @@
         "kind": "yt",
         "id": "nwvOXG9ViRM"
       },
-      "views": 1137502,
+      "views": 1137577,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:6djZKYdz5ig",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-23",
       "title": "Joe Rogan Experience #2382 - Andrew Santino",
       "loc": "",
@@ -413,13 +412,13 @@
         "kind": "yt",
         "id": "6djZKYdz5ig"
       },
-      "views": 2532050,
+      "views": 2532150,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:tFWuq28dkYs",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-24",
       "title": "Joe Rogan Experience #2383 - Ian Edwards",
       "loc": "",
@@ -429,13 +428,13 @@
         "kind": "yt",
         "id": "tFWuq28dkYs"
       },
-      "views": 399095,
+      "views": 399098,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:A0htXxbbq84",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-25",
       "title": "Joe Rogan Experience #2384 - Mark Kerr",
       "loc": "",
@@ -445,29 +444,29 @@
         "kind": "yt",
         "id": "A0htXxbbq84"
       },
-      "views": 640233,
+      "views": 640261,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:qxj8M4ewjS0",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-26",
       "title": "Joe Rogan Experience #2385 - Rick Strassman",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 818K views at last sync.",
+      "note": "Episode release · 819K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "qxj8M4ewjS0"
       },
-      "views": 818460,
+      "views": 818516,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ImyXm4Oag5M",
-      "firstSeen": "2025-01-01",
       "date": "2025-09-30",
       "title": "Joe Rogan Experience #2386 - The Red Clay Strays",
       "loc": "",
@@ -477,13 +476,13 @@
         "kind": "yt",
         "id": "ImyXm4Oag5M"
       },
-      "views": 658923,
+      "views": 659064,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:J3Wqw8Az7TA",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-01",
       "title": "Joe Rogan Experience #2387 - Gregg Braden",
       "loc": "",
@@ -493,13 +492,13 @@
         "kind": "yt",
         "id": "J3Wqw8Az7TA"
       },
-      "views": 1762301,
+      "views": 1762723,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:MiDNZJgnRRQ",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-02",
       "title": "Joe Rogan Experience #2388 - Lionel Richie",
       "loc": "",
@@ -509,29 +508,29 @@
         "kind": "yt",
         "id": "MiDNZJgnRRQ"
       },
-      "views": 795270,
+      "views": 795311,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:5Er_88yJov4",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-03",
       "title": "JRE MMA Show #170 with Michael \"Venom\" Page",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 800K views at last sync.",
+      "note": "Episode release · 801K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "5Er_88yJov4"
       },
-      "views": 800481,
+      "views": 800530,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:J4gQ7k6meHs",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-07",
       "title": "Joe Rogan Experience #2389 - Sal Vulcano",
       "loc": "",
@@ -541,13 +540,13 @@
         "kind": "yt",
         "id": "J4gQ7k6meHs"
       },
-      "views": 913221,
+      "views": 913291,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:mpVrOM66khc",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-08",
       "title": "Joe Rogan Experience #2390 - Jack Carr",
       "loc": "",
@@ -557,13 +556,13 @@
         "kind": "yt",
         "id": "mpVrOM66khc"
       },
-      "views": 601379,
+      "views": 601397,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:idMttGtm76M",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-09",
       "title": "Joe Rogan Experience #2391 - Duncan Trussell",
       "loc": "",
@@ -573,13 +572,13 @@
         "kind": "yt",
         "id": "idMttGtm76M"
       },
-      "views": 1203628,
+      "views": 1203697,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:TZqADzuu73g",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-10",
       "title": "Joe Rogan Experience #2392 - John Kiriakou",
       "loc": "",
@@ -589,13 +588,13 @@
         "kind": "yt",
         "id": "TZqADzuu73g"
       },
-      "views": 10219459,
+      "views": 10228713,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:TvuQr0g5oXI",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-15",
       "title": "Joe Rogan Experience #2393 - Bryan Callen",
       "loc": "",
@@ -605,13 +604,13 @@
         "kind": "yt",
         "id": "TvuQr0g5oXI"
       },
-      "views": 799998,
+      "views": 800122,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:-9LFj6YOK2U",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-16",
       "title": "Joe Rogan Experience #2394 - Palmer Luckey",
       "loc": "",
@@ -621,13 +620,13 @@
         "kind": "yt",
         "id": "-9LFj6YOK2U"
       },
-      "views": 2226422,
+      "views": 2226987,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:5P4Mu4X_zk4",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-17",
       "title": "Joe Rogan Experience #2395 - Mariana van Zeller",
       "loc": "",
@@ -637,13 +636,13 @@
         "kind": "yt",
         "id": "5P4Mu4X_zk4"
       },
-      "views": 931715,
+      "views": 931885,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ko5htRmVIrU",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-18",
       "title": "Joe Rogan Experience #2396 - Andrew Schulz",
       "loc": "",
@@ -653,13 +652,13 @@
         "kind": "yt",
         "id": "ko5htRmVIrU"
       },
-      "views": 2019567,
+      "views": 2019640,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Zt32chvO_iY",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-21",
       "title": "Joe Rogan Experience #2397 - Richard Lindzen & William Happer",
       "loc": "",
@@ -669,13 +668,13 @@
         "kind": "yt",
         "id": "Zt32chvO_iY"
       },
-      "views": 1142751,
+      "views": 1142806,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:0sdLHGb5Wzs",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-22",
       "title": "Joe Rogan Experience #2398 - Francis Foster & Konstantin Kisin",
       "loc": "",
@@ -685,13 +684,13 @@
         "kind": "yt",
         "id": "0sdLHGb5Wzs"
       },
-      "views": 1555256,
+      "views": 1555305,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:HwpYMYnAsz4",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-23",
       "title": "Joe Rogan Experience #2399 - Daryl Davis & Jeff Schoep",
       "loc": "",
@@ -701,13 +700,13 @@
         "kind": "yt",
         "id": "HwpYMYnAsz4"
       },
-      "views": 649629,
+      "views": 649664,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:TZu7jymfHrU",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-25",
       "title": "Joe Rogan Experience #2400 - Katee Sackhoff",
       "loc": "",
@@ -717,13 +716,13 @@
         "kind": "yt",
         "id": "TZu7jymfHrU"
       },
-      "views": 832298,
+      "views": 832351,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:EaAun27gftk",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-28",
       "title": "Joe Rogan Experience #2401 - Avi Loeb",
       "loc": "",
@@ -733,13 +732,13 @@
         "kind": "yt",
         "id": "EaAun27gftk"
       },
-      "views": 2269212,
+      "views": 2269290,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:oTwB8R6qmm8",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-29",
       "title": "Joe Rogan Experience #2402 - Miranda Lambert",
       "loc": "",
@@ -749,13 +748,13 @@
         "kind": "yt",
         "id": "oTwB8R6qmm8"
       },
-      "views": 679374,
+      "views": 679450,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:IErO3RuGTXE",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-30",
       "title": "Joe Rogan Experience #2403 - Andrew Gallimore",
       "loc": "",
@@ -765,13 +764,13 @@
         "kind": "yt",
         "id": "IErO3RuGTXE"
       },
-      "views": 703576,
+      "views": 703687,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:O4wBUysNe2k",
-      "firstSeen": "2025-01-01",
       "date": "2025-10-31",
       "title": "Joe Rogan Experience #2404 - Elon Musk",
       "loc": "",
@@ -781,13 +780,13 @@
         "kind": "yt",
         "id": "O4wBUysNe2k"
       },
-      "views": 12062226,
+      "views": 12064394,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:J1WyFLHPqro",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-04",
       "title": "Joe Rogan Experience #2405 - Luis J Gomez & Big Jay Oakerson",
       "loc": "",
@@ -797,13 +796,13 @@
         "kind": "yt",
         "id": "J1WyFLHPqro"
       },
-      "views": 862856,
+      "views": 862908,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:P4G2KGEkSyI",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-05",
       "title": "Joe Rogan Experience #2406 - Russell Crowe",
       "loc": "",
@@ -813,13 +812,13 @@
         "kind": "yt",
         "id": "P4G2KGEkSyI"
       },
-      "views": 2141851,
+      "views": 2142010,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:0loSsJ1mHVE",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-07",
       "title": "Joe Rogan Experience #2407 - Billy Bob Thornton",
       "loc": "",
@@ -829,13 +828,13 @@
         "kind": "yt",
         "id": "0loSsJ1mHVE"
       },
-      "views": 2950909,
+      "views": 2951298,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:gXbsq5nVmT0",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-08",
       "title": "Joe Rogan Experience #2408 - Bret Weinstein",
       "loc": "",
@@ -845,13 +844,13 @@
         "kind": "yt",
         "id": "gXbsq5nVmT0"
       },
-      "views": 1812600,
+      "views": 1812734,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:_5tIELL-2XQ",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-11",
       "title": "Joe Rogan Experience #2409 - Brian Redban",
       "loc": "",
@@ -861,13 +860,13 @@
         "kind": "yt",
         "id": "_5tIELL-2XQ"
       },
-      "views": 929064,
+      "views": 929090,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:AXez6WQzvEU",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-12",
       "title": "Joe Rogan Experience #2410 - Jeff Dye",
       "loc": "",
@@ -877,13 +876,13 @@
         "kind": "yt",
         "id": "AXez6WQzvEU"
       },
-      "views": 659439,
+      "views": 659467,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:u04t4fkBIeM",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-13",
       "title": "Joe Rogan Experience #2411 - Gavin de Becker",
       "loc": "",
@@ -893,13 +892,13 @@
         "kind": "yt",
         "id": "u04t4fkBIeM"
       },
-      "views": 1025174,
+      "views": 1025364,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:mzSapYmzA_g",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-14",
       "title": "Joe Rogan Experience #2412 - Adam Carolla",
       "loc": "",
@@ -909,13 +908,13 @@
         "kind": "yt",
         "id": "mzSapYmzA_g"
       },
-      "views": 1428599,
+      "views": 1428762,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:OOUc_0-oKRE",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-18",
       "title": "Joe Rogan Experience #2413 - Theo Von",
       "loc": "",
@@ -925,13 +924,13 @@
         "kind": "yt",
         "id": "OOUc_0-oKRE"
       },
-      "views": 5151966,
+      "views": 5152530,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:FM463bp-UdM",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-19",
       "title": "Joe Rogan Experience #2414 - Brian Simpson",
       "loc": "",
@@ -941,13 +940,13 @@
         "kind": "yt",
         "id": "FM463bp-UdM"
       },
-      "views": 413101,
+      "views": 413108,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Z-MIlZvjpus",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-20",
       "title": "Joe Rogan Experience #2415 - Adam Ray",
       "loc": "",
@@ -957,13 +956,13 @@
         "kind": "yt",
         "id": "Z-MIlZvjpus"
       },
-      "views": 883151,
+      "views": 883216,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:NSFaaq3vhfY",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-21",
       "title": "Joe Rogan Experience #2416 - Dan Farah",
       "loc": "",
@@ -973,13 +972,13 @@
         "kind": "yt",
         "id": "NSFaaq3vhfY"
       },
-      "views": 2073861,
+      "views": 2074363,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-tsarukyan-vs-hooker",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-22",
       "title": "UFC Fight Night: Tsarukyan vs. Hooker",
       "loc": "Ali Bin Hamad al-Attiyah Arena, Al Rayyan, Qatar",
@@ -987,11 +986,11 @@
       "note": "International card — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:dzdblMCp5a4",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-25",
       "title": "Joe Rogan Experience #2417 - Ben van Kerkwyk",
       "loc": "",
@@ -1001,13 +1000,13 @@
         "kind": "yt",
         "id": "dzdblMCp5a4"
       },
-      "views": 1990932,
+      "views": 1991341,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:F8qxwts_bE4",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-26",
       "title": "Joe Rogan Experience #2418 - Chris Williamson",
       "loc": "",
@@ -1017,13 +1016,13 @@
         "kind": "yt",
         "id": "F8qxwts_bE4"
       },
-      "views": 1498723,
+      "views": 1498868,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ZrUQdGi0HF8",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-27",
       "title": "Joe Rogan Experience #2419 - John Lisle",
       "loc": "",
@@ -1033,13 +1032,13 @@
         "kind": "yt",
         "id": "ZrUQdGi0HF8"
       },
-      "views": 901616,
+      "views": 901707,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:QBn54YNnKD0",
-      "firstSeen": "2025-01-01",
       "date": "2025-11-29",
       "title": "Joe Rogan Experience #2420 - Chris Masterjohn",
       "loc": "",
@@ -1049,13 +1048,13 @@
         "kind": "yt",
         "id": "QBn54YNnKD0"
       },
-      "views": 684259,
+      "views": 684282,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:yxpoZNMQcdU",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-02",
       "title": "Joe Rogan Experience #2421 - Derek, More Plates More Dates",
       "loc": "",
@@ -1065,13 +1064,13 @@
         "kind": "yt",
         "id": "yxpoZNMQcdU"
       },
-      "views": 783012,
+      "views": 783062,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:3hptKYix4X8",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-03",
       "title": "Joe Rogan Experience #2422 - Jensen Huang",
       "loc": "",
@@ -1081,13 +1080,13 @@
         "kind": "yt",
         "id": "3hptKYix4X8"
       },
-      "views": 3499050,
+      "views": 3499474,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:sJ4Ho4ccuFg",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-05",
       "title": "Joe Rogan Experience #2423 - John Cena",
       "loc": "",
@@ -1097,13 +1096,13 @@
         "kind": "yt",
         "id": "sJ4Ho4ccuFg"
       },
-      "views": 3933936,
+      "views": 3934354,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-323-dvalishvili-vs-yan-2",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-06",
       "title": "UFC 323: Dvalishvili vs. Yan 2",
       "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
@@ -1115,11 +1114,11 @@
       "box": {
         "attendance": 18603,
         "gate": 4738495
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Qv40NUnRnZo",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-09",
       "title": "JRE MMA Show #171 with Brendan Allen",
       "loc": "",
@@ -1129,13 +1128,13 @@
         "kind": "yt",
         "id": "Qv40NUnRnZo"
       },
-      "views": 400645,
+      "views": 400658,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:UWz6_CXt5T8",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-10",
       "title": "Joe Rogan Experience #2424 - Jelly Roll",
       "loc": "",
@@ -1145,13 +1144,13 @@
         "kind": "yt",
         "id": "UWz6_CXt5T8"
       },
-      "views": 2083568,
+      "views": 2083659,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:yTLPVl0y1v4",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-11",
       "title": "Joe Rogan Experience #2425 - Ethan Hawke",
       "loc": "",
@@ -1161,13 +1160,13 @@
         "kind": "yt",
         "id": "yTLPVl0y1v4"
       },
-      "views": 1529341,
+      "views": 1529487,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-on-espn-royval-vs-kape",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-13",
       "title": "UFC on ESPN: Royval vs. Kape",
       "loc": "UFC Apex, Las Vegas, Nevada, U.S.",
@@ -1175,11 +1174,11 @@
       "note": "",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:bdhaUe6dhvM",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-16",
       "title": "Joe Rogan Experience #2426 - Cameron Hanes & Adam Greentree",
       "loc": "",
@@ -1189,13 +1188,13 @@
         "kind": "yt",
         "id": "bdhaUe6dhvM"
       },
-      "views": 707968,
+      "views": 708059,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:WX_te6X-0aQ",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-17",
       "title": "Joe Rogan Experience #2427 - Bret Weinstein",
       "loc": "",
@@ -1205,13 +1204,13 @@
         "kind": "yt",
         "id": "WX_te6X-0aQ"
       },
-      "views": 1098118,
+      "views": 1098240,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:shmDI4tMeuo",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-18",
       "title": "Joe Rogan Experience #2428 - Michael P. Masters",
       "loc": "",
@@ -1221,13 +1220,13 @@
         "kind": "yt",
         "id": "shmDI4tMeuo"
       },
-      "views": 1335224,
+      "views": 1335493,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:P038Pd440bo",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-23",
       "title": "Joe Rogan Experience #2429 - Tom Segura",
       "loc": "",
@@ -1237,13 +1236,13 @@
         "kind": "yt",
         "id": "P038Pd440bo"
       },
-      "views": 1284218,
+      "views": 1284285,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Xr0jaqT8eRs",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-24",
       "title": "Joe Rogan Experience #2430 - Jay Anderson",
       "loc": "",
@@ -1253,13 +1252,13 @@
         "kind": "yt",
         "id": "Xr0jaqT8eRs"
       },
-      "views": 1197777,
+      "views": 1198032,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:fFn4z3M6c6w",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-25",
       "title": "Joe Rogan Experience #2431 - Shane Gillis",
       "loc": "",
@@ -1269,13 +1268,13 @@
         "kind": "yt",
         "id": "fFn4z3M6c6w"
       },
-      "views": 6202527,
+      "views": 6204385,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:FuHM2DQTnZk",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-30",
       "title": "Joe Rogan Experience #2432 - Josh Dubin",
       "loc": "",
@@ -1285,13 +1284,13 @@
         "kind": "yt",
         "id": "FuHM2DQTnZk"
       },
-      "views": 434852,
+      "views": 434861,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:jjqV55VWoxA",
-      "firstSeen": "2025-01-01",
       "date": "2025-12-31",
       "title": "Joe Rogan Experience #2433 - James McCann",
       "loc": "",
@@ -1301,13 +1300,13 @@
         "kind": "yt",
         "id": "jjqV55VWoxA"
       },
-      "views": 1081448,
+      "views": 1081476,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:OSSMN41FoaE",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-01",
       "title": "JRE MMA Show #172 with Gable Steveson",
       "loc": "",
@@ -1317,13 +1316,13 @@
         "kind": "yt",
         "id": "OSSMN41FoaE"
       },
-      "views": 621666,
+      "views": 621693,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:LIhkYiYLON0",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-06",
       "title": "Joe Rogan Experience #2434 - Kurt Metzger",
       "loc": "",
@@ -1333,13 +1332,13 @@
         "kind": "yt",
         "id": "LIhkYiYLON0"
       },
-      "views": 1535564,
+      "views": 1535838,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:slYfiSb5AX4",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-09",
       "title": "Joe Rogan Experience #2435 - Bradley Cooper",
       "loc": "",
@@ -1349,13 +1348,13 @@
         "kind": "yt",
         "id": "slYfiSb5AX4"
       },
-      "views": 2227902,
+      "views": 2228163,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:lwgJhmsQz0U",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-10",
       "title": "Joe Rogan Experience #2436 - Whitney Cummings",
       "loc": "",
@@ -1365,13 +1364,13 @@
         "kind": "yt",
         "id": "lwgJhmsQz0U"
       },
-      "views": 945778,
+      "views": 945851,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:koSIQ-ASW8k",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-13",
       "title": "Joe Rogan Experience #2437 - Rand Paul",
       "loc": "",
@@ -1381,13 +1380,13 @@
         "kind": "yt",
         "id": "koSIQ-ASW8k"
       },
-      "views": 1515985,
+      "views": 1516065,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:acbD70wFTuc",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-14",
       "title": "Joe Rogan Experience #2438 - John Mellencamp",
       "loc": "",
@@ -1397,13 +1396,13 @@
         "kind": "yt",
         "id": "acbD70wFTuc"
       },
-      "views": 540763,
+      "views": 540883,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:-X8xwrKdFOg",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-15",
       "title": "Joe Rogan Experience #2439 - Johnny Knoxville",
       "loc": "",
@@ -1413,13 +1412,13 @@
         "kind": "yt",
         "id": "-X8xwrKdFOg"
       },
-      "views": 2734117,
+      "views": 2734484,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:AVEZBy1uAk8",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-16",
       "title": "Joe Rogan Experience #2440 - Matt Damon & Ben Affleck",
       "loc": "",
@@ -1429,13 +1428,13 @@
         "kind": "yt",
         "id": "AVEZBy1uAk8"
       },
-      "views": 6601405,
+      "views": 6603894,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:EoFniMSMj08",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-20",
       "title": "Joe Rogan Experience #2441 - Paul Rosolie",
       "loc": "",
@@ -1445,29 +1444,29 @@
         "kind": "yt",
         "id": "EoFniMSMj08"
       },
-      "views": 1766376,
+      "views": 1767176,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ptyq6CITuyM",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-21",
       "title": "JRE MMA Show #173 with Benny \"The Jet\" Urquidez & William \"Blinky\" Rodriguez",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 377K views at last sync.",
+      "note": "Episode release · 378K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "ptyq6CITuyM"
       },
-      "views": 377420,
+      "views": 377572,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:BQcDB1S3ifM",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-22",
       "title": "Joe Rogan Experience #2442 - Ehsan Ahmad",
       "loc": "",
@@ -1477,13 +1476,13 @@
         "kind": "yt",
         "id": "BQcDB1S3ifM"
       },
-      "views": 457761,
+      "views": 457775,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:bhaz6vd4nSI",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-23",
       "title": "Joe Rogan Experience #2443 - Filippo Biondi",
       "loc": "",
@@ -1493,13 +1492,13 @@
         "kind": "yt",
         "id": "bhaz6vd4nSI"
       },
-      "views": 1650054,
+      "views": 1650384,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-324-gaethje-vs-pimblett",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-24",
       "title": "UFC 324: Gaethje vs. Pimblett",
       "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
@@ -1511,11 +1510,11 @@
       "box": {
         "attendance": 19481,
         "gate": 10951166
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:0-Jalhl4CEE",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-28",
       "title": "Joe Rogan Experience #2444 - Andrew Wilson",
       "loc": "",
@@ -1525,13 +1524,13 @@
         "kind": "yt",
         "id": "0-Jalhl4CEE"
       },
-      "views": 2416692,
+      "views": 2417240,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:gYcuTY7tnvk",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-29",
       "title": "Joe Rogan Experience #2445 - Bert Kreischer",
       "loc": "",
@@ -1541,13 +1540,13 @@
         "kind": "yt",
         "id": "gYcuTY7tnvk"
       },
-      "views": 1301519,
+      "views": 1301619,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:IbhDeUcZ_iw",
-      "firstSeen": "2025-01-01",
       "date": "2026-01-31",
       "title": "Joe Rogan Experience #2446 - Greg Fitzsimmons",
       "loc": "",
@@ -1557,13 +1556,13 @@
         "kind": "yt",
         "id": "IbhDeUcZ_iw"
       },
-      "views": 802990,
+      "views": 803013,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-325-volkanovski-vs-lopes-2",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-01",
       "title": "UFC 325: Volkanovski vs. Lopes 2",
       "loc": "Qudos Bank Arena, Sydney, Australia",
@@ -1575,11 +1574,11 @@
       "box": {
         "attendance": 18102,
         "gate": 10103136
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:MkqDA9W4Vo0",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-03",
       "title": "Joe Rogan Experience #2447 - Mike Benz",
       "loc": "",
@@ -1589,13 +1588,13 @@
         "kind": "yt",
         "id": "MkqDA9W4Vo0"
       },
-      "views": 1229110,
+      "views": 1229156,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Dnon-AsWnOQ",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-04",
       "title": "Joe Rogan Experience #2448 - Andrew Doyle",
       "loc": "",
@@ -1605,13 +1604,13 @@
         "kind": "yt",
         "id": "Dnon-AsWnOQ"
       },
-      "views": 638704,
+      "views": 638726,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:BvhFuEp55X0",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-05",
       "title": "Joe Rogan Experience #2449 - Raul Bilecky",
       "loc": "",
@@ -1621,13 +1620,13 @@
         "kind": "yt",
         "id": "BvhFuEp55X0"
       },
-      "views": 872863,
+      "views": 873086,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:UPfN2G0RyQM",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-06",
       "title": "Joe Rogan Experience #2450 - Tommy Wood",
       "loc": "",
@@ -1637,13 +1636,13 @@
         "kind": "yt",
         "id": "UPfN2G0RyQM"
       },
-      "views": 586395,
+      "views": 586438,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-bautista-vs-oliveira",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-07",
       "title": "UFC Fight Night: Bautista vs. Oliveira",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -1651,11 +1650,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:0sMrvv53e9Y",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-10",
       "title": "Joe Rogan Experience #2451 - Cheryl Hines",
       "loc": "",
@@ -1665,13 +1664,13 @@
         "kind": "yt",
         "id": "0sMrvv53e9Y"
       },
-      "views": 819033,
+      "views": 819104,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:CH5JoJ_-hic",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-11",
       "title": "Joe Rogan Experience #2452 - Roger Avary",
       "loc": "",
@@ -1681,13 +1680,13 @@
         "kind": "yt",
         "id": "CH5JoJ_-hic"
       },
-      "views": 1147987,
+      "views": 1148131,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:y2SD_z61FRo",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-12",
       "title": "Joe Rogan Experience #2453 - Evan Hafer",
       "loc": "",
@@ -1697,13 +1696,13 @@
         "kind": "yt",
         "id": "y2SD_z61FRo"
       },
-      "views": 697614,
+      "views": 697642,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:qFwiXyZHYbU",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-13",
       "title": "Joe Rogan Experience #2454 - Robert Malone, MD",
       "loc": "",
@@ -1713,13 +1712,13 @@
         "kind": "yt",
         "id": "qFwiXyZHYbU"
       },
-      "views": 1016935,
+      "views": 1017053,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:f_neykptZPY",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-17",
       "title": "Joe Rogan Experience #2455 - Donnell Rawlings",
       "loc": "",
@@ -1729,13 +1728,13 @@
         "kind": "yt",
         "id": "f_neykptZPY"
       },
-      "views": 615299,
+      "views": 615332,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Sbh7ymCkjuM",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-18",
       "title": "Joe Rogan Experience #2456 - Michael Jai White",
       "loc": "",
@@ -1745,13 +1744,13 @@
         "kind": "yt",
         "id": "Sbh7ymCkjuM"
       },
-      "views": 1204883,
+      "views": 1204996,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:lin3c35IyB0",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-19",
       "title": "Joe Rogan Experience #2457 - Michael Malice",
       "loc": "",
@@ -1761,13 +1760,13 @@
         "kind": "yt",
         "id": "lin3c35IyB0"
       },
-      "views": 1017254,
+      "views": 1017340,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:4lmiRzROTZg",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-20",
       "title": "Joe Rogan Experience #2458 - Matt McCusker",
       "loc": "",
@@ -1777,13 +1776,13 @@
         "kind": "yt",
         "id": "4lmiRzROTZg"
       },
-      "views": 1859846,
+      "views": 1860102,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-strickland-vs-hernandez",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-21",
       "title": "UFC Fight Night: Strickland vs. Hernandez",
       "loc": "Toyota Center, Houston, Texas, U.S.",
@@ -1795,11 +1794,11 @@
       "box": {
         "attendance": 17160,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ZyG8FSeTFKA",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-24",
       "title": "Joe Rogan Experience #2459 - Jim Breuer",
       "loc": "",
@@ -1809,13 +1808,13 @@
         "kind": "yt",
         "id": "ZyG8FSeTFKA"
       },
-      "views": 1207981,
+      "views": 1208071,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:huJVFuLmpd0",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-25",
       "title": "JRE MMA Show #174 with Terence Crawford",
       "loc": "",
@@ -1825,13 +1824,13 @@
         "kind": "yt",
         "id": "huJVFuLmpd0"
       },
-      "views": 1154274,
+      "views": 1154550,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:avY3bV5yxMM",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-26",
       "title": "Joe Rogan Experience #2460 - Rachel Wilson",
       "loc": "",
@@ -1841,13 +1840,13 @@
         "kind": "yt",
         "id": "avY3bV5yxMM"
       },
-      "views": 1805842,
+      "views": 1806827,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wk7DQom821s",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-27",
       "title": "Joe Rogan Experience #2461 - Robert F. Kennedy, Jr.",
       "loc": "",
@@ -1857,13 +1856,13 @@
         "kind": "yt",
         "id": "wk7DQom821s"
       },
-      "views": 1774494,
+      "views": 1774678,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-moreno-vs-kavanagh",
-      "firstSeen": "2025-01-01",
       "date": "2026-02-28",
       "title": "UFC Fight Night: Moreno vs. Kavanagh",
       "loc": "Arena CDMX, Mexico City, Mexico",
@@ -1875,11 +1874,11 @@
       "box": {
         "attendance": 16454,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:vNkXIKijzcg",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-03",
       "title": "Joe Rogan Experience #2462 - Aaron Siri",
       "loc": "",
@@ -1889,13 +1888,13 @@
         "kind": "yt",
         "id": "vNkXIKijzcg"
       },
-      "views": 668526,
+      "views": 668611,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:XL1igZYP8T8",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-04",
       "title": "Joe Rogan Experience #2463 - Steve-O",
       "loc": "",
@@ -1905,13 +1904,13 @@
         "kind": "yt",
         "id": "XL1igZYP8T8"
       },
-      "views": 1158454,
+      "views": 1158650,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:va8-X78sxZk",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-05",
       "title": "Joe Rogan Experience #2464 - Priyanka Chopra Jonas",
       "loc": "",
@@ -1921,13 +1920,13 @@
         "kind": "yt",
         "id": "va8-X78sxZk"
       },
-      "views": 1167168,
+      "views": 1167400,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:6VFZlIwwRKc",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-06",
       "title": "JRE MMA Show #175 with Shakur Stevenson",
       "loc": "",
@@ -1937,13 +1936,13 @@
         "kind": "yt",
         "id": "6VFZlIwwRKc"
       },
-      "views": 567041,
+      "views": 567157,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-326-holloway-vs-oliveira-2",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-07",
       "title": "UFC 326: Holloway vs. Oliveira 2",
       "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
@@ -1955,11 +1954,11 @@
       "box": {
         "attendance": 19480,
         "gate": 8305158
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:7ph99mEQrTY",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-10",
       "title": "Joe Rogan Experience #2465 - Michael Shellenberger",
       "loc": "",
@@ -1969,13 +1968,13 @@
         "kind": "yt",
         "id": "7ph99mEQrTY"
       },
-      "views": 873409,
+      "views": 873470,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:zm1Ar5HckwA",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-11",
       "title": "Joe Rogan Experience #2466 - Francis Foster & Konstantin Kisin",
       "loc": "",
@@ -1985,13 +1984,13 @@
         "kind": "yt",
         "id": "zm1Ar5HckwA"
       },
-      "views": 1489802,
+      "views": 1489891,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:5QQun2pDQEs",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-12",
       "title": "Joe Rogan Experience #2467 - Michael Pollan",
       "loc": "",
@@ -2001,13 +2000,13 @@
         "kind": "yt",
         "id": "5QQun2pDQEs"
       },
-      "views": 865949,
+      "views": 866137,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:I3xg_pQj-4M",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-13",
       "title": "Joe Rogan Experience #2468 - Luke Grimes",
       "loc": "",
@@ -2017,13 +2016,13 @@
         "kind": "yt",
         "id": "I3xg_pQj-4M"
       },
-      "views": 1012865,
+      "views": 1013077,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-emmett-vs-vallejos",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-14",
       "title": "UFC Fight Night: Emmett vs. Vallejos",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -2031,11 +2030,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:gqhGi1-816U",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-17",
       "title": "JRE MMA Show #176 with Dustin Poirier",
       "loc": "",
@@ -2045,13 +2044,13 @@
         "kind": "yt",
         "id": "gqhGi1-816U"
       },
-      "views": 2462956,
+      "views": 2463679,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:gU6yFAeDsJ0",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-18",
       "title": "Joe Rogan Experience #2469 - Brigham Buhler",
       "loc": "",
@@ -2061,13 +2060,13 @@
         "kind": "yt",
         "id": "gU6yFAeDsJ0"
       },
-      "views": 404808,
+      "views": 404902,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:JtbGgSwuE_U",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-19",
       "title": "Joe Rogan Experience #2470 - Pierre Poilievre",
       "loc": "",
@@ -2077,13 +2076,13 @@
         "kind": "yt",
         "id": "JtbGgSwuE_U"
       },
-      "views": 2968504,
+      "views": 2968696,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:-nrkCLQ2l9Q",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-20",
       "title": "Joe Rogan Experience #2471 - Mark Normand",
       "loc": "",
@@ -2093,13 +2092,13 @@
         "kind": "yt",
         "id": "-nrkCLQ2l9Q"
       },
-      "views": 1651483,
+      "views": 1651715,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-evloev-vs-murphy",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-21",
       "title": "UFC Fight Night: Evloev vs. Murphy",
       "loc": "The O2 Arena, London, England",
@@ -2111,11 +2110,11 @@
       "box": {
         "attendance": 18629,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:XGH900y0N-M",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-22",
       "title": "JRE Fight Companion - March 21, 2026",
       "loc": "",
@@ -2125,13 +2124,13 @@
         "kind": "yt",
         "id": "XGH900y0N-M"
       },
-      "views": 701177,
+      "views": 701345,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:7s_XJ5fonGI",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-24",
       "title": "Joe Rogan Experience #2472 - Jeff Ross",
       "loc": "",
@@ -2141,13 +2140,13 @@
         "kind": "yt",
         "id": "7s_XJ5fonGI"
       },
-      "views": 643155,
+      "views": 643199,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:UlRHECIUNng",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-25",
       "title": "Joe Rogan Experience #2473 - Bill Thompson",
       "loc": "",
@@ -2157,13 +2156,13 @@
         "kind": "yt",
         "id": "UlRHECIUNng"
       },
-      "views": 486133,
+      "views": 486248,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:JUePtc0bJSE",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-26",
       "title": "Joe Rogan Experience #2474 - Dave Smith",
       "loc": "",
@@ -2173,13 +2172,13 @@
         "kind": "yt",
         "id": "JUePtc0bJSE"
       },
-      "views": 1744642,
+      "views": 1744762,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:9uhx6ApHD-8",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-27",
       "title": "Joe Rogan Experience #2475 - Andrew Jarecki",
       "loc": "",
@@ -2189,13 +2188,13 @@
         "kind": "yt",
         "id": "9uhx6ApHD-8"
       },
-      "views": 573189,
+      "views": 573472,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-adesanya-vs-pyfer",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-28",
       "title": "UFC Fight Night: Adesanya vs. Pyfer",
       "loc": "Climate Pledge Arena, Seattle, Washington, U.S.",
@@ -2207,27 +2206,27 @@
       "box": {
         "attendance": 17854,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:c-313sIpL_0",
-      "firstSeen": "2025-01-01",
       "date": "2026-03-31",
       "title": "Joe Rogan Experience #2476 - Shanna H. Swan",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 519K views at last sync.",
+      "note": "Episode release · 520K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "c-313sIpL_0"
       },
-      "views": 519425,
+      "views": 519504,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:JIArjzI3gas",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-01",
       "title": "Joe Rogan Experience #2477 - Rick Perry & W. Bryan Hubbard",
       "loc": "",
@@ -2237,13 +2236,13 @@
         "kind": "yt",
         "id": "JIArjzI3gas"
       },
-      "views": 549945,
+      "views": 550045,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wRJ2N8qBPs0",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-02",
       "title": "Joe Rogan Experience #2478 - Theo Von",
       "loc": "",
@@ -2253,13 +2252,13 @@
         "kind": "yt",
         "id": "wRJ2N8qBPs0"
       },
-      "views": 3852674,
+      "views": 3854116,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Lb_1d68vx-g",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-03",
       "title": "Joe Rogan Experience #2479 - Bob Lazar & Luigi Vendittelli",
       "loc": "",
@@ -2269,13 +2268,13 @@
         "kind": "yt",
         "id": "Lb_1d68vx-g"
       },
-      "views": 7705256,
+      "views": 7709389,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-moicano-vs-duncan",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-04",
       "title": "UFC Fight Night: Moicano vs. Duncan",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -2283,11 +2282,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:FtbcMT31Wkc",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-08",
       "title": "Joe Rogan Experience #2480 - Arsenio Hall",
       "loc": "",
@@ -2297,13 +2296,13 @@
         "kind": "yt",
         "id": "FtbcMT31Wkc"
       },
-      "views": 888224,
+      "views": 888290,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:vrRJimixWEc",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-09",
       "title": "Joe Rogan Experience #2481 - Duncan Trussell",
       "loc": "",
@@ -2313,13 +2312,13 @@
         "kind": "yt",
         "id": "vrRJimixWEc"
       },
-      "views": 1711017,
+      "views": 1711256,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:aYt_2KoP4v4",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-10",
       "title": "JRE MMA Show #177 - Protect Ya Neck",
       "loc": "",
@@ -2329,13 +2328,13 @@
         "kind": "yt",
         "id": "aYt_2KoP4v4"
       },
-      "views": 621788,
+      "views": 621828,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-327-proch-zka-vs-ulberg",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-11",
       "title": "UFC 327: Procházka vs. Ulberg",
       "loc": "Kaseya Center, Miami, Florida, U.S.",
@@ -2347,11 +2346,11 @@
       "box": {
         "attendance": 17741,
         "gate": 6518684
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:qrKuqmJmz0Q",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-14",
       "title": "Joe Rogan Experience #2482 - Andy Stumpf",
       "loc": "",
@@ -2361,13 +2360,13 @@
         "kind": "yt",
         "id": "qrKuqmJmz0Q"
       },
-      "views": 660846,
+      "views": 660953,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:pDfm9RaIIv4",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-15",
       "title": "Joe Rogan Experience #2483 - Spencer Pratt",
       "loc": "",
@@ -2377,13 +2376,13 @@
         "kind": "yt",
         "id": "pDfm9RaIIv4"
       },
-      "views": 1619699,
+      "views": 1619784,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:efJ1-q3XxVc",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-16",
       "title": "Joe Rogan Experience #2484 - David Cross",
       "loc": "",
@@ -2393,13 +2392,13 @@
         "kind": "yt",
         "id": "efJ1-q3XxVc"
       },
-      "views": 722412,
+      "views": 722462,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:hpLAqYQVb68",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-17",
       "title": "Joe Rogan Experience #2485 - John Fogerty",
       "loc": "",
@@ -2409,13 +2408,13 @@
         "kind": "yt",
         "id": "hpLAqYQVb68"
       },
-      "views": 915967,
+      "views": 916186,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-burns-vs-malott",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-18",
       "title": "UFC Fight Night: Burns vs. Malott",
       "loc": "Canada Life Centre, Winnipeg, Manitoba, Canada",
@@ -2427,11 +2426,11 @@
       "box": {
         "attendance": 14051,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:k2D-xNI7XgY",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-21",
       "title": "Joe Rogan Experience #2486 - Luis J Gomez",
       "loc": "",
@@ -2441,13 +2440,13 @@
         "kind": "yt",
         "id": "k2D-xNI7XgY"
       },
-      "views": 586744,
+      "views": 586816,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:cIUpO1sNY3A",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-22",
       "title": "Joe Rogan Experience #2487 - Action Bronson",
       "loc": "",
@@ -2457,13 +2456,13 @@
         "kind": "yt",
         "id": "cIUpO1sNY3A"
       },
-      "views": 784268,
+      "views": 784426,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:jNOQadUbo-k",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-23",
       "title": "Joe Rogan Experience #2488 - James McCann",
       "loc": "",
@@ -2473,13 +2472,13 @@
         "kind": "yt",
         "id": "jNOQadUbo-k"
       },
-      "views": 964180,
+      "views": 964317,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Jvv1g3QMLL0",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-24",
       "title": "Joe Rogan Experience #2489 - Ryan Bingham",
       "loc": "",
@@ -2489,13 +2488,13 @@
         "kind": "yt",
         "id": "Jvv1g3QMLL0"
       },
-      "views": 484509,
+      "views": 484587,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-sterling-vs-zalal",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-25",
       "title": "UFC Fight Night: Sterling vs. Zalal",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -2503,11 +2502,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:D_ZGWj_38uA",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-28",
       "title": "Joe Rogan Experience #2490 - RZA",
       "loc": "",
@@ -2517,13 +2516,13 @@
         "kind": "yt",
         "id": "D_ZGWj_38uA"
       },
-      "views": 541143,
+      "views": 541225,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:36NpaOg5594",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-29",
       "title": "Joe Rogan Experience #2491 - Brian Simpson",
       "loc": "",
@@ -2533,13 +2532,13 @@
         "kind": "yt",
         "id": "36NpaOg5594"
       },
-      "views": 350403,
+      "views": 350436,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:znQB0FumtV8",
-      "firstSeen": "2025-01-01",
       "date": "2026-04-30",
       "title": "Joe Rogan Experience #2492 - Ari Shaffir",
       "loc": "",
@@ -2549,13 +2548,13 @@
         "kind": "yt",
         "id": "znQB0FumtV8"
       },
-      "views": 950085,
+      "views": 950186,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wH2Nd8oHixo",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-01",
       "title": "Joe Rogan Experience #2493 - Protect Our Parks 16",
       "loc": "",
@@ -2565,13 +2564,13 @@
         "kind": "yt",
         "id": "wH2Nd8oHixo"
       },
-      "views": 3418716,
+      "views": 3421539,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-della-maddalena-vs-prates",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-02",
       "title": "UFC Fight Night: Della Maddalena vs. Prates",
       "loc": "RAC Arena, Perth, Australia",
@@ -2583,11 +2582,11 @@
       "box": {
         "attendance": 13839,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:LSihotD-PQA",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-05",
       "title": "Joe Rogan Experience #2494 - Chamath Palihapitiya",
       "loc": "",
@@ -2597,13 +2596,13 @@
         "kind": "yt",
         "id": "LSihotD-PQA"
       },
-      "views": 785072,
+      "views": 785185,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:A0VImEWSZBQ",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-06",
       "title": "JRE MMA Show 178 with Dan Hardy",
       "loc": "",
@@ -2613,13 +2612,13 @@
         "kind": "yt",
         "id": "A0VImEWSZBQ"
       },
-      "views": 448137,
+      "views": 448175,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:sKwq7mpBTrY",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-07",
       "title": "Joe Rogan Experience #2495 - Tim Burchett",
       "loc": "",
@@ -2629,13 +2628,13 @@
         "kind": "yt",
         "id": "sKwq7mpBTrY"
       },
-      "views": 2082243,
+      "views": 2082654,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:6si_KIa9yZM",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-08",
       "title": "Joe Rogan Experience #2496 - Julia Mossbridge",
       "loc": "",
@@ -2645,13 +2644,13 @@
         "kind": "yt",
         "id": "6si_KIa9yZM"
       },
-      "views": 1006990,
+      "views": 1007405,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-328-chimaev-vs-strickland",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-09",
       "title": "UFC 328: Chimaev vs. Strickland",
       "loc": "Prudential Center, Newark, New Jersey, U.S.",
@@ -2663,11 +2662,11 @@
       "box": {
         "attendance": 17783,
         "gate": 7518918
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:1WVv39tLlzg",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-13",
       "title": "Joe Rogan Experience #2498 - Brendan Schaub",
       "loc": "",
@@ -2677,13 +2676,13 @@
         "kind": "yt",
         "id": "1WVv39tLlzg"
       },
-      "views": 707230,
+      "views": 707313,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:6jdaXp0iwtw",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-13",
       "title": "Joe Rogan Experience #2497 - Gad Saad",
       "loc": "",
@@ -2693,13 +2692,13 @@
         "kind": "yt",
         "id": "6jdaXp0iwtw"
       },
-      "views": 650713,
+      "views": 650884,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:0xMBjMlDY9M",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-14",
       "title": "Joe Rogan Experience #2499 - Marcus King",
       "loc": "",
@@ -2709,13 +2708,13 @@
         "kind": "yt",
         "id": "0xMBjMlDY9M"
       },
-      "views": 488123,
+      "views": 488245,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:KBNfvk5Ali0",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-15",
       "title": "Joe Rogan Experience #2500 - Scott Horton",
       "loc": "",
@@ -2725,13 +2724,13 @@
         "kind": "yt",
         "id": "KBNfvk5Ali0"
       },
-      "views": 900585,
+      "views": 900711,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-allen-vs-costa",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-16",
       "title": "UFC Fight Night: Allen vs. Costa",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -2739,27 +2738,27 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:PHQvb10vKyk",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-19",
       "title": "Joe Rogan Experience #2501 - Marc Andreessen",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 950K views at last sync.",
+      "note": "Episode release · 951K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "PHQvb10vKyk"
       },
-      "views": 950340,
+      "views": 950628,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:_UduwgMDR-0",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-20",
       "title": "Joe Rogan Experience #2502 - David Paulides",
       "loc": "",
@@ -2769,13 +2768,13 @@
         "kind": "yt",
         "id": "_UduwgMDR-0"
       },
-      "views": 2625667,
+      "views": 2627707,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:4OKNS5j0lSY",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-21",
       "title": "Joe Rogan Experience #2503 - Eric Weinstein",
       "loc": "",
@@ -2785,13 +2784,13 @@
         "kind": "yt",
         "id": "4OKNS5j0lSY"
       },
-      "views": 1630837,
+      "views": 1631374,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:fOTMWZNYg9g",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-22",
       "title": "Joe Rogan Experience #2504 - Skylar Grey",
       "loc": "",
@@ -2801,13 +2800,13 @@
         "kind": "yt",
         "id": "fOTMWZNYg9g"
       },
-      "views": 497146,
+      "views": 497353,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:0eCTMVherxE",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-25",
       "title": "Joe Rogan Experience #2505 - Tom Segura",
       "loc": "",
@@ -2817,13 +2816,13 @@
         "kind": "yt",
         "id": "0eCTMVherxE"
       },
-      "views": 1282321,
+      "views": 1282544,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:OMxdrALf8D4",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-27",
       "title": "JRE MMA Show #179 with Josh Thompson & \"Big\" John McCarthy",
       "loc": "",
@@ -2833,13 +2832,13 @@
         "kind": "yt",
         "id": "OMxdrALf8D4"
       },
-      "views": 557758,
+      "views": 557890,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:GZCmYrgOZU0",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-28",
       "title": "Joe Rogan Experience #2506 - Michelle Thaller",
       "loc": "",
@@ -2849,13 +2848,13 @@
         "kind": "yt",
         "id": "GZCmYrgOZU0"
       },
-      "views": 1559172,
+      "views": 1560286,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:51ds7IU7ZL8",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-29",
       "title": "Joe Rogan Experience #2507 - Harland Williams",
       "loc": "",
@@ -2865,13 +2864,13 @@
         "kind": "yt",
         "id": "51ds7IU7ZL8"
       },
-      "views": 1439962,
+      "views": 1440323,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-song-vs-figueiredo",
-      "firstSeen": "2025-01-01",
       "date": "2026-05-30",
       "title": "UFC Fight Night: Song vs. Figueiredo",
       "loc": "Galaxy Arena, Macau SAR, China",
@@ -2883,11 +2882,11 @@
       "box": {
         "attendance": 12647,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:0CrBPwS8OqU",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-02",
       "title": "JRE MMA Show #180 with Daniel Rodriguez",
       "loc": "",
@@ -2897,13 +2896,13 @@
         "kind": "yt",
         "id": "0CrBPwS8OqU"
       },
-      "views": 406224,
+      "views": 406291,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:pb3lyT4T6Hk",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-03",
       "title": "Joe Rogan Experience #2508 - Joe Eszterhas",
       "loc": "",
@@ -2913,13 +2912,13 @@
         "kind": "yt",
         "id": "pb3lyT4T6Hk"
       },
-      "views": 397567,
+      "views": 397639,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wt2sI8OdmWs",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-04",
       "title": "Joe Rogan Experience #2509 - Caleb Hammer",
       "loc": "",
@@ -2929,13 +2928,13 @@
         "kind": "yt",
         "id": "wt2sI8OdmWs"
       },
-      "views": 3468390,
+      "views": 3470255,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ZmejzHXudq0",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-05",
       "title": "Joe Rogan Experience #2510 - Devon Larratt",
       "loc": "",
@@ -2945,13 +2944,13 @@
         "kind": "yt",
         "id": "ZmejzHXudq0"
       },
-      "views": 2710126,
+      "views": 2712394,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-muhammad-vs-bonfim",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-06",
       "title": "UFC Fight Night: Muhammad vs. Bonfim",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -2959,11 +2958,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wyceothkkzQ",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-09",
       "title": "Joe Rogan Experience #2511 - Terry Bradshaw",
       "loc": "",
@@ -2973,13 +2972,13 @@
         "kind": "yt",
         "id": "wyceothkkzQ"
       },
-      "views": 554909,
+      "views": 555032,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:oD13_3D8QY0",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-10",
       "title": "Joe Rogan Experience #2512 - Joey Diaz",
       "loc": "",
@@ -2989,13 +2988,13 @@
         "kind": "yt",
         "id": "oD13_3D8QY0"
       },
-      "views": 2965798,
+      "views": 2968479,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:4Uk0_1yqdJo",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-11",
       "title": "Joe Rogan Experience #2513 - Dean Radin",
       "loc": "",
@@ -3005,13 +3004,13 @@
         "kind": "yt",
         "id": "4Uk0_1yqdJo"
       },
-      "views": 1025340,
+      "views": 1025978,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:bKceG6tQc0M",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-12",
       "title": "Joe Rogan Experience #2514 - Cameron Hanes",
       "loc": "",
@@ -3021,13 +3020,13 @@
         "kind": "yt",
         "id": "bKceG6tQc0M"
       },
-      "views": 697218,
+      "views": 697414,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-freedom-250",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-14",
       "title": "UFC Freedom 250",
       "loc": "White House, Washington, D.C., U.S.",
@@ -3035,11 +3034,11 @@
       "note": "",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:OVXli9YkY0o",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-17",
       "title": "Joe Rogan Experience #2515 - Chase Hughes",
       "loc": "",
@@ -3049,13 +3048,13 @@
         "kind": "yt",
         "id": "OVXli9YkY0o"
       },
-      "views": 1204873,
+      "views": 1205966,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:J-CQjxKFb_0",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-18",
       "title": "Joe Rogan Experience #2516 - Rowan Jacobsen",
       "loc": "",
@@ -3065,13 +3064,13 @@
         "kind": "yt",
         "id": "J-CQjxKFb_0"
       },
-      "views": 536691,
+      "views": 536928,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-kape-vs-horiguchi",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-20",
       "title": "UFC Fight Night: Kape vs. Horiguchi",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -3079,11 +3078,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Ag7GEsPQhFo",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-20",
       "title": "JRE MMA Show #181 with Justin Gaethje & Trevor Wittman",
       "loc": "",
@@ -3093,13 +3092,13 @@
         "kind": "yt",
         "id": "Ag7GEsPQhFo"
       },
-      "views": 3178957,
+      "views": 3180366,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:uYO2fJ-M_M4",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-23",
       "title": "Joe Rogan Experience #2517 - Taylor Sheridan",
       "loc": "",
@@ -3109,13 +3108,13 @@
         "kind": "yt",
         "id": "uYO2fJ-M_M4"
       },
-      "views": 1400943,
+      "views": 1403213,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wTdqkloiSvk",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-24",
       "title": "Joe Rogan Experience #2518 - Tim Dillon",
       "loc": "",
@@ -3125,13 +3124,13 @@
         "kind": "yt",
         "id": "wTdqkloiSvk"
       },
-      "views": 3420005,
+      "views": 3422266,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ZDeqcSgotuw",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-26",
       "title": "Joe Rogan Experience #2519 - Scott Eastwood",
       "loc": "",
@@ -3141,13 +3140,13 @@
         "kind": "yt",
         "id": "ZDeqcSgotuw"
       },
-      "views": 652845,
+      "views": 653140,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-fiziev-vs-torres",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-27",
       "title": "UFC Fight Night: Fiziev vs. Torres",
       "loc": "National Gymnastics Arena, Baku, Azerbaijan",
@@ -3155,11 +3154,11 @@
       "note": "International card — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:q8HRqmkEKWw",
-      "firstSeen": "2025-01-01",
       "date": "2026-06-30",
       "title": "Joe Rogan Experience #2520 - Tommy Lee",
       "loc": "",
@@ -3169,29 +3168,29 @@
         "kind": "yt",
         "id": "q8HRqmkEKWw"
       },
-      "views": 940809,
+      "views": 941401,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:fOLu-pWQssQ",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-01",
       "title": "Joe Rogan Experience #2521 - Aravind Srinivas",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 810K views at last sync.",
+      "note": "Episode release · 811K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "fOLu-pWQssQ"
       },
-      "views": 810439,
+      "views": 811094,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:inrnVpGsKN4",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-02",
       "title": "Joe Rogan Experience #2522 - Tony Hinchcliffe",
       "loc": "",
@@ -3201,13 +3200,13 @@
         "kind": "yt",
         "id": "inrnVpGsKN4"
       },
-      "views": 1782449,
+      "views": 1783427,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:uk2h9oBZctc",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-07",
       "title": "Joe Rogan Experience #2523 - Ali Siddiq",
       "loc": "",
@@ -3217,13 +3216,13 @@
         "kind": "yt",
         "id": "uk2h9oBZctc"
       },
-      "views": 540740,
+      "views": 541103,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:k29cMrVtVXY",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-08",
       "title": "Joe Rogan Experience #2524 - Rupert Lowe",
       "loc": "",
@@ -3233,13 +3232,13 @@
         "kind": "yt",
         "id": "k29cMrVtVXY"
       },
-      "views": 2820086,
+      "views": 2822493,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:X6jH7wMaDxk",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-09",
       "title": "JRE MMA Show #182 - Protect Ya Neck",
       "loc": "",
@@ -3249,13 +3248,13 @@
         "kind": "yt",
         "id": "X6jH7wMaDxk"
       },
-      "views": 589590,
+      "views": 589827,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-329-mcgregor-vs-holloway-2",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-11",
       "title": "UFC 329: McGregor vs. Holloway 2",
       "loc": "T-Mobile Arena, Las Vegas, Nevada, U.S.",
@@ -3267,27 +3266,27 @@
       "box": {
         "attendance": 20078,
         "gate": 26430566
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:8qTZLqY-cnI",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-14",
       "title": "Joe Rogan Experience #2525 - Nick Bostrom",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 664K views at last sync.",
+      "note": "Episode release · 665K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "8qTZLqY-cnI"
       },
-      "views": 664201,
+      "views": 664806,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:vtxyvD58eDg",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-15",
       "title": "Joe Rogan Experience #2526 - JD Vance",
       "loc": "",
@@ -3297,13 +3296,13 @@
         "kind": "yt",
         "id": "vtxyvD58eDg"
       },
-      "views": 3519908,
+      "views": 3523104,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:rTKu9wxEFFo",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-16",
       "title": "Joe Rogan Experience #2527 - MrBeast",
       "loc": "",
@@ -3313,13 +3312,13 @@
         "kind": "yt",
         "id": "rTKu9wxEFFo"
       },
-      "views": 1763043,
+      "views": 1765491,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-du-plessis-vs-usman",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-18",
       "title": "UFC Fight Night: du Plessis vs. Usman",
       "loc": "Paycom Center, Oklahoma City, Oklahoma, U.S.",
@@ -3331,11 +3330,11 @@
       "box": {
         "attendance": 17173,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wq0o8pFz_gc",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-21",
       "title": "Joe Rogan Experience #2528 - Cassie Coppersmith",
       "loc": "",
@@ -3345,29 +3344,29 @@
         "kind": "yt",
         "id": "wq0o8pFz_gc"
       },
-      "views": 1538573,
+      "views": 1541969,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:Xq2aJpDHIio",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-22",
       "title": "Joe Rogan Experience #2529 - Zach Bush",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 707K views at last sync.",
+      "note": "Episode release · 709K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "Xq2aJpDHIio"
       },
-      "views": 706586,
+      "views": 708888,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:uob3BtMixuo",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-23",
       "title": "Joe Rogan Experience #2530 - Timothy Alberino",
       "loc": "",
@@ -3377,13 +3376,13 @@
         "kind": "yt",
         "id": "uob3BtMixuo"
       },
-      "views": 2052539,
+      "views": 2058699,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-ankalaev-vs-guskov",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-25",
       "title": "UFC Fight Night: Ankalaev vs. Guskov",
       "loc": "Etihad Arena, Abu Dhabi, United Arab Emirates",
@@ -3391,11 +3390,11 @@
       "note": "International card — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:EvnLN8WETlM",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-28",
       "title": "Joe Rogan Experience #2531 - Forrest Galante",
       "loc": "",
@@ -3405,61 +3404,61 @@
         "kind": "yt",
         "id": "EvnLN8WETlM"
       },
-      "views": 1707324,
+      "views": 1713755,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ur_-7JONZlY",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-29",
       "title": "Joe Rogan Experience #2532 - Tim Robbins",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 766K views at last sync.",
+      "note": "Episode release · 768K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "ur_-7JONZlY"
       },
-      "views": 765894,
+      "views": 767663,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:wo6K0Bav3K0",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-30",
       "title": "Joe Rogan Experience #2533 - Diana Pasulka",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 833K views at last sync.",
+      "note": "Episode release · 836K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "wo6K0Bav3K0"
       },
-      "views": 833460,
+      "views": 835616,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:ZACmIrFbfPU",
-      "firstSeen": "2025-01-01",
       "date": "2026-07-31",
       "title": "Joe Rogan Experience #2534 - Annie Jacobsen",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 942K views at last sync.",
+      "note": "Episode release · 946K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "ZACmIrFbfPU"
       },
-      "views": 941932,
+      "views": 945756,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-medi-vs-rodriguez",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-01",
       "title": "UFC Fight Night: Medić vs. Rodriguez",
       "loc": "Belgrade Arena, Belgrade, Serbia",
@@ -3471,27 +3470,27 @@
       "box": {
         "attendance": 18623,
         "gate": null
-      }
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:y9KNLlRE2HQ",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-04",
       "title": "JRE MMA Show #183 with Rico Verhoeven",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 439K views at last sync.",
+      "note": "Episode release · 440K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "y9KNLlRE2HQ"
       },
-      "views": 438708,
+      "views": 440268,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:6SxEj1cujQE",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-05",
       "title": "Joe Rogan Experience #2535 - Andrew Wilson",
       "loc": "",
@@ -3501,45 +3500,45 @@
         "kind": "yt",
         "id": "6SxEj1cujQE"
       },
-      "views": 1594374,
+      "views": 1604746,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:O52aLL8ycGU",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-06",
       "title": "Joe Rogan Experience #2536 - Eric Goode & Jeremy McBride",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 541K views at last sync.",
+      "note": "Episode release · 543K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "O52aLL8ycGU"
       },
-      "views": 540658,
+      "views": 543243,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:hxid7FofhMw",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-07",
       "title": "Joe Rogan Experience #2537 - David Sinclair",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 775K views at last sync.",
+      "note": "Episode release · 784K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "hxid7FofhMw"
       },
-      "views": 775131,
+      "views": 783701,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-gamrot-vs-salkilld",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-08",
       "title": "UFC Fight Night: Gamrot vs. Salkilld",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -3547,75 +3546,75 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:xEBeQH39CZI",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-11",
       "title": "JRE MMA Show #184 with Aljamain Sterling",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 250K views at last sync.",
+      "note": "Episode release · 255K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "xEBeQH39CZI"
       },
-      "views": 249801,
+      "views": 254989,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:pCH-R3L6QTc",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-12",
       "title": "Joe Rogan Experience #2538 - Joe DeRosa",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 407K views at last sync.",
+      "note": "Episode release · 425K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "pCH-R3L6QTc"
       },
-      "views": 406779,
+      "views": 424555,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:OBH4F5a6zAA",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-13",
       "title": "Joe Rogan Experience #2539 - Protect Our Parks 17",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 1.5M views at last sync.",
+      "note": "Episode release · 1.7M views at last sync.",
       "video": {
         "kind": "yt",
         "id": "OBH4F5a6zAA"
       },
-      "views": 1532167,
+      "views": 1662457,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "youtube:9iENvZ2siTo",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-14",
       "title": "Joe Rogan Experience #2540 - Travis Barker",
       "loc": "",
       "type": "podcast",
-      "note": "Episode release · 461K views at last sync.",
+      "note": "Episode release · 539K views at last sync.",
       "video": {
         "kind": "yt",
         "id": "9iENvZ2siTo"
       },
-      "views": 461269,
+      "views": 539206,
       "ticket": null,
-      "flag": "auto"
+      "flag": "auto",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-330-makhachev-vs-machado-garry",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-15",
       "title": "UFC 330: Makhachev vs. Machado Garry",
       "loc": "Xfinity Mobile Arena, Philadelphia, Pennsylvania, U.S.",
@@ -3623,11 +3622,15 @@
       "note": "US numbered card — the type he has historically called.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "box": {
+        "attendance": 19238,
+        "gate": 6715776
+      },
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-hernandez-vs-rodrigues",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-22",
       "title": "UFC Fight Night: Hernandez vs. Rodrigues",
       "loc": "Golden 1 Center, Sacramento, California, U.S.",
@@ -3635,11 +3638,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-nurmagomedov-vs-song",
-      "firstSeen": "2025-01-01",
       "date": "2026-08-29",
       "title": "UFC Fight Night: Nurmagomedov vs. Song",
       "loc": "SPD Bank Oriental Sports Center, Shanghai, China",
@@ -3647,11 +3650,11 @@
       "note": "International card — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-hooker-vs-parnasse",
-      "firstSeen": "2025-01-01",
       "date": "2026-09-05",
       "title": "UFC Fight Night: Hooker vs. Parnasse",
       "loc": "Accor Arena, Paris, France",
@@ -3659,11 +3662,11 @@
       "note": "International card — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-rodr-guez-vs-silva",
-      "firstSeen": "2025-01-01",
       "date": "2026-09-12",
       "title": "UFC Fight Night: Rodríguez vs. Silva",
       "loc": "Desert Diamond Arena, Glendale, Arizona, U.S.",
@@ -3671,11 +3674,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-331-van-vs-pantoja-2",
-      "firstSeen": "2025-01-01",
       "date": "2026-09-19",
       "title": "UFC 331: Van vs. Pantoja 2",
       "loc": "Crypto.com Arena, Los Angeles, California, U.S.",
@@ -3683,11 +3686,11 @@
       "note": "US numbered card — the type he has historically called.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-289",
-      "firstSeen": "2025-01-01",
       "date": "2026-09-26",
       "title": "UFC Fight Night 289",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -3695,11 +3698,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-332",
-      "firstSeen": "2025-01-01",
       "date": "2026-10-03",
       "title": "UFC 332",
       "loc": "Delta Center, Salt Lake City, Utah, U.S.",
@@ -3707,11 +3710,11 @@
       "note": "US numbered card — the type he has historically called.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-290",
-      "firstSeen": "2025-01-01",
       "date": "2026-10-10",
       "title": "UFC Fight Night 290",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -3719,11 +3722,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-buckley-vs-malott",
-      "firstSeen": "2025-01-01",
       "date": "2026-10-17",
       "title": "UFC Fight Night: Buckley vs. Malott",
       "loc": "Rogers Place, Edmonton, Alberta, Canada",
@@ -3731,23 +3734,23 @@
       "note": "International card — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
-      "src": "wikipedia:ufc-333",
-      "firstSeen": "2025-01-01",
+      "src": "wikipedia:ufc-333-volkanovski-vs-evloev",
       "date": "2026-10-24",
-      "title": "UFC 333",
+      "title": "UFC 333: Volkanovski vs. Evloev",
       "loc": "Etihad Arena, Abu Dhabi, United Arab Emirates",
       "type": "broadcast",
       "note": "International card — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2026-08-17"
     },
     {
       "src": "wikipedia:ufc-fight-night-292",
-      "firstSeen": "2025-01-01",
       "date": "2026-10-31",
       "title": "UFC Fight Night 292",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -3755,11 +3758,11 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     },
     {
       "src": "wikipedia:ufc-fight-night-293",
-      "firstSeen": "2025-01-01",
       "date": "2026-11-07",
       "title": "UFC Fight Night 293",
       "loc": "Meta Apex, Las Vegas, Nevada, U.S.",
@@ -3767,14 +3770,15 @@
       "note": "Fight Night — historically not one he calls.",
       "video": null,
       "ticket": null,
-      "flag": "unconfirmed"
+      "flag": "unconfirmed",
+      "firstSeen": "2025-01-01"
     }
   ],
   "channel": {
     "title": "PowerfulJRE",
     "subscribers": 21100000,
-    "totalViews": 6638891932,
+    "totalViews": 6639290928,
     "videos": 3638,
-    "fetchedAt": "2026-08-16T17:15:02.167Z"
+    "fetchedAt": "2026-08-17T07:17:03.553Z"
   }
 }
