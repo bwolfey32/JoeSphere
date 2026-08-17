@@ -4477,10 +4477,24 @@ function mountMap(hostId){
 }
 function showView(name){
   if(!VIEWS.includes(name)) name='home';
+  const changed=name!==currentView;
   currentView=name;
   VIEWS.forEach(v=>{ document.getElementById('view-'+v).hidden = v!==name; });
   document.querySelectorAll('[data-view]').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.view===name)));
+  // The drawer's desktop position is tuned per view: the >=1280px
+  // three-column mode only ever engages on Home (centerPaneEligible()), and
+  // the >=1041px fallback below it reserves space on the assumption there's a
+  // map rail to its right. Neither holds on Schedule or Explore's Stats
+  // sub-tab, so a pane left open from Home kept the fallback's Home-shaped
+  // reservation and was drawn straight over whichever view the visitor
+  // switched to, instead of beside it. Closing it on a real navigation change
+  // is simpler and safer than teaching the CSS every view's column shape.
+  if(changed){
+    const drawer=document.getElementById('drawer'), composer=document.getElementById('composer');
+    if(!drawer.hidden) clearSelection();
+    if(!composer.hidden) closeComposer();
+  }
   if(name==='home') renderHome();
   if(name==='schedule') renderSchedule();
   if(name==='explore') showExploreSection(exSection);
@@ -4495,7 +4509,18 @@ function showView(name){
 // Insights view, moved in unchanged so every render*Insights() function and
 // every .insec[data-insec] selector still works exactly as before.
 function showExploreSection(name){
-  exSection=(name==='stats')?'stats':'browse';
+  const next=(name==='stats')?'stats':'browse';
+  // Same reasoning as showView() above: currentView stays 'explore' across
+  // this switch, so centerPaneEligible() was already false either side of it
+  // and a pane left open here would already be sitting under the >=1041px
+  // fallback — sized for whichever sub-tab it opened from, not the one it's
+  // about to be shown over.
+  if(next!==exSection){
+    const drawer=document.getElementById('drawer'), composer=document.getElementById('composer');
+    if(!drawer.hidden) clearSelection();
+    if(!composer.hidden) closeComposer();
+  }
+  exSection=next;
   const b=document.getElementById('explore-browse'), s=document.getElementById('view-insights');
   if(b) b.hidden=exSection!=='browse';
   if(s) s.hidden=exSection!=='stats';
