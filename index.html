@@ -759,9 +759,6 @@ footer{
   box-shadow:0 18px 40px -18px #000}
 .filterpop .field{margin:0 0 11px}
 .filterpop .field:last-of-type{margin-bottom:8px}
-.checkrow{display:flex;align-items:center;gap:9px;color:var(--ink);font-size:13px;
-  cursor:pointer;text-transform:none!important;letter-spacing:0!important}
-.checkrow input{width:auto;margin:0;accent-color:var(--stamp)}
 .home-search[hidden]{display:none}
 .home-search{display:flex;align-items:center;gap:8px;margin:0 0 12px}
 .home-search input{flex:1;min-width:0}
@@ -882,6 +879,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
             <div class="feedtools">
               <button class="tab" data-hs="latest" aria-pressed="true">Latest</button>
               <button class="tab" data-hs="hot" aria-pressed="false">Active</button>
+              <button class="tab" data-hs="upcoming" aria-pressed="false">Upcoming</button>
               <details class="filtermenu" id="filter-menu">
                 <summary class="tab" id="filter-summary">Filters</summary>
                 <div class="filterpop">
@@ -893,11 +891,6 @@ This log needs JavaScript to render the map and event list.</div></noscript>
                       <option value="podcast">Episodes</option>
                       <option value="event">Events</option>
                     </select>
-                  </div>
-                  <div class="field">
-                    <label class="checkrow" for="home-upcoming">
-                      <input type="checkbox" id="home-upcoming"> Upcoming only
-                    </label>
                   </div>
                   <button class="mini ghost" id="clear-filters">Clear filters</button>
                 </div>
@@ -1896,7 +1889,7 @@ function itemMatches(it,f){
 }
 function itemRow(it){ return it.kind==='event'?eventRow(it.entry):postRow(it.post); }
 
-let homeFilter='all', homeSort='latest', homeUpcoming=false, homeQuery='', homePage=1;
+let homeFilter='all', homeSort='latest', homeQuery='', homePage=1;
 const PAGE=25;
 
 function homeItemIsUpcoming(it){
@@ -1933,14 +1926,38 @@ function feedEligible(it){
   const rx=eventReactionsFor(e.id);
   return (rx.ups||0)>0||(rx.downs||0)>0;
 }
+// A brand-new post hasn't had time to earn the votes/comments hotScore()
+// rewards, so left to that score alone the Active tab would bury it at the
+// bottom for as long as it stays unengaged (see hotScore()'s -1000 branch).
+// Give it a window to actually be seen instead: for its first hour, float it
+// above the score-ranked rest, newest first. Events are excluded — a
+// scheduled date months out isn't "just posted", so it shouldn't jump the
+// queue the way a fresh post should.
+const FRESH_POST_MS=60*60*1000;
+function isFreshPost(it){
+  return it.kind==='post'&&(Date.now()-it.when)<FRESH_POST_MS;
+}
+// The date the Upcoming tab should sort by: the event's own date for an
+// event, or its attached event's date for a post — a post about a card two
+// days out belongs near that card, not wherever its own timestamp lands.
+function homeUpcomingWhen(it){
+  if(it.kind==='event') return it.when;
+  const e=it.post.event_id?allEntries().find(x=>x.id===it.post.event_id):null;
+  return e?Date.parse(e.date):it.when;
+}
 function homeItems(){
   const q=homeQuery.trim().toLowerCase();
   let items=hotEntries()
     .filter(feedEligible)
     .filter(it=>itemMatches(it,homeFilter))
-    .filter(it=>!homeUpcoming||homeItemIsUpcoming(it))
+    .filter(it=>homeSort!=='upcoming'||homeItemIsUpcoming(it))
     .filter(it=>homeItemMatchesQuery(it,q));
   if(homeSort==='latest') items=items.slice().sort((a,b)=>b.when-a.when);
+  else if(homeSort==='upcoming') items=items.slice().sort((a,b)=>homeUpcomingWhen(a)-homeUpcomingWhen(b));
+  else{
+    const fresh=items.filter(isFreshPost).sort((a,b)=>b.when-a.when);
+    if(fresh.length) items=fresh.concat(items.filter(it=>!isFreshPost(it)));
+  }
   return items;
 }
 function homeMapRows(items){
@@ -1952,7 +1969,7 @@ function homeMapRows(items){
   return [...ids].map(id=>byId.get(id));
 }
 function updateFilterSummary(){
-  const n=(homeFilter!=='all'?1:0)+(homeUpcoming?1:0);
+  const n=(homeFilter!=='all'?1:0);
   const el=document.getElementById('filter-summary');
   if(el) el.textContent=n?'Filters · '+n:'Filters';
 }
@@ -3443,13 +3460,9 @@ document.querySelectorAll('[data-hs]').forEach(t=>t.addEventListener('click',()=
 document.getElementById('home-type').addEventListener('change',ev=>{
   homeFilter=ev.target.value; homePage=1; updateFilterSummary(); renderHome();
 });
-document.getElementById('home-upcoming').addEventListener('change',ev=>{
-  homeUpcoming=ev.target.checked; homePage=1; updateFilterSummary(); renderHome();
-});
 document.getElementById('clear-filters').addEventListener('click',()=>{
-  homeFilter='all'; homeUpcoming=false; homePage=1;
+  homeFilter='all'; homePage=1;
   document.getElementById('home-type').value='all';
-  document.getElementById('home-upcoming').checked=false;
   document.getElementById('filter-menu').open=false;
   updateFilterSummary(); renderHome();
 });
