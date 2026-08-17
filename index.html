@@ -694,9 +694,111 @@ footer{
   .entry{animation:rise .38s ease both}
   @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 }
+
+/* ---------- streamlined public interface ---------- */
+/* Most visitors should see content before controls. Search and filtering are
+   still available, but they stay folded until someone asks for them. */
+.topbar-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.topbar #open-post{margin-left:0}
+.nowstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin:0 0 12px}
+.nowcell{width:100%;display:block;padding:10px 12px;border:0;background:var(--card)}
+.nowcell .t{margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
+  -webkit-box-orient:vertical;white-space:normal;overflow:hidden}
+.nowcell .s{margin-top:2px;display:block}
+.feedtools{display:flex;align-items:center;gap:7px;margin:0 0 12px}
+.feedtools .filtermenu{margin-left:auto}
+.filtermenu{position:relative}
+.filtermenu>summary{list-style:none}
+.filtermenu>summary::-webkit-details-marker{display:none}
+.filtermenu[open]>summary{color:var(--ink);border-color:var(--ink-soft)}
+.filterpop{position:absolute;z-index:35;right:0;top:calc(100% + 7px);width:230px;
+  padding:12px;background:var(--paper-2);border:1px solid var(--rule);
+  box-shadow:0 18px 40px -18px #000}
+.filterpop .field{margin:0 0 11px}
+.filterpop .field:last-of-type{margin-bottom:8px}
+.checkrow{display:flex;align-items:center;gap:9px;color:var(--ink);font-size:13px;
+  cursor:pointer;text-transform:none!important;letter-spacing:0!important}
+.checkrow input{width:auto;margin:0;accent-color:var(--stamp)}
+.home-search{display:flex;align-items:center;gap:8px;margin:0 0 12px}
+.home-search input{flex:1;min-width:0}
+.mobile-map-toggle{display:none}
+
+/* The map remains reference context, while its analytical controls and long
+   caveat no longer compete with the feed. */
+.maplayers,.mapkey{margin-left:auto;position:relative}
+.maplayers>summary,.mapkey>summary{list-style:none;cursor:pointer}
+.maplayers>summary::-webkit-details-marker,.mapkey>summary::-webkit-details-marker{display:none}
+.maplayers-pop{position:absolute;z-index:20;right:0;top:calc(100% + 6px);display:flex;
+  gap:5px;padding:7px;background:var(--paper-2);border:1px solid var(--rule)}
+.mapkey{margin:0;border-top:1px solid var(--rule)}
+.mapkey>summary{padding:8px 12px;font-family:"Oswald",Impact,sans-serif;
+  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.mapkey>summary:hover{color:var(--ink)}
+.mapkey .mapfoot{border-top:1px dashed var(--rule)}
+
+/* About/data-method notes remain available, but live with the footer instead
+   of sitting between the visitor and the feed. */
+.bottom-about{margin:18px 0 0}
+
+/* Non-modal reading above phone size. The three-column mode below takes over
+   on a truly wide screen; this is the compact fallback for narrower laptops. */
+@media(min-width:1041px){
+  #drawer,#composer{pointer-events:none;display:block}
+  #drawer[hidden],#composer[hidden]{display:none}
+  #drawer .drawer-scrim,#composer .drawer-scrim{display:none}
+  #drawer .drawer-panel,#composer .drawer-panel{
+    pointer-events:auto;position:absolute;right:auto;
+    left:max(18px,calc((100vw - 1180px)/2 + 18px));
+    top:14px;bottom:14px;height:auto;
+    width:calc(min(100vw,1180px) - 384px);
+    border:1px solid var(--rule);box-shadow:18px 0 52px -26px #000;
+  }
+}
+
+/* Wide open state: feed for browsing, selected content for reading, map for
+   location context. The middle column is reserved in the grid; the fixed pane
+   is measured into that slot by scheduleCenterPaneMetrics(), so it can remain
+   independently scrollable while the feed stays usable. */
+@media(min-width:1280px){
+  body.center-pane-open .wrap{max-width:1600px}
+  body.center-pane-open .homegrid{
+    grid-template-columns:320px minmax(0,1fr) 300px;
+    column-gap:18px
+  }
+  body.center-pane-open .homecol{grid-column:1}
+  body.center-pane-open .maprail{grid-column:3}
+  body.center-pane-open #drawer .drawer-panel,
+  body.center-pane-open #composer .drawer-panel{
+    left:var(--center-pane-left,356px);
+    width:var(--center-pane-width,600px);
+    top:var(--center-pane-top,150px);
+    bottom:14px;height:auto
+  }
+  body.center-pane-open .homecol .row{gap:8px;padding:8px}
+  body.center-pane-open .homecol .row-thumb{flex-basis:76px;height:44px}
+  body.center-pane-open .homecol .row-title{font-size:13px}
+  body.center-pane-open .homecol .row-meta{font-size:11px;line-height:1.35}
+  body.center-pane-open .homecol .when{margin-left:0;width:100%}
+  body.center-pane-open .homecol .feedtools{flex-wrap:wrap}
+  body.center-pane-open .homecol .filtermenu{margin-left:0}
+}
+
+@media(max-width:640px){
+  .brand-sub{display:none}
+  .topbar{gap:8px}
+  .topbar-actions{gap:5px}
+  .topbar-actions .mini{padding-left:10px;padding-right:10px}
+  .nowstrip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+    background:transparent;border:0;gap:7px;padding-bottom:3px}
+  .nowcell{flex:0 0 min(82vw,310px);scroll-snap-align:start;border:1px solid var(--rule)}
+  .mobile-map-toggle{display:inline-flex}
+  .maprail.mobile-collapsed{display:none}
+  .filterpop{position:fixed;left:12px;right:12px;top:auto;bottom:70px;width:auto}
+}
 </style>
 </head>
-<body class="m-both">
+<body class="m-pins">
 <noscript><div style="background:#FF4127;color:#14171D;padding:12px 16px;font:14px/1.5 monospace">
 This log needs JavaScript to render the map and event list.</div></noscript>
 <div class="wrap">
@@ -706,41 +808,14 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       <span class="brand-name">The Rogansphere</span>
       <span class="brand-sub">Unofficial fan project</span>
     </div>
-    <button class="mini ghost" id="open-post" data-post-new="1">+ Post</button>
+    <div class="topbar-actions">
+      <button class="mini ghost" id="open-search" aria-expanded="false">Search</button>
+      <button class="mini ghost" id="open-post" data-post-new="1">+ Post</button>
+    </div>
   </header>
 
-  <!-- The long disclosure that used to sit above the fold. It is still here in
-       full — invariant #12 — just folded, so the feed is the first thing you
-       see. Do not condense the contents to make it shorter. -->
-  <details class="about" id="about">
-    <summary>About this project &amp; how the numbers are made</summary>
-    <div class="about-body">
-      <p><b>Unofficial fan project. Not affiliated with, endorsed by, or connected to Joe Rogan.</b>
-        The Rogansphere tracks <b>announced public appearances</b> — ticketed dates, scheduled
-        broadcasts, and episode releases — and hosts <b>Posts</b>, a public feed of clips and
-        reactions shared by other fans. It is not a live location feed and never will be.</p>
-      <p>Entries marked <i>Unconfirmed</i> are real scheduled events where his attendance has not
-        been verified. Entries badged <i>Demo</i> are generated placeholders, not real dates.</p>
-      <p><b>Comments, posts and reactions are all public</b> — visible to every visitor, attributed
-        to whatever display name the poster typed in, and not reviewed before they appear. Nothing
-        you write here is private.</p>
-      <p><b>Studio locations are an estimate.</b> No public source places individual episodes, so
-        the recording base shown on the map and in Insights is derived from each episode's release
-        date — which is not its recording date, and some episodes were recorded remotely. Event
-        venues, by contrast, are sourced.</p>
-      <p><b>Money figures</b> separate reported gate and attendance from a clearly-marked estimated
-        band for YouTube advertising only. The estimate is a range, never a headline number.</p>
-      <p><b>What is public and what is not.</b> Posts, comments and reactions are stored on a
-        shared server and are visible to everyone. Entries you log yourself, your display name,
-        and anything in Maintenance tools stay in this browser and are never uploaded — which
-        also means they vanish if you clear site data, and nobody else can see them.</p>
-      <p class="about-store"><span id="store-note"></span></p>
-    </div>
-  </details>
-
   <nav class="viewtabs" aria-label="Sections">
-    <button class="viewtab" data-view="home" aria-pressed="true">Home</button>
-    <button class="viewtab" data-view="explore" aria-pressed="false">Explore</button>
+    <button class="viewtab" data-view="home" aria-pressed="true">Feed</button>
     <button class="viewtab" data-view="schedule" aria-pressed="false">Schedule</button>
     <button class="viewtab" data-view="insights" aria-pressed="false">Insights</button>
   </nav>
@@ -756,22 +831,41 @@ This log needs JavaScript to render the map and event list.</div></noscript>
              the comment banners show at a glance where the discussion is. -->
         <div class="homegrid">
           <div class="homecol">
-            <div class="feedbar">
-              <span class="rowlab">Show</span>
-              <button class="tab" data-hf="all" aria-pressed="true">Everything</button>
-              <button class="tab" data-hf="post" aria-pressed="false">Posts</button>
-              <button class="tab" data-hf="podcast" aria-pressed="false">Episodes</button>
-              <button class="tab" data-hf="event" aria-pressed="false">Events</button>
-              <button class="tab" data-hf="discussed" aria-pressed="false">Discussions</button>
-              <span class="spacer"></span>
-              <span class="rowlab">Sort</span>
-              <button class="tab" data-hs="hot" aria-pressed="true">Hot</button>
-              <button class="tab" data-hs="latest" aria-pressed="false">Latest</button>
+            <div class="home-search" id="home-search" hidden>
+              <input type="search" id="home-q" placeholder="Search posts, episodes and events…"
+                aria-label="Search the feed" spellcheck="false">
+              <button class="mini ghost" id="clear-search">Clear</button>
+            </div>
+            <div class="feedtools">
+              <button class="tab" data-hs="latest" aria-pressed="true">Latest</button>
+              <button class="tab" data-hs="hot" aria-pressed="false">Active</button>
+              <details class="filtermenu" id="filter-menu">
+                <summary class="tab" id="filter-summary">Filters</summary>
+                <div class="filterpop">
+                  <div class="field">
+                    <label for="home-type">Content</label>
+                    <select id="home-type">
+                      <option value="all">All content</option>
+                      <option value="post">Posts</option>
+                      <option value="podcast">Episodes</option>
+                      <option value="event">Events</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label class="checkrow" for="home-upcoming">
+                      <input type="checkbox" id="home-upcoming"> Upcoming only
+                    </label>
+                  </div>
+                  <button class="mini ghost" id="clear-filters">Clear filters</button>
+                </div>
+              </details>
+              <button class="mini ghost mobile-map-toggle" id="mobile-map-toggle"
+                aria-expanded="false">Map</button>
             </div>
             <main id="homefeed"><div class="empty"><strong>Loading…</strong></div></main>
             <div class="morewrap"><button class="mini ghost" id="load-more" hidden>Load more</button></div>
           </div>
-          <aside class="maprail" aria-label="Map of announced locations">
+          <aside class="maprail mobile-collapsed" aria-label="Map of announced locations">
             <div id="home-map"></div>
           </aside>
         </div>
@@ -807,13 +901,14 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         <div id="explore-map">
   <section class="mapcard" aria-label="Map of announced appearance locations">
     <div class="maphead">
-      <h3>Plotted Locations</h3>
-      <span class="sub">Announced venues only</span>
-      <span class="modes">
-        <button class="tab" data-m="both" aria-pressed="true">Both</button>
-        <button class="tab" data-m="pins" aria-pressed="false">Pins</button>
-        <button class="tab" data-m="heat" aria-pressed="false">Heat</button>
-      </span>
+      <h3>Locations</h3>
+      <details class="maplayers">
+        <summary class="tab">Layers</summary>
+        <div class="maplayers-pop">
+          <button class="tab" data-m="pins" aria-pressed="true">Pins</button>
+          <button class="tab" data-m="heat" aria-pressed="false">Heat</button>
+        </div>
+      </details>
     </div>
     <div class="mapbody">
       <svg viewBox="0 0 980.0 619.8" role="img" aria-label="Continental United States with appearance pins">
@@ -838,19 +933,22 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         <g id="heatlabels"></g>
       </svg>
     </div>
-    <div class="mapfoot">
-      <span class="lg pinlg"><i class="dot up"></i>Upcoming</span>
-      <span class="lg pinlg"><i class="dot pastpin"></i>Past</span>
-      <span class="lg pinlg"><i class="cmtdot"></i>Has comments</span>
-      <span class="lg pinlg"><i class="studiodot"></i>Studio (est.)</span>
-      <span class="lg heatlg"><i class="ramp"></i>Fewer → more events</span>
-      <span class="lg" id="topmkt"></span>
-      <span class="lg" id="sync-note"></span>
-      <span class="lg" id="unplotted"></span>
-      <span class="lg studionote">Studio locations are <b>estimated</b> from episode release
-        dates — no source places individual episodes, release date isn't recording date,
-        and some episodes were recorded remotely.</span>
-    </div>
+    <details class="mapkey">
+      <summary>Map key &amp; data notes</summary>
+      <div class="mapfoot">
+        <span class="lg pinlg"><i class="dot up"></i>Upcoming</span>
+        <span class="lg pinlg"><i class="dot pastpin"></i>Past</span>
+        <span class="lg pinlg"><i class="cmtdot"></i>Has comments</span>
+        <span class="lg pinlg"><i class="studiodot"></i>Studio (est.)</span>
+        <span class="lg heatlg"><i class="ramp"></i>Fewer → more events</span>
+        <span class="lg" id="topmkt"></span>
+        <span class="lg" id="sync-note"></span>
+        <span class="lg" id="unplotted"></span>
+        <span class="lg studionote">Studio locations are <b>estimated</b> from episode release
+          dates — no source places individual episodes, release date isn't recording date,
+          and some episodes were recorded remotely.</span>
+      </div>
+    </details>
   </section>
         </div>
         <main id="explorefeed"></main>
@@ -858,34 +956,26 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 
       <div id="view-schedule" hidden>
         <div class="feedbar">
-          <span class="rowlab">Window</span>
           <button class="tab" data-sc="upcoming" aria-pressed="true">Upcoming</button>
           <button class="tab" data-sc="past" aria-pressed="false">Past</button>
-          <span class="spacer"></span>
-          <span class="rowlab">View</span>
-          <button class="tab" data-sv="list" aria-pressed="true">List</button>
-          <button class="tab" data-sv="cal" aria-pressed="false">Calendar</button>
         </div>
-        <p class="hint" id="sched-note">Official records only — scheduled events and episode
-          releases. Community posts live in Home.</p>
+        <p class="hint" id="sched-note">Official events and episode releases, grouped by month.</p>
         <main id="schedulefeed"></main>
       </div>
 
       <div id="view-insights" hidden>
   <div class="feedbar">
-    <span class="rowlab">Section</span>
     <button class="tab" data-in="overview" aria-pressed="true">Overview</button>
-    <button class="tab" data-in="views" aria-pressed="false">Viewership</button>
-    <button class="tab" data-in="ufc" aria-pressed="false">UFC &amp; box office</button>
+    <button class="tab" data-in="performance" aria-pressed="false">Performance</button>
     <button class="tab" data-in="geo" aria-pressed="false">Geography</button>
     <button class="tab" data-in="community" aria-pressed="false">Community</button>
   </div>
 
   <div class="insec" data-insec="overview">
     <div class="readout">
-      <div class="cell"><div class="k">Next confirmed</div><div class="v" id="stat-days">—</div></div>
+      <div class="cell"><div class="k">Next scheduled</div><div class="v" id="stat-days">—</div></div>
       <div class="cell"><div class="k">Entries on file</div><div class="v" id="stat-count">—</div></div>
-      <div class="cell"><div class="k">Last known position</div><div class="v small" id="stat-last">—</div></div>
+      <div class="cell"><div class="k">Latest recorded appearance</div><div class="v small" id="stat-last">—</div></div>
       <div class="cell"><div class="k">Recording base</div><div class="v small" id="stat-base">—</div></div>
     </div>
     <section class="panel" id="in-overview"><h3>At a glance</h3>
@@ -893,13 +983,13 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       <div id="in-overview-body"></div></section>
   </div>
 
-  <div class="insec" data-insec="views" hidden>
+  <div class="insec" data-insec="performance" hidden>
     <section class="panel" id="in-view"><h3>Episode viewership</h3>
       <p class="hint">How many people actually watched, from the channel feed.</p>
       <div id="in-view-body"></div></section>
   </div>
 
-  <div class="insec" data-insec="ufc" hidden>
+  <div class="insec" data-insec="performance" hidden>
     <section class="panel" id="in-box"><h3>Box office</h3>
       <p class="hint">Reported attendance and gate for cards that have already happened.</p>
       <div id="in-box-body"></div></section>
@@ -951,7 +1041,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
     All entries come from publicly announced schedules. Nothing here reports a real-time location.<br><br>
     <b>Comments, posts, and reactions (likes and dislikes) are all public</b> — visible to every visitor,
     attributed to whatever display name the poster typed in, and not reviewed before they appear.<br><br>
-    Entries badged <i>Unconfirmed</i> are real scheduled events whose attendance is unverified;
+    Entries badged <i>Rogan unconfirmed</i> are real scheduled events where his participation is unverified;
     entries badged <i>Demo</i> are generated placeholders, not real dates.<br><br>
     <b>Studio locations are an estimate.</b> No public source places individual episodes, so the
     recording base shown on the map and in Insights is derived from each episode's release date —
@@ -959,6 +1049,32 @@ This log needs JavaScript to render the map and event list.</div></noscript>
     contrast, are sourced.<br><br>
     <button class="linkish" id="open-admin">Maintenance tools</button>
   </footer>
+
+  <details class="about bottom-about" id="about">
+    <summary>About this project &amp; data notes</summary>
+    <div class="about-body">
+      <p><b>Unofficial fan project. Not affiliated with, endorsed by, or connected to Joe Rogan.</b>
+        The Rogansphere tracks <b>announced public appearances</b> — ticketed dates, scheduled
+        broadcasts, and episode releases — and hosts <b>Posts</b>, a public feed of clips and
+        reactions shared by other fans. It is not a live location feed and never will be.</p>
+      <p>Entries marked <i>Rogan unconfirmed</i> are real scheduled events where his participation
+        has not been verified. Entries badged <i>Demo</i> are generated placeholders, not real dates.</p>
+      <p><b>Comments, posts and reactions are all public</b> — visible to every visitor, attributed
+        to whatever display name the poster typed in, and not reviewed before they appear. Nothing
+        you write here is private.</p>
+      <p><b>Studio locations are an estimate.</b> No public source places individual episodes, so
+        the recording base shown on the map and in Insights is derived from each episode's release
+        date — which is not its recording date, and some episodes were recorded remotely. Event
+        venues, by contrast, are sourced.</p>
+      <p><b>Money figures</b> separate reported gate and attendance from a clearly-marked estimated
+        band for YouTube advertising only. The estimate is a range, never a headline number.</p>
+      <p><b>What is public and what is not.</b> Posts, comments and reactions are stored on a
+        shared server and are visible to everyone. Entries you log yourself, your display name,
+        and anything in Maintenance tools stay in this browser and are never uploaded — which
+        also means they vanish if you clear site data, and nobody else can see them.</p>
+      <p class="about-store"><span id="store-note"></span></p>
+    </div>
+  </details>
 
   <!-- Import, export, demo data and manual entry are maintenance tools, not
        part of the public interface. They write to this browser only. Hidden
@@ -1271,7 +1387,7 @@ function buildDemo(){
   return out;
 }
 let state={entries:[]};
-let mapmode='both', ready=false;
+let mapmode='pins', ready=false;
 // Fan Posts: sb stays null (feature stays hidden) until SUPABASE.url/anonKey are filled in.
 const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.supabase)
   ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
@@ -1624,7 +1740,7 @@ function postPaneHTML(p){
     '<p class="pmeta">'+esc(p.author_label||'Fan')+' · '+
       esc(fmt(String(p.created_at).slice(0,10)))+'</p>'+
     // The association is a way through to the parent, not just a label.
-    (ev?'<p class="pstat"><button class="linkish" data-goto="'+esc(ev.id)+'">'+
+    (ev?'<p class="pstat">About: <button class="linkish" data-goto="'+esc(ev.id)+'">'+
       esc(ev.title)+'</button></p>':'')+
     '<div class="pactions">'+
       '<button class="mini ghost likebtn'+(p.myVote===1?' liked':'')+'" data-postlike="'+esc(p.id)+'">▲ '+(p.ups||0)+'</button>'+
@@ -1661,7 +1777,7 @@ function postThreadHTML(p){
       '</div><div class="c-body">'+esc(c.body)+'</div></div>').join('')+
     (session&&session.user?
       '<div class="c-form"><input type="text" placeholder="Add a comment…" data-ctx="'+esc(p.id)+
-      '" aria-label="Comment"><button class="mini" data-caddbtn="'+esc(p.id)+'">Reply</button></div>'
+      '" aria-label="Comment"><button class="mini" data-caddbtn="'+esc(p.id)+'">Comment</button></div>'
       :'<p class="hint" style="margin:9px 0 0">Comments aren\'t available right now — try reloading.</p>')+
     '</div>';
 }
@@ -1697,8 +1813,45 @@ function itemMatches(it,f){
 }
 function itemRow(it){ return it.kind==='event'?eventRow(it.entry):postRow(it.post); }
 
-let homeFilter='all', homeSort='hot', homePage=1;
+let homeFilter='all', homeSort='latest', homeUpcoming=false, homeQuery='', homePage=1;
 const PAGE=25;
+
+function homeItemIsUpcoming(it){
+  if(it.kind==='event') return daysTo(it.entry.date)>=0;
+  if(!it.post.event_id) return false;
+  const e=allEntries().find(x=>x.id===it.post.event_id);
+  return !!e&&daysTo(e.date)>=0;
+}
+function homeItemMatchesQuery(it,q){
+  if(!q) return true;
+  const hay=it.kind==='post'
+    ? (it.post.caption||'')+' '+(it.post.author_label||'')+' '+
+      ((it.post.event_id&&allEntries().find(e=>e.id===it.post.event_id)||{}).title||'')
+    : it.entry.title+' '+(it.entry.loc||'')+' '+(it.entry.note||'');
+  return hay.toLowerCase().includes(q);
+}
+function homeItems(){
+  const q=homeQuery.trim().toLowerCase();
+  let items=hotEntries()
+    .filter(it=>itemMatches(it,homeFilter))
+    .filter(it=>!homeUpcoming||homeItemIsUpcoming(it))
+    .filter(it=>homeItemMatchesQuery(it,q));
+  if(homeSort==='latest') items=items.slice().sort((a,b)=>b.when-a.when);
+  return items;
+}
+function homeMapRows(items){
+  const byId=new Map(allEntries().map(e=>[e.id,e])), ids=new Set();
+  items.forEach(it=>{
+    if(it.kind==='event') ids.add(it.entry.id);
+    else if(it.post.event_id&&byId.has(it.post.event_id)) ids.add(it.post.event_id);
+  });
+  return [...ids].map(id=>byId.get(id));
+}
+function updateFilterSummary(){
+  const n=(homeFilter!=='all'?1:0)+(homeUpcoming?1:0);
+  const el=document.getElementById('filter-summary');
+  if(el) el.textContent=n?'Filters · '+n:'Filters';
+}
 
 function skeleton(n){
   let h='';
@@ -1723,20 +1876,22 @@ function renderHome(){
   // rendering the feed twice and having it jump.
   if(postsLoading&&!posts.length){ el.innerHTML=skeleton(6); return; }
   if(postsFailed){
+    const items=homeItems();
     el.innerHTML='<div class="empty failed"><strong>Couldn’t load posts</strong>'+
       'Events and episodes are shown below. '+
       '<button class="linkish" id="retry-posts">Try again</button></div>'+
-      hotEntries().filter(it=>itemMatches(it,homeFilter)).slice(0,PAGE).map(itemRow).join('');
+      items.slice(0,PAGE).map(itemRow).join('');
     const r=document.getElementById('retry-posts');
     if(r) r.addEventListener('click',()=>{ postsFailed=false; loadPosts(); });
     document.getElementById('load-more').hidden=true;
+    plotMap(homeMapRows(items));
     return;
   }
-  let items=hotEntries().filter(it=>itemMatches(it,homeFilter));
-  if(homeSort==='latest') items=items.slice().sort((a,b)=>b.when-a.when);
+  const items=homeItems();
+  plotMap(homeMapRows(items));
   if(!items.length){
     el.innerHTML='<div class="empty"><strong>Nothing here yet</strong>'+
-      (sb?'Try a different filter.':'Posts and reactions need Supabase switched on — see the '+
+      (sb?'Clear the search or filters to see more.':'Posts and reactions need Supabase switched on — see the '+
       'SUPABASE setup comment near the top of the script.')+'</div>';
     document.getElementById('load-more').hidden=true;
     return;
@@ -1748,17 +1903,24 @@ function renderHome(){
   more.textContent='Load more ('+(items.length-shown.length)+' left)';
 }
 
-// The compact "what is going on right now" strip above the feed.
+// Three fast orientation points. These are deliberately summaries rather than
+// another set of filters: what just released, what is next, and where the
+// current conversation is.
 function renderNowStrip(){
   const el=document.getElementById('nowstrip'); if(!el) return;
   const all=allEntries();
-  const past=all.filter(e=>daysTo(e.date)<0).sort((a,b)=>b.date.localeCompare(a.date));
+  const past=all.filter(e=>e.type==='podcast'&&daysTo(e.date)<=0)
+    .sort((a,b)=>b.date.localeCompare(a.date));
   const up=all.filter(e=>daysTo(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
-  const lastEp=past.find(e=>e.type==='podcast');
+  const lastEp=past[0];
   const nextEv=up.find(e=>e.type!=='podcast')||up[0];
-  // "Most active" is whatever currently has the most comments, event or post.
-  const busiest=hotEntries().filter(it=>(it.cCount||0)>0)
-    .sort((a,b)=>(b.cCount||0)-(a.cCount||0))[0];
+  const engaged=hotEntries().filter(it=>(it.cCount||0)>0);
+  const activityTime=it=>it.kind==='post'
+    ? (Number(it.post.lastActivity)||it.when)
+    : (Number(eventLastActivity[it.entry.id])||it.when);
+  const recent=engaged.filter(it=>activityTime(it)>=Date.now()-30*DAY);
+  const active=(recent.length?recent:engaged).sort((a,b)=>
+    (b.cCount||0)-(a.cCount||0)||activityTime(b)-activityTime(a)||b.score-a.score)[0];
   const cell=(k,t,s,attr)=>'<button class="nowcell"'+attr+'><span class="k">'+esc(k)+
     '</span><span class="t">'+esc(t)+'</span>'+(s?'<span class="s">'+esc(s)+'</span>':'')+'</button>';
   let h='';
@@ -1769,12 +1931,14 @@ function renderNowStrip(){
     h+=cell('Next scheduled',nextEv.title,n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'),
       ' data-goto="'+esc(nextEv.id)+'"');
   }
-  if(busiest) h+=cell('Most active',
-    busiest.kind==='post'?(busiest.post.caption||'(no caption)'):busiest.entry.title,
-    busiest.cCount+' comment'+(busiest.cCount===1?'':'s'),
-    busiest.kind==='post'?' data-post="'+esc(busiest.post.id)+'"'
-                         :' data-goto="'+esc(busiest.entry.id)+'"');
-  el.innerHTML=h;
+  if(active){
+    h+=cell('Most active',
+      active.kind==='post'?(active.post.caption||'(no caption)'):active.entry.title,
+      active.cCount+' comment'+(active.cCount===1?'':'s'),
+      active.kind==='post'?' data-post="'+esc(active.post.id)+'"'
+                          :' data-goto="'+esc(active.entry.id)+'"');
+  }
+  el.innerHTML=h; el.hidden=!h;
 }
 
 /* ---------- explore ---------- */
@@ -1857,8 +2021,8 @@ function renderTrending(narrowed){
 }
 
 /* ---------- schedule ---------- */
-// Official records only. Posts are community content and stay in Home.
-let schedScope='upcoming', schedView='list';
+// One agenda, grouped by month. Upcoming/Past is the only decision needed.
+let schedScope='upcoming';
 function renderSchedule(){
   const el=document.getElementById('schedulefeed'); if(!el) return;
   const rows=allEntries().filter(e=>schedScope==='upcoming'?daysTo(e.date)>=0:daysTo(e.date)<0)
@@ -1869,29 +2033,12 @@ function renderSchedule(){
       (schedScope==='upcoming'?'announced':'on record')+'</strong></div>';
     return;
   }
-  // Confirmed vs unconfirmed is the distinction that matters most on a
-  // schedule, and a badge among other badges was too easy to skim past. On
-  // Upcoming they become two labelled groups. "Confirmed" here means nothing
-  // more than "not flagged unconfirmed" — see the Unconfirmed badge note in
-  // the About panel; it is not a claim that anyone verified attendance.
-  // Past runs to the full episode archive, so both views are capped. Without
+  // Past can run to the full episode archive, so both views are capped. Without
   // it a deep backfill puts ~1,400 rows into one innerHTML.
   const CAP=200, capped=rows.length>CAP;
   const note=capped?'<p class="hint">Showing the first '+CAP+' of '+rows.length+
-    '. Narrow it down in Explore.</p>':'';
-  if(schedView==='cal'){ el.innerHTML=note+calendarHTML(rows.slice(0,CAP)); return; }
-  if(schedScope==='upcoming'){
-    const unc=rows.filter(e=>e.flag==='unconfirmed');
-    const con=rows.filter(e=>e.flag!=='unconfirmed');
-    el.innerHTML=
-      (con.length?'<div class="subhead">Confirmed · '+con.length+'</div>'+
-        con.map(eventRow).join(''):'')+
-      (unc.length?'<div class="subhead">Unconfirmed attendance · '+unc.length+'</div>'+
-        '<p class="hint" style="margin:0 0 9px">Real scheduled events. Whether he is on the '+
-        'call has not been verified.</p>'+unc.map(eventRow).join(''):'');
-    return;
-  }
-  el.innerHTML=note+rows.slice(0,CAP).map(eventRow).join('');
+    '.</p>':'';
+  el.innerHTML=note+calendarHTML(rows.slice(0,CAP));
 }
 // A month-grouped agenda rather than a true grid: entries are sparse and a
 // 6x7 grid of mostly-empty cells reads worse than a dated list.
@@ -2046,6 +2193,44 @@ let feedScroll=0, drawerLocked=false;
 // close: the visitor may have deliberately scrolled somewhere else while
 // reading, and yanking them back would undo it.
 const drawerIsModal=()=>window.matchMedia('(max-width:640px)').matches;
+const centerPaneEligible=()=>currentView==='home'&&
+  window.matchMedia('(min-width:1280px)').matches;
+let centerPaneRAF=0, centerPaneNeedsReplot=false;
+function scheduleCenterPaneMetrics(replot){
+  centerPaneNeedsReplot=centerPaneNeedsReplot||!!replot;
+  cancelAnimationFrame(centerPaneRAF);
+  centerPaneRAF=requestAnimationFrame(()=>{
+    if(!document.body.classList.contains('center-pane-open')) return;
+    const shouldReplot=centerPaneNeedsReplot; centerPaneNeedsReplot=false;
+    const feed=document.querySelector('.homecol');
+    const map=document.querySelector('.maprail');
+    const grid=document.querySelector('.homegrid');
+    if(!feed||!map||!grid) return;
+    const fr=feed.getBoundingClientRect(), mr=map.getBoundingClientRect();
+    const left=Math.round(fr.right+18), width=Math.round(mr.left-18-left);
+    const top=Math.max(14,Math.round(grid.getBoundingClientRect().top));
+    const root=document.documentElement.style;
+    root.setProperty('--center-pane-left',left+'px');
+    root.setProperty('--center-pane-width',Math.max(520,width)+'px');
+    root.setProperty('--center-pane-top',top+'px');
+    if(shouldReplot) plotMap(homeMapRows(homeItems()));
+  });
+}
+function updateCenterPaneMode(){
+  const drawer=document.getElementById('drawer');
+  const composer=document.getElementById('composer');
+  const open=centerPaneEligible()&&(!drawer.hidden||!composer.hidden);
+  document.body.classList.toggle('center-pane-open',open);
+  if(open) scheduleCenterPaneMetrics(true);
+  else{
+    const root=document.documentElement.style;
+    root.removeProperty('--center-pane-left');
+    root.removeProperty('--center-pane-width');
+    root.removeProperty('--center-pane-top');
+    if(currentView==='home') requestAnimationFrame(()=>plotMap(homeMapRows(homeItems())));
+  }
+  return open;
+}
 function openDrawer(){
   const d=document.getElementById('drawer');
   if(d.hidden){
@@ -2053,6 +2238,7 @@ function openDrawer(){
     if(drawerLocked){ feedScroll=window.scrollY; document.body.classList.add('drawer-open'); }
     d.hidden=false;
   }
+  updateCenterPaneMode();
   d.querySelector('.drawer-panel').scrollTop=0;
 }
 function closeDrawer(){
@@ -2061,6 +2247,7 @@ function closeDrawer(){
   d.hidden=true;
   if(document.getElementById('composer').hidden) document.body.classList.remove('drawer-open');
   if(drawerLocked){ window.scrollTo({top:feedScroll}); drawerLocked=false; }
+  updateCenterPaneMode();
 }
 function selectPost(id,opts){
   if(!id) return;
@@ -2179,7 +2366,8 @@ function renderPlayer(){
       const v=e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?e.video:null;
       const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
       const rx=eventReactionsFor(e.id);
-      el.innerHTML='<div class="player"><div class="ph"><span>Selected entry</span>'+
+      el.innerHTML='<div class="player"><div class="ph"><span>Selected '+
+        (e.type==='podcast'?'episode':'event')+'</span>'+
         '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
         (v?'<div class="frame"><iframe src="'+esc(CLIPSRC[v.kind](v.id))+'" loading="lazy" '+
           'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
@@ -2706,7 +2894,7 @@ function eventRow(e){
     '<span class="row-body">'+
       '<span class="row-top"><span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
       (e.flag==='demo'?'<span class="tag demo">Demo</span>':'')+
-      (e.flag==='unconfirmed'?'<span class="tag unconf">Unconfirmed</span>':'')+
+      (e.flag==='unconfirmed'?'<span class="tag unconf">Rogan unconfirmed</span>':'')+
       '<span class="when">'+esc(when)+'</span></span>'+
       '<span class="row-title">'+esc(e.title)+'</span>'+
       '<span class="row-meta">'+esc(fmt(e.date))+
@@ -3037,7 +3225,7 @@ function renderAnalysis(rows){
 
 // Bound to [data-view], not to a shared class — same reason as the filter
 // rows (see AGENTS.md #2).
-const VIEWS=['home','explore','schedule','insights'];
+const VIEWS=['home','schedule','insights'];
 let currentView='home';
 // The single map node moves between Home's preview and Explore rather than
 // being duplicated — two copies would mean two #pins/#heat and plotMap() would
@@ -3055,12 +3243,12 @@ function showView(name){
     b.setAttribute('aria-pressed',String(b.dataset.view===name)));
   if(name==='insights') renderInsights();
   if(name==='home'){ mountMap('home-map'); renderHome(); }
-  if(name==='explore'){ mountMap('explore-map'); renderExplore(); }
   if(name==='schedule') renderSchedule();
+  updateCenterPaneMode();
   // The map only has a real width once its host is visible, and uiK() reads
   // that width — so re-plot after the swap or every marker is mis-sized
   // (invariant #3).
-  if(name==='explore'||name==='home') requestAnimationFrame(()=>plotMap(lastRows));
+  if(name==='home') requestAnimationFrame(()=>plotMap(homeMapRows(homeItems())));
 }
 document.querySelectorAll('[data-view]').forEach(b=>
   b.addEventListener('click',()=>showView(b.dataset.view)));
@@ -3116,7 +3304,13 @@ function applyHash(){
 window.addEventListener('hashchange',()=>{ applyHash(); });
 
 let rzt;
-window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>plotMap(lastRows),150);});
+window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>{
+  updateCenterPaneMode();
+  if(!document.body.classList.contains('center-pane-open')) plotMap(lastRows);
+},150);});
+window.addEventListener('scroll',()=>{
+  if(document.body.classList.contains('center-pane-open')) scheduleCenterPaneMetrics(false);
+},{passive:true});
 
 /* events */
 // Every control group binds to its own data-attribute, never a shared class —
@@ -3132,6 +3326,43 @@ document.querySelectorAll('[data-hf]').forEach(t=>t.addEventListener('click',()=
 document.querySelectorAll('[data-hs]').forEach(t=>t.addEventListener('click',()=>{
   homeSort=t.dataset.hs; homePage=1; pressGroup('data-hs',t); renderHome();
 }));
+document.getElementById('home-type').addEventListener('change',ev=>{
+  homeFilter=ev.target.value; homePage=1; updateFilterSummary(); renderHome();
+});
+document.getElementById('home-upcoming').addEventListener('change',ev=>{
+  homeUpcoming=ev.target.checked; homePage=1; updateFilterSummary(); renderHome();
+});
+document.getElementById('clear-filters').addEventListener('click',()=>{
+  homeFilter='all'; homeUpcoming=false; homePage=1;
+  document.getElementById('home-type').value='all';
+  document.getElementById('home-upcoming').checked=false;
+  document.getElementById('filter-menu').open=false;
+  updateFilterSummary(); renderHome();
+});
+function setSearchOpen(open){
+  const panel=document.getElementById('home-search'), button=document.getElementById('open-search');
+  panel.hidden=!open; button.setAttribute('aria-expanded',String(open));
+  if(open){ showView('home'); document.getElementById('home-q').focus(); }
+}
+document.getElementById('open-search').addEventListener('click',()=>{
+  setSearchOpen(currentView!=='home'||document.getElementById('home-search').hidden);
+});
+let homeQueryTimer;
+document.getElementById('home-q').addEventListener('input',ev=>{
+  homeQuery=ev.target.value; homePage=1; clearTimeout(homeQueryTimer);
+  homeQueryTimer=setTimeout(renderHome,120);
+});
+document.getElementById('clear-search').addEventListener('click',()=>{
+  homeQuery=''; homePage=1; document.getElementById('home-q').value='';
+  setSearchOpen(false); renderHome();
+});
+document.getElementById('mobile-map-toggle').addEventListener('click',ev=>{
+  const rail=document.querySelector('.maprail');
+  const open=rail.classList.toggle('mobile-collapsed')===false;
+  ev.currentTarget.setAttribute('aria-expanded',String(open));
+  ev.currentTarget.textContent=open?'Hide map':'Map';
+  if(open) requestAnimationFrame(()=>plotMap(homeMapRows(homeItems())));
+});
 document.getElementById('load-more').addEventListener('click',()=>{
   homePage++; renderHome();
 });
@@ -3158,14 +3389,12 @@ document.getElementById('ex-q').addEventListener('input',ev=>{
 document.querySelectorAll('[data-sc]').forEach(t=>t.addEventListener('click',()=>{
   schedScope=t.dataset.sc; pressGroup('data-sc',t); renderSchedule();
 }));
-document.querySelectorAll('[data-sv]').forEach(t=>t.addEventListener('click',()=>{
-  schedView=t.dataset.sv; pressGroup('data-sv',t); renderSchedule();
-}));
 document.querySelectorAll('[data-m]').forEach(t=>t.addEventListener('click',()=>{
   mapmode=t.dataset.m;
   document.querySelectorAll('[data-m]').forEach(x=>x.setAttribute('aria-pressed',String(x===t)));
   document.body.classList.remove('m-both','m-pins','m-heat');
   document.body.classList.add('m-'+mapmode);
+  const menu=t.closest('.maplayers'); if(menu) menu.open=false;
   render();
 }));
 
@@ -3435,7 +3664,7 @@ document.getElementById('insight-player').addEventListener('keydown',ev=>{
 // One composer, two entry points: the global "+ Post" button and the
 // "Post about this" button inside an event or episode drawer, which only
 // differs by presetting the association.
-let postKind='clip';
+let postKind='clip', composerReturnToDetail=false;
 function setPostKind(k){
   postKind=(k==='text')?'text':'clip';
   document.querySelectorAll('[data-pk]').forEach(b=>
@@ -3447,22 +3676,29 @@ function setPostKind(k){
 }
 function openComposer(eventId){
   if(!sb){ alert('Posting is not configured yet.'); return; }
+  // Never stack two drawers. The composer temporarily replaces an open
+  // detail, then returns to it when cancelled or completed.
+  const detail=document.getElementById('drawer');
+  composerReturnToDetail=!detail.hidden&&!!selectedKind;
+  if(!detail.hidden) closeDrawer();
   populateEventPicker();
   const sel=document.getElementById('p-event');
   sel.value=eventId||'';
   document.getElementById('p-name').value=getSavedName();
   document.getElementById('p-err').style.display='none';
   const d=document.getElementById('composer');
-  d.hidden=false; document.body.classList.add('drawer-open');
+  d.hidden=false;
+  const centered=updateCenterPaneMode();
+  document.body.classList.toggle('drawer-open',!centered);
   (postKind==='text'?document.getElementById('p-cap'):document.getElementById('p-vid')).focus();
 }
 function closeComposer(){
   document.getElementById('composer').hidden=true;
-  // Release the scroll lock unless a *modal* drawer is still holding it —
-  // "Post about this" opens the composer over an already-open drawer, and on
-  // desktop that drawer never locked, so the lock must not outlive the form.
-  const d=document.getElementById('drawer');
-  if(d.hidden||!drawerLocked) document.body.classList.remove('drawer-open');
+  document.body.classList.remove('drawer-open');
+  updateCenterPaneMode();
+  const reopen=composerReturnToDetail&&!!selectedKind;
+  composerReturnToDetail=false;
+  if(reopen) openDrawer();
 }
 document.querySelectorAll('[data-pk]').forEach(b=>
   b.addEventListener('click',()=>setPostKind(b.dataset.pk)));
