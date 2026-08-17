@@ -1945,6 +1945,17 @@ function homeUpcomingWhen(it){
   const e=it.post.event_id?allEntries().find(x=>x.id===it.post.event_id):null;
   return e?Date.parse(e.date):it.when;
 }
+// "Latest" means recently posted or announced, not "scheduled for far in the
+// future" — a post's `when` is already its creation time, but an event's
+// `when` is its (often months-out) scheduled date, which would otherwise
+// read as maximally fresh and bury every real post beneath it. Same failure
+// mode hotScore()'s comment describes for Active, just never fixed here.
+// firstSeen is the event equivalent of a post's created_at — when it
+// actually entered this tracker.
+function homeLatestWhen(it){
+  if(it.kind==='post') return it.when;
+  return it.entry.firstSeen?Date.parse(it.entry.firstSeen):it.when;
+}
 function homeItems(){
   const q=homeQuery.trim().toLowerCase();
   let items=hotEntries()
@@ -1952,7 +1963,7 @@ function homeItems(){
     .filter(it=>itemMatches(it,homeFilter))
     .filter(it=>homeSort!=='upcoming'||homeItemIsUpcoming(it))
     .filter(it=>homeItemMatchesQuery(it,q));
-  if(homeSort==='latest') items=items.slice().sort((a,b)=>b.when-a.when);
+  if(homeSort==='latest') items=items.slice().sort((a,b)=>homeLatestWhen(b)-homeLatestWhen(a));
   else if(homeSort==='upcoming') items=items.slice().sort((a,b)=>homeUpcomingWhen(a)-homeUpcomingWhen(b));
   else{
     const fresh=items.filter(isFreshPost).sort((a,b)=>b.when-a.when);
