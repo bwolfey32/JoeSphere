@@ -535,10 +535,11 @@ async function main() {
     process.exit(1);
   }
 
-  // Accruing sources need the previous file even on a clean run, so read it
-  // once here and share it with the carry-forward below.
+  // Read unconditionally now: firstSeen tracking below needs the previous
+  // file's rows on every run, not just when something failed or is accruing.
   const accruing = SOURCES.filter(s => s.accrue && !failed.includes(s));
-  const prev = (failed.length || accruing.length) ? await readExisting() : [];
+  const prev = await readExisting();
+  const prevBySrc = new Map(prev.filter(e => typeof e.src === 'string').map(e => [e.src, e]));
 
   // One source being down must not delete the other's content. Without this,
   // a single flaky fetch republishes the file without those rows and the site
@@ -576,6 +577,27 @@ async function main() {
   const events = all
     .filter(e => !seen.has(e.src) && seen.add(e.src))
     .sort((a, b) => a.date.localeCompare(b.date));
+
+  // firstSeen powers the site's "recently added or updated" signal for
+  // upcoming events (index.html's feedEligible()) — a static site otherwise
+  // has no way to know whether a fight card has been sitting in the feed for
+  // months or just appeared. Carried-forward and accrued rows above already
+  // embed their own firstSeen (they are literally the previous file's row
+  // objects), so only fresh rows from this run's live fetch need it computed:
+  // stamp today's date on a genuinely new src, and again on one whose core
+  // facts changed since last run (a venue confirmed, a date moved) — that is
+  // the "updated" half of the signal. Unchanged rows carry their original
+  // date forward so they don't re-surface every run just for existing.
+  const today = new Date().toISOString().slice(0, 10);
+  for (const e of events) {
+    if (e.firstSeen) continue;
+    const old = prevBySrc.get(e.src);
+    if (old && old.firstSeen && old.date === e.date && old.title === e.title && old.loc === e.loc) {
+      e.firstSeen = old.firstSeen;
+    } else {
+      e.firstSeen = today;
+    }
+  }
 
   const payload = { generated: new Date().toISOString(), events: events };
   // Carry the previous channel block when this run had no key or the call

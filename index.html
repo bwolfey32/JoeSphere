@@ -193,6 +193,7 @@ body.drawer-open{overflow:hidden}
   text-transform:uppercase;margin:11px 0 4px;line-height:1.25}
 .player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
 .player .pstat{font-size:12.5px;color:var(--blue);margin:2px 0 0}
+.player .pcaption{font-size:13.5px;color:var(--ink);line-height:1.5;margin:2px 0 8px}
 .player .pposts{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule)}
 /* A community post is its own thing with its own URL, so each row here opens
    it rather than being inert text. */
@@ -535,6 +536,10 @@ body.m-both #heat{opacity:.8}
   text-transform:uppercase;color:var(--ink);line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .row-meta{font-size:12px;color:var(--ink-soft)}
+/* The poster's own words, under the clip's own title — only rendered when
+   both exist, so a caption never has to sit beneath a duplicate of itself. */
+.row-caption{font-size:12.5px;color:var(--ink);line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 /* Engagement pills — same outlined-pill shape as .tag, plus the tint-fill
    .likebtn/.dislikebtn already use, so a row with reactions/comments reads
    as visually distinct from plain metadata text rather than blending in. */
@@ -617,6 +622,39 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
 .ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--rule)}
 .err{color:var(--stamp);font-size:12.5px;margin-top:9px;display:none}
 
+/* ---------- composer: YouTube find-or-paste ---------- */
+.ytfind{display:flex;gap:8px}
+.ytfind input{flex:1;min-width:0}
+.ytresults{display:flex;flex-direction:column;gap:6px;margin-top:9px;
+  max-height:280px;overflow-y:auto}
+.ytresult{display:flex;gap:10px;align-items:center;width:100%;text-align:left;
+  background:var(--card);border:1px solid var(--rule);padding:6px;cursor:pointer;font:inherit;color:inherit}
+.ytresult:hover{border-color:var(--ink-soft)}
+.ytresult img{width:88px;height:50px;object-fit:cover;flex:0 0 auto;background:#080A0E}
+.ytresult-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ytresult-body b{font-size:13px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;
+  line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ytresult-body span{font-size:11.5px;color:var(--ink-soft)}
+.ytpreview{margin-top:9px}
+.ytpreview-meta{padding:8px 0 0}
+.ytpreview-meta b{display:block;font-size:13.5px;line-height:1.3;margin-bottom:2px}
+.ytpreview-meta>span{font-size:12px;color:var(--ink-soft)}
+.ytpreview-actions{display:flex;gap:12px;align-items:center;margin-top:6px;flex-wrap:wrap}
+
+/* ---------- composer: attach chip + results ---------- */
+.chiprow{margin-bottom:7px}
+.chip{display:inline-flex;align-items:center;gap:7px;background:var(--card);
+  border:1px solid var(--rule);padding:6px 8px;font-size:13px;max-width:100%}
+.chip-x{background:none;border:none;color:var(--ink-soft);cursor:pointer;
+  font-size:16px;line-height:1;padding:0;flex:0 0 auto}
+.chip-x:hover{color:var(--ink)}
+.evresults{display:flex;flex-direction:column;gap:1px;margin-top:6px;
+  max-height:220px;overflow-y:auto;background:var(--rule)}
+.evresult{display:block;width:100%;text-align:left;background:var(--card);
+  border:none;padding:8px 9px;font:inherit;color:inherit;font-size:13px;cursor:pointer}
+.evresult:hover{background:var(--paper-2)}
+.evresult span{color:var(--ink-soft);font-size:12px}
+
 /* ---------- empty / loading ---------- */
 .empty{
   border:1px dashed var(--rule);padding:34px 20px;text-align:center;
@@ -654,8 +692,12 @@ footer{
    needs a visible keyboard ring and a finger-sized hit area on a phone. */
 .nowcell:focus-visible,.ppost:focus-visible,.paneclose:focus-visible,
 .linkish:focus-visible,.about>summary:focus-visible,
-.method>summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.method>summary:focus-visible,.ytresult:focus-visible,.evresult:focus-visible,
+.chip-x:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 @media(max-width:640px){
+  .ytresult{padding:8px}
+  .evresult{padding:11px 9px}
+  .chip-x{min-width:28px;min-height:28px}
   .tab,.mini,.viewtab{min-height:40px}
   .nowcell{min-height:56px}
   .ppost{padding:9px 0}
@@ -720,6 +762,7 @@ footer{
 .checkrow{display:flex;align-items:center;gap:9px;color:var(--ink);font-size:13px;
   cursor:pointer;text-transform:none!important;letter-spacing:0!important}
 .checkrow input{width:auto;margin:0;accent-color:var(--stamp)}
+.home-search[hidden]{display:none}
 .home-search{display:flex;align-items:center;gap:8px;margin:0 0 12px}
 .home-search input{flex:1;min-width:0}
 .mobile-map-toggle{display:none}
@@ -1180,18 +1223,30 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         <input type="text" id="p-name" placeholder="How you'll appear on your posts" maxlength="40">
       </div>
       <div class="field" id="p-vid-field">
-        <label for="p-vid">Clip link</label>
-        <input type="text" id="p-vid" placeholder="https://youtu.be/…" spellcheck="false">
+        <label for="p-yt-q">Find or paste a YouTube clip</label>
+        <div class="ytfind">
+          <input type="text" id="p-yt-q" placeholder="Paste a youtu.be link, or search — e.g. “fight companion”"
+            spellcheck="false" autocomplete="off">
+          <button class="mini ghost" id="p-yt-search-btn" type="button" disabled>Search</button>
+        </div>
+        <p class="hint" id="p-yt-hint" style="margin:6px 0 0">Searches are scoped to Joe Rogan content and
+          limited per day — paste a link directly if search is unavailable. TikTok and Vimeo links work too,
+          just without the search/preview.</p>
+        <div class="err" id="p-yt-err" style="display:none"></div>
+        <div id="p-yt-results" class="ytresults" hidden></div>
+        <div id="p-yt-preview" class="ytpreview" hidden></div>
       </div>
       <div class="field">
         <label for="p-cap" id="p-cap-label">Caption</label>
         <textarea id="p-cap" maxlength="500" placeholder="What's happening in this clip…"></textarea>
       </div>
       <div class="field">
-        <label for="p-event">Attach to an event or episode
+        <label for="p-event-q">Attach to an event or episode
           <span style="text-transform:none;letter-spacing:0">— optional</span></label>
-        <input type="search" id="p-event-q" placeholder="Search to attach…" spellcheck="false">
-        <select id="p-event"><option value="">— none —</option></select>
+        <div id="p-event-chip" class="chiprow" hidden></div>
+        <input type="hidden" id="p-event" value="">
+        <input type="search" id="p-event-q" placeholder="Search to attach…" spellcheck="false" autocomplete="off">
+        <div id="p-event-results" class="evresults" hidden></div>
       </div>
       <div class="err" id="p-err"></div>
       <div class="actions">
@@ -1230,6 +1285,14 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //     -- post (both null). The caption carries the text either way.
 //     video_kind text check (video_kind in ('yt','tt','vm')),
 //     video_id text check (video_id ~ '^[A-Za-z0-9_-]+$'),
+//     -- Descriptive only, never trusted for anything that reaches an iframe
+//     -- or an href — the embed is always rebuilt from video_kind/video_id
+//     -- (parseVideo0, CLIPSRC), same as everywhere else in this file. Only
+//     -- ever populated from the youtube-search Edge Function's response, so
+//     -- only ever set when video_kind='yt'; null for tt/vm and text posts.
+//     video_title text,
+//     video_channel text,
+//     video_published text,
 //     event_id text,
 //     created_at timestamptz not null default now(),
 //     constraint posts_video_pair check (
@@ -1237,12 +1300,15 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //       (video_kind is not null and video_id is not null)
 //     )
 //   );
-//   -- Migrating a project created before text posts existed:
+//   -- Migrating a project created before text posts / clip metadata existed:
 //   --   alter table posts alter column video_kind drop not null;
 //   --   alter table posts alter column video_id   drop not null;
 //   --   alter table posts add constraint posts_video_pair check (
 //   --     (video_kind is null and video_id is null) or
 //   --     (video_kind is not null and video_id is not null));
+//   --   alter table posts add column video_title text;
+//   --   alter table posts add column video_channel text;
+//   --   alter table posts add column video_published text;
 //   -- a comment targets either a Fan Post (post_id) or a tracker event
 //   -- (event_id, a plain string matching that event's client-side id — events
 //   -- live in events.json/localStorage, not in Supabase, so no FK there) —
@@ -1690,27 +1756,8 @@ async function loadPosts(){
   if(!selectedPostId) applyHash();
 }
 
-// `q` narrows the list as you type. With a deep episode archive an unfiltered
-// select is thousands of options long, which is unusable on a phone; the
-// currently-selected entry is always kept in the list so a preset association
-// can't be silently dropped by a filter that doesn't match it.
-function populateEventPicker(q){
-  const sel=document.getElementById('p-event');
-  if(!sel) return;
-  const cur=sel.value;
-  const needle=(q||'').trim().toLowerCase();
-  let rows=sorted();
-  if(needle) rows=rows.filter(e=>e.id===cur||e.title.toLowerCase().includes(needle)||
-    (e.loc||'').toLowerCase().includes(needle));
-  rows=rows.slice(0,200);
-  if(cur&&!rows.some(e=>e.id===cur)){
-    const keep=allEntries().find(e=>e.id===cur);
-    if(keep) rows.unshift(keep);
-  }
-  sel.innerHTML='<option value="">— none —</option>'+
-    rows.map(e=>'<option value="'+esc(e.id)+'">'+esc(e.title)+'</option>').join('');
-  sel.value=cur;
-}
+// The event/episode attach picker is `setComposerEvent()`/`renderEventResults()`
+// now (search results + a removable chip) — see the composer section below.
 
 // video_kind/video_id come back from Supabase as untrusted as events.json feed
 // data — re-validate with the same charset check before ever building a clip URL.
@@ -1722,6 +1769,11 @@ function postRow(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
   const ev=p.event_id?allEntries().find(e=>e.id===p.event_id):null;
   const yt=vid&&vid.kind==='yt'?vid.id:null;
+  // The clip's own title leads when we have one (search/paste-lookup posts);
+  // older posts and text posts have no separate title, so the caption is the
+  // whole card the way it always was. Never show the same words twice.
+  const heading=p.video_title||p.caption||'(no caption)';
+  const showCaption=!!(p.video_title&&p.caption);
   // A text post has no clip; the thumb falls back to a TEXT marker so the row
   // keeps the same shape as every other card in the feed.
   return '<button class="row'+(selectedPostId===p.id?' sel':'')+'" data-post="'+esc(p.id)+'">'+
@@ -1734,8 +1786,10 @@ function postRow(p){
       '<span class="row-top"><span class="tag post">Post</span>'+
         (ev?'<span class="tag ptag">'+esc(ev.title.slice(0,30))+'</span>':'')+
         '<span class="when">'+esc(fmt(String(p.created_at).slice(0,10)))+'</span></span>'+
-      '<span class="row-title">'+esc(p.caption||'(no caption)')+'</span>'+
-      '<span class="row-meta">'+esc(p.author_label||'Fan')+'</span>'+
+      '<span class="row-title">'+esc(heading)+'</span>'+
+      (showCaption?'<span class="row-caption">'+esc(p.caption)+'</span>':'')+
+      '<span class="row-meta">'+esc(p.author_label||'Fan')+
+        (p.video_channel?' · '+esc(p.video_channel):'')+'</span>'+
       ((p.ups||p.downs||p.comments.length)?'<span class="row-stats">'+
         (p.ups?'<span class="stat-pill up">▲ '+p.ups+'</span>':'')+
         (p.downs?'<span class="stat-pill down">▼ '+p.downs+'</span>':'')+
@@ -1748,6 +1802,8 @@ function postPaneHTML(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
   const ev=p.event_id?allEntries().find(e=>e.id===p.event_id):null;
   const mine=!!(session&&session.user&&p.author_id===session.user.id);
+  const heading=p.video_title||p.caption||'(no caption)';
+  const showCaption=!!(p.video_title&&p.caption);
   return '<div class="player"><div class="ph"><span>Selected post</span>'+
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
     (vid&&CLIPSRC[vid.kind]?
@@ -1755,13 +1811,21 @@ function postPaneHTML(p){
       'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
       'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
       'title="'+esc(CLIPNAME[vid.kind])+' clip"></iframe></div>':'')+
-    '<h4>'+esc(p.caption||'(no caption)')+'</h4>'+
+    '<h4>'+esc(heading)+'</h4>'+
+    (showCaption?'<p class="pcaption">'+esc(p.caption)+'</p>':'')+
     '<p class="pmeta">'+esc(p.author_label||'Fan')+' · '+
-      esc(fmt(String(p.created_at).slice(0,10)))+'</p>'+
+      esc(fmt(String(p.created_at).slice(0,10)))+
+      (p.video_channel?' · '+esc(p.video_channel):'')+'</p>'+
     // The association is a way through to the parent, not just a label.
     (ev?'<p class="pstat">About: <button class="linkish" data-goto="'+esc(ev.id)+'">'+
       esc(ev.title)+'</button></p>':'')+
     '<div class="pactions">'+
+      // Offered unconditionally, same reasoning as the composer's preview:
+      // there is no reliable way from outside the iframe to tell "embedding
+      // disabled" apart from "still loading", so the fallback can't be
+      // gated on a failure this page cannot actually detect.
+      (vid&&vid.kind==='yt'?'<a class="mini ghost" href="https://youtu.be/'+esc(vid.id)+
+        '" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>':'')+
       '<button class="mini ghost likebtn'+(p.myVote===1?' liked':'')+'" data-postlike="'+esc(p.id)+'">▲ '+(p.ups||0)+'</button>'+
       '<button class="mini ghost dislikebtn'+(p.myVote===-1?' disliked':'')+'" data-postdislike="'+esc(p.id)+'">▼ '+(p.downs||0)+'</button>'+
       '<button class="mini ghost" data-sharepost="'+esc(p.id)+'">Copy link</button>'+
@@ -1844,14 +1908,35 @@ function homeItemIsUpcoming(it){
 function homeItemMatchesQuery(it,q){
   if(!q) return true;
   const hay=it.kind==='post'
-    ? (it.post.caption||'')+' '+(it.post.author_label||'')+' '+
+    ? (it.post.caption||'')+' '+(it.post.video_title||'')+' '+(it.post.author_label||'')+' '+
       ((it.post.event_id&&allEntries().find(e=>e.id===it.post.event_id)||{}).title||'')
     : it.entry.title+' '+(it.entry.loc||'')+' '+(it.entry.note||'');
   return hay.toLowerCase().includes(q);
 }
+
+// Schedule is the complete record — every announced date, unfiltered. Feed is
+// current activity, and an upcoming card sitting quietly four months out
+// doesn't qualify as that just because it exists. Past entries and every post
+// are always eligible: a post is the whole point of the feed, and a past
+// event is a record, the same as a released episode.
+function eventIsRecent(e){
+  return !!e.firstSeen && daysTo(e.firstSeen)>=-7;
+}
+function feedEligible(it){
+  if(it.kind==='post') return true;
+  const e=it.entry, n=daysTo(e.date);
+  if(n<0) return true;
+  if(n<=7) return true;
+  if(eventIsRecent(e)) return true;
+  if((eventCommentCount(e.id)||0)>0) return true;
+  if((postCountFor(e.id)||0)>0) return true;
+  const rx=eventReactionsFor(e.id);
+  return (rx.ups||0)>0||(rx.downs||0)>0;
+}
 function homeItems(){
   const q=homeQuery.trim().toLowerCase();
   let items=hotEntries()
+    .filter(feedEligible)
     .filter(it=>itemMatches(it,homeFilter))
     .filter(it=>!homeUpcoming||homeItemIsUpcoming(it))
     .filter(it=>homeItemMatchesQuery(it,q));
@@ -2330,7 +2415,8 @@ document.getElementById('drawer').addEventListener('click',ev=>{
 document.addEventListener('keydown',ev=>{
   if(ev.key!=='Escape') return;
   if(!document.getElementById('composer').hidden){ closeComposer(); return; }
-  if(!document.getElementById('drawer').hidden) clearSelection();
+  if(!document.getElementById('drawer').hidden){ clearSelection(); return; }
+  if(!document.getElementById('home-search').hidden){ setSearchOpen(false); return; }
 });
 
 // What the pane is currently showing. Rebuilding its innerHTML replaces the
@@ -3693,6 +3779,16 @@ document.getElementById('insight-player').addEventListener('keydown',ev=>{
 // "Post about this" button inside an event or episode drawer, which only
 // differs by presetting the association.
 let postKind='clip', composerReturnToDetail=false;
+// The clip actually attached to this draft — the source of truth for
+// publishing, not whatever text happens to be sitting in the search box.
+// null while nothing is picked; {kind,id,title,channel,publishedAt} once it
+// is. title/channel/publishedAt are only ever populated for kind==='yt' —
+// see the youtube-search Edge Function.
+let composerClip=null;
+// The event/episode this draft is attached to, or '' for none. Mirrored into
+// the hidden #p-event input so the submit handler has one place to read it.
+let composerEventId='';
+
 function setPostKind(k){
   postKind=(k==='text')?'text':'clip';
   document.querySelectorAll('[data-pk]').forEach(b=>
@@ -3702,6 +3798,195 @@ function setPostKind(k){
   document.getElementById('p-cap').placeholder=postKind==='text'
     ? 'Say something worth its own thread…' : "What's happening in this clip…";
 }
+
+/* ---- YouTube find-or-paste ---- */
+// Thumbnails are never taken from the API or stored — built from the id
+// alone, the same way every other YouTube thumbnail in this file is (see
+// eventRow()/postRow()), so there is one fewer URL anyone has to trust.
+function ytThumb(id){ return 'https://i.ytimg.com/vi/'+id+'/mqdefault.jpg'; }
+
+function ytError(msg){
+  const el=document.getElementById('p-yt-err');
+  if(!msg){ el.style.display='none'; el.textContent=''; return; }
+  el.textContent=msg; el.style.display='block';
+}
+
+// clip: {kind,id,title,channel,publishedAt} or null. Rendering the preview is
+// the one place that actually needs an embed, so it is built the same way
+// every other clip in this app is — CLIPSRC rebuilds the URL from kind+id,
+// never from anything typed or fetched (invariant #1).
+function setClipPreview(clip){
+  composerClip=clip;
+  const box=document.getElementById('p-yt-preview');
+  if(!clip){ box.hidden=true; box.innerHTML=''; return; }
+  box.hidden=false;
+  const title=clip.title||(clip.kind==='yt'?'(fetching title…)':CLIPNAME[clip.kind]+' clip');
+  box.innerHTML='<div class="frame"><iframe src="'+esc(CLIPSRC[clip.kind](clip.id))+'" loading="lazy" '+
+    'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
+    'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
+    'title="'+esc(title)+'"></iframe></div>'+
+    '<div class="ytpreview-meta"><b>'+esc(title)+'</b>'+
+    (clip.channel?'<span>'+esc(clip.channel)+(clip.publishedAt?' · '+esc(fmt(clip.publishedAt)):'')+'</span>':'')+
+    '<span class="ytpreview-actions">'+
+    // A stable "watch elsewhere" link matters most exactly when the embed
+    // above doesn't work — a private/removed video, or embedding turned off
+    // by the uploader — which this app has no reliable way to detect from
+    // outside the iframe, so the link is offered unconditionally rather than
+    // only on a failure it cannot actually observe.
+    (clip.kind==='yt'?'<a href="https://youtu.be/'+esc(clip.id)+'" target="_blank" '+
+      'rel="noopener noreferrer" class="linkish">Watch on YouTube</a>':'')+
+    '<button type="button" class="linkish" id="p-yt-clear">Change clip</button></span></div>';
+  document.getElementById('p-yt-clear').addEventListener('click',()=>{
+    setClipPreview(null);
+    const q=document.getElementById('p-yt-q'); q.value=''; q.focus();
+    document.getElementById('p-yt-search-btn').disabled=true;
+  });
+}
+
+async function callYouTubeSearch(payload){
+  if(!sb) throw new Error('Search is not configured.');
+  if(!session||!session.user) throw new Error('Still connecting — try again in a second.');
+  const {data,error}=await sb.functions.invoke('youtube-search',{body:payload});
+  // functions.invoke() only rejects on a genuine transport failure (network
+  // down, function missing) — this project's function always answers 200
+  // with an {ok:false} body for anything else, so both paths funnel through
+  // the same message here rather than the caller needing to check two shapes.
+  if(error) throw new Error('Could not reach search right now.');
+  if(!data||!data.ok) throw new Error((data&&data.message)||'Search failed.');
+  // The edge function response is a network boundary the same way Supabase-
+  // stored posts are (invariant #1) — every id is about to build an iframe
+  // src, so it gets the same strict-charset revalidation as a pasted URL or
+  // a feed row, not trusted just because our own function sent it.
+  return (data.results||[]).filter(r=>r&&/^[A-Za-z0-9_-]{11}$/.test(r.id));
+}
+
+function renderYtResults(results){
+  const el=document.getElementById('p-yt-results');
+  el.hidden=false;
+  if(!results.length){
+    el.innerHTML='<p class="hint" style="margin:0">No embeddable results. Try different words, or paste a link.</p>';
+    el.__results=[];
+    return;
+  }
+  el.__results=results;
+  el.innerHTML=results.map(r=>
+    '<button type="button" class="ytresult" data-ytpick="'+esc(r.id)+'">'+
+      '<img loading="lazy" alt="" src="'+esc(ytThumb(r.id))+'">'+
+      '<span class="ytresult-body"><b>'+esc(r.title)+'</b>'+
+      '<span>'+esc(r.channel)+(r.publishedAt?' · '+esc(fmt(r.publishedAt)):'')+'</span></span>'+
+    '</button>').join('');
+}
+
+async function runYtSearch(q){
+  ytError('');
+  const btn=document.getElementById('p-yt-search-btn');
+  if(btn.disabled) return; // already mid-search, or the box is empty/a URL
+  btn.disabled=true; btn.textContent='Searching…';
+  document.getElementById('p-yt-results').hidden=true;
+  try{ renderYtResults(await callYouTubeSearch({q})); }
+  catch(e){ ytError(e.message||'Search failed.'); }
+  finally{ btn.disabled=false; btn.textContent='Search'; }
+}
+
+// A pasted link gets its embed instantly from the id alone — the part that
+// matters most (does the clip play) needs no network round trip — and the
+// title/channel/date are filled in a moment later, best-effort, once the
+// lookup resolves.
+async function tryYtLookup(id){
+  ytError('');
+  setClipPreview({kind:'yt',id,title:'',channel:'',publishedAt:''});
+  try{
+    const results=await callYouTubeSearch({id});
+    if(results[0]) setClipPreview(Object.assign({kind:'yt'},results[0]));
+    else ytError('That link looks right, but YouTube reports this video can’t be embedded, '+
+      'or it no longer exists. You can still post it — double-check the link first.');
+  }catch(e){
+    ytError('Could not fetch this clip’s details (' + (e.message||'unknown error') +
+      ') — the preview above should still play.');
+  }
+}
+
+document.getElementById('p-yt-q').addEventListener('input',ev=>{
+  const val=ev.target.value.trim();
+  const btn=document.getElementById('p-yt-search-btn');
+  document.getElementById('p-yt-results').hidden=true;
+  ytError('');
+  const vid=parseVideo(val);
+  if(vid&&vid.kind==='yt'){ btn.disabled=true; tryYtLookup(vid.id); return; }
+  if(vid){ btn.disabled=true; setClipPreview({kind:vid.kind,id:vid.id,title:'',channel:'',publishedAt:''}); return; }
+  setClipPreview(null);
+  // Searches only run on Enter/Search, never per keystroke — this just says
+  // whether there is enough here to search for.
+  btn.disabled=val.length<2;
+});
+document.getElementById('p-yt-q').addEventListener('keydown',ev=>{
+  if(ev.key!=='Enter') return;
+  ev.preventDefault();
+  if(!document.getElementById('p-yt-search-btn').disabled) runYtSearch(ev.target.value.trim());
+});
+document.getElementById('p-yt-search-btn').addEventListener('click',()=>{
+  const val=document.getElementById('p-yt-q').value.trim();
+  if(val) runYtSearch(val);
+});
+document.getElementById('p-yt-results').addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-ytpick]'); if(!b) return;
+  const picked=(document.getElementById('p-yt-results').__results||[]).find(r=>r.id===b.dataset.ytpick);
+  if(!picked) return;
+  setClipPreview(Object.assign({kind:'yt'},picked));
+  document.getElementById('p-yt-results').hidden=true;
+  document.getElementById('p-yt-q').value=picked.title;
+  document.getElementById('p-yt-search-btn').disabled=true;
+  document.getElementById('p-cap').focus();
+});
+
+/* ---- event/episode attachment: search results + a removable chip ---- */
+function setComposerEvent(id){
+  composerEventId=id||'';
+  document.getElementById('p-event').value=composerEventId;
+  const chip=document.getElementById('p-event-chip');
+  const q=document.getElementById('p-event-q');
+  const ev=composerEventId?allEntries().find(e=>e.id===composerEventId):null;
+  if(ev){
+    chip.hidden=false;
+    chip.innerHTML='<span class="chip">'+esc(ev.title)+
+      '<button type="button" class="chip-x" id="p-event-chip-x" aria-label="Remove attachment">×</button></span>';
+    document.getElementById('p-event-chip-x').addEventListener('click',()=>setComposerEvent(''));
+    q.value=''; q.hidden=true;
+    document.getElementById('p-event-results').hidden=true;
+  }else{
+    chip.hidden=true; chip.innerHTML='';
+    q.hidden=false;
+  }
+}
+// Capped at 8 — this is a quick "is it this one" check, not a full search
+// (Explore's search covers the exhaustive case).
+function renderEventResults(q){
+  const el=document.getElementById('p-event-results');
+  const needle=q.trim().toLowerCase();
+  if(!needle){ el.hidden=true; el.innerHTML=''; return; }
+  const rows=sorted().filter(e=>e.title.toLowerCase().includes(needle)||
+    (e.loc||'').toLowerCase().includes(needle)).slice(0,8);
+  el.hidden=false;
+  el.innerHTML=rows.length
+    ? rows.map(e=>'<button type="button" class="evresult" data-evpick="'+esc(e.id)+'">'+
+        esc(e.title)+(e.loc?' <span>'+esc(cityLabel(e.loc))+'</span>':'')+'</button>').join('')
+    : '<p class="hint" style="margin:0">No matches.</p>';
+}
+document.getElementById('p-event-q').addEventListener('input',ev=>{ renderEventResults(ev.target.value); });
+document.getElementById('p-event-results').addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-evpick]'); if(!b) return;
+  setComposerEvent(b.dataset.evpick);
+});
+
+function resetComposerFields(){
+  setClipPreview(null);
+  document.getElementById('p-yt-q').value='';
+  document.getElementById('p-yt-search-btn').disabled=true;
+  document.getElementById('p-yt-results').hidden=true;
+  ytError('');
+  document.getElementById('p-cap').value='';
+}
+
 function openComposer(eventId){
   if(!sb){ alert('Posting is not configured yet.'); return; }
   // Never stack two drawers. The composer temporarily replaces an open
@@ -3709,16 +3994,15 @@ function openComposer(eventId){
   const detail=document.getElementById('drawer');
   composerReturnToDetail=!detail.hidden&&!!selectedKind;
   if(!detail.hidden) closeDrawer();
-  populateEventPicker();
-  const sel=document.getElementById('p-event');
-  sel.value=eventId||'';
+  resetComposerFields();
+  setComposerEvent(eventId||'');
   document.getElementById('p-name').value=getSavedName();
   document.getElementById('p-err').style.display='none';
   const d=document.getElementById('composer');
   d.hidden=false;
   const centered=updateCenterPaneMode();
   document.body.classList.toggle('drawer-open',!centered);
-  (postKind==='text'?document.getElementById('p-cap'):document.getElementById('p-vid')).focus();
+  (postKind==='text'?document.getElementById('p-cap'):document.getElementById('p-yt-q')).focus();
 }
 function closeComposer(){
   document.getElementById('composer').hidden=true;
@@ -3734,10 +4018,6 @@ document.getElementById('open-post').addEventListener('click',()=>openComposer('
 document.getElementById('composer').addEventListener('click',ev=>{
   if(ev.target.closest('[data-closecomposer]')) closeComposer();
 });
-// Typing filters the attach list rather than making you scroll 1,400 options.
-document.getElementById('p-event-q').addEventListener('input',ev=>{
-  populateEventPicker(ev.target.value);
-});
 document.getElementById('post-submit').addEventListener('click',async()=>{
   const err=document.getElementById('p-err');
   const show=msg=>{err.textContent=msg;err.style.display='block';};
@@ -3747,8 +4027,8 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
   const cap=document.getElementById('p-cap').value.trim();
   let vid=null;
   if(postKind==='clip'){
-    vid=parseVideo(document.getElementById('p-vid').value.trim());
-    if(!vid) return show('That clip link is not a recognized YouTube, TikTok or Vimeo URL.');
+    if(!composerClip||!composerClip.id) return show('Find or paste a clip first.');
+    vid=composerClip;
     if(!cap) return show('Add a short caption.');
   }else{
     // A text post has to carry its own weight — it is a thread starter, not a
@@ -3764,10 +4044,12 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
     const {error}=await sb.from('posts').insert({
       author_id:session.user.id, author_label:name, caption:cap,
       video_kind:vid?vid.kind:null, video_id:vid?vid.id:null,
-      event_id:document.getElementById('p-event').value||null
+      video_title:(vid&&vid.kind==='yt')?(vid.title||null):null,
+      video_channel:(vid&&vid.kind==='yt')?(vid.channel||null):null,
+      video_published:(vid&&vid.kind==='yt')?(vid.publishedAt||null):null,
+      event_id:composerEventId||null
     });
     if(error) throw error;
-    document.getElementById('p-vid').value=''; document.getElementById('p-cap').value='';
     closeComposer();
     await loadPosts();
   }catch(e){ show('Could not post: '+(e.message||'unknown error')); }
