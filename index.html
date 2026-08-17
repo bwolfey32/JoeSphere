@@ -194,6 +194,15 @@ body.drawer-open{overflow:hidden}
 .player .pmeta{font-size:12.5px;color:var(--ink-soft);margin:0 0 3px}
 .player .pstat{font-size:12.5px;color:var(--blue);margin:2px 0 0}
 .player .pcaption{font-size:13.5px;color:var(--ink);line-height:1.5;margin:2px 0 8px}
+/* On a post, the caption IS the headline — the largest text in the pane, above
+   the embed. The clip's own title drops to provenance in .psource below it. */
+.player .pcaption.lead{font-size:15.5px;line-height:1.45;margin:4px 0 11px}
+.player .pauthor{font-size:12.5px;color:var(--ink-soft);margin:0 0 2px}
+.player .pauthor b{color:var(--blue);font-weight:400;font-style:italic}
+.player .psource{font-size:12px;color:var(--ink-soft);margin:7px 0 0}
+/* "No location attached" and the episode's venue note: present, but plainly
+   secondary to a real sourced place. */
+.player .pstat.muted{color:var(--ink-soft)}
 .player .pposts{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule)}
 /* A community post is its own thing with its own URL, so each row here opens
    it rather than being inert text. */
@@ -313,6 +322,12 @@ body.drawer-open{overflow:hidden}
 .pin.sel circle{fill:var(--blue);stroke:#0F1218}
 .pin:focus{outline:none}
 .pin:focus-visible circle{stroke:var(--blue);stroke-width:3}
+/* Dimmed = matched by the type filter but not by the current search. Opacity
+   only, never a smaller radius: marker size is computed in screen pixels from
+   uiK() and shrinking it here would undo that (invariant #3). Not a result, so
+   not a target either — pointer-events off and out of the tab order. */
+.pin.dim circle,.pin.dim .pin-cmt{opacity:.26}
+.pin.dim{pointer-events:none}
 /* "Has comments" banner — color only, size is set in JS via uiK() (invariant
    #3). pointer-events:none so it doesn't create a second dead zone inside
    the pin's existing hit-circle. */
@@ -536,19 +551,60 @@ body.m-both #heat{opacity:.8}
   text-transform:uppercase;color:var(--ink);line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .row-meta{font-size:12px;color:var(--ink-soft)}
-/* The poster's own words, under the clip's own title — only rendered when
-   both exist, so a caption never has to sit beneath a duplicate of itself. */
-.row-caption{font-size:12.5px;color:var(--ink);line-height:1.35;
-  display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-/* Engagement pills — same outlined-pill shape as .tag, plus the tint-fill
-   .likebtn/.dislikebtn already use, so a row with reactions/comments reads
-   as visually distinct from plain metadata text rather than blending in. */
-.row-stats{display:flex;gap:5px;flex-wrap:wrap;margin-top:1px}
+/* A post card is the row plus an action row beneath it. They are SIBLINGS,
+   not nested: .row is a <button>, and a <button> inside a <button> is not
+   parseable — the browser closes the outer one and the card falls apart. This
+   shape keeps the row element (and every selector, handler and .sel rule that
+   depends on it) exactly as it was while still giving posts React/Comment/Share. */
+.pcard{border-bottom:1px solid var(--rule)}
+.pcard:last-child{border-bottom:none}
+.pcard .row{border-bottom:none}
+.row-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  padding:0 12px 9px 128px}
+.rowact{background:none;border:none;color:var(--ink-soft);font:inherit;font-size:12px;
+  cursor:pointer;padding:5px 2px}
+.rowact:hover{color:var(--ink);text-decoration:underline}
+/* The poster's name and when they posted, above their words. */
+.row-byline{font-size:12px;color:var(--ink-soft)}
+.row-byline b{color:var(--blue);font-weight:400;font-style:italic}
+/* The caption LEADS a post card, in body mono at reading size. Deliberately not
+   Oswald: the condensed uppercase face is reserved for official titles, content
+   types and labels, so type alone now says whether a card is a record or a
+   person talking. Events keep .row-title. */
+.row-lead{font-size:14.5px;line-height:1.4;color:var(--ink);
+  display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* The imported clip title and channel are provenance now, not the headline. */
+.row-source{font-size:11.5px;color:var(--ink-soft);
+  display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.row-attach{font-size:11.5px;color:var(--blue)}
+/* Upcoming promotes the countdown and the venue out of the metadata line. */
+.row-count{font-family:"Oswald",Impact,sans-serif;font-size:12.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--stamp)}
+.tag.fresh{color:var(--mid);border-color:rgba(255,176,46,.55);background:rgba(255,176,46,.12)}
+/* Events under an Upcoming header: indentation and one rule, not a second card
+   border — the group is already visually one thing. */
+.upgroup{margin-bottom:14px}
+.upgroup-posts{margin:0 0 0 16px;padding-left:12px;border-left:1px solid var(--rule)}
+.upgroup-posts .pcard{border-bottom:none}
+.upgroup-posts .row-actions{padding-left:128px}
+/* Briefly outlined when something else (a map pin, a shared link) selects it. */
+.row.flash{outline:2px solid var(--blue);outline-offset:-2px}
+/* Engagement pills — same outlined-pill shape as .tag, plus a tint fill, so a
+   row with reactions or comments reads as visually distinct from plain
+   metadata text rather than blending in. */
+.row-stats{display:flex;gap:5px;flex-wrap:wrap;margin-top:1px;align-items:center}
+.stat-rx{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.04em;
+  padding:2px 7px;border:1px solid var(--rule);color:var(--ink-soft);font-weight:700;
+  display:inline-flex;align-items:center;gap:4px}
+.stat-rx.mine{border-color:var(--stamp);background:rgba(255,65,39,.12);color:var(--ink)}
 .stat-pill{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.04em;
   padding:2px 7px;border:1px solid currentColor;font-weight:700;display:inline-flex;align-items:center}
-.stat-pill.up{color:var(--stamp);border-color:rgba(255,65,39,.45);background:rgba(255,65,39,.10)}
-.stat-pill.down{color:var(--blue);border-color:rgba(61,214,196,.45);background:rgba(61,214,196,.10)}
 .stat-pill.comments{color:var(--mid);border-color:rgba(255,176,46,.45);background:rgba(255,176,46,.10)}
+@media(max-width:520px){
+  .row-lead{font-size:13.5px;-webkit-line-clamp:2;line-clamp:2}
+  .row-actions{padding-left:12px}
+  .upgroup-posts .row-actions{padding-left:12px}
+}
 @media(max-width:520px){
   .row-thumb{flex-basis:76px;height:44px}
   .row-title{font-size:13px}
@@ -570,6 +626,27 @@ body.m-both #heat{opacity:.8}
 }
 .c-form{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
 .c-form input[type=text]{flex:1 1 200px;min-width:0}
+/* React + Reply, under each comment. */
+.c-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:5px}
+/* Replies indent under their parent and do NOT repeat the parent's blue rail —
+   one level of nesting should read as one level, not as two stacked threads. */
+.c-replies{margin:7px 0 0 14px;padding-left:10px;border-left:1px solid var(--rule)}
+.c-replies .c{border-left:none;padding-left:0;margin-bottom:7px}
+.c-more{background:none;border:none;color:var(--blue);font:inherit;font-size:12px;
+  cursor:pointer;padding:4px 0;text-decoration:underline}
+.c-replyform{margin:8px 0 0 14px;padding-left:10px;border-left:1px solid var(--rule)}
+.c-replyform textarea{resize:vertical;min-height:44px}
+.c-replyform-actions{display:flex;gap:7px;margin-top:6px}
+/* The comment box, pinned to the bottom of the open detail panel. Sticky works
+   directly inside .drawer-panel's existing overflow-y:auto — no flex column and
+   no second scroll container needed. */
+#pane-composer{position:sticky;bottom:0;z-index:2;background:var(--paper);
+  border-top:1px solid var(--rule);padding:10px 15px 12px;margin-top:10px}
+#pane-composer[hidden]{display:none}
+.pc-row{display:flex;gap:7px;align-items:flex-start}
+.pc-row+.pc-row{margin-top:7px}
+#pc-name{max-width:190px}
+#pc-body{resize:vertical;min-height:38px}
 input[type=text],input[type=date],textarea,select{
   font-family:inherit;font-size:13.5px;padding:7px 9px;color:var(--ink);
   background:#11151C;border:1px solid var(--rule);border-radius:0;width:100%;
@@ -584,19 +661,43 @@ textarea{resize:vertical;min-height:64px}
 /* ---------- fan posts ---------- */
 .ptag{color:var(--blue);font-size:11px;letter-spacing:.06em;border:1px solid var(--rule);
   padding:2px 7px;text-transform:none}
-/* Two classes each so this beats .ghost's same-specificity 1px/transparent
-   default regardless of source order — these should read as vote controls
-   at rest, not just when toggled, unlike the plain "Copy link" ghost button
-   next to them. Tint + border follow the same low-opacity-fill convention
-   the Unconfirmed badge already uses (see .stamp), just for a smaller control. */
-.mini.likebtn{color:var(--stamp);border-color:rgba(255,65,39,.45);
-  background:rgba(255,65,39,.10);font-weight:700}
-.mini.dislikebtn{color:var(--blue);border-color:rgba(61,214,196,.45);
-  background:rgba(61,214,196,.10);font-weight:700}
-.mini.likebtn:hover{border-color:var(--stamp);background:rgba(255,65,39,.18)}
-.mini.dislikebtn:hover{border-color:var(--blue);background:rgba(61,214,196,.18)}
-.likebtn.liked{background:var(--stamp);color:var(--paper);border-color:var(--stamp)}
-.dislikebtn.disliked{background:var(--blue);color:var(--paper);border-color:var(--blue)}
+/* ---------- emoji reactions ---------- */
+/* Six reactions, one per visitor per item. Only ones with a count are shown;
+   the rest live behind "+". Same hard-edge, tinted-outline vocabulary as .tag
+   and the old vote buttons, so this reads as part of the same system. */
+.rxbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;position:relative}
+.rxbar.compact{gap:4px}
+.rxchip{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;min-height:28px;
+  background:transparent;border:1px solid var(--rule);color:var(--ink-soft);
+  font:inherit;font-size:12.5px;cursor:pointer;border-radius:0}
+.rxchip:hover{border-color:var(--ink-soft);color:var(--ink)}
+.rxchip.mine{border-color:var(--stamp);background:rgba(255,65,39,.12);color:var(--ink)}
+.rxchip.static{cursor:default}
+.rxchip .rxn{font-family:"Oswald",Impact,sans-serif;font-size:11.5px;letter-spacing:.06em;font-weight:700}
+/* Courier Prime has no emoji glyphs, so name the platform emoji faces rather
+   than leaving the fallback to whatever the UA picks. */
+.rxe,.rxopt{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+  line-height:1;font-style:normal}
+.rxadd{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;
+  background:transparent;border:1px dashed var(--rule);color:var(--ink-soft);
+  cursor:pointer;font:inherit;font-size:15px;line-height:1}
+.rxadd:hover{border-color:var(--ink-soft);color:var(--ink)}
+.rxpick{position:absolute;z-index:40;bottom:calc(100% + 6px);left:0;display:flex;gap:2px;
+  padding:5px;background:var(--paper-2);border:1px solid var(--rule);
+  box-shadow:0 14px 32px -16px #000}
+/* Required, not optional: a display: rule on a class beats the [hidden]
+   attribute outright — author origin wins over the UA default, and specificity
+   never enters into it. This exact bug shipped once with .home-search. */
+.rxpick[hidden]{display:none}
+.rxopt{font-size:19px;padding:5px 6px;background:none;border:1px solid transparent;cursor:pointer}
+.rxopt:hover{border-color:var(--ink-soft)}
+.rxopt.mine{border-color:var(--stamp);background:rgba(255,65,39,.12)}
+.rxchip:focus-visible,.rxadd:focus-visible,.rxopt:focus-visible{
+  outline:2px solid var(--blue);outline-offset:2px}
+@media(max-width:640px){
+  .rxchip,.rxadd{min-height:36px}
+  .rxopt{font-size:22px;padding:8px}
+}
 .postfilter{font-size:12.5px;color:var(--ink-soft);margin-bottom:11px}
 .postfilter b{color:var(--ink)}
 
@@ -625,8 +726,12 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
 /* ---------- composer: YouTube find-or-paste ---------- */
 .ytfind{display:flex;gap:8px}
 .ytfind input{flex:1;min-width:0}
-.ytresults{display:flex;flex-direction:column;gap:6px;margin-top:9px;
-  max-height:280px;overflow-y:auto}
+/* No max-height and no overflow: this list sits inside .drawer-panel, which is
+   already overflow-y:auto, and nesting a second scroller meant a touch drag
+   started over the results trapped there until it bottomed out. The panel is
+   the only scroller in the composer. Result counts are bounded anyway — about
+   ten clips, eight events. */
+.ytresults{display:flex;flex-direction:column;gap:6px;margin-top:9px}
 .ytresult{display:flex;gap:10px;align-items:center;width:100%;text-align:left;
   background:var(--card);border:1px solid var(--rule);padding:6px;cursor:pointer;font:inherit;color:inherit}
 .ytresult:hover{border-color:var(--ink-soft)}
@@ -648,8 +753,8 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
 .chip-x{background:none;border:none;color:var(--ink-soft);cursor:pointer;
   font-size:16px;line-height:1;padding:0;flex:0 0 auto}
 .chip-x:hover{color:var(--ink)}
-.evresults{display:flex;flex-direction:column;gap:1px;margin-top:6px;
-  max-height:220px;overflow-y:auto;background:var(--rule)}
+/* Same as .ytresults: no nested scroller inside .drawer-panel. */
+.evresults{display:flex;flex-direction:column;gap:1px;margin-top:6px;background:var(--rule)}
 .evresult{display:block;width:100%;text-align:left;background:var(--card);
   border:none;padding:8px 9px;font:inherit;color:inherit;font-size:13px;cursor:pointer}
 .evresult:hover{background:var(--paper-2)}
@@ -827,7 +932,6 @@ footer{
 @media(max-width:640px){
   .brand-sub{display:none}
   .topbar{gap:8px}
-  .topbar-actions{gap:5px}
   .topbar-actions .mini{padding-left:10px;padding-right:10px}
   .nowstrip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
     background:transparent;border:0;gap:7px;padding-bottom:3px}
@@ -836,6 +940,25 @@ footer{
   .maprail.mobile-collapsed{display:none}
   .filterpop{position:fixed;left:12px;right:12px;top:auto;bottom:70px;width:auto}
 }
+
+/* ---------- additions: filters, skeleton cell, explore sections ---------- */
+/* Multi-select content filter. Each box is its own [data-ft] listener; the
+   fieldset is layout only and nothing binds to it (AGENTS.md #2). */
+.typefilter{border:none;padding:0;margin:0 0 9px}
+.typefilter legend{font-family:"Oswald",Impact,sans-serif;font-size:11.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-soft);padding:0;margin-bottom:6px}
+.typefilter label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);
+  padding:5px 0;cursor:pointer}
+.typefilter input[type=checkbox]{width:auto;margin:0;accent-color:var(--stamp);cursor:pointer}
+/* Boot placeholders for the now-strip, so the three cells don't pop in at a
+   different height than the skeleton rows below them. */
+.nowcell.skel-cell{min-height:56px;background:
+  linear-gradient(90deg,rgba(255,255,255,.03),rgba(255,255,255,.07),rgba(255,255,255,.03))}
+/* Every class toggled through the `hidden` property needs its own override:
+   an author-origin display: rule beats the UA's [hidden]{display:none} on
+   origin, so `hidden` alone would do nothing here. */
+#explore-browse[hidden]{display:none}
+.row-actions[hidden]{display:none}
 </style>
 </head>
 <body class="m-pins">
@@ -857,7 +980,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   <nav class="viewtabs" aria-label="Sections">
     <button class="viewtab" data-view="home" aria-pressed="true">Feed</button>
     <button class="viewtab" data-view="schedule" aria-pressed="false">Schedule</button>
-    <button class="viewtab" data-view="insights" aria-pressed="false">Insights</button>
+    <button class="viewtab" data-view="explore" aria-pressed="false">Explore</button>
   </nav>
 
   <div class="app">
@@ -877,21 +1000,21 @@ This log needs JavaScript to render the map and event list.</div></noscript>
               <button class="mini ghost" id="clear-search">Clear</button>
             </div>
             <div class="feedtools">
-              <button class="tab" data-hs="latest" aria-pressed="true">Latest</button>
-              <button class="tab" data-hs="hot" aria-pressed="false">Active</button>
+              <button class="tab" data-hs="all" aria-pressed="true">All</button>
+              <button class="tab" data-hs="active" aria-pressed="false">Active</button>
               <button class="tab" data-hs="upcoming" aria-pressed="false">Upcoming</button>
               <details class="filtermenu" id="filter-menu">
                 <summary class="tab" id="filter-summary">Filters</summary>
                 <div class="filterpop">
-                  <div class="field">
-                    <label for="home-type">Content</label>
-                    <select id="home-type">
-                      <option value="all">All content</option>
-                      <option value="post">Posts</option>
-                      <option value="podcast">Episodes</option>
-                      <option value="event">Events</option>
-                    </select>
-                  </div>
+                  <!-- Multi-select: nothing ticked means everything eligible in
+                       the current mode. Each box binds to [data-ft] individually,
+                       never to a shared selector — see AGENTS.md #2. -->
+                  <fieldset class="typefilter">
+                    <legend>Content</legend>
+                    <label><input type="checkbox" data-ft="post"> Posts</label>
+                    <label><input type="checkbox" data-ft="podcast"> Episodes</label>
+                    <label><input type="checkbox" data-ft="event"> Events</label>
+                  </fieldset>
                   <button class="mini ghost" id="clear-filters">Clear filters</button>
                 </div>
               </details>
@@ -907,7 +1030,21 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         </div>
       </div>
 
+      <!-- Explore is two sub-sections sharing one nav slot: Browse (search,
+           filters, trending, map, results) and Stats, which is the whole
+           Insights view moved in wholesale. Insights keeps its id and its
+           internal [data-in] tabs so every render*Insights() function and every
+           .insec selector works unchanged.
+
+           #view-insights is deliberately NOT in the delegate-binding array in
+           the script — nested inside #view-explore, binding both would make
+           every pick fire twice. -->
       <div id="view-explore" hidden>
+        <div class="feedbar">
+          <button class="tab" data-xs="browse" aria-pressed="true">Browse</button>
+          <button class="tab" data-xs="stats" aria-pressed="false">Stats</button>
+        </div>
+        <div id="explore-browse">
         <div class="feedbar">
           <input type="search" id="ex-q" placeholder="Search events, episodes and posts…"
             aria-label="Search" spellcheck="false">
@@ -988,17 +1125,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   </section>
         </div>
         <main id="explorefeed"></main>
-      </div>
-
-      <div id="view-schedule" hidden>
-        <div class="feedbar">
-          <button class="tab" data-sc="upcoming" aria-pressed="true">Upcoming</button>
-          <button class="tab" data-sc="past" aria-pressed="false">Past</button>
-        </div>
-        <p class="hint" id="sched-note">Official events and episode releases, grouped by month.</p>
-        <main id="schedulefeed"></main>
-      </div>
-
+        </div><!-- /#explore-browse -->
       <div id="view-insights" hidden>
   <div class="feedbar">
     <button class="tab" data-in="overview" aria-pressed="true">Overview</button>
@@ -1068,6 +1195,16 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       <div id="in-eng-body"></div></section>
   </div>
       </div>
+      </div><!-- /#view-explore -->
+
+      <div id="view-schedule" hidden>
+        <div class="feedbar">
+          <button class="tab" data-sc="upcoming" aria-pressed="true">Upcoming</button>
+          <button class="tab" data-sc="past" aria-pressed="false">Past</button>
+        </div>
+        <p class="hint" id="sched-note">Official events and episode releases, grouped by month.</p>
+        <main id="schedulefeed"></main>
+      </div>
 
     </div>
   </div>
@@ -1075,7 +1212,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   <footer>
     <b>Unofficial fan project.</b> Not affiliated with or endorsed by Joe Rogan, JRE, or the UFC.
     All entries come from publicly announced schedules. Nothing here reports a real-time location.<br><br>
-    <b>Comments, posts, and reactions (likes and dislikes) are all public</b> — visible to every visitor,
+    <b>Posts, comments, replies and emoji reactions are all public</b> — visible to every visitor,
     attributed to whatever display name the poster typed in, and not reviewed before they appear.<br><br>
     Entries badged <i>Rogan unconfirmed</i> are real scheduled events where his participation is unverified;
     entries badged <i>Demo</i> are generated placeholders, not real dates.<br><br>
@@ -1095,9 +1232,11 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         reactions shared by other fans. It is not a live location feed and never will be.</p>
       <p>Entries marked <i>Rogan unconfirmed</i> are real scheduled events where his participation
         has not been verified. Entries badged <i>Demo</i> are generated placeholders, not real dates.</p>
-      <p><b>Comments, posts and reactions are all public</b> — visible to every visitor, attributed
-        to whatever display name the poster typed in, and not reviewed before they appear. Nothing
-        you write here is private.</p>
+      <p><b>Posts, comments, replies and emoji reactions are all public</b> — visible to every
+        visitor, attributed to whatever display name the poster typed in, and not reviewed before
+        they appear. Nothing you write here is private, and there is no unpublished, browser-only
+        note anywhere on this site. What <i>is</i> kept in your browser alone: the entries you log
+        yourself, your display name, and the maintenance tools.</p>
       <p><b>Studio locations are an estimate.</b> No public source places individual episodes, so
         the recording base shown on the map and in Insights is derived from each episode's release
         date — which is not its recording date, and some episodes were recorded remotely. Event
@@ -1192,8 +1331,15 @@ This log needs JavaScript to render the map and event list.</div></noscript>
      Full-screen on mobile; see the media query. -->
 <div class="drawer" id="drawer" hidden>
   <div class="drawer-scrim" data-closedrawer="1"></div>
-  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Details">
+  <!-- aria-modal is set from script, not hardcoded: above 640px this panel is
+       deliberately non-modal (no scrim, pointer-events released) so the feed
+       beside it stays usable, and asserting modality there would be a lie. -->
+  <div class="drawer-panel" role="dialog" aria-modal="false" aria-label="Details">
     <div id="insight-player"></div>
+    <!-- The comment box is a SIBLING of the pane, not part of the thread. That
+         is what lets paneRefresh() rewrite #pane-thread on every reconcile
+         without destroying whatever someone is part-way through typing. -->
+    <div id="pane-composer" hidden></div>
   </div>
 </div>
 
@@ -1305,11 +1451,14 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //   -- a comment targets either a Fan Post (post_id) or a tracker event
 //   -- (event_id, a plain string matching that event's client-side id — events
 //   -- live in events.json/localStorage, not in Supabase, so no FK there) —
-//   -- never both, never neither.
+//   -- never both, never neither. parent_id makes a comment a reply to another
+//   -- comment (one level: the client walks to the root ancestor and flattens
+//   -- anything deeper, since that isn't expressible as a check constraint).
 //   create table comments (
 //     id uuid primary key default gen_random_uuid(),
 //     post_id uuid references posts(id) on delete cascade,
 //     event_id text,
+//     parent_id uuid references comments(id) on delete cascade,
 //     author_id uuid references auth.users not null,
 //     author_label text not null check (char_length(author_label) <= 40),
 //     body text not null check (char_length(body) <= 500),
@@ -1317,28 +1466,35 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //     constraint comments_one_target check (
 //       (post_id is not null and event_id is null) or
 //       (post_id is null and event_id is not null)
-//     )
+//     ),
+//     constraint comments_parent_not_self check (parent_id is null or parent_id <> id)
 //   );
-//   -- a reaction targets either a Fan Post (post_id) or a tracker event
-//   -- (event_id), same dual-target shape as comments above — never both,
-//   -- never neither. value is +1 (like) or -1 (dislike); at most one
-//   -- reaction per (target, user), enforced with two partial unique indexes
-//   -- rather than a plain UNIQUE(post_id,user_id), since post_id/event_id
-//   -- are nullable and Postgres treats NULLs as distinct.
+//   -- a reaction targets a Fan Post (post_id), a tracker event (event_id) or a
+//   -- comment (comment_id) — exactly one of the three. emoji is one of six
+//   -- allowed values; `value` is the pre-migration +1/-1 column, kept (not
+//   -- dropped) so the client can fall back to it for rows written before the
+//   -- migration ran, and so reverting the client alone is a full rollback. At
+//   -- most one reaction per (target, user), enforced with partial unique
+//   -- indexes rather than a plain UNIQUE(post_id,user_id), since post_id/
+//   -- event_id/comment_id are nullable and Postgres treats NULLs as distinct.
 //   create table reactions (
 //     id uuid primary key default gen_random_uuid(),
 //     post_id uuid references posts(id) on delete cascade,
 //     event_id text,
+//     comment_id uuid references comments(id) on delete cascade,
 //     user_id uuid references auth.users not null,
-//     value smallint not null check (value in (1,-1)),
+//     value smallint check (value in (1,-1)),
+//     emoji text not null check (emoji in ('👍','❌','😂','🤯','🔥','🤔')),
 //     created_at timestamptz not null default now(),
 //     constraint reactions_one_target check (
-//       (post_id is not null and event_id is null) or
-//       (post_id is null and event_id is not null)
+//       (post_id is not null)::int + (event_id is not null)::int +
+//       (comment_id is not null)::int = 1
 //     )
 //   );
 //   create unique index reactions_post_user_uniq on reactions(post_id,user_id) where post_id is not null;
 //   create unique index reactions_event_user_uniq on reactions(event_id,user_id) where event_id is not null;
+//   create unique index reactions_comment_user_uniq on reactions(comment_id,user_id) where comment_id is not null;
+//   create index comments_parent_idx on comments(parent_id);
 //   alter table posts enable row level security;
 //   alter table comments enable row level security;
 //   alter table reactions enable row level security;
@@ -1357,6 +1513,12 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //   --   insert into reactions (post_id, user_id, value, created_at)
 //   --     select post_id, user_id, 1, created_at from likes on conflict do nothing;
 //   --   alter table likes rename to likes_deprecated;
+//   -- Moving from the pre-emoji, no-replies schema (up/down votes only, no
+//   -- comment replies) to the shape above: run reactions_replies.sql once, by
+//   -- hand, in the Supabase SQL editor — same "not part of CI" treatment as
+//   -- youtube_search.sql, and for the same reason: it rewrites live rows. It
+//   -- adds emoji/comment_id/parent_id, migrates value=1→👍 and value=-1→❌,
+//   -- and is the file to read for exactly what changes and why.
 //
 // The DB constraints above are defense in depth only — the page never trusts
 // a stored video_kind/video_id blindly when rendering, even though it wrote
@@ -1452,16 +1614,83 @@ const sb=(SUPABASE.url&&SUPABASE.anonKey&&typeof window!=='undefined'&&window.su
   ? window.supabase.createClient(SUPABASE.url,SUPABASE.anonKey) : null;
 let session=null, posts=[], postsLoading=false, postsFailed=false, comments=[], reactions=[];
 let channelInfo=null;
+let lastAuthUid=null;
 function postCountFor(eid){ return posts.filter(p=>p.event_id===eid).length; }
-// Events have no row of their own in Supabase (they live in events.json/
-// localStorage), so their reaction totals are kept in an id-keyed map rather
-// than decorated onto entry objects — allEntries() rebuilds auto[] fresh on
-// every feed sync, independently of loadPosts(), so mutating entries directly
-// would race and lose data the same way embedding comments on them would.
-let eventReactions={};     // eid -> {ups,downs,myVote}
+
+/* ---------- reactions ----------
+   Six emoji, one per visitor per item. Picking a different one changes it;
+   picking the same one clears it.
+
+   Reactions used to be a +1/-1 `value` and were indexed per-post plus a
+   parallel per-event map. Comments are now a third target, so all three share
+   one target-keyed index instead: 'post:<uuid>' | 'event:<id>' | 'comment:<uuid>'.
+   Events still cannot be decorated directly — they have no Supabase row and
+   allEntries() rebuilds auto[] on every feed sync, so anything written onto an
+   entry object is lost the next time events.json lands. */
+const RX=['👍','❌','😂','🤯','🔥','🤔'];
+const RX_SET=new Set(RX);
+const RX_LABEL={'👍':'Thumbs up','❌':'Thumbs down','😂':'Funny',
+                '🤯':'Mind blown','🔥':'Fire','🤔':'Thinking'};
+let rxByTarget={};
+const RX_EMPTY={counts:{},mine:null,total:0,uniq:0};
+function reactionsFor(t){ return rxByTarget[t]||RX_EMPTY; }
+function rxTargetOf(r){
+  return r.post_id?'post:'+r.post_id
+       : r.event_id?'event:'+r.event_id
+       : r.comment_id?'comment:'+r.comment_id : null;
+}
+// Columns for the target a string names, for an insert. Kept beside rxTargetOf
+// so the two can't drift.
+function rxTargetCols(t){
+  if(t.startsWith('post:'))    return {post_id:t.slice(5),    event_id:null, comment_id:null};
+  if(t.startsWith('event:'))   return {post_id:null, event_id:t.slice(6),    comment_id:null};
+  if(t.startsWith('comment:')) return {post_id:null, event_id:null, comment_id:t.slice(8)};
+  return null;
+}
+// A stored emoji is user-controlled data: anyone can INSERT through the REST
+// API with the (intentionally public) anon key, bypassing this page entirely.
+// Allowlist it on read, exactly the way a stored video_kind/video_id goes back
+// through parseVideo0() — never trusted just because the app wrote it. The
+// `value` fallback is what lets this render correctly against the pre-migration
+// schema too, since the SQL is run by hand and will not land at the same
+// instant as this file.
+function rxEmoji(r){
+  if(RX_SET.has(r.emoji)) return r.emoji;
+  return r.value===1?'👍':r.value===-1?'❌':null;
+}
+function indexReactions(uid){
+  rxByTarget={};
+  for(const r of reactions){
+    const e=rxEmoji(r), k=rxTargetOf(r);
+    if(!e||!k) continue;
+    const s=rxByTarget[k]||(rxByTarget[k]={counts:{},mine:null,total:0,users:new Set()});
+    s.counts[e]=(s.counts[e]||0)+1;
+    s.users.add(r.user_id);
+    s.total++;
+    if(uid&&r.user_id===uid) s.mine=e;
+  }
+  // Distinct reactors, which is what the Active score ranks on. The partial
+  // unique indexes already guarantee one row per (target,user), so this equals
+  // the row count — counted properly anyway so a missing index degrades the
+  // ranking rather than inflating it.
+  for(const s of Object.values(rxByTarget)) s.uniq=s.users.size;
+}
+// Comment threads are one level deep. Depth is a client rule, not a DB one — a
+// direct REST insert can point parent_id at a row that itself has a parent — so
+// resolve each comment to its root ancestor, hop-capped against a cycle.
+// Anything deeper renders as a first-level reply instead of vanishing, and a
+// reply whose root fell outside the 1000-row fetch window resolves to itself
+// and renders as a root: degraded, never invisible.
+function indexComments(){
+  const byId=new Map(comments.map(c=>[c.id,c]));
+  for(const c of comments){
+    let cur=c, hops=0;
+    while(cur.parent_id&&hops++<4){ const p=byId.get(cur.parent_id); if(!p) break; cur=p; }
+    c._root=cur.id;
+  }
+}
 let eventLastActivity={};  // eid -> ms of the most recent comment/reaction
 let eventComments={};      // eid -> comment count
-function eventReactionsFor(eid){ return eventReactions[eid]||{ups:0,downs:0,myVote:0}; }
 // Counting comments per event was being redone with a fresh comments.filter()
 // in three separate places (rows, map pins, ranking) — 242 entries against a
 // 1000-row comment list each time. Tallied once in loadPosts() instead.
@@ -1494,6 +1723,13 @@ async function loadFeed(){
       title:String(e.title), loc:String(e.loc||''),
       type:['standup','broadcast','podcast'].includes(e.type)?e.type:'broadcast',
       note:String(e.note||''), video:parseVideo0(e.video), ticket:parseTicketLink(e.ticket),
+      // When this row first appeared in the tracker, as distinct from when the
+      // event happens. It is written by scripts/fetch-events.mjs and was being
+      // silently dropped here — the field is on all 242 rows of events.json but
+      // never made it onto an entry, so everything that read it (the "New"
+      // badge, feedWhen) always saw undefined. Shape-checked like every other
+      // feed field, because the feed is untrusted input.
+      firstSeen:/^\d{4}-\d{2}-\d{2}$/.test(String(e.firstSeen||''))?String(e.firstSeen).slice(0,10):null,
       // Numbers from the feed are as untrusted as its strings: coerce and
       // range-check rather than rendering whatever arrives. A NaN here would
       // poison every median in the Insights tab.
@@ -1502,14 +1738,15 @@ async function loadFeed(){
     }));
     channelInfo=parseChannel(data.channel);
     const st=document.getElementById('sync-note');
-    renderInsights();
     if(st) st.textContent=auto.length
       ? auto.length+' auto-synced · updated '+new Date(data.generated).toLocaleDateString()
       : '';
-    render(); renderFeeds();
-    // A shared link names a feed entry, and the feed is what just arrived —
-    // this is the first moment the link can actually resolve.
-    if(!selectedId) applyHash();
+    // No render here. This used to paint immediately and then paint again the
+    // moment Supabase answered, which is what reordered the feed under the
+    // reader. load() waits for both and commits once; every later call gets a
+    // coalesced repaint from commit(). Same for the applyHash() that used to
+    // live here — load() runs it after the single commit.
+    commit();
   }catch(e){ /* no feed present — the app works fine without one */ }
 }
 // A positive finite number, or null. Anything else — strings, NaN, negatives,
@@ -1538,13 +1775,78 @@ function parseVideo0(v){
   return null;
 }
 
-function addDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+// One day in ms. Declared up here with the other date helpers rather than down
+// in the analysis section, because everything below now wants it.
+const DAY=86400000;
+
+// Local-midnight ms for a calendar date string. Date.parse('YYYY-MM-DD') is
+// UTC midnight *per spec*, which is why event dates used to sort five to eight
+// hours adrift of post timestamps and an event happening "Today" per daysTo()
+// still read as yesterday to the feed. Never use Date.parse() on a bare date.
+function localMs(d){
+  const [y,m,dd]=String(d||'').split('-').map(Number);
+  return Number.isFinite(y)?new Date(y,(m||1)-1,dd||1).getTime():NaN;
+}
+// The last instant of that local day. A calendar date has no time-of-day, so
+// an event "on" a date is only definitely over once the day is.
+function localEndMs(d){ const t=localMs(d); return Number.isFinite(t)?t+DAY-1:NaN; }
+// A real instant (timestamptz string or ms) to ms. Unlike localMs this is for
+// values that genuinely carry a time.
+function ts(v){ const n=typeof v==='number'?v:Date.parse(v); return Number.isFinite(n)?n:NaN; }
+
+function addDays(n){
+  const d=new Date(); d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function uid(){return Math.random().toString(36).slice(2,10);}
-function today(){return new Date().toISOString().slice(0,10);}
+// Local, not UTC. toISOString() returns tomorrow's date for a US visitor after
+// about 5pm PT, which put the manual-entry form's default date a day out and
+// made monthlyViews() mark the wrong month as still in progress.
+function today(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+// For a calendar date (an event's `date`). Builds from Y/M/D parts so it stays
+// local — do not "unify" this with fmtTS below, which is for real instants.
 function fmt(d){
   const [y,m,dd]=d.split('-').map(Number);
   return new Date(y,m-1,dd).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+}
+// For a real instant (created_at). Formatting a timestamptz used to mean
+// slicing it to 10 chars and handing that to fmt() — which reads a UTC calendar
+// date and prints it as a local one, so a post written at 8pm PT was stamped
+// with tomorrow's date.
+function fmtTS(v){
+  const n=ts(v); if(!Number.isFinite(n)) return '';
+  return new Date(n).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+}
+// The full local date and time, for a title= tooltip and <time datetime>. This
+// is how "the full date is available on interaction" is satisfied without a
+// click handler: relTime() is the label, this is the hover.
+function fmtTSFull(v){
+  const n=ts(v); if(!Number.isFinite(n)) return '';
+  return new Date(n).toLocaleString(undefined,{weekday:'long',year:'numeric',month:'long',
+    day:'numeric',hour:'numeric',minute:'2-digit'});
+}
+function isoAttr(v){ const n=ts(v); return Number.isFinite(n)?new Date(n).toISOString():''; }
+// Hand-rolled rather than Intl.RelativeTimeFormat, for the same reason relDay()
+// is hand-rolled: RTF says "1 day ago" where relDay() says "Yesterday", and two
+// voices for the same idea in one feed reads as a bug. Past a week an absolute
+// date is more use than a growing day count.
+function relTime(v){
+  const n=ts(v); if(!Number.isFinite(n)) return '';
+  const d=Date.now()-n;
+  if(d<45000) return 'just now';               // also absorbs small negative clock skew
+  if(d<90*60000) return Math.max(1,Math.round(d/60000))+' min ago';
+  if(d<36*3600000) return Math.round(d/3600000)+' hr ago';
+  if(d<7*DAY) return Math.round(d/DAY)+' days ago';
+  return fmtTS(n);
+}
+// A relative timestamp with its full local date one hover away.
+function timeHTML(v,cls){
+  return '<time class="'+(cls||'')+'" datetime="'+esc(isoAttr(v))+'" title="'+
+    esc(fmtTSFull(v))+'">'+esc(relTime(v))+'</time>';
 }
 // Signed day offset to words. Singular is a real case here — "1 days ago" was
 // showing up daily, since something releases most days.
@@ -1558,6 +1860,34 @@ function daysTo(d){
   const [y,m,dd]=d.split('-').map(Number);
   const t=new Date(); t.setHours(0,0,0,0);
   return Math.round((new Date(y,m-1,dd)-t)/86400000);
+}
+
+// Boot paints twice, on purpose, and never in between: once with skeletons, and
+// once with the finished merge. Before this, events.json and Supabase each
+// painted on arrival, so the feed visibly re-sorted under whoever was already
+// reading it — and a reaction landing mid-scroll re-ran the whole cascade.
+// commit() is a no-op until bootDone, so nothing can sneak a third paint in.
+let bootDone=false, commitRAF=0;
+const BOOT_PAINT_MS=2500;
+
+// One coalesced repaint. Everything downstream of a data change calls this
+// instead of hand-picking render functions, which is how the six-pass cascade
+// in loadPosts() (renderFeeds, render, renderFeeds, renderInsights,
+// renderPlayer — plus a sixth hidden inside renderInsights) became one pass.
+function commit(opts){
+  if(!bootDone) return;
+  const run=()=>{
+    commitRAF=0;
+    buildFeedItems();          // merge + index once, not once per render
+    stats();
+    renderAnalysis(allEntries());
+    renderFeeds();             // paints the visible feed, which draws the map
+    renderInsights();
+    renderPlayer();
+  };
+  if(commitRAF){ cancelAnimationFrame(commitRAF); commitRAF=0; }
+  if(opts&&opts.immediate){ run(); return; }
+  commitRAF=requestAnimationFrame(run);
 }
 
 async function load(){
@@ -1574,11 +1904,30 @@ async function load(){
   // landing view, so move it there before the first paint or it is invisible
   // until the visitor happens to open Explore.
   mountMap('home-map');
-  render(); loadFeed(); loadViewHistory();
-  // finally, not then: posts are publicly readable, so a failed or hanging
-  // sign-in must not stop them loading. It only costs the visitor the ability
-  // to post or react, which the UI already handles.
-  initAuth().catch(e=>console.error('Auth setup failed',e)).finally(loadPosts);
+  renderBootSkeleton();
+  loadViewHistory();           // independent of the feed; no paint of its own
+
+  // Both datasets, settled, before anything is merged. allSettled rather than
+  // all: events.json failing must not stop posts rendering, and vice versa —
+  // loadFeed() swallows its own errors and loadPosts() sets postsFailed.
+  //
+  // finally/then rather than await on initAuth: posts are publicly readable, so
+  // a failed or hanging sign-in must not stop them loading. It only costs the
+  // visitor the ability to post or react, which the UI already handles.
+  const settled=Promise.allSettled([
+    loadFeed(),
+    initAuth().catch(e=>console.error('Auth setup failed',e)).then(loadPosts)
+  ]);
+  // withTimeout gives Supabase 12s, which is far too long to hold a skeleton.
+  // Paint at whichever comes first; anything still in flight lands later
+  // through commit(), whose anchored repaint keeps the reader's place.
+  await Promise.race([settled,new Promise(r=>setTimeout(r,BOOT_PAINT_MS))]);
+
+  bootDone=true;
+  commit({immediate:true});
+  // A shared #e=/#p= link can only resolve once the thing it names exists.
+  applyHash();
+
   const sn=document.getElementById('store-note');
   if(sn) sn.textContent = store.kind==='memory'
     ? 'Storage unavailable in this browser — entries will not survive a refresh.'
@@ -1628,26 +1977,12 @@ function stats(){
     bEl.textContent=era?era.label+' (est.)':'—';
   }
 }
-
-// Public comments on tracker events — shares the "comments" table with Fan
-// Posts (see the SUPABASE setup SQL near the top of the script): a comment
-// row targets either a post_id or an event_id, never both.
-function eventCommentsHTML(eid){
-  if(!sb) return '';
-  const list=comments.filter(c=>c.event_id===eid);
-  let h='<div class="ann"><div class="ann-h">Discussion · '+list.length+'</div>';
-  list.forEach(c=>{
-    h+='<div class="c"><div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
-       esc(fmt(String(c.created_at).slice(0,10)))+
-       (session&&session.user&&c.author_id===session.user.id?
-         '<button class="c-del" data-ecdel="'+c.id+'">remove</button>':'')+
-       '</div><div class="c-body">'+esc(c.body)+'</div></div>';
-  });
-  h+='<div class="c-form">'+
-     '<input type="text" placeholder="Add a comment…" data-ectx="'+eid+'" aria-label="Comment">'+
-     '<button class="mini" data-ecadd="'+eid+'">Comment</button></div></div>';
-  return h;
-}
+// Public comments on tracker events share the "comments" table with Fan Posts
+// (see the SUPABASE setup SQL near the top of the script): a comment row
+// targets a post_id, an event_id or a parent comment, never more than one.
+// Rendering is threadHTML() — the same function posts use, so the two threads
+// can no longer drift apart in markup, escaping or behaviour.
+function eventCommentsHTML(eid){ return threadHTML('event:'+eid); }
 
 /* ---------- fan posts (Supabase-backed public content) ---------- */
 function getSavedName(){ try{ return localStorage.getItem('fan-post-name')||''; }catch(e){ return ''; } }
@@ -1662,7 +1997,23 @@ function setSavedName(n){ try{ localStorage.setItem('fan-post-name',n); }catch(e
 // Supabase dashboard (Authentication → Sign In / Providers).
 async function initAuth(){
   if(!sb) return;
-  sb.auth.onAuthStateChange((_e,s)=>{ session=s; loadPosts(); });
+  // Guarded, because this fires more often than it looks. supabase-js emits
+  // INITIAL_SESSION, SIGNED_IN and then TOKEN_REFRESHED on a timer, and the old
+  // handler re-ran loadPosts() — and therefore the whole render cascade — for
+  // every one of them. A token refresh is the same user with the same visible
+  // data; only a change of identity alters what we would fetch or what myVote
+  // resolves to.
+  sb.auth.onAuthStateChange((evt,s)=>{
+    session=s;
+    if(evt==='TOKEN_REFRESHED') return;
+    const uid=s&&s.user?s.user.id:null;
+    if(uid===lastAuthUid) return;
+    lastAuthUid=uid;
+    // During boot, load() drives the fetch; firing here too would race it.
+    // The null → uid transition after boot is the one that matters, since
+    // "which reaction is mine" cannot be resolved until the session exists.
+    if(bootDone) loadPosts();
+  });
   // Both of these touch supabase-js's storage, which some browsers deny; a
   // deadline keeps a stalled sign-in from stalling the whole page.
   const {data}=await withTimeout(sb.auth.getSession(),'session lookup');
@@ -1672,6 +2023,7 @@ async function initAuth(){
     if(error){ console.error('Could not start an anonymous session',error); return; }
     session=anon.session;
   }
+  lastAuthUid=session&&session.user?session.user.id:null;
 }
 
 // A request that never settles would leave postsLoading true for the life of
@@ -1688,9 +2040,44 @@ function withTimeout(p,label){
   ]);
 }
 
-async function loadPosts(){
-  if(!sb){ renderFeeds(); return; }
-  postsLoading=true; postsFailed=false; renderFeeds();
+// Reads tolerate either schema (rxEmoji falls back to `value`), but writes
+// cannot: an INSERT naming a column that doesn't exist just fails. Probe once,
+// on the first fetch, so a forgotten migration degrades loudly — read-only
+// counts and an explanatory line — instead of silently swallowing every
+// reaction and reply. See reactions_replies.sql.
+let rxSchemaV2=true, replySchemaV2=true;
+const RX_COLS_V2='post_id,event_id,comment_id,user_id,value,emoji,created_at';
+const RX_COLS_V1='post_id,event_id,user_id,value,created_at';
+function isMissingColumn(err){
+  const s=((err&&(err.message||err.details||err.hint))||'')+' '+((err&&err.code)||'');
+  return /does not exist|42703|PGRST204|column/i.test(s);
+}
+
+// Only one fetch in flight at a time. Every mutation schedules a reconcile, so
+// a burst of reactions used to mean a burst of overlapping three-query reloads
+// racing each other to set `posts`. The trailing flag means a reconcile that
+// arrives mid-flight is re-run afterwards rather than dropped.
+let postsInFlight=null, postsQueued=false;
+function loadPosts(){
+  if(postsInFlight){ postsQueued=true; return postsInFlight; }
+  postsInFlight=doLoadPosts().finally(()=>{
+    postsInFlight=null;
+    if(postsQueued){ postsQueued=false; loadPosts(); }
+  });
+  return postsInFlight;
+}
+let reconcileTimer=0;
+// Optimistic updates are authoritative on screen immediately; this is the slow
+// correction behind them, trailing-debounced so a run of reactions costs one
+// fetch. Never awaited by a click handler.
+function scheduleReconcile(){
+  clearTimeout(reconcileTimer);
+  reconcileTimer=setTimeout(()=>loadPosts(),5000);
+}
+
+async function doLoadPosts(){
+  if(!sb){ commit(); return; }
+  postsLoading=true; postsFailed=false; commit();
   try{
     const {data,error}=await withTimeout(sb.from('posts').select('*')
       .order('created_at',{ascending:false}).limit(100),'posts');
@@ -1698,55 +2085,211 @@ async function loadPosts(){
     const rows=data||[];
     // Comments and reactions are fetched in full, not just for these posts —
     // event-attached rows (event_id set, post_id null) aren't tied to any
-    // loaded post, and the Hot feed needs every event's numbers too.
-    const [rres,cres]=await withTimeout(Promise.all([
-      sb.from('reactions').select('post_id,event_id,user_id,value,created_at').limit(3000),
+    // loaded post, and the Active feed needs every event's numbers too.
+    let rres,cres;
+    [rres,cres]=await withTimeout(Promise.all([
+      sb.from('reactions').select(rxSchemaV2?RX_COLS_V2:RX_COLS_V1).limit(3000),
       sb.from('comments').select('*').order('created_at',{ascending:true}).limit(1000)
     ]),'reactions and comments');
+    // The probe. A pre-migration project 400s on comment_id/emoji; retry with
+    // the old column list once and remember, rather than failing the whole load.
+    if(rres.error&&rxSchemaV2&&isMissingColumn(rres.error)){
+      rxSchemaV2=false; replySchemaV2=false;
+      console.warn('Supabase is on the pre-emoji reactions schema — run reactions_replies.sql. '+
+        'Existing counts still render; reacting and replying are disabled.');
+      rres=await withTimeout(sb.from('reactions').select(RX_COLS_V1).limit(3000),'reactions');
+    }
+    if(rres.error) throw rres.error;
+    if(cres.error) throw cres.error;
     reactions=rres.data||[]; comments=cres.data||[];
+    // parent_id absent from every row of a non-empty thread means the column
+    // isn't there — replies would insert-and-vanish, so turn them off.
+    if(replySchemaV2&&comments.length&&!comments.some(c=>'parent_id' in c)) replySchemaV2=false;
+
     const uid=session&&session.user?session.user.id:null;
+    indexReactions(uid);
+    indexComments();
     posts=rows.map(r=>{
-      const rx=reactions.filter(x=>x.post_id===r.id);
-      const mine=uid?rx.find(x=>x.user_id===uid):null;
       const cs=comments.filter(c=>c.post_id===r.id);
+      const rx=reactionsFor('post:'+r.id);
       // Last activity, not creation time: an old clip that people are still
       // arguing about is more current than one nobody has touched since.
-      let last=Date.parse(r.created_at);
-      rx.forEach(x=>{ const t=Date.parse(x.created_at); if(t>last) last=t; });
-      cs.forEach(c=>{ const t=Date.parse(c.created_at); if(t>last) last=t; });
-      return {...r,
-        ups:rx.filter(x=>x.value===1).length,
-        downs:rx.filter(x=>x.value===-1).length,
-        myVote:mine?mine.value:0,
-        comments:cs, lastActivity:last};
+      let last=ts(r.created_at);
+      cs.forEach(c=>{ const t=ts(c.created_at); if(t>last) last=t; });
+      return {...r, uniq:rx.uniq, cCount:cs.length, comments:cs, lastActivity:last};
     });
-    // Per-event tallies for the Hot feed and the row/pin badges: reaction
-    // totals, comment count, and the most recent activity timestamp.
-    eventReactions={}; eventLastActivity={}; eventComments={};
+    // Reaction timestamps still matter for lastActivity even though the counts
+    // now come from the shared index, so this pass stays.
+    for(const x of reactions){
+      if(!x.post_id) continue;
+      const p=posts.find(y=>y.id===x.post_id); if(!p) continue;
+      const t=ts(x.created_at); if(t>p.lastActivity) p.lastActivity=t;
+    }
+    // Per-event tallies for the Active feed and the row/pin badges: comment
+    // count and the most recent activity timestamp. Reaction counts come from
+    // rxByTarget now, not from a second parallel map.
+    eventLastActivity={}; eventComments={};
     const bump=(id,t)=>{ if(eventLastActivity[id]===undefined||t>eventLastActivity[id])
       eventLastActivity[id]=t; };
-    reactions.forEach(x=>{
-      if(!x.event_id) return;
-      const s=eventReactions[x.event_id]||(eventReactions[x.event_id]={ups:0,downs:0,myVote:0});
-      if(x.value===1) s.ups++; else s.downs++;
-      if(uid&&x.user_id===uid) s.myVote=x.value;
-      bump(x.event_id,Date.parse(x.created_at));
-    });
+    reactions.forEach(x=>{ if(x.event_id) bump(x.event_id,ts(x.created_at)); });
     comments.forEach(c=>{
       if(!c.event_id) return;
       eventComments[c.event_id]=(eventComments[c.event_id]||0)+1;
-      bump(c.event_id,Date.parse(c.created_at));
+      bump(c.event_id,ts(c.created_at));
     });
   }catch(e){ console.error('Could not load fan posts',e); posts=[]; postsFailed=true; }
-  postsLoading=false; renderFeeds();
-  render(); renderFeeds(); // refresh row counts and rankings across every list that shows them
-  renderInsights();
-  // The pane holds a copy of the post it is showing, so a like or a new
-  // comment has to be re-read from the reloaded list or the pane keeps
-  // displaying the pre-change version.
-  renderPlayer();
-  // A #p= link can only resolve once the posts themselves have arrived.
-  if(!selectedPostId) applyHash();
+  postsLoading=false;
+  // One coalesced repaint. This used to be five calls in a row (renderFeeds,
+  // render, renderFeeds, renderInsights, renderPlayer) plus a sixth hidden
+  // inside renderInsights — each one replacing the feed's innerHTML wholesale,
+  // which is what made the list jump under the reader.
+  commit();
+}
+/* ---------- reaction bar ---------- */
+// One renderer for all three targets. Only reactions that actually have a count
+// are shown — an empty row of six grey emoji reads as a chore, and the picker
+// behind "+" is where the full set lives.
+function reactionBarHTML(target,opts){
+  const s=reactionsFor(target), o=opts||{};
+  const shown=RX.filter(e=>s.counts[e]>0);
+  if(!rxSchemaV2){
+    // Pre-migration: show what exists, but never a control that would no-op.
+    if(!shown.length) return '';
+    return '<div class="rxbar readonly'+(o.compact?' compact':'')+'">'+
+      shown.map(e=>'<span class="rxchip static"><span class="rxe">'+e+
+        '</span><span class="rxn">'+s.counts[e]+'</span></span>').join('')+'</div>';
+  }
+  return '<div class="rxbar'+(o.compact?' compact':'')+'" data-rx="'+esc(target)+'">'+
+    shown.map(e=>
+      '<button type="button" class="rxchip'+(s.mine===e?' mine':'')+'" '+
+        'data-rxpick="'+esc(e)+'" aria-pressed="'+(s.mine===e)+'" '+
+        'aria-label="'+esc(RX_LABEL[e])+' — '+s.counts[e]+'">'+
+        '<span class="rxe">'+e+'</span><span class="rxn">'+s.counts[e]+'</span></button>').join('')+
+    '<button type="button" class="rxadd" data-rxopen="1" aria-expanded="false" '+
+      'aria-label="Add a reaction">+</button>'+
+    '<div class="rxpick" hidden role="group" aria-label="Pick a reaction">'+
+      RX.map(e=>'<button type="button" class="rxopt'+(s.mine===e?' mine':'')+'" '+
+        'data-rxpick="'+esc(e)+'" title="'+esc(RX_LABEL[e])+'" '+
+        'aria-label="'+esc(RX_LABEL[e])+'">'+e+'</button>').join('')+
+    '</div></div>';
+}
+// Compact "top emoji + unique reactors" for dense lists (Community Posts,
+// trending, Insights) where a full bar would crowd everything else out.
+function rxSummary(target){
+  const s=reactionsFor(target);
+  if(!s.uniq) return '';
+  const top=RX.filter(e=>s.counts[e]>0).sort((a,b)=>s.counts[b]-s.counts[a])[0];
+  return (top||'')+' '+s.uniq;
+}
+// Read-only summary for a feed row. A row is a <button>, so it cannot contain
+// buttons — the interactive bar is a sibling underneath it (see postRow).
+function rowStatsHTML(target,cCount){
+  const s=reactionsFor(target);
+  const shown=RX.filter(e=>s.counts[e]>0).slice(0,3);
+  if(!shown.length&&!cCount) return '';
+  return '<span class="row-stats">'+
+    shown.map(e=>'<span class="stat-rx'+(s.mine===e?' mine':'')+'">'+e+' '+s.counts[e]+'</span>').join('')+
+    (cCount?'<span class="stat-pill comments">'+cCount+' comment'+(cCount===1?'':'s')+'</span>':'')+
+  '</span>';
+}
+
+// Move a visitor's reaction locally so the click lands instantly. The server
+// round trip follows; a failure replays this in reverse.
+function applyLocalReaction(target,from,to,uid){
+  const s=rxByTarget[target]||(rxByTarget[target]={counts:{},mine:null,total:0,users:new Set(),uniq:0});
+  if(!s.users) s.users=new Set();
+  if(from){ s.counts[from]=Math.max(0,(s.counts[from]||0)-1); if(!s.counts[from]) delete s.counts[from]; s.total--; }
+  if(to){ s.counts[to]=(s.counts[to]||0)+1; s.total++; }
+  s.mine=to;
+  if(uid){ if(to) s.users.add(uid); else s.users.delete(uid); }
+  s.uniq=s.users.size;
+  // Keep the merged feed item in step so a later re-render doesn't flash the
+  // old number back before the reconcile lands.
+  for(const it of feedItems) if(it.rxTarget===target){ it.uniq=s.uniq; it.lastActivity=Date.now(); }
+  const p=target.startsWith('post:')?posts.find(x=>x.id===target.slice(5)):null;
+  if(p){ p.uniq=s.uniq; p.lastActivity=Date.now(); }
+}
+// Rewrite only the bars for one target. Never touches a feed container's
+// innerHTML and never re-sorts: reacting changes an item's Active score, but
+// re-ranking mid-click would slide the card out from under the finger that just
+// tapped it. Order only moves on an explicit render.
+//
+// Elements are found by walking and comparing dataset rather than by building
+// an attribute selector — event ids come from the feed's `src` field, which is
+// untrusted input and can carry quotes or backslashes that break a selector.
+function repaintReactionBars(target){
+  for(const bar of document.querySelectorAll('.rxbar[data-rx]')){
+    if(bar.dataset.rx!==target) continue;
+    const open=!!bar.querySelector('.rxpick:not([hidden])');
+    const wrap=document.createElement('div');
+    wrap.innerHTML=reactionBarHTML(target,{compact:bar.classList.contains('compact')});
+    const fresh=wrap.firstElementChild; if(!fresh) continue;
+    bar.replaceWith(fresh);
+    if(open) setRxPickerOpen(fresh,true);
+  }
+}
+function repaintRowStats(target){
+  const isPost=target.startsWith('post:'), id=isPost?target.slice(5):target.slice(6);
+  for(const row of document.querySelectorAll('.row')){
+    if((isPost?row.dataset.post:row.dataset.goto)!==id) continue;
+    const holder=row.querySelector('.row-stats');
+    const cCount=isPost?((posts.find(p=>p.id===id)||{}).cCount||0):eventCommentCount(id);
+    const wrap=document.createElement('span');
+    wrap.innerHTML=rowStatsHTML(target,cCount);
+    const fresh=wrap.firstElementChild;
+    if(holder&&fresh) holder.replaceWith(fresh);
+    else if(holder) holder.remove();
+    else if(fresh) (row.querySelector('.row-body')||row).appendChild(fresh);
+  }
+}
+function setRxPickerOpen(bar,open){
+  const pick=bar.querySelector('.rxpick'), add=bar.querySelector('.rxadd');
+  if(!pick) return;
+  pick.hidden=!open;
+  if(add) add.setAttribute('aria-expanded',String(!!open));
+}
+function closeRxPickers(except){
+  let closed=false;
+  for(const bar of document.querySelectorAll('.rxbar')){
+    if(bar===except) continue;
+    const pick=bar.querySelector('.rxpick');
+    if(pick&&!pick.hidden){ setRxPickerOpen(bar,false); closed=true; }
+  }
+  return closed;
+}
+
+async function react(target,emoji){
+  if(!sb||!rxTargetCols(target)) return;
+  if(!rxSchemaV2){ alert('Reactions need a database update — see reactions_replies.sql.'); return; }
+  if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
+  if(!RX_SET.has(emoji)) return;
+  const uid=session.user.id;
+  const prev=reactionsFor(target).mine;
+  const next=prev===emoji?null:emoji;   // the same emoji again clears it
+
+  applyLocalReaction(target,prev,next,uid);
+  repaintReactionBars(target); repaintRowStats(target);
+
+  try{
+    // Delete-then-insert rather than an upsert, for the same reason the old
+    // vote handler did it: there is no UPDATE policy on reactions, and the
+    // partial unique indexes make the pair safe.
+    const cols=rxTargetCols(target);
+    let q=sb.from('reactions').delete().eq('user_id',uid);
+    for(const k of ['post_id','event_id','comment_id']) if(cols[k]) q=q.eq(k,cols[k]);
+    const {error:delErr}=await q;
+    if(delErr) throw delErr;
+    if(next){
+      const {error}=await sb.from('reactions').insert(Object.assign({},cols,{user_id:uid,emoji:next}));
+      if(error) throw error;
+    }
+  }catch(e){
+    console.error('Reaction failed',e);
+    applyLocalReaction(target,next,prev,uid);   // put it back
+    repaintReactionBars(target); repaintRowStats(target);
+    return;
+  }
+  scheduleReconcile();
 }
 
 // The event/episode attach picker is `setComposerEvent()`/`renderEventResults()`
@@ -1760,71 +2303,82 @@ async function loadPosts(){
 // left the pane showing an unrelated event while you scrolled posts.
 function postRow(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
-  const ev=p.event_id?allEntries().find(e=>e.id===p.event_id):null;
+  const ev=entryById(p.event_id);
   const yt=vid&&vid.kind==='yt'?vid.id:null;
-  // The clip's own title leads when we have one (search/paste-lookup posts);
-  // older posts and text posts have no separate title, so the caption is the
-  // whole card the way it always was. Never show the same words twice.
-  const heading=p.video_title||p.caption||'(no caption)';
-  const showCaption=!!(p.video_title&&p.caption);
-  // A text post has no clip; the thumb falls back to a TEXT marker so the row
-  // keeps the same shape as every other card in the feed.
-  return '<button class="row'+(selectedPostId===p.id?' sel':'')+'" data-post="'+esc(p.id)+'">'+
+  const target='post:'+p.id;
+  // The poster's own words lead the card. The imported clip title is
+  // provenance and sits below in smaller, softer type — a fan post is somebody
+  // talking, and leading with YouTube's headline made every card read as a
+  // syndicated link rather than as a person. caption is NOT NULL in the schema
+  // and the composer requires one on a clip post, so it is always there.
+  const lead=p.caption||p.video_title||'(no caption)';
+  const source=[p.video_title&&p.video_title!==p.caption?p.video_title:'',p.video_channel||'']
+    .filter(Boolean).join(' · ');
+  // A row is a <button>, so it cannot contain buttons — the parser would close
+  // it and the card would fall apart. The interactive action row is therefore a
+  // sibling underneath it inside .pcard, not a child. Keeping the row element
+  // itself unchanged is also what leaves onPick/onPickKey, .sel and .past
+  // working untouched.
+  return '<article class="pcard">'+
+    '<button class="row'+(selectedPostId===p.id?' sel':'')+'" data-post="'+esc(p.id)+'">'+
     // The text marker is always in the DOM so onerror has something to reveal
     // when a thumbnail 404s — deleted and private videos do that routinely.
     '<span class="row-thumb'+(yt?'':' noimg')+'">'+
       '<i>'+esc(vid?CLIPNAME[vid.kind]:'TEXT')+'</i>'+
       (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg" onerror="this.closest(\'.row-thumb\').classList.add(\'noimg\');this.remove()">':'')+'</span>'+
     '<span class="row-body">'+
-      '<span class="row-top"><span class="tag post">Post</span>'+
-        (ev?'<span class="tag ptag">'+esc(ev.title.slice(0,30))+'</span>':'')+
-        '<span class="when">'+esc(fmt(String(p.created_at).slice(0,10)))+'</span></span>'+
-      '<span class="row-title">'+esc(heading)+'</span>'+
-      (showCaption?'<span class="row-caption">'+esc(p.caption)+'</span>':'')+
-      '<span class="row-meta">'+esc(p.author_label||'Fan')+
-        (p.video_channel?' · '+esc(p.video_channel):'')+'</span>'+
-      ((p.ups||p.downs||p.comments.length)?'<span class="row-stats">'+
-        (p.ups?'<span class="stat-pill up">▲ '+p.ups+'</span>':'')+
-        (p.downs?'<span class="stat-pill down">▼ '+p.downs+'</span>':'')+
-        (p.comments.length?'<span class="stat-pill comments">'+p.comments.length+' comment'+(p.comments.length===1?'':'s')+'</span>':'')+
-      '</span>':'')+
-    '</span></button>';
+      '<span class="row-byline"><b>'+esc(p.author_label||'Fan')+'</b> · '+
+        timeHTML(p.created_at)+'</span>'+
+      '<span class="row-lead">'+esc(lead)+'</span>'+
+      (source?'<span class="row-source">'+esc(source)+'</span>':'')+
+      (ev?'<span class="row-attach">About: '+esc(ev.title.slice(0,44))+'</span>':'')+
+      rowStatsHTML(target,p.cCount||0)+
+    '</span></button>'+
+    '<div class="row-actions">'+
+      reactionBarHTML(target,{compact:true})+
+      '<button type="button" class="rowact" data-postcomment="'+esc(p.id)+'">Comment</button>'+
+      '<button type="button" class="rowact" data-sharepost="'+esc(p.id)+'">Share</button>'+
+    '</div>'+
+  '</article>';
 }
-
 function postPaneHTML(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
-  const ev=p.event_id?allEntries().find(e=>e.id===p.event_id):null;
+  const ev=entryById(p.event_id);
   const mine=!!(session&&session.user&&p.author_id===session.user.id);
-  const heading=p.video_title||p.caption||'(no caption)';
-  const showCaption=!!(p.video_title&&p.caption);
-  return '<div class="player"><div class="ph"><span>Selected post</span>'+
+  // The caption is the largest text in the pane. The clip's own title, channel
+  // and upload date sit under the embed as provenance — video_published has
+  // been written to the row since clip search landed but was never displayed
+  // anywhere until now.
+  const source=[p.video_title&&p.video_title!==p.caption?p.video_title:'',
+                p.video_channel||'',
+                p.video_published?fmt(String(p.video_published).slice(0,10)):'']
+    .filter(Boolean).join(' · ');
+  return '<div class="player"><div class="ph"><span>Post</span>'+
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
+    '<p class="pauthor"><b>'+esc(p.author_label||'Fan')+'</b> · '+timeHTML(p.created_at)+'</p>'+
+    '<p class="pcaption lead">'+esc(p.caption||'(no caption)')+'</p>'+
     (vid&&CLIPSRC[vid.kind]?
       '<div class="frame"><iframe src="'+esc(CLIPSRC[vid.kind](vid.id))+'" loading="lazy" '+
       'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
       'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
       'title="'+esc(CLIPNAME[vid.kind])+' clip"></iframe></div>':'')+
-    '<h4>'+esc(heading)+'</h4>'+
-    (showCaption?'<p class="pcaption">'+esc(p.caption)+'</p>':'')+
-    '<p class="pmeta">'+esc(p.author_label||'Fan')+' · '+
-      esc(fmt(String(p.created_at).slice(0,10)))+
-      (p.video_channel?' · '+esc(p.video_channel):'')+'</p>'+
+    (source?'<p class="psource">'+esc(source)+'</p>':'')+
     // The association is a way through to the parent, not just a label.
     (ev?'<p class="pstat">About: <button class="linkish" data-goto="'+esc(ev.id)+'">'+
-      esc(ev.title)+'</button></p>':'')+
+      esc(ev.title)+'</button>'+(ev.loc?' · '+esc(cityLabel(ev.loc)):'')+'</p>'
+      :'<p class="pstat muted">No location attached</p>')+
     '<div class="pactions">'+
+      reactionBarHTML('post:'+p.id)+
       // Offered unconditionally, same reasoning as the composer's preview:
       // there is no reliable way from outside the iframe to tell "embedding
       // disabled" apart from "still loading", so the fallback can't be
       // gated on a failure this page cannot actually detect.
       (vid&&vid.kind==='yt'?'<a class="mini ghost" href="https://youtu.be/'+esc(vid.id)+
         '" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>':'')+
-      '<button class="mini ghost likebtn'+(p.myVote===1?' liked':'')+'" data-postlike="'+esc(p.id)+'">▲ '+(p.ups||0)+'</button>'+
-      '<button class="mini ghost dislikebtn'+(p.myVote===-1?' disliked':'')+'" data-postdislike="'+esc(p.id)+'">▼ '+(p.downs||0)+'</button>'+
       '<button class="mini ghost" data-sharepost="'+esc(p.id)+'">Copy link</button>'+
       (mine?'<button class="c-del" data-delpost="'+esc(p.id)+'">delete post</button>':'')+
     '</div>'+
-    '<div id="pane-thread">'+postThreadHTML(p)+'</div>'+
+    '<div id="pane-thread">'+threadHTML('post:'+p.id)+'</div>'+
     relatedPostsHTML(p)+
     '</div>';
 }
@@ -1843,146 +2397,293 @@ function relatedPostsHTML(p){
     '</div>';
 }
 
-// Split out so a new comment can be dropped in without redrawing the embed.
-function postThreadHTML(p){
-  return '<div class="ann"><div class="ann-h">Discussion · '+p.comments.length+'</div>'+
-    p.comments.map(c=>'<div class="c"><div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
-      esc(fmt(String(c.created_at).slice(0,10)))+
-      (session&&session.user&&c.author_id===session.user.id?
-        '<button class="c-del" data-delcomment="'+esc(c.id)+'">remove</button>':'')+
-      '</div><div class="c-body">'+esc(c.body)+'</div></div>').join('')+
-    (session&&session.user?
-      '<div class="c-form"><input type="text" placeholder="Add a comment…" data-ctx="'+esc(p.id)+
-      '" aria-label="Comment"><button class="mini" data-caddbtn="'+esc(p.id)+'">Comment</button></div>'
-      :'<p class="hint" style="margin:9px 0 0">Comments aren\'t available right now — try reloading.</p>')+
-    '</div>';
+/* ---------- discussion ---------- */
+// One renderer for both targets. Post threads and event threads had drifted
+// into two near-identical functions differing only in attribute names
+// (data-ctx vs data-ectx), each with its own Enter handler and its own
+// escaping habits — the event side interpolated ids without esc(). One shape,
+// one set of attributes, one handler.
+const REPLY_PREVIEW=2;
+let openReplies=new Set();   // root comment ids whose replies are expanded
+let replyingTo=null;         // comment id the inline reply form is attached to
+let replyDraft='';           // survives a repaint; the textarea does not
+
+function isMyComment(c){ return !!(session&&session.user&&c.author_id===session.user.id); }
+function commentsForTarget(target){
+  if(target.startsWith('post:')){ const id=target.slice(5); return comments.filter(c=>c.post_id===id); }
+  if(target.startsWith('event:')){ const id=target.slice(6); return comments.filter(c=>c.event_id===id); }
+  return [];
+}
+// Roots with their replies attached. _root is set by indexComments(), which
+// walks each comment to its top ancestor, so an over-deep reply from a direct
+// REST insert lands here as a first-level reply rather than disappearing.
+function threadOf(list){
+  const roots=list.filter(c=>c._root===c.id||!c._root);
+  const kids=new Map();
+  for(const c of list){
+    if(!c._root||c._root===c.id) continue;
+    if(!kids.has(c._root)) kids.set(c._root,[]);
+    kids.get(c._root).push(c);
+  }
+  return roots
+    .sort((a,b)=>ts(a.created_at)-ts(b.created_at))
+    .map(r=>({c:r, replies:(kids.get(r.id)||[]).sort((a,b)=>ts(a.created_at)-ts(b.created_at))}));
+}
+
+function commentMetaHTML(c,replyCount){
+  // Deleting a parent cascades to its replies in Postgres, so the control has
+  // to say so rather than quietly taking a thread down with it.
+  const n=replyCount||0;
+  return '<div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
+    timeHTML(c.created_at)+
+    (isMyComment(c)?'<button class="c-del" data-delcomment="'+esc(c.id)+'">remove'+
+      (n?' (and '+n+' repl'+(n===1?'y':'ies')+')':'')+'</button>':'')+
+  '</div>';
+}
+function replyHTML(c){
+  return '<div class="c reply" data-cid="'+esc(c.id)+'">'+
+    commentMetaHTML(c,0)+
+    '<div class="c-body">'+esc(c.body)+'</div>'+
+    '<div class="c-actions">'+reactionBarHTML('comment:'+c.id,{compact:true})+'</div>'+
+  '</div>';
+}
+function replyFormHTML(cid){
+  return '<div class="c-replyform">'+
+    '<textarea data-replybox="'+esc(cid)+'" rows="2" maxlength="500" '+
+      'placeholder="Reply…" aria-label="Reply">'+esc(replyDraft)+'</textarea>'+
+    '<div class="c-replyform-actions">'+
+      '<button class="mini" data-replysend="'+esc(cid)+'">Reply</button>'+
+      '<button class="mini ghost" data-replycancel="1">Cancel</button>'+
+    '</div></div>';
+}
+function commentHTML(g){
+  const c=g.c, n=g.replies.length;
+  const expanded=openReplies.has(c.id);
+  const visible=expanded?g.replies:g.replies.slice(0,REPLY_PREVIEW);
+  const hidden=n-visible.length;
+  return '<div class="c" data-cid="'+esc(c.id)+'">'+
+    commentMetaHTML(c,n)+
+    '<div class="c-body">'+esc(c.body)+'</div>'+
+    '<div class="c-actions">'+reactionBarHTML('comment:'+c.id,{compact:true})+
+      (replySchemaV2&&session&&session.user?
+        '<button class="linkish" data-reply="'+esc(c.id)+'">Reply</button>':'')+
+    '</div>'+
+    (visible.length?'<div class="c-replies">'+visible.map(replyHTML).join('')+'</div>':'')+
+    (hidden>0?'<button class="c-more" data-showreplies="'+esc(c.id)+'">View '+hidden+
+      ' more repl'+(hidden===1?'y':'ies')+'</button>':'')+
+    (replyingTo===c.id?replyFormHTML(c.id):'')+
+  '</div>';
+}
+function threadHTML(target){
+  if(!sb) return '';
+  const groups=threadOf(commentsForTarget(target));
+  const total=groups.reduce((n,g)=>n+1+g.replies.length,0);
+  return '<div class="ann" data-thread="'+esc(target)+'">'+
+    '<div class="ann-h">Discussion · '+total+'</div>'+
+    (groups.length?groups.map(commentHTML).join('')
+      :'<p class="hint">No comments yet.</p>')+
+  '</div>';
 }
 
 /* ---------- unified feed ---------- */
 // Events, episodes and posts in one list. Comments are deliberately absent:
 // they are responses that only make sense inside their parent, so they never
 // become feed items — see the Discussion section of each detail view.
-function hotEntries(){
-  const items=[];
-  allEntries().forEach(e=>{
-    const rx=eventReactionsFor(e.id);
-    const cCount=eventCommentCount(e.id);
-    items.push({kind:'event',entry:e,ups:rx.ups,downs:rx.downs,cCount,
-      when:Date.parse(e.date),
-      score:hotScore(rx.ups,rx.downs,cCount,eventLastActivity[e.id],Date.parse(e.date))});
-  });
-  posts.forEach(p=>{
-    items.push({kind:'post',post:p,ups:p.ups,downs:p.downs,cCount:p.comments.length,
-      when:Date.parse(p.created_at),
-      score:hotScore(p.ups,p.downs,p.comments.length,p.lastActivity,Date.parse(p.created_at))});
-  });
-  return items.sort((a,b)=>b.score-a.score);
+//
+// The merge happens once per commit() and is cached, rather than being rebuilt
+// inside every render. entryIndex goes with it: half a dozen call sites used to
+// do allEntries().find(...) *per item*, and allEntries() rebuilds a 250-element
+// array on every call, so resolving a post's attached event was quadratic.
+let feedItems=[];
+let entryIndex=new Map();
+function entryById(id){ return id?entryIndex.get(id)||null:null; }
+
+function buildFeedItems(){
+  dataGen++;   // invalidates caches keyed off the entry set (see populateLocPicker)
+  entryIndex=new Map(allEntries().map(e=>[e.id,e]));
+  const out=[];
+  for(const e of entryIndex.values()){
+    const t='event:'+e.id, rx=reactionsFor(t);
+    out.push({kind:'event', id:e.id, rxTarget:t, entry:e,
+      uniq:rx.uniq, cCount:eventCommentCount(e.id),
+      when:localMs(e.date),
+      lastActivity:eventLastActivity[e.id]||localMs(e.date)});
+  }
+  for(const p of posts){
+    const t='post:'+p.id, rx=reactionsFor(t);
+    out.push({kind:'post', id:p.id, rxTarget:t, post:p,
+      uniq:rx.uniq, cCount:p.cCount||0,
+      when:ts(p.created_at),
+      lastActivity:p.lastActivity||ts(p.created_at)});
+  }
+  for(const it of out) it.feedWhen=feedWhen(it);
+  feedItems=out;
+  return out;
 }
+
+// The flat value every one of the 242 rows in events.json carries. AGENTS.md is
+// explicit that it means "we don't know when this appeared", not a real date —
+// so it must never be read as one.
+const FIRSTSEEN_BACKFILL='2025-01-01';
+
+// Where an item sits on the All/Active timeline.
+//
+// A post is its own creation time. An episode is its release — that *is* its
+// publication moment. An event is when it was announced to this tracker, which
+// is what makes a card imported today show up today rather than buried at
+// whatever depth its date implies.
+//
+// Two things this deliberately does NOT do. It does not apply firstSeen to
+// episodes: the YouTube source accrues, so the first run with a real API key
+// stamps ~200 back-catalogue episodes with today's date, and they would bury
+// every actual post. And it does not trust the backfill sentinel, which would
+// otherwise collapse the entire pre-2025 archive onto one instant.
+//
+// The event date is capped at now because All excludes the future entirely —
+// an event happening today should read as "now", not as the end of today.
+function feedWhen(it){
+  if(it.kind==='post') return it.when;
+  const e=it.entry, dm=Math.min(localEndMs(e.date),Date.now());
+  if(e.type==='podcast') return dm;
+  const fs=(e.firstSeen&&e.firstSeen!==FIRSTSEEN_BACKFILL)?localMs(e.firstSeen):NaN;
+  return Number.isFinite(fs)?Math.max(dm,fs):dm;
+}
+
+// Kept for the callers that still want a single ranked list (the now-strip,
+// Explore, trending, the Insights community panel).
+function hotEntries(){ return rankActive(feedItems.slice()); }
+function rankActive(items){
+  const fresh=items.filter(isFreshPost).sort((a,b)=>b.when-a.when);
+  const rest=items.filter(it=>!isFreshPost(it))
+    .sort((a,b)=>activityScore(b)-activityScore(a)||cmpId(a,b));
+  return fresh.concat(rest);
+}
+
 function itemType(it){ return it.kind==='post' ? 'post' : it.entry.type; }
-function itemMatches(it,f){
-  if(f==='all') return true;
-  if(f==='post') return it.kind==='post';
-  if(f==='podcast') return it.kind==='event'&&it.entry.type==='podcast';
-  if(f==='event') return it.kind==='event'&&it.entry.type!=='podcast';
-  if(f==='discussed') return (it.cCount||0)>0;
-  return true;
+// feedTypes is a Set; empty means "everything eligible in this mode", which is
+// what makes no-selection the natural default rather than a magic 'all' value.
+function itemMatches(it,types){
+  if(!types||!types.size) return true;
+  if(it.kind==='post') return types.has('post');
+  return types.has(it.entry.type==='podcast'?'podcast':'event');
 }
 function itemRow(it){ return it.kind==='event'?eventRow(it.entry):postRow(it.post); }
 
-let homeFilter='all', homeSort='latest', homeQuery='', homePage=1;
+let feedMode='all', feedTypes=new Set(), feedQuery='', homePage=1;
 const PAGE=25;
 
-function homeItemIsUpcoming(it){
-  if(it.kind==='event') return daysTo(it.entry.date)>=0;
-  if(!it.post.event_id) return false;
-  const e=allEntries().find(x=>x.id===it.post.event_id);
-  return !!e&&daysTo(e.date)>=0;
+function matchesPostQuery(p,q){
+  const ev=entryById(p.event_id);
+  return ((p.caption||'')+' '+(p.video_title||'')+' '+(p.video_channel||'')+' '+
+    (p.author_label||'')+' '+((ev&&ev.title)||'')).toLowerCase().includes(q);
 }
-function homeItemMatchesQuery(it,q){
+function matchesEventQuery(e,q){
+  return (e.title+' '+(e.loc||'')+' '+(e.note||'')).toLowerCase().includes(q);
+}
+// One haystack for Home and Explore. These had drifted — Home searched
+// video_title and Explore didn't — so the same query gave two different answers
+// depending on which list you happened to be looking at.
+function itemMatchesQuery(it,q){
   if(!q) return true;
-  const hay=it.kind==='post'
-    ? (it.post.caption||'')+' '+(it.post.video_title||'')+' '+(it.post.author_label||'')+' '+
-      ((it.post.event_id&&allEntries().find(e=>e.id===it.post.event_id)||{}).title||'')
-    : it.entry.title+' '+(it.entry.loc||'')+' '+(it.entry.note||'');
-  return hay.toLowerCase().includes(q);
+  return it.kind==='post'?matchesPostQuery(it.post,q):matchesEventQuery(it.entry,q);
 }
 
-// Schedule is the complete record — every announced date, unfiltered. Feed is
-// current activity, and an upcoming card sitting quietly four months out
-// doesn't qualify as that just because it exists. Past entries and every post
-// are always eligible: a post is the whole point of the feed, and a past
-// event is a record, the same as a released episode.
+// firstSeen's one remaining job, and an honest one: flag an event that genuinely
+// entered the tracker in the last week. False for every backfilled row, which is
+// correct — "don't know" is not "new" — and true only for rows the fetcher has
+// really stamped since.
 function eventIsRecent(e){
-  return !!e.firstSeen && daysTo(e.firstSeen)>=-7;
+  return !!e.firstSeen && e.firstSeen!==FIRSTSEEN_BACKFILL && daysTo(e.firstSeen)>=-7;
 }
-function feedEligible(it){
-  if(it.kind==='post') return true;
-  const e=it.entry, n=daysTo(e.date);
-  if(n<0) return true;
-  if(n<=7) return true;
-  if(eventIsRecent(e)) return true;
-  if((eventCommentCount(e.id)||0)>0) return true;
-  if((postCountFor(e.id)||0)>0) return true;
-  const rx=eventReactionsFor(e.id);
-  return (rx.ups||0)>0||(rx.downs||0)>0;
+
+// What belongs in each mode.
+//
+// All and Active carry the same content and differ only in ordering: posts,
+// released episodes, and events that have happened or are happening. No future
+// events, with no escape hatches — a scheduled card is not something that just
+// happened, however much discussion it has attracted, and Upcoming is where it
+// belongs. A fan post *about* a future event still appears here, as a post,
+// carrying its event as an attachment.
+//
+// An event dated today satisfies both this and the upcoming test, so it appears
+// in All (as currently occurring) and in Upcoming (with a countdown). That
+// one-day overlap is deliberate: a calendar date has no time of day, so neither
+// placement on its own is right.
+function eligibleFor(it,mode){
+  if(mode==='upcoming') return it.kind==='event'&&daysTo(it.entry.date)>=0;
+  return it.kind==='post'||daysTo(it.entry.date)<=0;
 }
-// A brand-new post hasn't had time to earn the votes/comments hotScore()
-// rewards, so left to that score alone the Active tab would bury it at the
-// bottom for as long as it stays unengaged (see hotScore()'s -1000 branch).
-// Give it a window to actually be seen instead: for its first hour, float it
-// above the score-ranked rest, newest first. Events are excluded — a
-// scheduled date months out isn't "just posted", so it shouldn't jump the
-// queue the way a fresh post should.
+
+// A brand-new post hasn't had time to earn the reactions and comments
+// activityScore() rewards, so left to that score alone Active would bury it at
+// the bottom for as long as it stays unengaged (see the -1000 branch). Give it
+// a window to actually be seen instead: for its first hour, float it above the
+// score-ranked rest, newest first. Events are excluded — an event entering the
+// feed isn't somebody choosing to post.
 const FRESH_POST_MS=60*60*1000;
 function isFreshPost(it){
   return it.kind==='post'&&(Date.now()-it.when)<FRESH_POST_MS;
 }
-// The date the Upcoming tab should sort by: the event's own date for an
-// event, or its attached event's date for a post — a post about a card two
-// days out belongs near that card, not wherever its own timestamp lands.
-function homeUpcomingWhen(it){
-  if(it.kind==='event') return it.when;
-  const e=it.post.event_id?allEntries().find(x=>x.id===it.post.event_id):null;
-  return e?Date.parse(e.date):it.when;
-}
-// "Latest" means recently posted or announced, not "scheduled for far in the
-// future" — a post's `when` is already its creation time, but an event's
-// `when` is its (often months-out) scheduled date, which would otherwise
-// read as maximally fresh and bury every real post beneath it. Same failure
-// mode hotScore()'s comment describes for Active, just never fixed here.
-// firstSeen is the event equivalent of a post's created_at — when it
-// actually entered this tracker.
-function homeLatestWhen(it){
-  if(it.kind==='post') return it.when;
-  return it.entry.firstSeen?Date.parse(it.entry.firstSeen):it.when;
-}
+
 function homeItems(){
-  const q=homeQuery.trim().toLowerCase();
-  let items=hotEntries()
-    .filter(feedEligible)
-    .filter(it=>itemMatches(it,homeFilter))
-    .filter(it=>homeSort!=='upcoming'||homeItemIsUpcoming(it))
-    .filter(it=>homeItemMatchesQuery(it,q));
-  if(homeSort==='latest') items=items.slice().sort((a,b)=>homeLatestWhen(b)-homeLatestWhen(a));
-  else if(homeSort==='upcoming') items=items.slice().sort((a,b)=>homeUpcomingWhen(a)-homeUpcomingWhen(b));
-  else{
-    const fresh=items.filter(isFreshPost).sort((a,b)=>b.when-a.when);
-    if(fresh.length) items=fresh.concat(items.filter(it=>!isFreshPost(it)));
-  }
-  return items;
+  const q=feedQuery.trim().toLowerCase();
+  const items=feedItems
+    .filter(it=>eligibleFor(it,feedMode))
+    .filter(it=>itemMatches(it,feedTypes))
+    .filter(it=>itemMatchesQuery(it,q));
+  if(feedMode==='active') return rankActive(items);
+  // All: newest first by the timeline above, with a deterministic tie-break so
+  // the order can't shuffle between two renders of the same data.
+  return items.sort((a,b)=>b.feedWhen-a.feedWhen||cmpId(a,b));
 }
+
+// Upcoming is the one mode that isn't a flat list: each future event carries
+// the community posts about it underneath, so the conversation sits with the
+// thing it is about instead of scattered through a chronological feed.
+function upcomingGroups(){
+  const q=feedQuery.trim().toLowerCase();
+  const noTypes=!feedTypes.size;
+  const wantEvents=noTypes||feedTypes.has('event')||feedTypes.has('podcast');
+  const wantPosts=noTypes||feedTypes.has('post');
+  const evs=[...entryIndex.values()]
+    .filter(e=>daysTo(e.date)>=0)
+    .filter(e=>{
+      if(noTypes) return true;
+      if(feedTypes.has(e.type==='podcast'?'podcast':'event')) return true;
+      // Posts-only still needs the event as a header to hang its posts on.
+      return feedTypes.has('post');
+    })
+    .sort((a,b)=>a.date.localeCompare(b.date)||(a.id<b.id?-1:a.id>b.id?1:0));
+  const kids=new Map();
+  if(wantPosts) for(const p of posts){
+    if(!p.event_id) continue;
+    if(!kids.has(p.event_id)) kids.set(p.event_id,[]);
+    kids.get(p.event_id).push(p);
+  }
+  return evs.map(e=>({
+      event:e,
+      posts:(kids.get(e.id)||[]).sort((a,b)=>ts(b.created_at)-ts(a.created_at))
+    }))
+    // Posts-only: drop events with nothing under them; the header is context,
+    // not content, so an empty one is just noise.
+    .filter(g=>wantEvents||g.posts.length)
+    // A query matches a group if it matches the event OR any post beneath it —
+    // narrowing must never orphan a matching post from the event it is about.
+    .filter(g=>!q||matchesEventQuery(g.event,q)||g.posts.some(p=>matchesPostQuery(p,q)));
+}
+
 function homeMapRows(items){
-  const byId=new Map(allEntries().map(e=>[e.id,e])), ids=new Set();
+  const ids=new Set();
   items.forEach(it=>{
     if(it.kind==='event') ids.add(it.entry.id);
-    else if(it.post.event_id&&byId.has(it.post.event_id)) ids.add(it.post.event_id);
+    else if(it.post.event_id&&entryIndex.has(it.post.event_id)) ids.add(it.post.event_id);
   });
-  return [...ids].map(id=>byId.get(id));
+  return [...ids].map(id=>entryIndex.get(id));
 }
+function upcomingMapRows(groups){ return groups.map(g=>g.event); }
 function updateFilterSummary(){
-  const n=(homeFilter!=='all'?1:0);
   const el=document.getElementById('filter-summary');
-  if(el) el.textContent=n?'Filters · '+n:'Filters';
+  if(el) el.textContent=feedTypes.size?'Filters · '+feedTypes.size:'Filters';
 }
 
 function skeleton(n){
@@ -1992,6 +2693,17 @@ function skeleton(n){
     '<div class="skel-line short"></div><div class="skel-line"></div></div></div>';
   return '<div role="status" aria-live="polite" class="visually-hidden">Loading</div>'+h;
 }
+// Held for the whole boot window, not swapped the instant one of the two
+// sources answers. A fixed row count keeps the page height stable so nothing
+// jumps when the real rows arrive.
+function renderBootSkeleton(){
+  const el=document.getElementById('homefeed');
+  if(el) el.innerHTML=skeleton(6);
+  const ns=document.getElementById('nowstrip');
+  if(ns) ns.innerHTML='<div class="nowcell skel-cell" aria-hidden="true"></div>'+
+    '<div class="nowcell skel-cell" aria-hidden="true"></div>'+
+    '<div class="nowcell skel-cell" aria-hidden="true"></div>';
+}
 // Data arrived or changed — refresh whichever feed is actually on screen.
 // Rendering all three every time was pointless work on a 1,400-row list.
 function renderFeeds(){
@@ -2000,9 +2712,72 @@ function renderFeeds(){
   else if(currentView==='schedule') renderSchedule();
 }
 
+// What is currently on screen, so the map can be redrawn without re-deriving
+// it and without falling back to "everything" (which is what used to wipe out
+// the filter every time a pin was clicked).
+let lastFeedRows=[];
+
+// Cheap identity for the rendered list. A reconcile that changes nothing
+// visible — the common case, since reactions already applied optimistically —
+// then costs no repaint at all, which is the first and best defence against
+// the feed moving under the reader.
+function feedSignature(shown){
+  let s=feedMode+'|'+[...feedTypes].sort().join(',')+'|'+feedQuery+'|'+
+    (postsFailed?'F':'')+(postsLoading?'L':'')+'|';
+  for(const it of shown) s+=it.id+':'+it.uniq+':'+it.cCount+':'+(reactionsFor(it.rxTarget).mine||'')+'|';
+  return s;
+}
+// Anchor on the topmost row that is still on screen, so an insertion above the
+// viewport doesn't shove the reader down the page. The window is the scroller
+// in every layout — .homecol sets no overflow at any breakpoint — so
+// window.scrollBy is correct including in the 1280px three-column mode.
+function captureAnchor(el){
+  for(const r of el.querySelectorAll('.row')){
+    const t=r.getBoundingClientRect().top;
+    if(t>=0) return {post:r.dataset.post||null, goto:r.dataset.goto||null,
+                     top:t, focused:r===document.activeElement};
+  }
+  return null;
+}
+function restoreAnchor(el,a){
+  if(!a) return;
+  // Modal drawer open means body{overflow:hidden} and feedScroll owns the
+  // position — scrolling now would corrupt the restore in closeDrawer().
+  if(drawerIsModal()&&!document.getElementById('drawer').hidden) return;
+  // Compared by dataset rather than through an attribute selector: event ids
+  // come from the feed's untrusted `src` field and can carry characters that
+  // break a selector outright.
+  let target=null;
+  for(const r of el.querySelectorAll('.row')){
+    if((a.post&&r.dataset.post===a.post)||(a.goto&&r.dataset.goto===a.goto)){ target=r; break; }
+  }
+  if(!target) return;
+  const delta=target.getBoundingClientRect().top-a.top;
+  if(Math.abs(delta)>1) window.scrollBy(0,delta);
+  if(a.focused) target.focus({preventScroll:true});
+}
+
+function feedNoticeHTML(){
+  return (postsFailed?'<div class="empty failed"><strong>Couldn’t load posts</strong>'+
+      'Events and episodes are shown below. '+
+      '<button class="linkish" id="retry-posts">Try again</button></div>':'')+
+    (postsLoading&&!posts.length?'<p class="hint">Loading posts…</p>':'');
+}
+function wireFeedNotice(){
+  const r=document.getElementById('retry-posts');
+  if(r) r.addEventListener('click',()=>{ postsFailed=false; loadPosts(); });
+}
+function emptyFeedHTML(){
+  return '<div class="empty"><strong>Nothing here yet</strong>'+
+    (sb?'Clear the search or filters to see more.':'Posts and reactions need Supabase switched on — see the '+
+    'SUPABASE setup comment near the top of the script.')+'</div>';
+}
+
 function renderHome(){
   const el=document.getElementById('homefeed'); if(!el) return;
   renderNowStrip();
+  if(feedMode==='upcoming'){ renderHomeUpcoming(el); return; }
+
   const items=homeItems();
   // Events and episodes come from events.json and are ready immediately; only
   // post rows wait on Supabase. Skeletons therefore only stand in when there
@@ -2010,41 +2785,87 @@ function renderHome(){
   // half meant anything going wrong in Supabase (a blocked request, storage
   // denied in private browsing) left a permanently skeleton feed instead of
   // the events we already had.
-  if(!items.length&&postsLoading){ el.innerHTML=skeleton(6); return; }
+  if(!items.length&&(postsLoading||!bootDone)){ el.innerHTML=skeleton(6); return; }
   if(!items.length){
-    el.innerHTML='<div class="empty"><strong>Nothing here yet</strong>'+
-      (sb?'Clear the search or filters to see more.':'Posts and reactions need Supabase switched on — see the '+
-      'SUPABASE setup comment near the top of the script.')+'</div>';
+    el.innerHTML=emptyFeedHTML();
     document.getElementById('load-more').hidden=true;
-    drawFeedMap(items);
+    lastFeedRows=[]; drawFeedMap([]);
     return;
   }
   const shown=items.slice(0,homePage*PAGE);
+  const sig=feedSignature(shown);
+  lastFeedRows=homeMapRows(items);
+  if(el.dataset.sig===sig){ drawFeedMap(items); return; }
+
+  const anchor=captureAnchor(el);
   // Paint the feed before anything else can fail. The map used to be drawn
   // first, so one exception in plotMap left the skeleton on screen and the
   // whole page looked dead.
-  el.innerHTML=
-    (postsFailed?'<div class="empty failed"><strong>Couldn’t load posts</strong>'+
-      'Events and episodes are shown below. '+
-      '<button class="linkish" id="retry-posts">Try again</button></div>':'')+
-    (postsLoading&&!posts.length?'<p class="hint">Loading posts…</p>':'')+
-    shown.map(itemRow).join('');
-  const r=document.getElementById('retry-posts');
-  if(r) r.addEventListener('click',()=>{ postsFailed=false; loadPosts(); });
+  el.innerHTML=feedNoticeHTML()+shown.map(itemRow).join('');
+  el.dataset.sig=sig;
+  wireFeedNotice();
+  restoreAnchor(el,anchor);
   const more=document.getElementById('load-more');
   more.hidden=shown.length>=items.length;
   more.textContent='Load more ('+(items.length-shown.length)+' left)';
   drawFeedMap(items);
 }
 
-// The map is secondary to the feed, so it is never allowed to take the feed
-// down with it: it draws last and its failures are reported, not propagated.
-function drawFeedMap(items){
-  try{ plotMap(homeMapRows(items)); }
-  catch(err){ console.error('Map could not be drawn',err); }
+// Upcoming: events soonest first, each with the posts about it underneath.
+// Pagination counts groups rather than rows, so "load more" never splits an
+// event away from its own discussion.
+function renderHomeUpcoming(el){
+  const groups=upcomingGroups();
+  if(!groups.length&&!bootDone){ el.innerHTML=skeleton(6); return; }
+  if(!groups.length){
+    el.innerHTML='<div class="empty"><strong>Nothing scheduled</strong>'+
+      'No announced dates ahead right now. Schedule has the full record.</div>';
+    document.getElementById('load-more').hidden=true;
+    lastFeedRows=[]; drawFeedMap([]);
+    return;
+  }
+  const shown=groups.slice(0,homePage*PAGE);
+  const sig='up|'+feedSignature([])+shown.map(g=>
+    g.event.id+':'+g.posts.length+':'+eventCommentCount(g.event.id)).join('|');
+  lastFeedRows=upcomingMapRows(groups);
+  if(el.dataset.sig===sig){ drawFeedMapRows(lastFeedRows); return; }
+
+  const anchor=captureAnchor(el);
+  el.innerHTML=feedNoticeHTML()+shown.map(upcomingGroupHTML).join('');
+  el.dataset.sig=sig;
+  wireFeedNotice();
+  restoreAnchor(el,anchor);
+  const more=document.getElementById('load-more');
+  more.hidden=shown.length>=groups.length;
+  more.textContent='Load more ('+(groups.length-shown.length)+' left)';
+  drawFeedMapRows(lastFeedRows);
+}
+function upcomingGroupHTML(g){
+  return '<section class="upgroup">'+
+    eventRow(g.event,{countdown:true})+
+    (g.posts.length?'<div class="upgroup-posts">'+g.posts.map(postRow).join('')+'</div>':'')+
+  '</section>';
 }
 
-// Three fast orientation points. These are deliberately summaries rather than
+// The map is secondary to the feed, so it is never allowed to take the feed
+// down with it: it draws last and its failures are reported, not propagated.
+function drawFeedMap(items){ drawFeedMapRows(homeMapRows(items)); }
+function drawFeedMapRows(rows){
+  try{ plotMap(rows,{matchIds:queryMatchIds()}); }
+  catch(err){ console.error('Map could not be drawn',err); }
+}
+// Pins for entries the current *search* matches, or null when there is no
+// search. The type filter removes pins (they are not in `rows` at all); a
+// query dims them instead, because seeing where a match sits relative to
+// everything else is the point of having a map next to the results.
+function queryMatchIds(){
+  const q=feedQuery.trim().toLowerCase();
+  if(!q) return null;
+  const ids=new Set();
+  for(const e of entryIndex.values()) if(matchesEventQuery(e,q)) ids.add(e.id);
+  for(const p of posts) if(p.event_id&&matchesPostQuery(p,q)) ids.add(p.event_id);
+  return ids;
+}
 // another set of filters: what just released, what is next, and where the
 // current conversation is.
 function renderNowStrip(){
@@ -2083,25 +2904,38 @@ function renderNowStrip(){
 }
 
 /* ---------- explore ---------- */
+// Explore was unreachable for a while — it had no nav button and wasn't in
+// VIEWS — so none of this had ever run. It is live again as the Browse
+// sub-section, sharing the feed's item shape, query matcher and row builders
+// rather than keeping its own near-copies.
 let exQuery='', exFilter='all', exView='list', exDate='any', exLoc='';
+let lastExploreRows=[];
+// populateLocPicker rebuilds ~130 <option>s; only worth doing when the entry
+// set has actually changed, not on every keystroke-driven re-render.
+let locPickerGen=-1, dataGen=0;
 
 // A post inherits the location of whatever it is attached to — it has none of
 // its own, and dropping every post from a location filter would make "Where"
 // silently mean "events only".
 function itemLoc(it){
   if(it.kind==='event') return it.entry.loc||'';
-  const ev=it.post.event_id?allEntries().find(e=>e.id===it.post.event_id):null;
+  const ev=entryById(it.post.event_id);
   return ev?(ev.loc||''):'';
 }
 function itemMatchesDate(it,mode){
   if(mode==='any') return true;
-  const days=(Date.now()-it.when)/DAY;
-  if(mode==='upcoming') return it.when>Date.now();
+  // Upcoming has to be asked of the event's own date, not of feedWhen — that
+  // is capped at now precisely so nothing in All reads as being in the future,
+  // which would make `it.feedWhen > Date.now()` permanently false here.
+  if(mode==='upcoming') return it.kind==='event'&&daysTo(it.entry.date)>=0;
+  const days=(Date.now()-it.feedWhen)/DAY;
   return days>=0&&days<=Number(mode);
 }
 // Only cities that actually appear, so the list can't offer a dead filter.
 function populateLocPicker(){
   const sel=document.getElementById('ex-loc'); if(!sel) return;
+  if(locPickerGen===dataGen) return;
+  locPickerGen=dataGen;
   const cur=sel.value, seen={};
   allEntries().forEach(e=>{ if(e.loc){ const c=cityLabel(e.loc); if(c&&c!=='—') seen[c]=(seen[c]||0)+1; } });
   const names=Object.keys(seen).sort((a,b)=>seen[b]-seen[a]||a.localeCompare(b));
@@ -2113,32 +2947,36 @@ function populateLocPicker(){
 function renderExplore(){
   const el=document.getElementById('explorefeed'); if(!el) return;
   populateLocPicker();
+  // Whether the map is visible and where it is mounted are two answers to the
+  // same question — syncMapMount() owns the second, this owns the first, and
+  // they must agree or the card ends up in a hidden host (invariant #3).
   document.getElementById('explore-map').hidden=(exView!=='map');
   el.hidden=(exView==='map');
   document.getElementById('explore-trending').hidden=(exView==='map');
-  if(exView==='map') return;
   const q=exQuery.trim().toLowerCase();
-  let items=hotEntries()
-    .filter(it=>itemMatches(it,exFilter))
+  const types=exFilter==='all'?new Set():new Set([exFilter]);
+  let items=feedItems
+    .filter(it=>itemMatches(it,types))
     .filter(it=>itemMatchesDate(it,exDate))
-    .filter(it=>!exLoc||cityLabel(itemLoc(it))===exLoc);
-  if(q){
-    items=items.filter(it=>{
-      const hay=it.kind==='post'
-        ? (it.post.caption||'')+' '+(it.post.author_label||'')
-        : it.entry.title+' '+(it.entry.loc||'');
-      return hay.toLowerCase().includes(q);
-    });
-  }
+    .filter(it=>!exLoc||cityLabel(itemLoc(it))===exLoc)
+    // One shared haystack with Home. These had drifted: Home searched
+    // video_title and channel, Explore searched neither, so the same words
+    // found different things depending on which list you were looking at.
+    .filter(it=>itemMatchesQuery(it,q));
+  items=rankActive(items);
+  lastExploreRows=homeMapRows(items);
+  if(exView==='map'){ syncMap(); return; }
   renderTrending(q||exLoc||exDate!=='any'||exFilter!=='all');
   if(!items.length){
     el.innerHTML='<div class="empty"><strong>No matches</strong>'+
       (q?'Nothing matches “'+esc(exQuery)+'”.':'Nothing fits these filters.')+'</div>';
+    syncMap();
     return;
   }
   el.innerHTML='<p class="hint">'+items.length+' result'+(items.length===1?'':'s')+
     (items.length>60?' · showing the first 60':'')+'</p>'+
     items.slice(0,60).map(itemRow).join('');
+  syncMap();
 }
 
 // Trending is a starting point for an empty Explore, not a competitor to the
@@ -2147,15 +2985,21 @@ function renderTrending(narrowed){
   const el=document.getElementById('explore-trending'); if(!el) return;
   if(narrowed||!sb){ el.innerHTML=''; return; }
   const items=hotEntries();
-  const trendingPosts=items.filter(it=>it.kind==='post'&&(it.ups||it.cCount))
+  const trendingPosts=items.filter(it=>it.kind==='post'&&((it.uniq||0)||it.cCount))
     .slice(0,5);
   const active=items.filter(it=>(it.cCount||0)>0)
     .sort((a,b)=>(b.cCount||0)-(a.cCount||0)).slice(0,5);
   if(!trendingPosts.length&&!active.length){ el.innerHTML=''; return; }
+  // Unique reactors, not a net vote — there is no "net" any more, and the top
+  // emoji says more about how something landed than a count on its own.
+  const rxN=it=>{
+    const s=reactionsFor(it.rxTarget);
+    const top=RX.filter(e=>s.counts[e]>0).sort((a,b)=>s.counts[b]-s.counts[a])[0];
+    return (top?top+' ':'')+(it.uniq||0)+(it.cCount?' · '+it.cCount+'c':'');
+  };
   const list=(rows)=>ranks(rows.map(it=>it.kind==='post'
-    ? {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''),
-       n:'▲'+it.ups+(it.cCount?' · '+it.cCount+'c':''), pid:it.post.id}
-    : {t:it.entry.title, n:'▲'+it.ups+(it.cCount?' · '+it.cCount+'c':''), id:it.entry.id}));
+    ? {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''), n:rxN(it), pid:it.post.id}
+    : {t:it.entry.title, n:rxN(it), id:it.entry.id}));
   el.innerHTML=
     (trendingPosts.length?'<div class="subhead">Trending posts</div>'+list(trendingPosts):'')+
     (active.length?'<div class="subhead">Active discussions</div>'+list(active):'');
@@ -2294,22 +3138,47 @@ function ranks(rows){
 // with real votes and a comment thread sank. Reacting to an event actually
 // demoted it, by moving its anchor from the far future back to now.
 //
-//   engaged → votes and comments lead, most recent activity breaks ties
+// Future events can no longer reach Active at all (see eligibleFor), so that
+// specific failure is gone by construction. What remained was the opposite
+// problem: recency() is capped at 1 and documented as a tie-breaker, so
+// nothing here ever *decayed*. A post that collected twenty reactions last
+// spring outranked a thread people are arguing in right now, forever. The
+// two tiers stay; the engaged tier gains real gravity.
+//
+//   engaged → engagement, lifted by recent activity, divided by age
 //   quiet   → closest to today first, all of them below the engaged tier
-const DAY=86400000;
+
 // Always greater than 0 and at most 1, decaying with distance from now in
 // either direction — so it can only ever break a tie between equal scores,
-// never outweigh one.
+// never outweigh one. Still the ordering for the quiet tier.
 function recency(ms){
   return Number.isFinite(ms) ? 1/(1+Math.abs(Date.now()-ms)/DAY) : 0;
 }
-function hotScore(ups,downs,cCount,lastActivityMs,dateMs){
-  const touched=(ups||0)+(downs||0)+(cCount||0);
-  if(!touched) return -1000+recency(dateMs);
-  // Comments count the same as an upvote: on a site this small a thread is
-  // the strongest signal there is that something landed.
-  return (ups||0)-(downs||0)+(cCount||0)+recency(lastActivityMs);
+const ACTIVE_GRAVITY=1.35;     // exponent on age; >1 is what makes old popular items sink
+const ACTIVE_HALFLIFE_H=30;    // how fast a thread stops counting as live once it goes quiet
+// Engagement is unique reactors plus comments. "Unique" is exact rather than
+// approximate: the partial unique indexes allow one reaction row per
+// (target,user), and indexReactions() counts distinct user ids anyway, so
+// stacking six emoji cannot inflate a score. Replies are rows in `comments`
+// with the same target, so cCount already includes them.
+//
+// Reactions on a *comment* deliberately do NOT feed its parent's score. The
+// comment is already counted once in cCount; counting its reactions as well
+// would weight discussion twice over. Don't "fix" this.
+function activityScore(it){
+  const eng=(it.uniq||0)+(it.cCount||0);
+  // Unchanged intent, new sort key: an untouched item is not "active", whatever
+  // its date. Kept far below any real score so the tiers can never interleave.
+  if(!eng) return -1000+recency(it.feedWhen);
+  const ageH=Math.max(0.5,(Date.now()-it.feedWhen)/3600000);
+  const quietH=Math.max(0,(Date.now()-(it.lastActivity||it.feedWhen))/3600000);
+  const liveness=1+Math.exp(-quietH/ACTIVE_HALFLIFE_H);   // bounded [1,2]
+  return 1000*Math.pow(eng,0.8)*liveness/Math.pow(ageH+2,ACTIVE_GRAVITY);
 }
+// Deterministic tie-break. Half the reason the feed stops shuffling between
+// renders is that equal scores no longer resolve to whatever order the source
+// array happened to be in.
+function cmpId(a,b){ return a.id<b.id?-1:a.id>b.id?1:0; }
 
 // Selecting from a chart or a list loads the entry into the side pane rather
 // than scrolling the page to it, so the figure you clicked and the thing it
@@ -2354,7 +3223,7 @@ function scheduleCenterPaneMetrics(replot){
     root.setProperty('--center-pane-left',left+'px');
     root.setProperty('--center-pane-width',Math.max(520,width)+'px');
     root.setProperty('--center-pane-top',top+'px');
-    if(shouldReplot) plotMap(homeMapRows(homeItems()));
+    if(shouldReplot) syncMap();
   });
 }
 function updateCenterPaneMode(){
@@ -2368,19 +3237,49 @@ function updateCenterPaneMode(){
     root.removeProperty('--center-pane-left');
     root.removeProperty('--center-pane-width');
     root.removeProperty('--center-pane-top');
-    if(currentView==='home') requestAnimationFrame(()=>plotMap(homeMapRows(homeItems())));
+    requestAnimationFrame(syncMap);
   }
   return open;
 }
-function openDrawer(){
+// Where focus came from, so it can be handed back on close. Stored as
+// {node,kind,id} rather than just the node because commit() rewrites the feed
+// while the drawer is open, so the captured element is very often detached by
+// the time anyone closes — the id is what still resolves.
+let drawerReturn=null;
+function openDrawer(opts){
   const d=document.getElementById('drawer');
-  if(d.hidden){
+  const first=d.hidden;
+  if(first){
+    drawerReturn={node:document.activeElement, kind:selectedKind,
+                  id:selectedKind==='post'?selectedPostId:selectedId};
     drawerLocked=drawerIsModal();
     if(drawerLocked){ feedScroll=window.scrollY; document.body.classList.add('drawer-open'); }
     d.hidden=false;
   }
+  syncDrawerModality();
   updateCenterPaneMode();
-  d.querySelector('.drawer-panel').scrollTop=0;
+  const panel=d.querySelector('.drawer-panel');
+  panel.scrollTop=0;
+  renderPaneComposer();
+  if(first&&!(opts&&opts.silent)) focusIntoPanel(panel);
+}
+// Focus the pane's own heading rather than the close button: a screen reader
+// should hear what just opened, not the word "Close".
+function focusIntoPanel(panel){
+  const h=panel.querySelector('.player .ph > span');
+  const t=h||panel.querySelector('.paneclose');
+  if(!t) return;
+  if(t===h) h.setAttribute('tabindex','-1');
+  t.focus({preventScroll:true});
+}
+// aria-modal has to track reality. Above 640px the CSS drops the scrim and
+// releases pointer-events so the feed underneath stays usable — asserting
+// modality there tells assistive tech the rest of the page is inert when it
+// demonstrably isn't. role="dialog" is right in both states.
+function syncDrawerModality(){
+  const d=document.getElementById('drawer');
+  const p=d&&d.querySelector('.drawer-panel');
+  if(p) p.setAttribute('aria-modal',String(!d.hidden&&drawerIsModal()));
 }
 function closeDrawer(){
   const d=document.getElementById('drawer');
@@ -2388,19 +3287,41 @@ function closeDrawer(){
   d.hidden=true;
   if(document.getElementById('composer').hidden) document.body.classList.remove('drawer-open');
   if(drawerLocked){ window.scrollTo({top:feedScroll}); drawerLocked=false; }
+  syncDrawerModality();
   updateCenterPaneMode();
+  restoreFocus();     // after the scrollTo, and always preventScroll
+}
+function restoreFocus(){
+  const r=drawerReturn; drawerReturn=null;
+  if(!r) return;
+  if(r.node&&document.contains(r.node)&&r.node.offsetParent!==null)
+    return r.node.focus({preventScroll:true});
+  // The row was re-rendered away while the drawer was open — find the same
+  // item again by id rather than dropping focus to <body>.
+  for(const el of document.querySelectorAll('#homefeed .row,#explorefeed .row,#schedulefeed .row')){
+    if(r.kind==='post'?el.dataset.post===r.id:el.dataset.goto===r.id)
+      return el.focus({preventScroll:true});
+  }
+  const nav=document.querySelector('[data-view][aria-pressed="true"]');
+  if(nav) nav.focus({preventScroll:true});
 }
 function selectPost(id,opts){
   if(!id) return;
   selectedPostId=id; selectedKind='post';
+  // A post has no pin of its own; if it is attached to an event, light that
+  // event's pin so the map still says where the conversation is.
+  const p=posts.find(x=>x.id===id);
+  selPin=(p&&p.event_id&&entryIndex.has(p.event_id))?p.event_id:null;
+  paintPinSelection();
   renderPlayer();
-  openDrawer();
+  openDrawer(opts);
   // Clear the other kind's highlight too — one list can show a [data-goto]
   // row and a [data-post] row side by side, so both must agree on one
   // selection.
   document.querySelectorAll('[data-goto].sel').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('[data-post]').forEach(el=>
     el.classList.toggle('sel',el.dataset.post===id));
+  if(!(opts&&opts.noScroll)) revealRow({post:id});
   if(!(opts&&opts.silent)&&location.hash!==hashForPost(id)){
     history.replaceState(null,'',hashForPost(id));
   }
@@ -2409,11 +3330,15 @@ function selectPost(id,opts){
 function selectEntry(id,opts){
   if(!id) return;
   selectedId=id; selectedKind='event';
+  // The reverse link the map never had: picking a row from the feed now lights
+  // its pin, not just the other way round.
+  selPin=id; paintPinSelection();
   renderPlayer();
-  openDrawer();
+  openDrawer(opts);
   document.querySelectorAll('[data-post].sel').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('[data-goto]').forEach(el=>
     el.classList.toggle('sel',el.dataset.goto===id));
+  if(!(opts&&opts.noScroll)) revealRow({goto:id});
   // `silent` is for selections that came *from* the URL — rewriting the hash
   // there would push a duplicate history entry and break the back button.
   if(!(opts&&opts.silent)&&shareable({id:id})&&location.hash!==hashFor(id)){
@@ -2432,7 +3357,11 @@ function clearSelection(){
   document.querySelectorAll('[data-goto].sel').forEach(el=>el.classList.remove('sel'));
   document.querySelectorAll('[data-post].sel').forEach(el=>el.classList.remove('sel'));
   if(location.hash) history.replaceState(null,'',location.pathname+location.search);
-  if(selPin){ selPin=null; plotMap(lastRows); }
+  // Repaint the class, don't replot: a replot here would rebuild the map from
+  // whatever `lastRows` happened to hold and throw away the feed's filtering.
+  if(selPin){ selPin=null; paintPinSelection(); }
+  // Thread UI state belongs to the thing that was open, not to the next one.
+  openReplies=new Set(); replyingTo=null; replyDraft='';
   renderPlayer();
   closeDrawer();
 }
@@ -2440,11 +3369,42 @@ function clearSelection(){
 document.getElementById('drawer').addEventListener('click',ev=>{
   if(ev.target.closest('[data-closedrawer]')) clearSelection();
 });
+// Innermost first. Each layer only swallows Escape if it actually had
+// something open, so the chain falls through cleanly to the next.
 document.addEventListener('keydown',ev=>{
   if(ev.key!=='Escape') return;
+  if(closeRxPickers(null)) return;
   if(!document.getElementById('composer').hidden){ closeComposer(); return; }
+  if(replyingTo){ cancelReply(); return; }
   if(!document.getElementById('drawer').hidden){ clearSelection(); return; }
   if(!document.getElementById('home-search').hidden){ setSearchOpen(false); return; }
+});
+// A Tab trap, but only where the surface is genuinely modal. The composer
+// always is. The drawer only is at phone width — above 640px it deliberately
+// releases the scrim and pointer-events so the feed stays readable beside it,
+// and trapping Tab there would contradict exactly that.
+function activeModalPanel(){
+  const c=document.getElementById('composer');
+  if(c&&!c.hidden) return c.querySelector('.drawer-panel');
+  const d=document.getElementById('drawer');
+  if(d&&!d.hidden&&drawerIsModal()) return d.querySelector('.drawer-panel');
+  return null;
+}
+document.addEventListener('keydown',ev=>{
+  if(ev.key!=='Tab') return;
+  const panel=activeModalPanel(); if(!panel) return;
+  const f=[...panel.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),'+
+    'textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>el.offsetParent!==null);
+  if(!f.length) return;
+  const first=f[0], last=f[f.length-1];
+  if(ev.shiftKey&&document.activeElement===first){ ev.preventDefault(); last.focus(); }
+  else if(!ev.shiftKey&&document.activeElement===last){ ev.preventDefault(); first.focus(); }
+},true);
+// Clicking away from an open reaction picker closes it, the same as Escape.
+document.addEventListener('click',ev=>{
+  if(ev.target.closest('.rxbar')) return;
+  closeRxPickers(null);
 });
 
 // What the pane is currently showing. Rebuilding its innerHTML replaces the
@@ -2453,61 +3413,99 @@ document.addEventListener('keydown',ev=>{
 // thing is still open, only the parts that actually change are rewritten and
 // the frame is left strictly alone.
 let paneKey=null;
+// The target the pane is showing, so a reaction anywhere in it can be repainted
+// without knowing which kind it is.
+function currentPaneTarget(){
+  if(selectedKind==='post'&&selectedPostId) return 'post:'+selectedPostId;
+  if(selectedKind==='event'&&selectedId) return 'event:'+selectedId;
+  return null;
+}
+// The main comment box now lives in #pane-composer, a sibling of
+// #insight-player, so rewriting the thread can no longer destroy what someone
+// was typing — that used to be a save-and-restore that recovered focus but not
+// the text. Only the inline reply form still sits inside the thread, and its
+// text is held in replyDraft rather than in the DOM.
+function captureTyping(root){
+  const a=document.activeElement;
+  if(!a||!root.contains(a)||!('value' in a)) return null;
+  return {cid:a.dataset.replybox||null, s:a.selectionStart, e:a.selectionEnd};
+}
+function restoreTyping(root,t){
+  if(!t||!t.cid) return;
+  for(const el of root.querySelectorAll('[data-replybox]')){
+    if(el.dataset.replybox!==t.cid) continue;
+    el.value=replyDraft;
+    el.focus();
+    try{ el.setSelectionRange(t.s,t.e); }catch(_){}
+    return;
+  }
+}
 function paneRefresh(){
   const el=document.getElementById('insight-player');
   const social=el.querySelector('#pane-social');
   const thread=el.querySelector('#pane-thread');
-  // Replacing the thread destroys the box you just typed into, so if that is
-  // where you were, put the cursor back in the fresh one.
-  const wasTyping=!!(thread&&document.activeElement&&thread.contains(document.activeElement));
-  const restore=()=>{ if(!wasTyping) return;
-    const box=el.querySelector('#pane-thread input[data-ctx],#pane-thread input[data-ectx]');
-    if(box) box.focus();
-  };
+  const typing=thread?captureTyping(thread):null;
+  const target=currentPaneTarget();
   if(selectedKind==='post'){
     const p=posts.find(x=>x.id===selectedPostId); if(!p) return false;
-    const up=el.querySelector('[data-postlike]'), down=el.querySelector('[data-postdislike]');
-    if(up){ up.classList.toggle('liked',p.myVote===1); up.textContent='▲ '+(p.ups||0); }
-    if(down){ down.classList.toggle('disliked',p.myVote===-1); down.textContent='▼ '+(p.downs||0); }
-    if(thread) thread.innerHTML=postThreadHTML(p);
-    restore();
+    if(thread) thread.innerHTML=threadHTML(target);
+    if(target) repaintReactionBars(target);
+    if(thread) restoreTyping(thread,typing);
     return true;
   }
-  const e=allEntries().find(x=>x.id===selectedId); if(!e) return false;
-  const rx=eventReactionsFor(e.id);
-  const eup=el.querySelector('[data-eventlike]'), edown=el.querySelector('[data-eventdislike]');
-  if(eup){ eup.classList.toggle('liked',rx.myVote===1); eup.textContent='▲ '+rx.ups; }
-  if(edown){ edown.classList.toggle('disliked',rx.myVote===-1); edown.textContent='▼ '+rx.downs; }
+  const e=entryById(selectedId); if(!e) return false;
   if(social) social.innerHTML=fanPostsForHTML(e);
-  if(thread) thread.innerHTML=eventCommentsHTML(e.id);
-  restore();
+  if(thread) thread.innerHTML=threadHTML(target);
+  if(target) repaintReactionBars(target);
+  if(thread) restoreTyping(thread,typing);
   return true;
 }
 
+// The comment box, pinned to the bottom of the open detail panel. It is a
+// sibling of #insight-player rather than part of the thread, which is what
+// makes it survive every thread repaint — see paneRefresh() above. It is also
+// the only place a visitor can set their display name without publishing a
+// post; before this, commenting silently attributed you to "Fan" forever.
+function renderPaneComposer(){
+  const box=document.getElementById('pane-composer'); if(!box) return;
+  const target=currentPaneTarget();
+  if(!target||!sb||!session||!session.user){ box.hidden=true; box.innerHTML=''; return; }
+  if(box.dataset.target===target&&box.innerHTML){ box.hidden=false; return; }
+  box.dataset.target=target;
+  box.hidden=false;
+  box.innerHTML='<div class="pc-row">'+
+      '<input type="text" id="pc-name" maxlength="40" placeholder="Display name" '+
+        'aria-label="Display name" value="'+esc(getSavedName())+'">'+
+    '</div>'+
+    '<div class="pc-row">'+
+      '<textarea id="pc-body" rows="1" maxlength="500" placeholder="Add a comment…" '+
+        'aria-label="Comment"></textarea>'+
+      '<button class="mini" id="pc-send" data-cadd="'+esc(target)+'">Comment</button>'+
+    '</div>';
+}
 function renderPlayer(){
   const el=document.getElementById('insight-player'); if(!el) return;
 
   // Same thing still open and already drawn? Update in place. Keyed on what
-  // was actually selected, not on currentView — the Hot feed can select
-  // either kind while currentView stays 'hot', so the view name alone can no
-  // longer tell the pane which kind of thing to draw.
+  // was actually selected, not on currentView — a feed can select either kind
+  // while currentView stays 'home', so the view name alone can no longer tell
+  // the pane which kind of thing to draw.
   const key=selectedKind==='post'?('post:'+selectedPostId)
     :selectedKind==='event'?('entry:'+selectedId):'none';
-  if(key===paneKey&&el.querySelector('.player')&&paneRefresh()) return;
+  if(key===paneKey&&el.querySelector('.player')&&paneRefresh()){ setDrawerLabel(); return; }
   paneKey=key;
 
   if(selectedKind==='post'){
     const p=selectedPostId?posts.find(x=>x.id===selectedPostId):null;
-    if(p){ el.innerHTML=postPaneHTML(p); return; }
+    if(p){ el.innerHTML=postPaneHTML(p); setDrawerLabel(); renderPaneComposer(); return; }
   }
   if(selectedKind==='event'){
-    const e=selectedId?allEntries().find(x=>x.id===selectedId):null;
+    const e=selectedId?entryById(selectedId):null;
     if(e){
       // Same validation as everywhere else: only a whitelisted kind and a
       // strict id ever reach an iframe, and the URL is rebuilt by CLIPSRC.
       const v=e.video&&CLIPSRC[e.video.kind]&&/^[A-Za-z0-9_-]+$/.test(e.video.id)?e.video:null;
       const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
-      const rx=eventReactionsFor(e.id);
       el.innerHTML='<div class="player"><div class="ph"><span>Selected '+
         (e.type==='podcast'?'episode':'event')+'</span>'+
         '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
@@ -2519,19 +3517,26 @@ function renderPlayer(){
         '<h4>'+esc(e.title)+'</h4>'+
         '<p class="pmeta">'+esc(labels[e.type]||e.type)+' · '+esc(fmt(e.date))+
         (e.loc?' · '+esc(cityLabel(e.loc)):'')+'</p>'+
+        // An episode has no sourced venue on purpose, and saying "no location"
+        // would flatly contradict the estimated studio marker sitting on the
+        // map beside it. Name what is actually true instead (invariant #11).
+        (!e.loc?(e.type==='podcast'
+          ? '<p class="pstat muted">No venue on record — the recording base shown on the map is '+
+            'estimated from the release date.</p>'
+          : '<p class="pstat muted">No location attached</p>'):'')+
         (Number.isFinite(e.views)?'<p class="pstat">'+esc(nfmt(e.views))+' views at last sync</p>':'')+
         (e.box&&Number.isFinite(e.box.gate)?'<p class="pstat">'+esc(money(e.box.gate))+' gate'+
           (Number.isFinite(e.box.attendance)?' · '+esc(cfmt(e.box.attendance))+' in attendance':'')+'</p>':'')+
+        // No reaction bar here: an official record's card stays clean, and its
+        // reactions live down in the discussion where the conversation is.
         '<div class="pactions">'+ticketHTML(e)+shareHTML(e)+
-        (sb?'<button class="mini ghost likebtn'+(rx.myVote===1?' liked':'')+'" data-eventlike="'+esc(e.id)+'">▲ '+rx.ups+'</button>'+
-          '<button class="mini ghost dislikebtn'+(rx.myVote===-1?' disliked':'')+'" data-eventdislike="'+esc(e.id)+'">▼ '+rx.downs+'</button>':'')+
         (e.locked?'':'<button class="c-del" data-drop="'+esc(e.id)+'">Remove entry</button>')+
         '</div>'+
         entryInsightHTML(e)+
         '<div id="pane-social">'+fanPostsForHTML(e)+'</div>'+
         '<div id="pane-thread">'+eventCommentsHTML(e.id)+'</div>'+
         '</div>';
-     
+      setDrawerLabel(); renderPaneComposer();
       return;
     }
   }
@@ -2543,6 +3548,20 @@ function renderPlayer(){
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
     '<div class="empty"><strong>This item is no longer here</strong>'+
     'It may have been removed, or the link may be out of date.</div></div>';
+}
+// The drawer announces what it is showing, not the word "Details". Set from
+// whatever renderPlayer just drew, so it can never describe a stale selection.
+function setDrawerLabel(){
+  const p=document.querySelector('#drawer .drawer-panel'); if(!p) return;
+  let label='Details';
+  if(selectedKind==='post'){
+    const post=posts.find(x=>x.id===selectedPostId);
+    if(post) label='Post by '+(post.author_label||'Fan');
+  }else if(selectedKind==='event'){
+    const e=entryById(selectedId);
+    if(e) label=e.title;
+  }
+  p.setAttribute('aria-label',label);
 }
 
 // A couple of numbers that put this entry in context, on the entry itself
@@ -2597,7 +3616,7 @@ function fanPostsForHTML(e){
       ? mine.map(p=>'<button class="ppost" data-post="'+esc(p.id)+'"><b>'+
           esc(p.author_label||'Fan')+'</b> '+esc((p.caption||'').slice(0,90))+
           (p.caption&&p.caption.length>90?'…':'')+
-          ' <span class="n">▲'+(p.ups||0)+' ▼'+(p.downs||0)+
+          ' <span class="n">'+rxSummary('post:'+p.id)+
           (p.comments.length?' · '+p.comments.length+'c':'')+'</span></button>').join('')
       : '<p class="hint" style="margin:4px 0 0">No posts about this yet.</p>')+
     '<button class="mini ghost" data-postabout="'+esc(e.id)+'" style="margin-top:9px">'+
@@ -2919,8 +3938,14 @@ function renderEngagementInsights(){
       'engagement data to report.</div>';
     return;
   }
-  const ups=posts.reduce((s,p)=>s+(p.ups||0),0);
-  const downs=posts.reduce((s,p)=>s+(p.downs||0),0);
+  // Every reaction row, by emoji, so the readout can say what people actually
+  // pressed rather than collapsing six distinct responses into one net number.
+  const rxTotals={}; let rxRows=0;
+  for(const r of reactions){
+    const e=rxEmoji(r); if(!e) continue;
+    rxTotals[e]=(rxTotals[e]||0)+1; rxRows++;
+  }
+  const rxBreakdown=RX.filter(e=>rxTotals[e]).map(e=>e+' '+rxTotals[e]).join(' · ');
   const postComments=posts.reduce((s,p)=>s+(p.comments?p.comments.length:0),0);
   // Named apart from the global eventComments map — a local of that name
   // would shadow it and quietly break the "Most discussed" tally below.
@@ -2937,7 +3962,7 @@ function renderEngagementInsights(){
   // happen — but kept out of a ranking whose whole purpose is to be clicked.
   let orphanEvents=0, orphanComments=0;
   const talked=Object.keys(eventComments).map(id=>{
-    const ev=allEntries().find(e=>e.id===id);
+    const ev=entryById(id);
     const n=eventComments[id];
     if(!ev){ orphanEvents++; orphanComments+=n; return null; }
     return {t:ev.title,n:n+' comment'+(n===1?'':'s'),id:ev.id};
@@ -2948,9 +3973,9 @@ function renderEngagementInsights(){
       ' no longer in the feed — cancelled or rescheduled, so there is nothing to link to.</p>'
     : '';
   // Comments count toward the ranking, so they have to show in the readout
-  // too — otherwise an item sitting at #1 on a comment thread alone reads
-  // as "▲0 ▼0" and the order looks arbitrary.
-  const hotN=it=>'▲'+it.ups+' ▼'+it.downs+(it.cCount?' · '+it.cCount+'c':'');
+  // too — otherwise an item sitting at #1 on a comment thread alone reads as
+  // a bare zero and the order looks arbitrary.
+  const hotN=it=>(rxSummary(it.rxTarget)||'0')+(it.cCount?' · '+it.cCount+'c':'');
   const hot=hotEntries().slice(0,5).map(it=>it.kind==='event'
     ? {t:it.entry.title,n:hotN(it),id:it.entry.id}
     : {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''),n:hotN(it),pid:it.post.id});
@@ -2958,14 +3983,19 @@ function renderEngagementInsights(){
   el.innerHTML=
     figs([
       {k:'Fan posts',v:String(posts.length),s:''},
-      {k:'Reactions',v:String(ups+downs),s:ups+' up · '+downs+' down, across posts'},
+      {k:'Reactions',v:String(rxRows),s:rxBreakdown||'none yet'},
       {k:'Comments',v:String(postComments+eventCommentTotal),s:postComments+' on posts · '+eventCommentTotal+' on events'},
       {k:'Contributors',v:String(new Set(posts.map(p=>p.author_id)).size),s:'distinct posters'}
     ])+
-    (posts.length?'<div class="subhead">Most upvoted posts</div>'+
-      ranks(posts.slice().sort((x,y)=>((y.ups||0)-(y.downs||0))-((x.ups||0)-(x.downs||0))).slice(0,5)
+    // Ranked by distinct reactors rather than by a net score: with six emoji
+    // there is no meaningful "net", and how many people responded at all is
+    // the honest measure of reach.
+    (posts.length?'<div class="subhead">Most reacted posts</div>'+
+      ranks(posts.slice()
+        .sort((x,y)=>(reactionsFor('post:'+y.id).uniq||0)-(reactionsFor('post:'+x.id).uniq||0))
+        .filter(p=>reactionsFor('post:'+p.id).uniq>0).slice(0,5)
         .map(p=>({t:(p.author_label||'Fan')+' — '+(p.caption||''),
-                  n:'▲'+(p.ups||0)+' ▼'+(p.downs||0),pid:p.id}))):'')+
+                  n:rxSummary('post:'+p.id),pid:p.id}))):'')+
     (talked.length?'<div class="subhead">Most discussed events</div>'+ranks(talked)+orphanNote
       :orphanNote)+
     (hot.length?'<div class="subhead">Hottest right now</div>'+ranks(hot):'');
@@ -3013,23 +4043,28 @@ function renderOverviewInsights(){
 }
 
 
-// Shared row-builder for a single event, used by both Browse and the Hot
-// feed so the two never drift into duplicated markup (same role postRow()
-// plays for Fan Posts). Browse's "today" divider logic stays out of here —
-// it depends on neighboring rows in a date-sorted list, which Hot's
-// score-sorted list doesn't have.
-function eventRow(e){
+// Shared row-builder for a single event, used by Browse, Schedule and every
+// feed mode so they never drift into duplicated markup (the same role postRow()
+// plays for Fan Posts). Schedule's "today" divider logic stays out of here — it
+// depends on neighbouring rows in a date-sorted list, which the ranked feeds
+// don't have.
+//
+// opts.countdown is Upcoming's variant: the days-away reading is promoted out
+// of the corner and the venue is stated plainly, because that mode is entirely
+// about what is coming and where. It is an option rather than a second function
+// for the reason above.
+function eventRow(e,opts){
+  const o=opts||{};
   const labels={standup:'Stand-up',broadcast:'Broadcast',podcast:'Podcast'};
   const n=daysTo(e.date), past=n<0;
   const when=relDay(n);
   const yt=e.video&&e.video.kind==='yt'&&/^[A-Za-z0-9_-]{11}$/.test(e.video.id)?e.video.id:null;
   const cCount=sb?eventCommentCount(e.id):0;
   const pCount=sb?postCountFor(e.id):0;
-  const rx=sb?eventReactionsFor(e.id):{ups:0,downs:0};
   const stat=Number.isFinite(e.views)?nfmt(e.views)+' views'
     :(e.box&&Number.isFinite(e.box.gate)?money(e.box.gate)+' gate':'');
-  return '<button class="row'+(past?' past':'')+(selectedId===e.id?' sel':'')+
-      '" data-entry="'+esc(e.id)+'" data-goto="'+esc(e.id)+'">'+
+  return '<button class="row'+(past?' past':'')+(o.countdown?' countdown':'')+
+      (selectedId===e.id?' sel':'')+'" data-entry="'+esc(e.id)+'" data-goto="'+esc(e.id)+'">'+
     '<span class="row-thumb'+(yt?'':' noimg')+'">'+
       '<i>'+esc(posterBadge(e.title||'')||labels[e.type]||'')+'</i>'+
       (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg" onerror="this.closest(\'.row-thumb\').classList.add(\'noimg\');this.remove()">':'')+'</span>'+
@@ -3037,33 +4072,35 @@ function eventRow(e){
       '<span class="row-top"><span class="tag '+e.type+'">'+labels[e.type]+'</span>'+
       (e.flag==='demo'?'<span class="tag demo">Demo</span>':'')+
       (e.flag==='unconfirmed'?'<span class="tag unconf">Rogan unconfirmed</span>':'')+
-      '<span class="when">'+esc(when)+'</span></span>'+
+      // Genuinely new to the tracker, not merely scheduled soon. False for
+      // every backfilled row by design — see eventIsRecent().
+      (o.countdown&&eventIsRecent(e)?'<span class="tag fresh">New</span>':'')+
+      (o.countdown?'':'<span class="when">'+esc(when)+'</span>')+'</span>'+
       '<span class="row-title">'+esc(e.title)+'</span>'+
+      (o.countdown?'<span class="row-count">'+esc(when)+
+        (e.loc?' · '+esc(cityLabel(e.loc)):'')+'</span>':'')+
       '<span class="row-meta">'+esc(fmt(e.date))+
-        (e.loc?' · '+esc(cityLabel(e.loc)):'')+
+        (o.countdown||!e.loc?'':' · '+esc(cityLabel(e.loc)))+
         (stat?' · '+esc(stat):'')+
         (pCount?' · '+pCount+' fan post'+(pCount===1?'':'s'):'')+
       '</span>'+
-      ((rx.ups||rx.downs||cCount)?'<span class="row-stats">'+
-        (rx.ups?'<span class="stat-pill up">▲ '+rx.ups+'</span>':'')+
-        (rx.downs?'<span class="stat-pill down">▼ '+rx.downs+'</span>':'')+
-        (cCount?'<span class="stat-pill comments">'+cCount+' comment'+(cCount===1?'':'s')+'</span>':'')+
-      '</span>':'')+
+      (sb?rowStatsHTML('event:'+e.id,cCount):'')+
     '</span></button>';
 }
 
-// render() no longer owns a list of its own — the feeds do. It keeps the
-// things that are derived from the whole entry set regardless of which view
-// is open: the readout, the map and the analysis panel.
+// render() no longer owns a list of its own — the feeds do. It keeps the things
+// derived from the whole entry set regardless of which view is open: the
+// readout and the analysis panel.
+//
+// It deliberately no longer plots the map. It used to call plotMap(allEntries()),
+// which meant every reaction, every comment and every pin click silently reset
+// the map from the feed's filtered set back to all 250 entries — so filtering
+// the feed appeared to work until you touched anything. syncMap() owns that now.
 function render(){
   stats();
-  const rows=allEntries();
-  plotMap(rows);
-  renderAnalysis(rows);
+  renderAnalysis(allEntries());
   renderFeeds();
 }
-
-
 /* ---------- map ---------- */
 const MAPX0=-0.3688841452039381, MAPY0=-0.24581291155588159, MAPS=1357.3483645020121;
 const CITIES={"new york": [40.71, -74.01], "brooklyn": [40.68, -73.94], "los angeles": [34.05, -118.24], "chicago": [41.88, -87.63], "houston": [29.76, -95.37], "phoenix": [33.45, -112.07], "philadelphia": [39.95, -75.17], "san antonio": [29.42, -98.49], "san diego": [32.72, -117.16], "dallas": [32.78, -96.8], "fort worth": [32.76, -97.33], "austin": [30.27, -97.74], "jacksonville": [30.33, -81.66], "san jose": [37.34, -121.89], "columbus": [39.96, -83.0], "charlotte": [35.23, -80.84], "indianapolis": [39.77, -86.16], "seattle": [47.61, -122.33], "denver": [39.74, -104.99], "washington": [38.91, -77.04], "boston": [42.36, -71.06], "nashville": [36.16, -86.78], "detroit": [42.33, -83.05], "portland": [45.52, -122.68], "las vegas": [36.17, -115.14], "memphis": [35.15, -90.05], "louisville": [38.25, -85.76], "baltimore": [39.29, -76.61], "milwaukee": [43.04, -87.91], "albuquerque": [35.08, -106.65], "tucson": [32.22, -110.97], "fresno": [36.74, -119.79], "sacramento": [38.58, -121.49], "kansas city": [39.1, -94.58], "mesa": [33.42, -111.83], "atlanta": [33.75, -84.39], "omaha": [41.26, -95.94], "colorado springs": [38.83, -104.82], "raleigh": [35.78, -78.64], "miami": [25.76, -80.19], "virginia beach": [36.85, -75.98], "oakland": [37.8, -122.27], "minneapolis": [44.98, -93.27], "tulsa": [36.15, -95.99], "tampa": [27.95, -82.46], "new orleans": [29.95, -90.07], "wichita": [37.69, -97.34], "cleveland": [41.5, -81.69], "bakersfield": [35.37, -119.02], "aurora": [39.73, -104.83], "anaheim": [33.84, -117.91], "honolulu": [21.31, -157.86], "santa ana": [33.75, -117.87], "riverside": [33.95, -117.4], "corpus christi": [27.8, -97.4], "lexington": [38.04, -84.5], "henderson": [36.04, -114.98], "stockton": [37.96, -121.29], "saint paul": [44.95, -93.09], "cincinnati": [39.1, -84.51], "st louis": [38.63, -90.2], "saint louis": [38.63, -90.2], "pittsburgh": [40.44, -79.996], "greensboro": [36.07, -79.79], "lincoln": [40.81, -96.68], "plano": [33.02, -96.7], "orlando": [28.54, -81.38], "irvine": [33.68, -117.83], "newark": [40.74, -74.17], "durham": [35.99, -78.9], "chula vista": [32.64, -117.08], "toledo": [41.65, -83.54], "fort wayne": [41.08, -85.14], "st petersburg": [27.77, -82.64], "laredo": [27.51, -99.51], "jersey city": [40.73, -74.08], "chandler": [33.31, -111.84], "madison": [43.07, -89.4], "lubbock": [33.58, -101.86], "buffalo": [42.89, -78.88], "reno": [39.53, -119.81], "boise": [43.62, -116.2], "richmond": [37.54, -77.44], "salt lake city": [40.76, -111.89], "birmingham": [33.52, -86.8], "spokane": [47.66, -117.43], "rochester": [43.16, -77.61], "des moines": [41.59, -93.62], "oklahoma city": [35.47, -97.52], "providence": [41.82, -71.41], "salem": [44.94, -123.04], "knoxville": [35.96, -83.92], "grand rapids": [42.96, -85.67], "hartford": [41.76, -72.67], "charleston": [32.78, -79.93], "savannah": [32.08, -81.09], "asheville": [35.6, -82.55], "boulder": [40.01, -105.27], "eugene": [44.05, -123.09], "albany": [42.65, -73.76], "syracuse": [43.05, -76.15], "dayton": [39.76, -84.19], "akron": [41.08, -81.52], "little rock": [34.75, -92.29], "jackson": [32.3, -90.18], "mobile": [30.69, -88.04], "shreveport": [32.53, -93.75], "el paso": [31.76, -106.49], "anchorage": [61.22, -149.9], "missoula": [46.87, -113.99], "billings": [45.78, -108.5], "fargo": [46.88, -96.79], "sioux falls": [43.55, -96.73], "cheyenne": [41.14, -104.82], "santa fe": [35.69, -105.94], "scottsdale": [33.49, -111.93], "tempe": [33.43, -111.94], "san francisco": [37.77, -122.42], "long beach": [33.77, -118.19], "pasadena": [34.15, -118.14], "tacoma": [47.25, -122.44], "irving": [32.81, -96.95], "arlington": [32.74, -97.11], "ann arbor": [42.28, -83.74], "columbia": [34.0, -81.03], "greenville": [34.85, -82.39], "chattanooga": [35.05, -85.31], "huntsville": [34.73, -86.59], "baton rouge": [30.45, -91.19], "tallahassee": [30.44, -84.28], "fort lauderdale": [26.12, -80.14], "west palm beach": [26.71, -80.05], "naples": [26.14, -81.79], "sarasota": [27.34, -82.53], "clearwater": [27.97, -82.8]};
@@ -3144,9 +4181,32 @@ function uiK(){
 }
 let lastRows=[];
 let selPin=null;
-function plotMap(rows){
-  lastRows=rows;
+// Set when plotMap is asked to draw into a host that isn't laid out yet, and
+// flushed once one is. Explore going live means the .mapcard genuinely moves
+// between hosts for the first time, so it can now sit inside a hidden
+// container while a resize or a data commit tries to replot it — and uiK()
+// reads clientWidth 0 there, which sizes every marker at a couple of screen
+// pixels. That renders as a map with nothing on it and reads as a data bug;
+// AGENTS.md records it shipping once already (invariant #3).
+let pendingPlot=null;
+function flushPendingPlot(){
+  if(!pendingPlot) return;
+  const rows=pendingPlot; pendingPlot=null;
+  try{ plotMap(rows.rows,rows.opts); }catch(e){ console.error('Map could not be drawn',e); }
+}
+// opts.matchIds — when set, ids NOT in it are dimmed rather than removed. The
+// content filter removes pins (they never reach `rows`); a search dims them,
+// because where a match sits relative to everything else is exactly what a map
+// beside the results is for.
+function plotMap(rows,opts){
+  rows=rows||[];
+  const o=opts||{};
+  lastRows=rows;                       // recorded before any bail, so a later flush has it
   const g=document.getElementById('pins');
+  const svg=document.querySelector('.mapbody svg');
+  if(!g||!svg||!svg.getClientRects().length){ pendingPlot={rows,opts:o}; return; }
+  pendingPlot=null;
+  const dimOf=id=>(o.matchIds&&!o.matchIds.has(id))?' dim':'';
   // Episode releases carry no venue by design, so counting them as
   // "not plotted" reported 215 of 242 missing and read like a fault.
   // Only venues that exist but could not be placed are worth flagging.
@@ -3154,6 +4214,7 @@ function plotMap(rows){
   // that is a separate, labelled thing and deliberately not part of `loc`.)
   const pts=[]; let offMap=0;
   rows.forEach(e=>{
+    if(!e) return;
     const c=findCity(e.loc);
     if(!c){ if(e.loc&&e.loc.trim()) offMap++; return; }
     const [x,y]=project(c[0],c[1]);
@@ -3165,6 +4226,7 @@ function plotMap(rows){
   // and — see the heat layer below — would flatten every real tour market.
   const studios={};
   rows.forEach(e=>{
+    if(!e) return;
     const s=studioForEntry(e); if(!s||!s.city) return;
     const c=findCity(s.city); if(!c) return;
     const [x,y]=project(c[0],c[1]);
@@ -3175,6 +4237,7 @@ function plotMap(rows){
   g.innerHTML=pts.map(p=>{
     const r=p.past?rPast:rUp;
     const n=eventCommentCount(p.e.id);
+    const dim=dimOf(p.e.id);
     // A small pennant banner above-right of the pin, sized in screen pixels
     // like everything else on the map (AGENTS.md invariant #3) — fill-only,
     // no stroke, so there's no viewBox-unit stroke-width to hardcode.
@@ -3183,14 +4246,14 @@ function plotMap(rows){
       bx.toFixed(1)+','+by.toFixed(1)+' '+(bx+bw).toFixed(1)+','+by.toFixed(1)+' '+
       (bx+bw).toFixed(1)+','+(by+bh*0.7).toFixed(1)+' '+(bx+bw/2).toFixed(1)+','+(by+bh).toFixed(1)+' '+
       bx.toFixed(1)+','+(by+bh*0.7).toFixed(1)+'"/>':'';
-    return '<g class="pin '+(p.past?'pastpin':'up')+(selPin===p.e.id?' sel':'')+
-    '" data-pin="'+p.e.id+'" tabindex="0" role="button" aria-label="'+esc(p.e.title)+
+    // Dimming is opacity only, never a smaller radius — see invariant #3.
+    return '<g class="pin '+(p.past?'pastpin':'up')+(selPin===p.e.id?' sel':'')+dim+
+    '" data-pin="'+esc(p.e.id)+'" tabindex="'+(dim?'-1':'0')+'" role="button" aria-label="'+esc(p.e.title)+
     (n?' · '+n+' comment'+(n===1?'':'s'):'')+'">'+
     '<circle class="hit" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+rHit.toFixed(1)+'"/>'+
     '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+r.toFixed(1)+
     '" stroke-width="'+(1.8*k).toFixed(2)+'"/>'+banner+'</g>';
   }).join('');
-  // Studio markers: a diamond plus a counted plaque, deliberately a different
   // shape from the round event pins because it means a different thing — a
   // recording base estimated from release dates, not a dated appearance. No
   // data-pin and no tabindex: there is no entry to open, and inventing one
@@ -3281,10 +4344,19 @@ document.getElementById('pins').addEventListener('keydown',ev=>{
   const p=ev.target.closest('[data-pin]'); if(!p)return;
   ev.preventDefault(); selectPin(p.dataset.pin);
 });
+// Repaint the selected pin in place. selPin is baked into the SVG string
+// plotMap() generates, so highlighting it used to mean calling render() — and
+// render() replotted allEntries(), which silently threw away whatever filtered
+// row set the feed had just drawn. Clicking a pin therefore un-filtered the map.
+// Toggling a class instead touches nothing else.
+function paintPinSelection(){
+  for(const g of document.querySelectorAll('#pins [data-pin]'))
+    g.classList.toggle('sel',g.dataset.pin===selPin);
+}
 function selectPin(id){
-  const e=allEntries().find(x=>x.id===id); if(!e)return;
+  if(!entryIndex.has(id)) return;
   selPin=id;
-  render();
+  paintPinSelection();
   // A pin is a pick like any other, so it fills the side pane too.
   selectEntry(id);
 }
@@ -3367,15 +4439,41 @@ function renderAnalysis(rows){
 
 // Bound to [data-view], not to a shared class — same reason as the filter
 // rows (see AGENTS.md #2).
-const VIEWS=['home','schedule','insights'];
+// Insights is deliberately NOT in this list any more. It now lives inside
+// #view-explore as its Stats sub-tab, and showView()'s hidden-toggle loop
+// would fight showExploreSection() for control of that same element.
+const VIEWS=['home','schedule','explore'];
 let currentView='home';
-// The single map node moves between Home's preview and Explore rather than
-// being duplicated — two copies would mean two #pins/#heat and plotMap() would
-// only ever find the first.
+let exSection='browse';
+
+// The single map node moves between Home's rail and Explore rather than being
+// duplicated — two copies would mean two #pins/#heat and plotMap() would only
+// ever find the first.
+//
+// One funnel for every path that could change where the map should live, so
+// the answer is decided in exactly one place. Anything else leaves it in a
+// hidden host, where uiK() reads width 0 (invariant #3).
+function syncMapMount(){
+  if(currentView==='home') return mountMap('home-map');
+  if(currentView==='explore'&&exSection==='browse'&&exView==='map') return mountMap('explore-map');
+  // Otherwise leave it wherever it is: moving it into a hidden container buys
+  // nothing and risks a mis-sized plot.
+}
 function mountMap(hostId){
   const card=document.querySelector('.mapcard'), host=document.getElementById(hostId);
   if(!card||!host||card.parentNode===host) return;
   host.appendChild(card);
+  // The #pins click/keydown listeners are bound to #pins itself, which lives
+  // inside .mapcard and therefore travels with it — DOM moves preserve
+  // listeners, so nothing needs rebinding here.
+  //
+  // A moved card has no laid-out width until the next frame, and uiK() reads
+  // exactly that. Re-plot after the move or every marker comes out a couple of
+  // screen pixels across (invariant #3).
+  requestAnimationFrame(()=>{
+    try{ plotMap(lastRows); }catch(e){ console.error('Map could not be drawn',e); }
+    flushPendingPlot();
+  });
 }
 function showView(name){
   if(!VIEWS.includes(name)) name='home';
@@ -3383,40 +4481,100 @@ function showView(name){
   VIEWS.forEach(v=>{ document.getElementById('view-'+v).hidden = v!==name; });
   document.querySelectorAll('[data-view]').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.view===name)));
-  if(name==='insights') renderInsights();
-  if(name==='home'){ mountMap('home-map'); renderHome(); }
+  if(name==='home') renderHome();
   if(name==='schedule') renderSchedule();
+  if(name==='explore') showExploreSection(exSection);
+  syncMapMount();
   updateCenterPaneMode();
   // The map only has a real width once its host is visible, and uiK() reads
   // that width — so re-plot after the swap or every marker is mis-sized
   // (invariant #3).
-  if(name==='home') requestAnimationFrame(()=>plotMap(homeMapRows(homeItems())));
+  requestAnimationFrame(()=>{ flushPendingPlot(); syncMap(); });
+}
+// Browse holds the search, filters, trending and the map; Stats holds the whole
+// Insights view, moved in unchanged so every render*Insights() function and
+// every .insec[data-insec] selector still works exactly as before.
+function showExploreSection(name){
+  exSection=(name==='stats')?'stats':'browse';
+  const b=document.getElementById('explore-browse'), s=document.getElementById('view-insights');
+  if(b) b.hidden=exSection!=='browse';
+  if(s) s.hidden=exSection!=='stats';
+  document.querySelectorAll('[data-xs]').forEach(x=>
+    x.setAttribute('aria-pressed',String(x.dataset.xs===exSection)));
+  syncMapMount();
+  if(exSection==='stats') renderInsights(); else renderExplore();
+}
+// The map's row set has exactly one owner, chosen by what is on screen. Before
+// this, render() plotted allEntries() unconditionally and quietly undid every
+// feed filter the moment anything re-rendered.
+function syncMap(){
+  if(currentView==='home'){ drawFeedMapRows(lastFeedRows); return; }
+  if(currentView==='explore'&&exSection==='browse'){ drawFeedMapRows(lastExploreRows); return; }
+  try{ plotMap(allEntries()); }catch(e){ console.error('Map could not be drawn',e); }
 }
 document.querySelectorAll('[data-view]').forEach(b=>
   b.addEventListener('click',()=>showView(b.dataset.view)));
-
+document.querySelectorAll('[data-xs]').forEach(b=>
+  b.addEventListener('click',()=>showExploreSection(b.dataset.xs)));
 // One delegated handler for every surface that can open an entry or a post —
 // rows, ranked lists, SVG bars — since they are all rebuilt on each render and
 // all route through selectEntry/selectPost. Bound per view container so every
 // feed gets it without re-binding after each render.
+//
+// A click that came from a row already in the visible feed passes noScroll:
+// that row is exactly where the reader is looking, so scrolling it "into view"
+// would only jolt the page. Pins, hash links, the now-strip and ranked lists
+// all do want the scroll, since the thing they name is usually off screen.
+function pickOpts(ev){
+  const row=ev.target.closest('.row');
+  return {noScroll:!!(row&&row.closest('#homefeed,#explorefeed,#schedulefeed'))};
+}
 function onPick(ev){
   const g=ev.target.closest('[data-goto]');
-  if(g){ selectEntry(g.dataset.goto); return; }
+  if(g){ selectEntry(g.dataset.goto,pickOpts(ev)); return; }
   const p=ev.target.closest('[data-post]');
-  if(p) selectPost(p.dataset.post);
+  if(p) selectPost(p.dataset.post,pickOpts(ev));
 }
 function onPickKey(ev){
   if(ev.key!=='Enter'&&ev.key!==' ') return;
   const g=ev.target.closest('[data-goto]');
-  if(g){ ev.preventDefault(); selectEntry(g.dataset.goto); return; }
+  if(g){ ev.preventDefault(); selectEntry(g.dataset.goto,pickOpts(ev)); return; }
   const p=ev.target.closest('[data-post]');
-  if(p){ ev.preventDefault(); selectPost(p.dataset.post); }
+  if(p){ ev.preventDefault(); selectPost(p.dataset.post,pickOpts(ev)); }
 }
-['view-home','view-explore','view-schedule','view-insights'].forEach(id=>{
+// 'view-insights' is deliberately absent: it now sits INSIDE #view-explore, so
+// binding both means a click inside it bubbles to two handlers and every pick
+// fires twice — two selectEntry() calls, two openDrawer()s, two history
+// writes. renderPlayer()'s paneKey dedupe hides most of the symptom, which is
+// exactly what would make it survive a reading review.
+['view-home','view-explore','view-schedule'].forEach(id=>{
   const el=document.getElementById(id); if(!el) return;
   el.addEventListener('click',onPick);
   el.addEventListener('keydown',onPickKey);
 });
+
+// Bring the row for a selection into view and mark it, so picking a map pin
+// (or following a shared link) tells you where in the feed the thing lives.
+// The reverse direction — feed row highlights its pin — is selectEntry()
+// setting selPin.
+function revealRow(want){
+  // A modal drawer means body{overflow:hidden} and feedScroll owns the scroll
+  // position; moving it now would corrupt the restore in closeDrawer().
+  if(drawerIsModal()&&!document.getElementById('drawer').hidden) return;
+  const smooth=!matchMedia('(prefers-reduced-motion:reduce)').matches;
+  // Walked and compared by dataset rather than matched with an attribute
+  // selector: event ids come from the feed's untrusted `src`.
+  for(const el of document.querySelectorAll('#homefeed .row,#explorefeed .row,#schedulefeed .row')){
+    if(want.goto?el.dataset.goto!==want.goto:el.dataset.post!==want.post) continue;
+    const r=el.getBoundingClientRect();
+    if(r.top<70||r.bottom>window.innerHeight-40)
+      el.scrollIntoView({block:'center',behavior:smooth?'smooth':'auto'});
+    el.classList.add('flash');
+    setTimeout(()=>el.classList.remove('flash'),1200);
+    return true;
+  }
+  return false;
+}
 
 /* ---------- deep links ---------- */
 // An entry gets its own URL so a find can actually be shared. Feed ids are
@@ -3448,7 +4606,12 @@ window.addEventListener('hashchange',()=>{ applyHash(); });
 let rzt;
 window.addEventListener('resize',()=>{clearTimeout(rzt);rzt=setTimeout(()=>{
   updateCenterPaneMode();
-  if(!document.body.classList.contains('center-pane-open')) plotMap(lastRows);
+  // Modality flips at 640px, so a resize can change whether the drawer is
+  // genuinely modal — aria-modal has to follow it rather than being set once.
+  syncDrawerModality();
+  // syncMap(), not plotMap(lastRows): the row set belongs to the current view,
+  // and lastRows is only whatever happened to be drawn most recently.
+  if(!document.body.classList.contains('center-pane-open')) syncMap();
 },150);});
 window.addEventListener('scroll',()=>{
   if(document.body.classList.contains('center-pane-open')) scheduleCenterPaneMetrics(false);
@@ -3457,26 +4620,38 @@ window.addEventListener('scroll',()=>{
 /* events */
 // Every control group binds to its own data-attribute, never a shared class —
 // ten controls carry class="tab" and binding to that once emptied the whole
-// app (AGENTS.md #2).
+// app (AGENTS.md #2). That applies to every group added since, too: the
+// reaction chips are [data-rxpick], never .rxchip, and the content filters are
+// [data-ft], never .typefilter input.
 function pressGroup(attr,el){
   document.querySelectorAll('['+attr+']').forEach(x=>
     x.setAttribute('aria-pressed',String(x===el)));
 }
-document.querySelectorAll('[data-hf]').forEach(t=>t.addEventListener('click',()=>{
-  homeFilter=t.dataset.hf; homePage=1; pressGroup('data-hf',t); renderHome();
-}));
+// All / Active / Upcoming. The old [data-hf] group is gone with the single-
+// select content dropdown; it had had no markup to bind to for some time.
 document.querySelectorAll('[data-hs]').forEach(t=>t.addEventListener('click',()=>{
-  homeSort=t.dataset.hs; homePage=1; pressGroup('data-hs',t); renderHome();
+  feedMode=t.dataset.hs; homePage=1; pressGroup('data-hs',t);
+  clearFeedSig(); renderHome();
 }));
-document.getElementById('home-type').addEventListener('change',ev=>{
-  homeFilter=ev.target.value; homePage=1; updateFilterSummary(); renderHome();
-});
+// Multi-select: nothing checked means everything eligible in the current mode,
+// which is what makes "no selection" the honest default rather than a magic
+// 'all' value that has to be special-cased everywhere.
+document.querySelectorAll('[data-ft]').forEach(cb=>cb.addEventListener('change',()=>{
+  if(cb.checked) feedTypes.add(cb.dataset.ft); else feedTypes.delete(cb.dataset.ft);
+  homePage=1; updateFilterSummary(); clearFeedSig(); renderHome();
+}));
 document.getElementById('clear-filters').addEventListener('click',()=>{
-  homeFilter='all'; homePage=1;
-  document.getElementById('home-type').value='all';
+  feedTypes.clear(); homePage=1;
+  document.querySelectorAll('[data-ft]').forEach(cb=>{ cb.checked=false; });
   document.getElementById('filter-menu').open=false;
-  updateFilterSummary(); renderHome();
+  updateFilterSummary(); clearFeedSig(); renderHome();
 });
+// renderHome() skips a repaint when the rendered signature is unchanged; a
+// deliberate control change must always repaint, even if the resulting rows
+// happen to match.
+function clearFeedSig(){
+  const el=document.getElementById('homefeed'); if(el) delete el.dataset.sig;
+}
 function setSearchOpen(open){
   const panel=document.getElementById('home-search'), button=document.getElementById('open-search');
   panel.hidden=!open; button.setAttribute('aria-expanded',String(open));
@@ -3487,29 +4662,33 @@ document.getElementById('open-search').addEventListener('click',()=>{
 });
 let homeQueryTimer;
 document.getElementById('home-q').addEventListener('input',ev=>{
-  homeQuery=ev.target.value; homePage=1; clearTimeout(homeQueryTimer);
-  homeQueryTimer=setTimeout(renderHome,120);
+  feedQuery=ev.target.value; homePage=1; clearTimeout(homeQueryTimer);
+  homeQueryTimer=setTimeout(()=>{ clearFeedSig(); renderHome(); },120);
 });
 document.getElementById('clear-search').addEventListener('click',()=>{
-  homeQuery=''; homePage=1; document.getElementById('home-q').value='';
-  setSearchOpen(false); renderHome();
+  feedQuery=''; homePage=1; document.getElementById('home-q').value='';
+  setSearchOpen(false); clearFeedSig(); renderHome();
 });
 document.getElementById('mobile-map-toggle').addEventListener('click',ev=>{
   const rail=document.querySelector('.maprail');
   const open=rail.classList.toggle('mobile-collapsed')===false;
   ev.currentTarget.setAttribute('aria-expanded',String(open));
   ev.currentTarget.textContent=open?'Hide map':'Map';
-  if(open) requestAnimationFrame(()=>plotMap(homeMapRows(homeItems())));
+  // The rail was display:none, so the map had no width to measure until now.
+  if(open) requestAnimationFrame(()=>{ flushPendingPlot(); syncMap(); });
 });
 document.getElementById('load-more').addEventListener('click',()=>{
-  homePage++; renderHome();
+  homePage++; clearFeedSig(); renderHome();
 });
 document.querySelectorAll('[data-xf]').forEach(t=>t.addEventListener('click',()=>{
   exFilter=t.dataset.xf; pressGroup('data-xf',t); renderExplore();
 }));
 document.querySelectorAll('[data-xv]').forEach(t=>t.addEventListener('click',()=>{
   exView=t.dataset.xv; pressGroup('data-xv',t); renderExplore();
-  if(exView==='map') requestAnimationFrame(()=>plotMap(lastRows));
+  // The map may have to travel between hosts for this; syncMapMount decides,
+  // and replots once the destination has actually been laid out.
+  syncMapMount();
+  if(exView==='map') requestAnimationFrame(()=>{ flushPendingPlot(); syncMap(); });
 }));
 document.querySelectorAll('[data-in]').forEach(t=>t.addEventListener('click',()=>{
   showInsightSection(t.dataset.in);
@@ -3753,56 +4932,200 @@ document.getElementById('insight-player').addEventListener('click',async ev=>{
   }
   // "Post about this" — same composer, association already filled in.
   if(b.dataset.postabout) openComposer(b.dataset.postabout);
-  if(b.dataset.ecadd){
-    if(!sb) return;
-    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
-    const eid=b.dataset.ecadd;
-    const input=document.querySelector('[data-ectx="'+eid+'"]');
-    const body=input.value.trim(); if(!body) return;
-    if(body.length>500){ alert('Comments are capped at 500 characters.'); return; }
-    b.disabled=true;
-    try{
-      await sb.from('comments').insert({
-        event_id:eid, author_id:session.user.id, author_label:getSavedName()||'Fan', body
-      });
-      await loadPosts();
-    }finally{ b.disabled=false; }
-  }
-  if(b.dataset.ecdel){
-    if(!sb) return;
-    await sb.from('comments').delete().eq('id',b.dataset.ecdel);
-    await loadPosts();
-  }
-  if(b.dataset.eventlike||b.dataset.eventdislike){
-    if(!sb) return;
-    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
-    const eid=b.dataset.eventlike||b.dataset.eventdislike, val=b.dataset.eventlike?1:-1;
-    const cur=eventReactionsFor(eid).myVote;
-    b.disabled=true;
-    try{
-      // Delete-then-conditionally-insert, same pattern as the old like
-      // toggle: clicking the same reaction again clears it, clicking the
-      // other one switches it. A partial unique index (post/event × user)
-      // guarantees at most one row regardless of value, so no update policy
-      // is needed.
-      await sb.from('reactions').delete().eq('event_id',eid).eq('user_id',session.user.id);
-      if(cur!==val) await sb.from('reactions').insert({event_id:eid,user_id:session.user.id,value:val});
-      await loadPosts();
-    }finally{ b.disabled=false; }
-  }
-});
-document.getElementById('insight-player').addEventListener('keydown',ev=>{
-  if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.ectx){
-    const btn=document.querySelector('[data-ecadd="'+ev.target.dataset.ectx+'"]');
-    if(btn)btn.click();
-  }
 });
 
+/* ---------- reactions, replies and comments (delegated) ---------- */
+// Bound to the data-attributes, never to .rxchip / .c / .rowact (invariant #2),
+// and bound at document level because these controls appear in four places that
+// are each rebuilt independently: feed rows, the pane, the thread and the
+// sticky pane composer.
+document.addEventListener('click',async ev=>{
+  const t=ev.target.closest('[data-rxpick],[data-rxopen],[data-reply],[data-showreplies],'+
+    '[data-replysend],[data-replycancel],[data-cadd],[data-postcomment]');
+  if(!t) return;
+
+  // Reaction chips and the picker live inside .pcard, next to a .row that
+  // opens the post — stop the click here so reacting never also navigates.
+  if(t.dataset.rxpick!==undefined||t.dataset.rxopen!==undefined||
+     t.dataset.reply!==undefined||t.dataset.showreplies!==undefined||
+     t.dataset.replysend!==undefined||t.dataset.replycancel!==undefined||
+     t.dataset.cadd!==undefined||t.dataset.postcomment!==undefined){
+    ev.preventDefault(); ev.stopPropagation();
+  }
+
+  if(t.dataset.rxopen!==undefined){
+    const bar=t.closest('.rxbar'); if(!bar) return;
+    const pick=bar.querySelector('.rxpick');
+    const open=pick&&pick.hidden;
+    closeRxPickers(bar);
+    setRxPickerOpen(bar,open);
+    if(open){ const first=bar.querySelector('.rxopt'); if(first) first.focus(); }
+    return;
+  }
+  if(t.dataset.rxpick!==undefined){
+    const bar=t.closest('.rxbar'); if(!bar||!bar.dataset.rx) return;
+    closeRxPickers(null);
+    await react(bar.dataset.rx,t.dataset.rxpick);
+    return;
+  }
+  if(t.dataset.showreplies!==undefined){ openReplies.add(t.dataset.showreplies); repaintThread(); return; }
+  if(t.dataset.reply!==undefined){
+    replyingTo=t.dataset.reply; replyDraft='';
+    repaintThread();
+    const box=findReplyBox(replyingTo); if(box) box.focus();
+    return;
+  }
+  if(t.dataset.replycancel!==undefined){ cancelReply(); return; }
+  if(t.dataset.replysend!==undefined){ await sendReply(t,t.dataset.replysend); return; }
+  if(t.dataset.cadd!==undefined){ await sendComment(t,t.dataset.cadd); return; }
+  // "Comment" on a feed card: open the post and drop the cursor in the box.
+  if(t.dataset.postcomment!==undefined){
+    selectPost(t.dataset.postcomment,{noScroll:true});
+    const box=document.getElementById('pc-body'); if(box) box.focus();
+    return;
+  }
+});
+// The reply textarea's value lives in module state, so a thread repaint can
+// never lose what someone was part-way through typing.
+document.addEventListener('input',ev=>{
+  if(ev.target.dataset&&ev.target.dataset.replybox!==undefined) replyDraft=ev.target.value;
+});
+// Enter sends, Shift+Enter makes a new line — the convention everywhere else.
+document.addEventListener('keydown',ev=>{
+  if(ev.key!=='Enter'||ev.shiftKey) return;
+  const d=ev.target.dataset; if(!d) return;
+  if(d.replybox!==undefined){
+    ev.preventDefault();
+    const btn=findByData('[data-replysend]','replysend',d.replybox);
+    if(btn) btn.click();
+    return;
+  }
+  if(ev.target.id==='pc-body'){
+    ev.preventDefault();
+    const btn=document.getElementById('pc-send'); if(btn) btn.click();
+  }
+});
+// Walked rather than matched with an attribute selector: comment ids are uuids
+// today, but the same helper serves event targets, whose ids come from the
+// feed's untrusted `src`.
+function findByData(sel,key,val){
+  for(const el of document.querySelectorAll(sel)) if(el.dataset[key]===val) return el;
+  return null;
+}
+function findReplyBox(cid){ return findByData('[data-replybox]','replybox',cid); }
+function cancelReply(){
+  const cid=replyingTo;
+  replyingTo=null; replyDraft='';
+  repaintThread();
+  if(cid){ const b=findByData('[data-reply]','reply',cid); if(b) b.focus(); }
+}
+// Only the thread, never the whole pane — rebuilding the pane would reload the
+// iframe and stop playback dead.
+function repaintThread(){
+  const thread=document.getElementById('pane-thread');
+  const target=currentPaneTarget();
+  if(!thread||!target) return;
+  thread.innerHTML=threadHTML(target);
+}
+
+// Comment and reply inserts converge locally rather than re-fetching. .select()
+// returns the inserted row under the existing "public read comments" policy,
+// so the thread can be repainted from it directly — this replaces four separate
+// `await loadPosts()` calls, each of which was a three-query reload plus a full
+// re-render of every list on the page.
+function targetColsForComment(target){
+  if(target.startsWith('post:'))  return {post_id:target.slice(5), event_id:null};
+  if(target.startsWith('event:')) return {post_id:null, event_id:target.slice(6)};
+  return null;
+}
+function afterCommentChange(target){
+  indexComments();
+  // Keep the denormalised counts the feed ranks on in step with the thread.
+  for(const p of posts) p.cCount=comments.filter(c=>c.post_id===p.id).length;
+  eventComments={};
+  for(const c of comments) if(c.event_id) eventComments[c.event_id]=(eventComments[c.event_id]||0)+1;
+  for(const it of feedItems){
+    if(it.kind==='post') it.cCount=(posts.find(p=>p.id===it.id)||{}).cCount||0;
+    else it.cCount=eventCommentCount(it.id);
+    if(it.rxTarget===target) it.lastActivity=Date.now();
+  }
+  repaintThread();
+  repaintRowStats(target);
+  scheduleReconcile();
+}
+async function insertComment(target,body,parentId){
+  const cols=targetColsForComment(target); if(!cols) return null;
+  const row=Object.assign({},cols,{
+    author_id:session.user.id,
+    author_label:getSavedName()||'Fan',
+    body
+  });
+  // Only send parent_id when the column is known to exist — otherwise a
+  // pre-migration project rejects the whole insert and an ordinary top-level
+  // comment silently fails too.
+  if(parentId&&replySchemaV2) row.parent_id=parentId;
+  const {data,error}=await sb.from('comments').insert(row).select().single();
+  if(error) throw error;
+  return data;
+}
+async function sendComment(btn,target){
+  if(!sb) return;
+  if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
+  const box=document.getElementById('pc-body'); if(!box) return;
+  const body=box.value.trim(); if(!body) return;
+  if(body.length>500){ alert('Comments are capped at 500 characters.'); return; }
+  const nameEl=document.getElementById('pc-name');
+  if(nameEl&&nameEl.value.trim()) setSavedName(nameEl.value.trim().slice(0,40));
+  btn.disabled=true;
+  try{
+    const row=await insertComment(target,body,null);
+    if(row){ comments.push(row); box.value=''; afterCommentChange(target); }
+  }catch(e){ console.error('Could not post comment',e); alert('That comment did not send — try again.'); }
+  finally{ btn.disabled=false; }
+}
+async function sendReply(btn,parentId){
+  if(!sb||!replySchemaV2) return;
+  if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
+  const parent=comments.find(c=>c.id===parentId); if(!parent) return;
+  const body=replyDraft.trim(); if(!body) return;
+  if(body.length>500){ alert('Comments are capped at 500 characters.'); return; }
+  // A reply inherits its parent's target. Postgres can't express that
+  // declaratively without a trigger, so it is enforced here, at the only place
+  // this app ever creates one.
+  const target=parent.post_id?'post:'+parent.post_id:'event:'+parent.event_id;
+  btn.disabled=true;
+  try{
+    const row=await insertComment(target,body,parent._root||parent.id);
+    if(row){
+      comments.push(row);
+      replyingTo=null; replyDraft='';
+      openReplies.add(parent._root||parent.id);   // keep the new reply visible
+      afterCommentChange(target);
+    }
+  }catch(e){ console.error('Could not post reply',e); alert('That reply did not send — try again.'); }
+  finally{ btn.disabled=false; }
+}
+async function deleteComment(id){
+  if(!sb) return;
+  const c=comments.find(x=>x.id===id); if(!c) return;
+  const target=c.post_id?'post:'+c.post_id:'event:'+c.event_id;
+  const {error}=await sb.from('comments').delete().eq('id',id);
+  if(error){ console.error('Could not remove comment',error); return; }
+  // Postgres cascades to the replies; mirror that locally so the thread doesn't
+  // briefly show orphans pointing at a parent that is already gone.
+  const gone=new Set([id]);
+  for(const x of comments) if(x.parent_id===id) gone.add(x.id);
+  comments=comments.filter(x=>!gone.has(x.id));
+  reactions=reactions.filter(r=>!gone.has(r.comment_id));
+  indexReactions(session&&session.user?session.user.id:null);
+  afterCommentChange(target);
+}
 /* ---------- composer (posts) ---------- */
 // One composer, two entry points: the global "+ Post" button and the
 // "Post about this" button inside an event or episode drawer, which only
 // differs by presetting the association.
 let postKind='clip', composerReturnToDetail=false;
+let composerScroll=0, composerLocked=false, composerFocusReturn=null;
 // The clip actually attached to this draft — the source of truth for
 // publishing, not whatever text happens to be sitting in the search box.
 // null while nothing is picked; {kind,id,title,channel,publishedAt} once it
@@ -3839,18 +5162,36 @@ function ytError(msg){
 // the one place that actually needs an embed, so it is built the same way
 // every other clip in this app is — CLIPSRC rebuilds the URL from kind+id,
 // never from anything typed or fetched (invariant #1).
+// Once a clip is chosen the search UI collapses entirely: the query box, the
+// Search button and the results list all go, leaving the player, its title and
+// channel, and "Change clip". Half a search still on screen next to a chosen
+// video reads as an unfinished step.
+function setSearchUIVisible(on){
+  const q=document.getElementById('p-yt-q');
+  const btn=document.getElementById('p-yt-search-btn');
+  const res=document.getElementById('p-yt-results');
+  if(q) q.hidden=!on;
+  if(btn) btn.hidden=!on;
+  if(!on&&res){ res.hidden=true; }
+}
 function setClipPreview(clip){
   composerClip=clip;
   const box=document.getElementById('p-yt-preview');
-  if(!clip){ box.hidden=true; box.innerHTML=''; return; }
+  if(!clip){ box.hidden=true; box.innerHTML=''; setSearchUIVisible(true); return; }
   box.hidden=false;
+  setSearchUIVisible(false);
   const title=clip.title||(clip.kind==='yt'?'(fetching title…)':CLIPNAME[clip.kind]+' clip');
+  // Duration would go here; the Edge Function's Clip shape is
+  // {id,title,channel,publishedAt} and adding it needs a second
+  // videos.list?part=contentDetails call plus the quota for it. Read
+  // defensively so it lights up for free if that ever lands.
+  const dur=clip.duration?' · '+esc(String(clip.duration)):'';
   box.innerHTML='<div class="frame"><iframe src="'+esc(CLIPSRC[clip.kind](clip.id))+'" loading="lazy" '+
     'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
     'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
     'title="'+esc(title)+'"></iframe></div>'+
     '<div class="ytpreview-meta"><b>'+esc(title)+'</b>'+
-    (clip.channel?'<span>'+esc(clip.channel)+(clip.publishedAt?' · '+esc(fmt(clip.publishedAt)):'')+'</span>':'')+
+    (clip.channel?'<span>'+esc(clip.channel)+(clip.publishedAt?' · '+esc(fmt(String(clip.publishedAt).slice(0,10))):'')+dur+'</span>':'')+
     '<span class="ytpreview-actions">'+
     // A stable "watch elsewhere" link matters most exactly when the embed
     // above doesn't work — a private/removed video, or embedding turned off
@@ -3893,11 +5234,17 @@ function renderYtResults(results){
     return;
   }
   el.__results=results;
+  // mqdefault 404s for a minority of ids; hqdefault always exists. One-shot
+  // swap, guarded by a data flag so a second failure can't loop, then the row
+  // just loses its image rather than showing a broken-image glyph — same
+  // pattern as the onerror on feed row thumbs.
+  const fallback="if(!this.dataset.f){this.dataset.f=1;"+
+    "this.src=this.src.replace('/mqdefault.jpg','/hqdefault.jpg');}else{this.remove();}";
   el.innerHTML=results.map(r=>
     '<button type="button" class="ytresult" data-ytpick="'+esc(r.id)+'">'+
-      '<img loading="lazy" alt="" src="'+esc(ytThumb(r.id))+'">'+
+      '<img loading="lazy" alt="" src="'+esc(ytThumb(r.id))+'" onerror="'+esc(fallback)+'">'+
       '<span class="ytresult-body"><b>'+esc(r.title)+'</b>'+
-      '<span>'+esc(r.channel)+(r.publishedAt?' · '+esc(fmt(r.publishedAt)):'')+'</span></span>'+
+      '<span>'+esc(r.channel)+(r.publishedAt?' · '+esc(fmt(String(r.publishedAt).slice(0,10))):'')+'</span></span>'+
     '</button>').join('');
 }
 
@@ -4018,6 +5365,7 @@ function openComposer(eventId){
   const detail=document.getElementById('drawer');
   composerReturnToDetail=!detail.hidden&&!!selectedKind;
   if(!detail.hidden) closeDrawer();
+  composerFocusReturn=document.activeElement;
   resetComposerFields();
   setComposerEvent(eventId||'');
   document.getElementById('p-name').value=getSavedName();
@@ -4025,6 +5373,12 @@ function openComposer(eventId){
   const d=document.getElementById('composer');
   d.hidden=false;
   const centered=updateCenterPaneMode();
+  // The body scroll lock is conditional (it isn't applied in centre-pane mode),
+  // so the position is only worth capturing when the lock actually goes on —
+  // mirroring drawerLocked. Without this, closing the composer dropped you back
+  // at the top of the feed instead of where you were reading.
+  composerLocked=!centered;
+  if(composerLocked){ composerScroll=window.scrollY; }
   document.body.classList.toggle('drawer-open',!centered);
   (postKind==='text'?document.getElementById('p-cap'):document.getElementById('p-yt-q')).focus();
 }
@@ -4032,9 +5386,14 @@ function closeComposer(){
   document.getElementById('composer').hidden=true;
   document.body.classList.remove('drawer-open');
   updateCenterPaneMode();
+  if(composerLocked){ window.scrollTo({top:composerScroll}); composerLocked=false; }
   const reopen=composerReturnToDetail&&!!selectedKind;
   composerReturnToDetail=false;
-  if(reopen) openDrawer();
+  if(reopen){ openDrawer(); return; }
+  // Hand focus back to whatever opened it — "+ Post", or "Post about this"
+  // inside a detail — rather than dropping it on <body>.
+  const r=composerFocusReturn; composerFocusReturn=null;
+  if(r&&document.contains(r)&&r.offsetParent!==null) r.focus({preventScroll:true});
 }
 document.querySelectorAll('[data-pk]').forEach(b=>
   b.addEventListener('click',()=>setPostKind(b.dataset.pk)));
@@ -4065,24 +5424,33 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
   setSavedName(name);
   const btn=document.getElementById('post-submit'); btn.disabled=true;
   try{
-    const {error}=await sb.from('posts').insert({
+    const {data,error}=await sb.from('posts').insert({
       author_id:session.user.id, author_label:name, caption:cap,
       video_kind:vid?vid.kind:null, video_id:vid?vid.id:null,
       video_title:(vid&&vid.kind==='yt')?(vid.title||null):null,
       video_channel:(vid&&vid.kind==='yt')?(vid.channel||null):null,
       video_published:(vid&&vid.kind==='yt')?(vid.publishedAt||null):null,
       event_id:composerEventId||null
-    });
+    }).select().single();
     if(error) throw error;
+    // Don't return to a detail drawer over the feed after publishing — the
+    // point now is to see the post land.
+    composerReturnToDetail=false;
     closeComposer();
     await loadPosts();
+    // After the reload has painted, point at the new row rather than leaving
+    // the poster to hunt for it.
+    if(data&&data.id) requestAnimationFrame(()=>revealRow({post:data.id}));
   }catch(e){ show('Could not post: '+(e.message||'unknown error')); }
   finally{ btn.disabled=false; }
 });
-// Everything you can do to a post happens in the pane, where it is open.
-document.getElementById('insight-player').addEventListener('click',async ev=>{
+// Sharing and deleting a post. Reactions, comments and replies are handled by
+// the document-level delegate above, because they now appear on feed cards too,
+// not only inside the pane.
+document.addEventListener('click',async ev=>{
   const b=ev.target.closest('button'); if(!b||!sb) return;
   if(b.dataset.sharepost){
+    ev.preventDefault(); ev.stopPropagation();   // Share sits inside .pcard, next to the row
     const url=location.origin+location.pathname+hashForPost(b.dataset.sharepost);
     const t=b.textContent;
     try{
@@ -4090,47 +5458,21 @@ document.getElementById('insight-player').addEventListener('click',async ev=>{
         b.textContent='Copied'; setTimeout(()=>{b.textContent=t;},1400); }
       else window.prompt('Copy this link:',url);
     }catch(e){ window.prompt('Copy this link:',url); }
-  }
-  if(b.dataset.postlike||b.dataset.postdislike){
-    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
-    const pid=b.dataset.postlike||b.dataset.postdislike, p=posts.find(x=>x.id===pid); if(!p) return;
-    const val=b.dataset.postlike?1:-1;
-    b.disabled=true;
-    try{
-      await sb.from('reactions').delete().eq('post_id',pid).eq('user_id',session.user.id);
-      if(p.myVote!==val) await sb.from('reactions').insert({post_id:pid,user_id:session.user.id,value:val});
-      await loadPosts();
-    }finally{ b.disabled=false; }
+    return;
   }
   if(b.dataset.delpost){
     if(!confirm('Delete this post?')) return;
-    await sb.from('posts').delete().eq('id',b.dataset.delpost);
-    if(selectedPostId===b.dataset.delpost) selectedPostId=null;
+    const id=b.dataset.delpost;
+    await sb.from('posts').delete().eq('id',id);
+    if(selectedPostId===id){ selectedPostId=null; selectedKind=null; closeDrawer(); }
     await loadPosts();
+    return;
   }
   if(b.dataset.delcomment){
-    await sb.from('comments').delete().eq('id',b.dataset.delcomment);
-    await loadPosts();
-  }
-  if(b.dataset.caddbtn){
-    if(!session||!session.user){ alert('Still connecting — try again in a second.'); return; }
-    const pid=b.dataset.caddbtn;
-    const input=document.querySelector('[data-ctx="'+pid+'"]');
-    const body=input.value.trim(); if(!body) return;
-    if(body.length>500){ alert('Comments are capped at 500 characters.'); return; }
-    b.disabled=true;
-    try{
-      await sb.from('comments').insert({
-        post_id:pid, author_id:session.user.id, author_label:getSavedName()||'Fan', body
-      });
-      await loadPosts();
-    }finally{ b.disabled=false; }
-  }
-});
-document.getElementById('insight-player').addEventListener('keydown',ev=>{
-  if(ev.key==='Enter'&&ev.target.dataset&&ev.target.dataset.ctx){
-    const btn=document.querySelector('[data-caddbtn="'+ev.target.dataset.ctx+'"]');
-    if(btn)btn.click();
+    // The control already says how many replies go with it, so there is no
+    // surprise here to confirm away.
+    await deleteComment(b.dataset.delcomment);
+    return;
   }
 });
 

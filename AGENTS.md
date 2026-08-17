@@ -22,57 +22,86 @@ scripts/fetch-events.mjs          scheduled source fetcher
 .github/workflows/update-events.yml
 supabase/functions/youtube-search deployed manually, not by CI — see invariant #13
 youtube_search.sql                run once, by hand, before deploying the function above
+reactions_replies.sql             run once, by hand — emoji reactions + comment
+                                   replies, see invariant #14 and Known gaps
 ```
 
 ### Layout
 
-Four sections, a map rail and a drawer. The detail surface is summoned rather
-than resident, so it costs nothing when closed; the map stayed resident,
-because it is navigation and a map you have to go and find is not:
+Three primary destinations, a map rail and a drawer. The detail surface is
+summoned rather than resident, so it costs nothing when closed; the map stayed
+resident, because it is navigation and a map you have to go and find is not:
 
 ```
 <header class="topbar">   compact brand + "+ Post"
 <details class="about">   the full disclosure, folded (invariant #12)
-<nav [data-view]>   Home | Explore | Schedule | Insights
+<nav [data-view]>   Feed | Schedule | Explore
 <div class="app"><div class="app-main">
-  #view-home      #nowstrip · .homegrid[ .homecol: filters/sort · #homefeed
+  #view-home      #nowstrip · .homegrid[ .homecol: All/Active/Upcoming tabs,
+                  Filters (Posts/Episodes/Events, multi-select) · #homefeed
                   · Load more | aside.maprail > #home-map ]
-  #view-explore   search · type/date/location filters · #explore-trending
-                  · #explore-map (hosts .mapcard) · #explorefeed
+  #view-explore   [data-xs] sub-tabs: Browse | Stats
+                  #explore-browse   search · type/date/location filters
+                                    · #explore-trending · #explore-map (hosts
+                                    .mapcard) · #explorefeed
+                  #view-insights    [data-in] sections: overview · performance
+                                    · geo · community — moved bodily inside
+                                    Explore as its Stats sub-tab; unchanged
+                                    internally, so every render*Insights()
+                                    function still works as before
   #view-schedule  upcoming/past · list/calendar · #schedulefeed
-  #view-insights  [data-in] sections: overview · views · ufc · geo · community
-#drawer     .drawer-panel > #insight-player   ← the one detail surface
+#drawer     .drawer-panel > #insight-player, #pane-composer   ← the one
+            detail surface, plus the sticky comment box beside it
 #composer   .drawer-panel > post composer     ← both post flows
 ```
 
-Three things about this shape are load-bearing:
+Four things about this shape are load-bearing:
 
 - **`.mapcard` exists exactly once.** `mountMap()` moves that one node between
   `#explore-map` and `#home-map`, and `load()` mounts it to Home at startup —
   the markup sits inside `#view-explore` in source order, so without that it is
   invisible until someone opens Explore. Rendering a second copy would give you
   two `#pins`/`#heat`, and `plotMap()` would silently only ever find the first.
+  `syncMapMount()` is the one place that decides which host it belongs in;
+  every path that could change that (view switches, the Explore sub-tab, the
+  `[data-xv]` map toggle) goes through it rather than calling `mountMap()`
+  directly. `plotMap()` itself now guards against being asked to draw into a
+  host with no laid-out width — it queues the draw and `flushPendingPlot()`
+  runs it once the host is visible — because Explore going live means the card
+  genuinely sits in a hidden container sometimes, not just hypothetically.
   Re-plot after moving or showing it: `uiK()` reads a width that is 0 while
   hidden, so every marker comes out mis-sized (invariant #3).
+- **`#view-insights` is nested inside `#view-explore` but deliberately absent
+  from the click-delegate binding array.** `onPick`/`onPickKey` are bound per
+  top-level view container; binding both the parent and the nested child means
+  a click inside Stats bubbles to two handlers and fires every pick twice — two
+  `selectEntry()` calls, two `openDrawer()`s, two history writes. This is easy
+  to miss in a reading review because `renderPlayer()`'s `paneKey` dedupe hides
+  most of the visible symptom.
 - **The map is not decoration.** It was briefly folded into a `<details>` and
   that was wrong: pins open entries in the drawer and the comment banners show
   where discussion is, which only works if the pins and the rows are on screen
   together. It is a sticky rail beside the Home feed above 1040px and stacks
-  above the feed below that. Don't put it back behind a toggle.
+  above the feed below that. Don't put it back behind a toggle above 640px —
+  the phone-width collapse (`.mobile-map-toggle`) is the only exception.
 - **Content type decides the surface.** Events and episodes are official
   records with permanent ids; posts are user content with their own shareable
-  `#p=` URL; comments belong to a parent and never appear in a feed. If it
-  should be findable on its own, it is a post — if it only makes sense where it
-  sits, it is a comment.
-- **The detail drawer is modal only at phone width.** Above 640px it drops the
-  scrim, the blur and the scroll lock, and releases `pointer-events` on the
-  full-viewport container so the feed underneath stays clickable — reading a
-  detail beside the list is the point. Only the modal case captures scroll in
-  `openDrawer()` and restores it in `closeDrawer()`; restoring after a
-  non-modal open would yank the visitor back from wherever they deliberately
-  scrolled. `#composer` stays modal at every width: it is a form to finish or
-  cancel. The two share the `drawer-open` lock, so whichever closes first must
-  not release a lock the other still needs.
+  `#p=` URL; comments (and their one level of replies) belong to a parent and
+  never appear in a feed. If it should be findable on its own, it is a post —
+  if it only makes sense where it sits, it is a comment.
+- **The detail drawer is modal only at phone width**, and `aria-modal` on
+  `.drawer-panel` is now set from script (`syncDrawerModality()`) rather than
+  hardcoded, so it actually matches the CSS instead of asserting modality the
+  layout doesn't have. Above 640px it drops the scrim, the blur and the scroll
+  lock, and releases `pointer-events` on the full-viewport container so the
+  feed underneath stays clickable — reading a detail beside the list is the
+  point. Only the modal case captures scroll in `openDrawer()` and restores it
+  in `closeDrawer()`; restoring after a non-modal open would yank the visitor
+  back from wherever they deliberately scrolled. `#composer` stays modal at
+  every width: it is a form to finish or cancel. The two share the
+  `drawer-open` lock, so whichever closes first must not release a lock the
+  other still needs. A Tab focus trap (`activeModalPanel()`) applies only in
+  the genuinely-modal case, for the same reason.
 
 ## Invariants — do not break these
 
@@ -92,15 +121,22 @@ Supabase's REST API using the (intentionally public) anon key, bypassing this
 page's JS entirely, so post rows are re-validated with `parseVideo0()` on read
 too, never trusted just because the app itself wrote them.
 
-### 2. Event listeners bind to data attributes, never `.tab`
+### 2. Event listeners bind to data attributes, never `.tab` or `.rxchip`
 
 Twenty-odd controls share `class="tab"`. Binding the type-filter listener to
 `.tab` made clicking *Heat*, *Previous*, or *Import* set `filter = undefined`,
 silently emptying the entire app. Every group binds to its own attribute —
-`[data-hf]` `[data-hs]` `[data-xf]` `[data-xv]` `[data-xd]` `[data-sc]`
-`[data-sv]` `[data-in]` `[data-m]` `[data-view]` `[data-pk]` — via `pressGroup()`.
-This bug shipped and took several rounds to find: do not reintroduce it by
-"simplifying" the selectors.
+`[data-hs]` `[data-ft]` `[data-xs]` `[data-xf]` `[data-xv]` `[data-xd]` `[data-sc]`
+`[data-sv]` `[data-in]` `[data-m]` `[data-view]` `[data-pk]` — via `pressGroup()`
+or an individual listener, never a shared class. The rule extends to every
+control added since: reaction chips are `[data-rxpick]`/`[data-rxopen]`, never
+`.rxchip`/`.rxadd`; content-filter checkboxes are `[data-ft]`, never
+`.typefilter input`. This bug shipped once and took several rounds to find: do
+not reintroduce it by "simplifying" the selectors.
+
+`[data-hf]`, the old single-select content filter, is gone along with the
+`<select id="home-type">` it drove — the Filters popover is now a multi-select
+fieldset (Posts/Episodes/Events, nothing checked = everything eligible).
 
 ### 3. Map pins are sized in screen pixels, not viewBox units
 
@@ -223,14 +259,16 @@ boilerplate:
   the badge should mean someone checked. If Schedule (or anywhere else) ever
   groups or labels entries by it again, "Confirmed" must mean only "not flagged
   unconfirmed" — never that anybody verified anything.
-- **Posts, comments and reactions are all public and unmoderated before
-  appearing** (there used to be a per-browser private-notes feature; it was
-  removed in favor of public comments, so there is no longer a private,
-  unpublished annotation option anywhere on the site). The disclosure must say
-  so plainly — don't let copy drift back into implying anything here is private.
-  It must also keep distinguishing what is public from what is browser-local
-  (self-logged entries, display name, maintenance tools), because the site now
-  holds both.
+- **Posts, comments, replies and reactions are all public and unmoderated
+  before appearing** (there used to be a per-browser private-notes feature; it
+  was removed in favor of public comments, so there is no longer a private,
+  unpublished annotation option anywhere on the site). Reactions are six emoji
+  now, not a plain up/down vote (see invariant #14 below), and replies are new
+  since `comments.parent_id` landed — both are exactly as public as a
+  top-level comment, and the disclosure must say so plainly. Don't let copy
+  drift back into implying anything here is private. It must also keep
+  distinguishing what is public from what is browser-local (self-logged
+  entries, display name, maintenance tools), because the site now holds both.
 
 The long copy lives in the folded `<details class="about">` panel plus the
 footer. **Folded is not the same as condensed** — it is all still there, and it
@@ -276,6 +314,44 @@ and `supabase secrets set YOUTUBE_API_KEY=...` from the CLI (or paste the
 function into the dashboard's Edge Function editor, which needs no CLI). See
 Known gaps — this has not been deployed or exercised against a live key.
 
+### 14. Reactions are an allowlisted emoji, read against two schemas at once
+
+The reaction set is exactly six emoji — 👍 ❌ 😂 🤯 🔥 🤔 — replacing the old
++1/-1 vote. This is not just a UI choice; it is enforced at three layers that
+all have to keep agreeing:
+
+- **The database CHECK** (`reactions_emoji_allowed` in `reactions_replies.sql`)
+  is the actual boundary: anyone can `INSERT` a reaction row straight through
+  Supabase's REST API with the public anon key, same as posts (invariant #1's
+  trust category), so an unconstrained `emoji text` column would let one row
+  put arbitrary text into every reaction bar that renders it.
+- **`rxEmoji()` re-validates on read anyway**, against the client's own
+  `RX_SET`, and never trusts a stored value just because the app wrote it —
+  the same posture `parseVideo0()` takes on a stored `video_kind`. Do not
+  delete this re-validation on the theory that the DB constraint already
+  covers it; the DB constraint can be bypassed by anyone with the anon key,
+  and a future migration could loosen it without this file changing.
+- **The migration (`reactions_replies.sql`) is hand-run, not part of CI**,
+  exactly like `youtube_search.sql`. The old `value` column is deliberately
+  kept, not dropped, and `rxEmoji()` falls back to it (`value===1→👍,
+  value===-1→❌`) for any row without a recognized `emoji`. That fallback is
+  what makes "the HTML shipped before the SQL ran" a degraded-but-working
+  state instead of a broken one, and what makes reverting `index.html` alone a
+  full rollback with no down-migration needed.
+- **Writes cannot use that fallback** — an `INSERT` naming a column that
+  doesn't exist just fails. `loadPosts()` probes for the new columns once on
+  the first fetch and sets `rxSchemaV2`/`replySchemaV2` to `false` on a
+  "column does not exist" error, at which point `reactionBarHTML()` and the
+  reply UI switch to read-only rendering with an explanatory hint instead of
+  offering controls that would silently no-op. Do not remove this probe and
+  assume the migration has always run — it is the difference between a loud,
+  legible degraded state and every reaction button quietly doing nothing.
+- **`comments.parent_id` (one-level replies) and `reactions.comment_id`
+  (reactions on a comment) are part of the same migration** and share its
+  deploy risk. Deleting a comment cascades to its replies and their reactions
+  (`on delete cascade`); the remove control says so (`remove (and 3
+  replies)`) rather than deleting silently.
+
 ## Scope boundaries
 
 This tracks **announced, scheduled** events. Do not add:
@@ -318,15 +394,30 @@ This tracks **announced, scheduled** events. Do not add:
   wrote it** — this environment has no Node and no Python, so changes are
   verified by reading plus structural checks (tag/brace/paren balance, every
   `getElementById` target exists, every called function is defined, every
-  `data-*` attribute both emitted and handled). That catches typos, not
-  behaviour. Treat runtime bugs as likely until someone has actually clicked
-  through a change.
+  `data-*` attribute both emitted and handled, no `<button>` nested inside a
+  `.row` template, no `Date.parse()` left on a bare calendar date). That
+  catches typos and dangling references, not behaviour. This applies with
+  particular force to the 2026-08 feed/reactions/navigation rewrite: three feed
+  modes, emoji reactions with optimistic updates, one-level comment replies,
+  Explore going from dead code to live, and the map's two-way sync with the
+  feed have all been checked structurally but **none of it has been clicked
+  through**. Treat runtime bugs as likely until someone has actually opened the
+  page.
+- **`reactions_replies.sql` has not been run against the live project.** It
+  adds `reactions.emoji`, `reactions.comment_id`, `comments.parent_id`, and
+  migrates the old `value` column's data to emoji (see invariant #14). Until it
+  runs, `loadPosts()`'s schema probe should detect the missing columns and fall
+  back to read-only rendering — that fallback path is exactly as untested as
+  everything else above. Introspect the `value` CHECK's real constraint name
+  before running the migration; the file has the query.
 - The `posts.video_kind`/`video_id` nullable-pair migration (text posts) and
-  the reactions-table migration have both been run against the live project —
-  see the schema comment in `index.html` for the SQL, kept as the record of
-  what the live schema should match. The `video_title`/`video_channel`/
-  `video_published` columns (clip metadata) are a separate, newer migration in
-  the same comment block and have **not** been confirmed run yet.
+  the original two-column reactions table have both been run against the live
+  project — see the schema comment in `index.html` for the SQL, kept as the
+  record of what the live schema should match. The `video_title`/
+  `video_channel`/`video_published` columns (clip metadata) are a separate,
+  newer migration in the same comment block and have **not** been confirmed
+  run yet — `reactions_replies.sql` adds them idempotently as its first step
+  for exactly this reason, so running it also closes this gap.
 - **`supabase/functions/youtube-search` has not been deployed, and
   `youtube_search.sql` has not been run.** Nothing about the composer's clip
   search/paste-preview flow has executed against a real YouTube key — not the
@@ -335,18 +426,20 @@ This tracks **announced, scheduled** events. Do not add:
   steps. Until it's deployed, pasting a YouTube link still works for the
   embed itself (`parseVideo()` is unchanged and needs no network), but gets
   no title/channel/date and the Search button never returns results.
-- `firstSeen` (added to every event so the Feed can tell a genuinely new or
-  changed upcoming event from one that's just been sitting there — see
-  `feedEligible()`/`eventIsRecent()` in `index.html`) was backfilled onto the
-  242 rows already in `events.json` as a flat `"2025-01-01"` on 2026-08-16,
-  since there was no real record of when any of them first appeared. That
-  backdated value is intentional — it means "don't know, so don't call it
-  recent" — not a bug to "fix" by reading it as a real date.
-  `scripts/fetch-events.mjs` maintains it correctly on every run from here:
-  today's date on a genuinely new `src`, or on one whose date/title/loc
-  changed since last run; carried forward unchanged otherwise. This logic has
-  **not** run in CI yet — it was written and reasoned through, not observed
-  against a real fetch.
+- `firstSeen` (added to every event so Upcoming can flag a genuinely new
+  arrival — see `eventIsRecent()` in `index.html`) was backfilled onto the 242
+  rows already in `events.json` as a flat `"2025-01-01"` on 2026-08-16, since
+  there was no real record of when any of them first appeared. That backdated
+  value is intentional — it means "don't know, so don't call it recent" — not
+  a bug to "fix" by reading it as a real date. **`loadFeed()`'s `auto[]`
+  mapping previously dropped this field entirely** (it built each event object
+  field-by-field and simply omitted `firstSeen`), which is now fixed — the
+  field is copied through with the same shape-check every other feed field
+  gets. `scripts/fetch-events.mjs` maintains it correctly on every run: today's
+  date on a genuinely new `src`, or on one whose date/title/loc changed since
+  last run; carried forward unchanged otherwise. This logic has **not** run in
+  CI yet — it was written and reasoned through, not observed against a real
+  fetch.
 - `scripts/fetch-events.mjs` **has** been run against both live sources and its
   output inspected: 12 scheduled UFC events (venues and rowspan carry-over
   checked by hand) plus 15 JRE episodes. Tested too: all-sources-fail exits 1
