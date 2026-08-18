@@ -17,7 +17,10 @@ There is no test suite yet. **Adding one is the first task** — see Known gaps 
 ## Ask before
 
 - Restoring demo data to the default seed
-- Loosening the URL validation in `parseVideo()` / `parseVideo0()`
+- Loosening the URL validation in `parseVideo()` / `parseVideo0()` /
+  `parseClipRange()`, or widening the `posts_clip_range` CHECK
 - Removing or condensing the disclosure text or the *Unconfirmed* badge
+- Adding any path that downloads, cuts or re-hosts a video file — a clip here
+  is two integers on purpose (invariant #15)
 
 These look like cleanup and are not. The reasoning is in @AGENTS.md.

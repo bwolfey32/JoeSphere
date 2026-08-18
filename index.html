@@ -815,6 +815,56 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
 .ytpreview-meta>span{font-size:12px;color:var(--ink-mid)}
 .ytpreview-actions{display:flex;gap:12px;align-items:center;margin-top:6px;flex-wrap:wrap}
 
+/* ---------- composer: clip trimming ---------- */
+/* .trim sets display, so [hidden] alone would not hide it — a class rule beats
+   the UA's [hidden]{display:none} on origin, not specificity. Same override
+   .home-search needed after that exact bug shipped. */
+.trim{display:block;margin-top:12px;border-top:1px solid var(--rule);padding-top:11px}
+.trim[hidden]{display:none}
+.trim-head{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:9px}
+.trim-head h4{margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.trim-len{font-size:12.5px;color:var(--ink-mid);font-variant-numeric:tabular-nums}
+.trim-len b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+/* The track is 34px tall so the whole strip is a comfortable pointer target on
+   a phone, but the rail it draws is thin — the height is hit area, not ink. */
+.trim-track{position:relative;height:34px;margin:0 11px 10px;cursor:pointer;touch-action:none}
+.trim-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:4px;
+  margin-top:-2px;background:var(--rule)}
+.trim-sel{position:absolute;top:50%;height:4px;margin-top:-2px;background:var(--blue);
+  pointer-events:none}
+.trim-h{position:absolute;top:0;width:22px;height:34px;margin-left:-11px;padding:0;
+  background:none;border:none;cursor:ew-resize;touch-action:none}
+.trim-h::after{content:"";position:absolute;left:7px;top:5px;width:8px;height:24px;
+  background:var(--ink);border:1px solid var(--paper)}
+.trim-h:hover::after{background:var(--blue)}
+.trim-h:focus-visible::after{outline:2px solid var(--blue);outline-offset:2px}
+/* Not a control — never in the tab order, never a pointer target. */
+.trim-play{position:absolute;top:3px;width:1px;height:28px;background:var(--stamp);
+  pointer-events:none;display:none}
+.trim-play.on{display:block}
+
+.trim-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;flex-wrap:wrap}
+.trim-row>label{font-size:11.5px;color:var(--ink-soft);width:26px;flex:0 0 auto}
+.trim-row input{width:82px;flex:0 0 auto;font-variant-numeric:tabular-nums;text-align:center}
+.trim-nudges{display:flex;gap:3px}
+.trim-nudges button,.trim-here{background:var(--card);border:1px solid var(--rule);
+  color:var(--ink-mid);font:inherit;font-size:11.5px;padding:5px 7px;cursor:pointer;
+  min-height:30px;font-variant-numeric:tabular-nums}
+.trim-nudges button:hover,.trim-here:hover{border-color:var(--ink-soft);color:var(--ink)}
+.trim-here{margin-left:auto;white-space:nowrap}
+.trim-actions{display:flex;gap:9px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.trim-hint{font-size:11.5px;color:var(--ink-soft);margin:8px 0 0;line-height:1.45}
+.trim-err{color:var(--stamp);font-size:12px;margin:7px 0 0;min-height:1em}
+/* Under ~420px the nudge cluster and the capture button stop fitting on one
+   line beside an 82px field; let the button drop rather than squeezing it. */
+@media(max-width:420px){
+  .trim-here{margin-left:0;width:100%}
+}
+/* A trimmed row's badge is the clip's length, not the video's — mark it so the
+   two are not silently interchangeable at a glance. */
+.thumb-dur.is-clip{background:var(--blue);color:#0B0E13}
+
 /* ---------- composer: attach chip + results ---------- */
 .chiprow{margin-bottom:7px}
 .chip{display:inline-flex;align-items:center;gap:7px;background:var(--card);
@@ -1317,6 +1367,11 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         they appear. Nothing you write here is private, and there is no unpublished, browser-only
         note anywhere on this site. What <i>is</i> kept in your browser alone: the entries you log
         yourself, your display name, and the maintenance tools.</p>
+      <p><b>Clips are timestamps, not copies.</b> Trimming a clip records a start and end time
+        against the original video and plays that span from the source — YouTube, in its own
+        player. No video is downloaded, re-encoded, or hosted here, view counts and ads still
+        go to whoever uploaded it, and a clip stops working if the original is taken down. The
+        tracker covers Joe Rogan; posted clips can be any comedy, from any channel.</p>
       <p><b>Studio locations are an estimate.</b> No public source places individual episodes, so
         the recording base shown on the map and in Insights is derived from each episode's release
         date — which is not its recording date, and some episodes were recorded remotely. Event
@@ -1453,11 +1508,17 @@ This log needs JavaScript to render the map and event list.</div></noscript>
         <!-- The daily-limit detail used to live here permanently; it now only
              shows up via ytError() when the limit is actually hit, not as a
              standing disclaimer every time the composer opens. -->
-        <p class="hint" id="p-yt-hint" style="margin:6px 0 0">Paste a link directly, or search — TikTok and
-          Vimeo links work too, just without the search/preview.</p>
+        <p class="hint" id="p-yt-hint" style="margin:6px 0 0">Paste a link directly, or search YouTube —
+          any comedian, not just Rogan. TikTok and Vimeo links work too, just without the
+          search/preview, and they can’t be trimmed.</p>
         <div class="err" id="p-yt-err" style="display:none"></div>
         <div id="p-yt-results" class="ytresults" hidden></div>
         <div id="p-yt-preview" class="ytpreview" hidden></div>
+        <!-- The trim control. Everything inside is rendered by renderTrim() so
+             the enhanced (scrubber) and degraded (typed timestamps only) shapes
+             are one code path rather than two hand-maintained bits of markup;
+             this shell just reserves the spot and the id. -->
+        <div id="p-trim" class="trim" hidden></div>
       </div>
       <div class="field">
         <label for="p-cap" id="p-cap-label">Caption</label>
@@ -1519,11 +1580,24 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //     -- "4:13" / "1:02:03" style, YouTube only — see video_duration.sql.
 //     -- Same descriptive-only trust level as the three columns above.
 //     video_duration text,
+//     -- The clip range, in whole seconds, or null/null for "the whole video".
+//     -- NOT the same trust level as the columns above: these are the only
+//     -- stored values that reach an embed URL (as &start=/&end=), so the CHECK
+//     -- below is a real boundary and the client re-validates on read anyway
+//     -- (parseClipRange). YouTube only — start/end are YouTube embed params.
+//     -- See clip_range.sql and AGENTS.md invariant #15.
+//     clip_start integer,
+//     clip_end integer,
 //     event_id text,
 //     created_at timestamptz not null default now(),
 //     constraint posts_video_pair check (
 //       (video_kind is null and video_id is null) or
 //       (video_kind is not null and video_id is not null)
+//     ),
+//     constraint posts_clip_range check (
+//       (clip_start is null and clip_end is null) or
+//       (video_kind = 'yt' and clip_start >= 0 and
+//        clip_end > clip_start and clip_end <= 86400)
 //     )
 //   );
 //   -- Migrating a project created before text posts / clip metadata existed:
@@ -1537,6 +1611,8 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //   --   alter table posts add column video_published text;
 //   -- Adding duration to a project that predates it: see video_duration.sql
 //   -- (adds video_duration text; run once, by hand, same convention).
+//   -- Adding the clip range to a project that predates it: see clip_range.sql
+//   -- (adds clip_start/clip_end + posts_clip_range; same convention again).
 //   -- a comment targets either a Fan Post (post_id) or a tracker event
 //   -- (event_id, a plain string matching that event's client-side id — events
 //   -- live in events.json/localStorage, not in Supabase, so no FK there) —
@@ -1864,6 +1940,49 @@ function parseVideo0(v){
   return null;
 }
 
+// The clip range on a post row: {s,e} in whole seconds, or null for "play the
+// whole video". Deliberately a separate function rather than extra keys on
+// parseVideo0 — that one is also on the events.json path (see loadFeed) and
+// strips every key it doesn't return, by design.
+//
+// These are the only stored values in this app that reach an embed URL, as
+// &start=/&end= (see CLIPSRC). Post rows are the same trust category as the
+// feed — anyone can INSERT one through Supabase's REST API with the public
+// anon key — so the numbers are validated here and the URL is rebuilt from
+// the validated integers, never from the stored value. The DB CHECK in
+// clip_range.sql says the same thing at the other end; neither is redundant,
+// because the CHECK can be bypassed by loosening it in a later migration
+// without this file changing. Invariant #15.
+const CLIP_MAX_S=86400; // 24h sanity ceiling, matching clip_range.sql
+function parseClipRange(p){
+  if(!p||typeof p!=='object') return null;
+  const s=Number(p.clip_start), e=Number(p.clip_end);
+  if(!Number.isInteger(s)||!Number.isInteger(e)) return null;
+  if(s<0||e<=s||e>CLIP_MAX_S) return null;
+  return {s,e};
+}
+
+// Seconds → "6:52" / "1:02:03". The Edge Function has its own copy of this
+// shape (parseISODuration) because it runs in Deno and shares no code with
+// this file; this one works from a number rather than an ISO-8601 string.
+function mmss(sec){
+  const t=Math.max(0,Math.floor(Number(sec)||0));
+  const h=Math.floor(t/3600), m=Math.floor(t%3600/60), s=t%60;
+  const pad=n=>String(n).padStart(2,'0');
+  return h>0 ? h+':'+pad(m)+':'+pad(s) : m+':'+pad(s);
+}
+// "6:52" / "1:02:03" / "412" → 412, or null if it isn't a time at all. Used by
+// the trim fields, where someone may type any of those three.
+function parseMmss(str){
+  const t=String(str==null?'':str).trim();
+  if(!t) return null;
+  if(!/^\d+(:[0-5]?\d){0,2}$/.test(t)) return null;
+  const parts=t.split(':').map(Number);
+  if(parts.some(n=>!Number.isFinite(n))) return null;
+  const secs=parts.reduce((acc,n)=>acc*60+n,0);
+  return (Number.isInteger(secs)&&secs>=0&&secs<=CLIP_MAX_S)?secs:null;
+}
+
 // One day in ms. Declared up here with the other date helpers rather than down
 // in the analysis section, because everything below now wants it.
 const DAY=86400000;
@@ -2159,7 +2278,11 @@ function withTimeout(p,label){
 // on the first fetch, so a forgotten migration degrades loudly — read-only
 // counts and an explanatory line — instead of silently swallowing every
 // reaction and reply. See reactions_replies.sql.
-let rxSchemaV2=true, replySchemaV2=true;
+// clipSchemaV2 is the same idea for clip_start/clip_end (clip_range.sql).
+// Reads need no fallback — a row without the columns simply has no range, and
+// parseClipRange() returns null for that, which is already "play the whole
+// video". Only the write side and the trim UI care.
+let rxSchemaV2=true, replySchemaV2=true, clipSchemaV2=true;
 const RX_COLS_V2='post_id,event_id,comment_id,user_id,value,emoji,created_at';
 const RX_COLS_V1='post_id,event_id,user_id,value,created_at';
 function isMissingColumn(err){
@@ -2197,6 +2320,17 @@ async function doLoadPosts(){
       .order('created_at',{ascending:false}).limit(100),'posts');
     if(error) throw error;
     const rows=data||[];
+    // Same probe shape as parent_id below, and free for the same reason:
+    // select('*') returns the column on every row once it exists, so its
+    // absence across a non-empty result is the answer. A range write would
+    // otherwise reject the whole INSERT and take an ordinary clip post down
+    // with it — see the publish handler, which refuses rather than quietly
+    // publishing the untrimmed video somebody spent a minute trimming.
+    if(clipSchemaV2&&rows.length&&!rows.some(r=>'clip_start' in r)){
+      clipSchemaV2=false;
+      console.warn('Supabase is missing posts.clip_start/clip_end — run clip_range.sql. '+
+        'Existing posts still play; trimming is disabled.');
+    }
     // Comments and reactions are fetched in full, not just for these posts —
     // event-attached rows (event_id set, post_id null) aren't tied to any
     // loaded post, and the Active feed needs every event's numbers too.
@@ -2425,6 +2559,11 @@ function postRow(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
   const ev=entryById(p.event_id);
   const yt=vid&&vid.kind==='yt'?vid.id:null;
+  const range=yt?parseClipRange(p):null;
+  // A trimmed post is a clip, so the badge is the clip's length — not the
+  // source video's. A three-hour episode trimmed to one joke has to read as
+  // "0:36", or the row advertises a commitment nobody is being asked to make.
+  const durTxt=range?mmss(range.e-range.s):(p.video_duration||'');
   const target='post:'+p.id;
   // The poster's own words lead the card. The imported clip title is
   // provenance and sits below in smaller, softer type — a fan post is somebody
@@ -2446,7 +2585,7 @@ function postRow(p){
     '<span class="row-thumb'+(yt?'':' noimg')+'">'+
       '<i>'+esc(vid?CLIPNAME[vid.kind]:'TEXT')+'</i>'+
       (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg" onerror="this.closest(\'.row-thumb\').classList.add(\'noimg\');this.remove()">':'')+
-      (yt&&p.video_duration?'<span class="thumb-dur">'+esc(p.video_duration)+'</span>':'')+'</span>'+
+      (yt&&durTxt?'<span class="thumb-dur'+(range?' is-clip':'')+'">'+esc(durTxt)+'</span>':'')+'</span>'+
     '<span class="row-body">'+
       '<span class="row-byline">'+avatarHTML(p.author_label)+'<b>'+esc(p.author_label||'Fan')+'</b> · '+
         timeHTML(p.created_at)+'</span>'+
@@ -2471,21 +2610,35 @@ function postPaneHTML(p){
   const vid=(p.video_kind&&p.video_id)?parseVideo0({kind:p.video_kind,id:p.video_id}):null;
   const ev=entryById(p.event_id);
   const mine=!!(session&&session.user&&p.author_id===session.user.id);
+  const range=(vid&&vid.kind==='yt')?parseClipRange(p):null;
   // The caption is the largest text in the pane. The clip's own title, channel
   // and upload date sit under the embed as provenance — video_published has
   // been written to the row since clip search landed but was never displayed
   // anywhere until now.
-  const source=[p.video_title&&p.video_title!==p.caption?p.video_title:'',
+  //
+  // On a trimmed post the range leads that line, and the source video's own
+  // runtime is named as the source's rather than sitting next to the clip
+  // length looking like a contradiction.
+  const source=[range?mmss(range.e-range.s)+' clip · from '+mmss(range.s):'',
+                p.video_title&&p.video_title!==p.caption?p.video_title:'',
                 p.video_channel||'',
                 p.video_published?fmt(String(p.video_published).slice(0,10)):'',
-                p.video_duration||'']
+                p.video_duration?(range?'of '+p.video_duration:p.video_duration):'']
     .filter(Boolean).join(' · ');
   return '<div class="player"><div class="ph"><span>Post</span>'+
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
     '<p class="pauthor">'+avatarHTML(p.author_label)+'<b>'+esc(p.author_label||'Fan')+'</b> · '+timeHTML(p.created_at)+'</p>'+
     '<p class="pcaption lead">'+esc(p.caption||'(no caption)')+'</p>'+
+    // The plain iframe with &start=/&end= is the baseline and is always what
+    // ships in the markup: it needs no API, no script and no network beyond
+    // the embed itself, and it already seeks to the in-point and stops at the
+    // out-point. data-ytclip is a hint for upgradeClipPlayer(), which swaps in
+    // an IFrame API player afterwards so the clip loops instead of landing on
+    // YouTube's end-screen. If that upgrade never happens — blocked script,
+    // no network — this markup is what stays, and it works.
     (vid&&CLIPSRC[vid.kind]?
-      '<div class="frame"><iframe src="'+esc(CLIPSRC[vid.kind](vid.id))+'" loading="lazy" '+
+      '<div class="frame"'+(range?' data-ytclip="'+esc(vid.id+':'+range.s+':'+range.e)+'"':'')+'>'+
+      '<iframe src="'+esc(CLIPSRC[vid.kind](vid.id,range))+'" loading="lazy" '+
       'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
       'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
       'title="'+esc(CLIPNAME[vid.kind])+' clip"></iframe></div>':'')+
@@ -2500,7 +2653,7 @@ function postPaneHTML(p){
       // there is no reliable way from outside the iframe to tell "embedding
       // disabled" apart from "still loading", so the fallback can't be
       // gated on a failure this page cannot actually detect.
-      (vid&&vid.kind==='yt'?'<a class="mini ghost" href="https://youtu.be/'+esc(vid.id)+
+      (vid&&vid.kind==='yt'?'<a class="mini ghost" href="'+esc(ytWatchURL(vid.id,range))+
         '" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>':'')+
       '<button class="mini ghost" data-sharepost="'+esc(p.id)+'">Copy link</button>'+
       (mine?'<button class="c-del" data-delpost="'+esc(p.id)+'">delete post</button>':'')+
@@ -3399,6 +3552,12 @@ function closeDrawer(){
   const d=document.getElementById('drawer');
   if(d.hidden) return;
   d.hidden=true;
+  // The pane is hidden, not emptied — paneKey deliberately keeps it drawn so
+  // reopening the same thing doesn't reload the video, and destroying the
+  // player here would leave that reopen showing an empty frame. So only the
+  // loop stops: a closed drawer replaying the same 30 seconds forever is the
+  // one behaviour worth preventing. renderPlayer() restarts it on reopen.
+  stopPaneLoop();
   if(document.getElementById('composer').hidden) document.body.classList.remove('drawer-open');
   if(drawerLocked){ window.scrollTo({top:feedScroll}); drawerLocked=false; }
   syncDrawerModality();
@@ -3608,6 +3767,76 @@ function renderPaneComposer(){
     '</div>';
   wireNameField('pc-name','pc-name-display','pc-name-shown','pc-name-change');
 }
+
+/* ---- trimmed playback in the pane ----
+   The markup postPaneHTML() emits already plays the right span: &start= seeks
+   in, &end= stops at the out-point, no script involved. What it can't do is
+   loop — a plain embed lands on YouTube's end-screen with its grid of related
+   videos, which is a strange place for a 30-second joke to leave you.
+   So a trimmed post gets its frame upgraded to an IFrame API player that
+   replays the range. Strictly an enhancement: if the API never loads, the
+   iframe that shipped in the HTML stays exactly as it was and still works.
+
+   This does not violate the pane's don't-touch-the-frame discipline. That rule
+   exists so paneRefresh() can rewrite the thread without reloading a playing
+   video — and paneRefresh() still only touches #pane-social and #pane-thread.
+   The upgrade runs only where the frame was just built from scratch anyway:
+   the paneKey miss inside renderPlayer(). */
+let panePlayer=null, panePoll=0, paneClipRange=null;
+function stopPaneLoop(){
+  if(panePoll){ clearInterval(panePoll); panePoll=0; }
+}
+function teardownPanePlayer(){
+  stopPaneLoop();
+  paneClipRange=null;
+  if(panePlayer){
+    try{ panePlayer.destroy(); }catch(_){}
+    panePlayer=null;
+  }
+}
+// Kept separate from the onReady that first starts it, because reopening the
+// drawer on the same post takes the paneRefresh path — the frame is never
+// rebuilt, so there is no second onReady to hang this off.
+function startPaneLoop(){
+  stopPaneLoop();
+  if(!panePlayer||!paneClipRange) return;
+  const r=paneClipRange;
+  panePoll=setInterval(()=>{
+    if(!panePlayer||!panePlayer.getCurrentTime) return;
+    let t; try{ t=panePlayer.getCurrentTime(); }catch(_){ return; }
+    // Only loop something that is actually playing — otherwise a paused clip
+    // sitting on its out-point gets yanked back to the start under somebody
+    // who deliberately stopped it there.
+    let st=-1; try{ st=panePlayer.getPlayerState(); }catch(_){}
+    if(st!==1) return;
+    if(t>=r.e-0.15){ try{ panePlayer.seekTo(r.s,true); }catch(_){} }
+  },250);
+}
+function upgradeClipPlayer(root){
+  const frame=root.querySelector('[data-ytclip]'); if(!frame) return;
+  // Re-validated here rather than trusted from the attribute this file just
+  // wrote: the attribute is a hint, the id and the numbers are the contract.
+  const m=/^([A-Za-z0-9_-]{11}):(\d+):(\d+)$/.exec(frame.dataset.ytclip||''); if(!m) return;
+  const id=m[1];
+  const r=parseClipRange({clip_start:Number(m[2]),clip_end:Number(m[3])}); if(!r) return;
+  loadYtApi().then(YT=>{
+    // The drawer can move on while the API loads. Only upgrade a frame that is
+    // still in the document and still showing this clip.
+    if(!document.contains(frame)||frame.dataset.ytclip!==m[0]) return;
+    const host=document.createElement('div');
+    frame.innerHTML='';
+    frame.appendChild(host);
+    paneClipRange=r;
+    panePlayer=new YT.Player(host,{
+      host:'https://www.youtube-nocookie.com',
+      videoId:id,
+      playerVars:{rel:0,enablejsapi:1,origin:location.origin,playsinline:1,
+        start:r.s,end:r.e},
+      events:{onReady:startPaneLoop}
+    });
+  }).catch(()=>{ /* the plain start/end iframe is already in place */ });
+}
+
 function renderPlayer(){
   const el=document.getElementById('insight-player'); if(!el) return;
 
@@ -3617,12 +3846,26 @@ function renderPlayer(){
   // the pane which kind of thing to draw.
   const key=selectedKind==='post'?('post:'+selectedPostId)
     :selectedKind==='event'?('entry:'+selectedId):'none';
-  if(key===paneKey&&el.querySelector('.player')&&paneRefresh()){ setDrawerLabel(); return; }
+  if(key===paneKey&&el.querySelector('.player')&&paneRefresh()){
+    setDrawerLabel();
+    // Same post reopened: the frame and its player survived, but closeDrawer()
+    // stopped the loop. Nothing else here restarts it.
+    if(panePlayer&&paneClipRange&&!panePoll) startPaneLoop();
+    return;
+  }
   paneKey=key;
+
+  // Whatever is drawn next replaces the frame this player was attached to.
+  teardownPanePlayer();
 
   if(selectedKind==='post'){
     const p=selectedPostId?posts.find(x=>x.id===selectedPostId):null;
-    if(p){ el.innerHTML=postPaneHTML(p); setDrawerLabel(); renderPaneComposer(); return; }
+    if(p){
+      el.innerHTML=postPaneHTML(p);
+      setDrawerLabel(); renderPaneComposer();
+      upgradeClipPlayer(el);
+      return;
+    }
   }
   if(selectedKind==='event'){
     const e=selectedId?entryById(selectedId):null;
@@ -5004,11 +5247,49 @@ function looksLikeVideoUrl(s){
   return ['youtu.be','youtube.com','m.youtube.com','youtube-nocookie.com',
     'tiktok.com','vm.tiktok.com','vimeo.com','player.vimeo.com'].includes(host);
 }
+// The timestamp on a pasted link, as whole seconds, or null. A companion to
+// parseVideo() rather than part of it: parseVideo() returns {kind,id} and
+// nothing else on purpose, and widening it would change what every one of its
+// five call sites gets back. Somebody pasting youtu.be/ID?t=412 has already
+// told us where the joke starts, so the trim UI seeds its in-point from this
+// instead of making them find it again.
+//
+// Nothing here reaches a URL — the value is a number that gets clamped and
+// re-serialized by CLIPSRC like any other. "1h2m3s", "125s" and "125" are all
+// shapes YouTube itself emits.
+function parseVideoTime(u){
+  if(!u) return null;
+  let url; try{ url=new URL(String(u).trim()); }catch(e){ return null; }
+  const raw=url.searchParams.get('t')||url.searchParams.get('start')||
+    (url.hash.startsWith('#t=')?url.hash.slice(3):'');
+  if(!raw) return null;
+  if(/^\d+$/.test(raw)){
+    const n=Number(raw);
+    return (n>=0&&n<=CLIP_MAX_S)?n:null;
+  }
+  const m=/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/i.exec(raw);
+  if(!m||(!m[1]&&!m[2]&&!m[3])) return null;
+  const n=Number(m[1]||0)*3600+Number(m[2]||0)*60+Number(m[3]||0);
+  return (n>=0&&n<=CLIP_MAX_S)?n:null;
+}
+
+// The second argument is the clip range from parseClipRange() — already
+// validated integers, never a stored string. tt/vm ignore it: start/end are
+// YouTube embed parameters and neither of the other two players has an
+// equivalent, which is also why clip_range.sql constrains ranges to yt. Every
+// pre-existing one-argument call site (the plain-text export, the event pane)
+// keeps working unchanged.
 const CLIPSRC={
-  yt:id=>'https://www.youtube-nocookie.com/embed/'+id+'?rel=0',
+  yt:(id,r)=>'https://www.youtube-nocookie.com/embed/'+id+'?rel=0'+
+    (r?'&start='+r.s+'&end='+r.e:''),
   tt:id=>'https://www.tiktok.com/player/v1/'+id,
   vm:id=>'https://player.vimeo.com/video/'+id
 };
+// "Watch on YouTube" should land on the joke, not the top of a three-hour
+// episode. Same rebuild-from-validated-parts rule as CLIPSRC.
+function ytWatchURL(id,r){
+  return 'https://youtu.be/'+id+(r?'?t='+r.s:'');
+}
 const CLIPNAME={yt:'YouTube',tt:'TikTok',vm:'Vimeo'};
 // Ticket links go in a plain <a href>, never an iframe, so there's no host
 // whitelist (any ticket vendor is fine) — but the scheme is still restricted
@@ -5364,6 +5645,22 @@ let composerScroll=0, composerLocked=false, composerFocusReturn=null;
 // is. title/channel/publishedAt are only ever populated for kind==='yt' —
 // see the youtube-search Edge Function.
 let composerClip=null;
+// The trim on this draft: {s,e} in whole seconds, or null for "the whole
+// video". Held here rather than read out of the two m:ss fields at publish
+// time, for the same reason composerClip is: the fields are one way to edit
+// the range, not the range itself — the track handles and the capture buttons
+// are the others, and half-typed text in a field is not a clip.
+let composerClipRange=null;
+// Runtime of the source video in seconds, from the player. 0 until it reports
+// one, which is what the trim UI waits on before it can draw a track at all.
+let composerVideoDur=0;
+// The in-point a pasted ?t= asked for, held until the player reports its
+// duration and the range can actually be seeded.
+let composerSeedIn=0;
+// The live YT.Player in the preview, and the poll that follows its playhead.
+// Both are torn down whenever the clip changes or the composer closes — an
+// interval outliving its player would poll a destroyed object forever.
+let composerPlayer=null, composerPoll=0, composerLoop=false;
 // The event/episode this draft is attached to, or '' for none. Mirrored into
 // the hidden #p-event input so the submit handler has one place to read it.
 let composerEventId='';
@@ -5376,6 +5673,11 @@ function setPostKind(k){
   document.getElementById('p-cap-label').textContent=postKind==='text'?'Your post':'Caption';
   document.getElementById('p-cap').placeholder=postKind==='text'
     ? 'Say something worth its own thread…' : "What's happening in this clip…";
+  // #p-vid-field going hidden takes the trim panel with it visually, but the
+  // player behind it would keep running. Stop it, and let renderTrim() decide
+  // whether the panel belongs on screen at all.
+  if(postKind==='text') teardownComposerPlayer();
+  renderTrim();
 }
 
 /* ---- YouTube find-or-paste ---- */
@@ -5406,22 +5708,15 @@ function setSearchUIVisible(on){
   if(btn) btn.hidden=!on;
   if(!on&&res){ res.hidden=true; }
 }
-function setClipPreview(clip){
-  const hadClip=!!composerClip;
-  composerClip=clip;
-  const box=document.getElementById('p-yt-preview');
-  if(!clip){ box.hidden=true; box.innerHTML=''; setSearchUIVisible(true); return; }
-  box.hidden=false;
-  setSearchUIVisible(false);
+// The meta line under the preview. Split out of setClipPreview() because it is
+// the only part that may be redrawn while a clip is still attached — see the
+// identity check there.
+function clipMetaHTML(clip){
   const title=clip.title||(clip.kind==='yt'?'(fetching title…)':CLIPNAME[clip.kind]+' clip');
   // yt only — the Edge Function's contentDetails lookup is YouTube-specific;
   // TikTok/Vimeo clips never carry a duration.
   const dur=clip.duration?' · '+esc(String(clip.duration)):'';
-  box.innerHTML='<div class="frame"><iframe src="'+esc(CLIPSRC[clip.kind](clip.id))+'" loading="lazy" '+
-    'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
-    'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
-    'title="'+esc(title)+'"></iframe></div>'+
-    '<div class="ytpreview-meta"><b>'+esc(title)+'</b>'+
+  return '<b>'+esc(title)+'</b>'+
     (clip.channel?'<span>'+esc(clip.channel)+(clip.publishedAt?' · '+esc(fmt(String(clip.publishedAt).slice(0,10))):'')+dur+'</span>':'')+
     '<span class="ytpreview-actions">'+
     // A stable "watch elsewhere" link matters most exactly when the embed
@@ -5429,24 +5724,399 @@ function setClipPreview(clip){
     // by the uploader — which this app has no reliable way to detect from
     // outside the iframe, so the link is offered unconditionally rather than
     // only on a failure it cannot actually observe.
-    (clip.kind==='yt'?'<a href="https://youtu.be/'+esc(clip.id)+'" target="_blank" '+
+    (clip.kind==='yt'?'<a href="'+esc(ytWatchURL(clip.id,composerClipRange))+'" target="_blank" '+
       'rel="noopener noreferrer" class="linkish">Watch on YouTube</a>':'')+
-    '<button type="button" class="linkish" id="p-yt-clear">Change clip</button></span></div>';
-  document.getElementById('p-yt-clear').addEventListener('click',()=>{
+    '<button type="button" class="linkish" id="p-yt-clear">Change clip</button></span>';
+}
+function wireClipClear(){
+  const b=document.getElementById('p-yt-clear'); if(!b) return;
+  b.addEventListener('click',()=>{
     setClipPreview(null);
     const q=document.getElementById('p-yt-q'); q.value=''; q.focus();
     document.getElementById('p-yt-search-btn').disabled=true;
   });
+}
+
+// setClipPreview() is called more than once per attached clip: tryYtLookup()
+// calls it immediately with just {kind,id} so the embed appears without
+// waiting on the network, then again with the real title/channel/date once the
+// lookup resolves. That was harmless while the preview was an innerHTML
+// iframe. It is not harmless now — rebuilding would tear down a live player
+// mid-trim, reload the video, and throw away in/out points somebody had just
+// set. So the identity of the video, not the object, decides what happens:
+//
+//   same kind+id  → redraw only the meta line. Frame, player and range stay.
+//   different, or null → tear everything down and rebuild.
+function setClipPreview(clip){
+  const had=composerClip;
+  const sameVideo=!!(had&&clip&&had.kind===clip.kind&&had.id===clip.id);
+  composerClip=clip;
+  const box=document.getElementById('p-yt-preview');
+
+  if(sameVideo){
+    const meta=box.querySelector('.ytpreview-meta');
+    if(meta){
+      meta.innerHTML=clipMetaHTML(clip); wireClipClear();
+      // This is the call that carries the metadata, so it is also the first
+      // moment a duration exists when the player can't supply one.
+      if(seedDurationFromMeta()) renderTrim();
+      return;
+    }
+    // No meta node to patch means the preview never actually drew — fall
+    // through and build it properly rather than leaving a blank box.
+  }
+
+  teardownComposerPlayer();
+  composerClipRange=null; composerVideoDur=0;
+  if(!clip){
+    composerSeedIn=0;
+    box.hidden=true; box.innerHTML='';
+    setSearchUIVisible(true);
+    renderTrim();
+    return;
+  }
+  box.hidden=false;
+  setSearchUIVisible(false);
+
+  // YouTube gets a real player object, because the trim UI has to read and set
+  // playback position and a plain embed exposes neither. TikTok and Vimeo keep
+  // the static iframe: start/end are YouTube embed parameters, so there is
+  // nothing to trim towards on those two anyway (clip_range.sql says the same).
+  if(clip.kind==='yt'){
+    box.innerHTML='<div class="frame"><div id="p-yt-frame"></div></div>'+
+      '<div class="ytpreview-meta">'+clipMetaHTML(clip)+'</div>';
+    mountComposerPlayer(clip.id);
+  }else{
+    box.innerHTML='<div class="frame"><iframe src="'+esc(CLIPSRC[clip.kind](clip.id))+'" loading="lazy" '+
+      'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
+      'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
+      'title="'+esc(CLIPNAME[clip.kind])+' clip"></iframe></div>'+
+      '<div class="ytpreview-meta">'+clipMetaHTML(clip)+'</div>';
+  }
+  wireClipClear();
+  renderTrim();
+
   // Bring Caption + Publish into view the moment a clip is actually chosen —
-  // guarded on hadClip so this fires once per pick, not on the metadata
-  // refresh that follows a paste (tryYtLookup calls this twice: an instant
-  // embed, then the real title/channel once fetched — yanking focus back on
-  // the second call would interrupt whatever the visitor started typing).
-  if(!hadClip){
+  // guarded on `had` so this fires once per pick, not on the metadata refresh
+  // that follows a paste (which now returns above anyway, but the guard is
+  // what makes that safe rather than incidental).
+  if(!had){
     const cap=document.getElementById('p-cap');
     cap.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
     cap.focus();
   }
+}
+
+/* ---- clip trimming ---- */
+// The IFrame Player API is the only way to read or set playback position from
+// outside the embed, so the scrubber needs it. It is loaded lazily — on the
+// first YouTube clip actually attached, not at boot — and everything below
+// treats it as optional: if the script is blocked or slow, renderTrim() draws
+// the typed-timestamp form instead. Trimming degrades to typing; it never
+// disappears.
+let ytApiPromise=null;
+function loadYtApi(){
+  // Already there — from a previous load, or from a slow one that arrived
+  // after its promise had timed out. Checked before the memo so a stale
+  // rejection can never outrank a working API.
+  if(window.YT&&window.YT.Player) return Promise.resolve(window.YT);
+  if(ytApiPromise) return ytApiPromise;
+  ytApiPromise=new Promise((resolve,reject)=>{
+    // The API calls exactly one global when it finishes. Chain rather than
+    // overwrite: this file is not the only thing that could ever define it.
+    const prev=window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady=function(){
+      if(typeof prev==='function'){ try{ prev(); }catch(_){} }
+      resolve(window.YT);
+    };
+    const s=document.createElement('script');
+    s.src='https://www.youtube.com/iframe_api';
+    s.async=true;
+    s.onerror=()=>{ ytApiPromise=null; reject(new Error('blocked')); };
+    document.head.appendChild(s);
+    // An ad-blocker that swallows the request without firing onerror would
+    // otherwise leave this pending forever, and the trim UI stuck on
+    // "loading" with no way out. Clearing the memo alongside the rejection is
+    // what stops one slow network moment from disabling the scrubber for the
+    // rest of the session — the next attached clip tries again, and the
+    // window.YT check above short-circuits if the script did eventually land.
+    setTimeout(()=>{ ytApiPromise=null; reject(new Error('timeout')); },8000);
+  });
+  return ytApiPromise;
+}
+
+function teardownComposerPlayer(){
+  if(composerPoll){ clearInterval(composerPoll); composerPoll=0; }
+  composerLoop=false;
+  if(composerPlayer){
+    try{ composerPlayer.destroy(); }catch(_){}
+    composerPlayer=null;
+  }
+}
+
+// The player is the accurate source of a video's length, but not the only one:
+// the Edge Function already sends "1:47:22" as descriptive text, and parsing
+// that back gives a duration when the player API never loaded. Without this,
+// a blocked iframe_api left composerVideoDur at 0 forever — and a trim UI that
+// doesn't know how long the video is can't offer in/out points at all, which
+// is precisely the degraded case the typed fields exist for.
+//
+// Player-derived wins: it is exact seconds rather than a rounded display
+// string, so this only fills a gap, never overwrites.
+function seedDurationFromMeta(){
+  if(composerVideoDur>0) return false;
+  if(!composerClip||composerClip.kind!=='yt'||!composerClip.duration) return false;
+  const d=parseMmss(composerClip.duration);
+  if(!d) return false;
+  composerVideoDur=d;
+  if(!composerClipRange) composerClipRange=defaultRangeAt(composerSeedIn);
+  return true;
+}
+
+function mountComposerPlayer(id){
+  const host=document.getElementById('p-yt-frame'); if(!host) return;
+  loadYtApi().then(YT=>{
+    // The clip can change while the API is still loading. Only mount if this
+    // is still the video the composer is showing.
+    if(!composerClip||composerClip.kind!=='yt'||composerClip.id!==id) return;
+    const el=document.getElementById('p-yt-frame'); if(!el) return;
+    composerPlayer=new YT.Player(el,{
+      // Same host the rest of the app embeds from. enablejsapi widens what
+      // this frame can be told to do, which is the entire point here — the
+      // videoId reaching it is still the strict-charset one parseVideo()
+      // validated, and origin is this page's own, so nothing user-supplied
+      // is being handed to the player.
+      host:'https://www.youtube-nocookie.com',
+      videoId:id,
+      playerVars:{rel:0,enablejsapi:1,origin:location.origin,playsinline:1},
+      events:{
+        onReady:e=>{
+          composerVideoDur=Math.floor(e.target.getDuration()||0);
+          // A pasted ?t= has already told us where the joke starts.
+          if(composerVideoDur>0&&!composerClipRange)
+            composerClipRange=defaultRangeAt(composerSeedIn);
+          renderTrim();
+        },
+        onStateChange:()=>{ /* playhead comes from the poll, not from state */ }
+      }
+    });
+    startComposerPoll();
+  }).catch(()=>{
+    // No API. renderTrim() reads composerPlayer===null and draws the typed
+    // form; the frame still needs *something* playable in it, so fall back to
+    // the plain embed the rest of the app uses.
+    seedDurationFromMeta();
+    const el=document.getElementById('p-yt-frame');
+    if(el&&composerClip&&composerClip.id===id){
+      const f=document.createElement('iframe');
+      f.src=CLIPSRC.yt(id,null);
+      f.setAttribute('loading','lazy');
+      f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+      f.setAttribute('allowfullscreen','');
+      f.setAttribute('allow','accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen');
+      f.title='YouTube clip';
+      el.replaceWith(f);
+    }
+    renderTrim();
+  });
+}
+
+// One 200ms poll drives both the playhead marker and clip looping. The IFrame
+// API has no timeupdate event, so there is nothing to subscribe to; and one
+// interval doing both jobs cannot drift out of step with itself the way two
+// would.
+function startComposerPoll(){
+  if(composerPoll) clearInterval(composerPoll);
+  composerPoll=setInterval(()=>{
+    if(!composerPlayer||!composerPlayer.getCurrentTime) return;
+    let t; try{ t=composerPlayer.getCurrentTime(); }catch(_){ return; }
+    let st=-1; try{ st=composerPlayer.getPlayerState(); }catch(_){}
+    // Loop only while it is genuinely playing (state 1). Pausing to look at a
+    // frame near the out-point would otherwise snap you back to the start.
+    if(composerLoop&&st===1&&composerClipRange&&t>=composerClipRange.e-0.15){
+      try{ composerPlayer.seekTo(composerClipRange.s,true); }catch(_){}
+      t=composerClipRange.s;
+    }
+    paintPlayhead(t);
+  },200);
+}
+function paintPlayhead(t){
+  const el=document.querySelector('#p-trim .trim-play');
+  if(!el||!composerVideoDur) return;
+  const pct=Math.max(0,Math.min(100,(t/composerVideoDur)*100));
+  el.style.left=pct+'%';
+  el.classList.add('on');
+}
+
+function trimError(msg){
+  const el=document.querySelector('#p-trim .trim-err');
+  if(el) el.textContent=msg||'';
+}
+
+// A fresh selection starting at `at`. 30 seconds is a length to drag from, not
+// a claim about the joke — but it has to be a *valid* range even when the
+// duration is unknown, or the DB CHECK rejects the post at the very end.
+function defaultRangeAt(at){
+  const dur=composerVideoDur||CLIP_MAX_S;
+  const s=Math.max(0,Math.min(Math.round(Number(at)||0),dur-1));
+  return {s,e:Math.min(s+30,dur)};
+}
+
+// Both edges, clamped and kept in order, in one place — every control that can
+// move a handle (drag, arrow key, nudge button, typed field, capture button)
+// goes through this rather than clamping for itself.
+function setTrimEdge(which,secs){
+  // A duration of 0 means nothing has told us how long the video is — no
+  // player, no metadata. Typed in/out points still work in that state; they
+  // just clamp against each other and the absolute ceiling instead of against
+  // a real runtime. Refusing here would make "type the times instead" a lie.
+  const dur=composerVideoDur||CLIP_MAX_S;
+  const cur=composerClipRange||{s:0,e:Math.min(30,dur)};
+  let s=cur.s, e=cur.e;
+  // A one-second floor: a zero-length or inverted range is not a clip, and
+  // the DB CHECK would reject it anyway.
+  if(which==='in')  s=Math.max(0,Math.min(Math.round(secs),e-1));
+  else              e=Math.min(dur,Math.max(Math.round(secs),s+1));
+  const had=!!composerClipRange;
+  composerClipRange={s,e};
+  // Creating the range for the first time changes which controls exist, so
+  // that one needs the full rebuild. Moving an edge does not — and must not,
+  // because a drag emits these continuously and rebuilding innerHTML mid-drag
+  // would destroy the element under the pointer on every frame.
+  if(had) paintTrim(); else renderTrim();
+  return composerClipRange;
+}
+
+// The cheap path: move what moved, leave the DOM alone. Falls back to a full
+// render if the pieces it expects aren't there.
+function paintTrim(){
+  const box=document.getElementById('p-trim');
+  const r=composerClipRange, dur=composerVideoDur;
+  if(!box||!r||!dur) return renderTrim();
+  const sel=box.querySelector('.trim-sel');
+  const hIn=box.querySelector('[data-trimh="in"]');
+  const hOut=box.querySelector('[data-trimh="out"]');
+  const len=box.querySelector('.trim-len');
+  if(!sel||!hIn||!hOut) return renderTrim();
+  const pc=n=>((n/dur)*100).toFixed(3)+'%';
+  sel.style.left=pc(r.s);
+  sel.style.right=(100-(r.e/dur)*100).toFixed(3)+'%';
+  hIn.style.left=pc(r.s);
+  hOut.style.left=pc(r.e);
+  hIn.setAttribute('aria-valuenow',r.s);
+  hIn.setAttribute('aria-valuetext',mmss(r.s));
+  hOut.setAttribute('aria-valuenow',r.e);
+  hOut.setAttribute('aria-valuetext',mmss(r.e));
+  if(len) len.innerHTML='Clip length <b>'+esc(mmss(r.e-r.s))+'</b> of '+esc(mmss(dur));
+  // Don't overwrite a field somebody is mid-way through typing into.
+  for(const [which,val] of [['in',r.s],['out',r.e]]){
+    const f=box.querySelector('[data-trimfield="'+which+'"]');
+    if(f&&document.activeElement!==f) f.value=mmss(val);
+  }
+  const meta=document.querySelector('#p-yt-preview .ytpreview-meta a.linkish');
+  if(meta&&composerClip) meta.href=ytWatchURL(composerClip.id,r);
+}
+
+function renderTrim(){
+  const box=document.getElementById('p-trim'); if(!box) return;
+  const isYt=!!(composerClip&&composerClip.kind==='yt');
+  if(!isYt||postKind==='text'){ box.hidden=true; box.innerHTML=''; return; }
+
+  // The one case where the control genuinely cannot be offered: the columns
+  // aren't there, so a range could be set and then silently not saved. Say
+  // that, rather than showing a scrubber that quietly does nothing.
+  if(!clipSchemaV2){
+    box.hidden=false;
+    box.innerHTML='<p class="trim-hint">Trimming is unavailable — this site’s database is '+
+      'missing the clip range columns. Run <code>clip_range.sql</code> to enable it.</p>'+
+      // Reachable when the flag flipped late: the probe only sees columns on
+      // rows that exist, so an empty posts table doesn't learn the truth until
+      // the first publish fails. Somebody can be holding a trim they can no
+      // longer save, and they need the door out of it.
+      (composerClipRange
+        ? '<div class="trim-actions"><button type="button" class="linkish" data-trim="reset">'+
+          'Discard the trim and post the whole video</button></div>'
+        : '')+
+      '<p class="trim-err" role="status"></p>';
+    return;
+  }
+
+  box.hidden=false;
+  const r=composerClipRange;
+  const dur=composerVideoDur;
+  const len=r?r.e-r.s:0;
+  const pc=n=>dur?((n/dur)*100):0;
+
+  // No player and no duration yet: either still loading, or the API never
+  // arrived. Both get the typed form — it needs neither.
+  const hasTrack=dur>0;
+  const head='<div class="trim-head"><h4>Trim your clip</h4>'+
+    (r?'<span class="trim-len">Clip length <b>'+esc(mmss(len))+'</b>'+
+       (dur?' of '+esc(mmss(dur)):'')+'</span>'
+      :'<span class="trim-len">Posting the whole video</span>')+'</div>';
+
+  const track=hasTrack&&r
+    ? '<div class="trim-track" data-trimtrack="1">'+
+        '<span class="trim-sel" style="left:'+pc(r.s).toFixed(3)+'%;right:'+(100-pc(r.e)).toFixed(3)+'%"></span>'+
+        '<button type="button" class="trim-h" data-trimh="in" style="left:'+pc(r.s).toFixed(3)+'%" '+
+          'role="slider" aria-label="Clip start" aria-valuemin="0" aria-valuemax="'+dur+'" '+
+          'aria-valuenow="'+r.s+'" aria-valuetext="'+esc(mmss(r.s))+'"></button>'+
+        '<button type="button" class="trim-h" data-trimh="out" style="left:'+pc(r.e).toFixed(3)+'%" '+
+          'role="slider" aria-label="Clip end" aria-valuemin="0" aria-valuemax="'+dur+'" '+
+          'aria-valuenow="'+r.e+'" aria-valuetext="'+esc(mmss(r.e))+'"></button>'+
+        '<span class="trim-play"></span>'+
+      '</div>'
+    : '';
+
+  const edge=(which,label,val)=>'<div class="trim-row">'+
+    '<label for="p-trim-'+which+'">'+label+'</label>'+
+    '<input type="text" id="p-trim-'+which+'" data-trimfield="'+which+'" inputmode="numeric" '+
+      'autocomplete="off" spellcheck="false" value="'+esc(val==null?'':mmss(val))+'" '+
+      'placeholder="0:00" aria-label="Clip '+(which==='in'?'start':'end')+' time">'+
+    '<span class="trim-nudges">'+
+      '<button type="button" data-trimnudge="'+which+':-5" aria-label="'+label+' back 5 seconds">−5s</button>'+
+      '<button type="button" data-trimnudge="'+which+':-1" aria-label="'+label+' back 1 second">−1s</button>'+
+      '<button type="button" data-trimnudge="'+which+':1" aria-label="'+label+' forward 1 second">+1s</button>'+
+      '<button type="button" data-trimnudge="'+which+':5" aria-label="'+label+' forward 5 seconds">+5s</button>'+
+    '</span>'+
+    (composerPlayer?'<button type="button" class="trim-here" data-trim="'+which+'-here">Set at playhead</button>':'')+
+  '</div>';
+
+  const actions='<div class="trim-actions">'+
+    // A toggle, not a one-way switch: someone who wants to scrub the rest of
+    // the video to find a better out-point needs looping to stop without
+    // having to detach the clip and start over.
+    (r&&composerPlayer?'<button type="button" class="mini'+(composerLoop?'':' ghost')+'" data-trim="loop" '+
+      'aria-pressed="'+(composerLoop?'true':'false')+'">'+
+      (composerLoop?'■ Stop looping':'▶ Preview clip')+'</button>':'')+
+    (r?'<button type="button" class="linkish" data-trim="reset">Use the whole video</button>'
+      // Offered whether or not the length is known: with no duration there is
+      // no track to draw, but typing "6:52" and "7:28" works regardless.
+      :'<button type="button" class="linkish" data-trim="start">Trim this video</button>')+
+  '</div>';
+
+  // Three genuinely different situations, and conflating them was the bug in
+  // the first draft — "loading…" shown forever to somebody whose player script
+  // is never going to arrive is worse than saying so.
+  const hint=
+    composerPlayer&&!hasTrack
+      ? '<p class="trim-hint">Reading the video’s length…</p>'
+    : !composerPlayer&&hasTrack
+      ? '<p class="trim-hint">The scrubber needs YouTube’s player script, which didn’t load — '+
+        'type the in and out times instead. Playback in the published post is unaffected.</p>'
+    : !composerPlayer&&!hasTrack
+      ? '<p class="trim-hint">Neither the player script nor this clip’s length is available, so '+
+        'there’s no scrubber — type the in and out times if you know them, or post the whole '+
+        'video. Playback in the published post is unaffected either way.</p>'
+    : '';
+
+  box.innerHTML=head+track+(r?edge('in','In',r.s)+edge('out','Out',r.e):'')+actions+hint+
+    '<p class="trim-err" role="status"></p>';
+
+  // The meta line's "Watch on YouTube" carries ?t=<in>, so it has to follow
+  // the range as it moves.
+  const meta=document.querySelector('#p-yt-preview .ytpreview-meta');
+  if(meta&&composerClip){ meta.innerHTML=clipMetaHTML(composerClip); wireClipClear(); }
 }
 
 async function callYouTubeSearch(payload){
@@ -5527,7 +6197,13 @@ document.getElementById('p-yt-q').addEventListener('input',ev=>{
   document.getElementById('p-yt-results').hidden=true;
   ytError('');
   const vid=parseVideo(val);
-  if(vid&&vid.kind==='yt'){ btn.disabled=true; tryYtLookup(vid.id); return; }
+  if(vid&&vid.kind==='yt'){
+    // Read the timestamp before the preview mounts: the player's onReady fires
+    // later and seeds the in-point from this. Somebody pasting a link at 6:52
+    // has already found the joke once; don't make them find it again.
+    composerSeedIn=parseVideoTime(val)||0;
+    btn.disabled=true; tryYtLookup(vid.id); return;
+  }
   if(vid){ btn.disabled=true; setClipPreview({kind:vid.kind,id:vid.id,title:'',channel:'',publishedAt:''}); return; }
   setClipPreview(null);
   // A recognizable link that failed to parse (bad path, malformed id) is a
@@ -5560,6 +6236,163 @@ document.getElementById('p-yt-results').addEventListener('click',ev=>{
   document.getElementById('p-yt-results').hidden=true;
   document.getElementById('p-yt-q').value=picked.title;
   document.getElementById('p-yt-search-btn').disabled=true;
+});
+
+/* ---- trim controls ----
+   One delegate on #p-trim, because renderTrim() replaces its contents and
+   per-element listeners would be re-bound (or leak) on every repaint.
+   Every group binds to its own attribute — [data-trim], [data-trimnudge],
+   [data-trimh], [data-trimfield], [data-trimtrack] — never to a shared class
+   like .trim-h or .trim-nudges button. Invariant #2: the type-filter bug that
+   emptied the whole app came from exactly that shortcut. */
+const TRIM_BOX=document.getElementById('p-trim');
+
+// Where along the video a pointer at clientX is, in seconds.
+function trimSecsAt(track,clientX){
+  const box=track.getBoundingClientRect();
+  if(!box.width||!composerVideoDur) return 0;
+  const f=Math.max(0,Math.min(1,(clientX-box.left)/box.width));
+  return Math.round(f*composerVideoDur);
+}
+
+// Drag state lives outside the DOM: the listeners are on `document`, not on
+// the handle, so a repaint mid-drag (or the pointer leaving the track) can't
+// strand the gesture. setPointerCapture on the handle would be undone the
+// moment renderTrim() replaced that element.
+let trimDrag=null;
+function trimDragMove(ev){
+  if(!trimDrag) return;
+  ev.preventDefault();
+  const track=TRIM_BOX.querySelector('[data-trimtrack]'); if(!track) return;
+  setTrimEdge(trimDrag,trimSecsAt(track,ev.clientX));
+}
+function trimDragEnd(){
+  if(!trimDrag) return;
+  trimDrag=null;
+  document.removeEventListener('pointermove',trimDragMove);
+  document.removeEventListener('pointerup',trimDragEnd);
+  document.removeEventListener('pointercancel',trimDragEnd);
+}
+function trimDragStart(which){
+  trimDrag=which;
+  document.addEventListener('pointermove',trimDragMove);
+  document.addEventListener('pointerup',trimDragEnd);
+  document.addEventListener('pointercancel',trimDragEnd);
+}
+
+TRIM_BOX.addEventListener('pointerdown',ev=>{
+  const h=ev.target.closest('[data-trimh]');
+  if(h){ ev.preventDefault(); h.focus(); trimDragStart(h.dataset.trimh); return; }
+  // Pressing the bare track jumps the nearer edge to that point, then keeps
+  // dragging it — the same gesture as grabbing the handle, without having to
+  // hit a 22px target first.
+  const track=ev.target.closest('[data-trimtrack]');
+  if(!track||!composerClipRange) return;
+  const secs=trimSecsAt(track,ev.clientX);
+  const which=Math.abs(secs-composerClipRange.s)<=Math.abs(secs-composerClipRange.e)?'in':'out';
+  ev.preventDefault();
+  setTrimEdge(which,secs);
+  trimDragStart(which);
+});
+
+// Arrow keys on a focused handle. A pointer-only scrubber is not usable with a
+// keyboard, and the composer is a focus-trapped modal — there is nowhere else
+// to go and do it instead.
+TRIM_BOX.addEventListener('keydown',ev=>{
+  const h=ev.target.closest('[data-trimh]'); if(!h||!composerClipRange) return;
+  const which=h.dataset.trimh;
+  const at=which==='in'?composerClipRange.s:composerClipRange.e;
+  const big=ev.shiftKey?10:1;
+  let next=null;
+  if(ev.key==='ArrowLeft'||ev.key==='ArrowDown') next=at-big;
+  else if(ev.key==='ArrowRight'||ev.key==='ArrowUp') next=at+big;
+  else if(ev.key==='PageDown') next=at-30;
+  else if(ev.key==='PageUp') next=at+30;
+  else if(ev.key==='Home') next=0;
+  else if(ev.key==='End') next=composerVideoDur;
+  if(next===null) return;
+  ev.preventDefault();
+  setTrimEdge(which,next);
+});
+
+TRIM_BOX.addEventListener('click',ev=>{
+  const nudge=ev.target.closest('[data-trimnudge]');
+  if(nudge){
+    const [which,delta]=nudge.dataset.trimnudge.split(':');
+    if(!composerClipRange) return;
+    const at=which==='in'?composerClipRange.s:composerClipRange.e;
+    setTrimEdge(which,at+Number(delta));
+    return;
+  }
+  const act=ev.target.closest('[data-trim]'); if(!act) return;
+  const what=act.dataset.trim;
+  if(what==='start'){
+    // "Trim this video" from the untrimmed state: seed from the playhead if
+    // the video is already playing somewhere interesting, else from the
+    // pasted ?t=, else from the top.
+    let at=composerSeedIn;
+    if(composerPlayer&&composerPlayer.getCurrentTime){
+      try{ at=Math.floor(composerPlayer.getCurrentTime()||0); }catch(_){}
+    }
+    composerClipRange=defaultRangeAt(at);
+    renderTrim();
+    return;
+  }
+  if(what==='reset'){
+    composerClipRange=null; composerLoop=false;
+    renderTrim();
+    return;
+  }
+  if(what==='in-here'||what==='out-here'){
+    if(!composerPlayer||!composerPlayer.getCurrentTime) return;
+    let t=0; try{ t=composerPlayer.getCurrentTime()||0; }catch(_){ return; }
+    const which=what==='in-here'?'in':'out';
+    if(!composerClipRange) composerClipRange=defaultRangeAt(t);
+    setTrimEdge(which,Math.floor(t));
+    return;
+  }
+  if(what==='loop'){
+    if(!composerPlayer||!composerClipRange) return;
+    composerLoop=!composerLoop;
+    if(composerLoop){
+      try{
+        composerPlayer.seekTo(composerClipRange.s,true);
+        composerPlayer.playVideo();
+      }catch(_){ trimError('Couldn’t start the preview — try pressing play on the video.'); }
+    }
+    renderTrim();   // repaints the toggle's label and pressed state
+    return;
+  }
+});
+
+// Typed times commit on blur and on Enter, not per keystroke: "1:2" is a
+// perfectly ordinary intermediate state on the way to "1:24", and clamping it
+// to 1:02 under someone's fingers is maddening.
+function commitTrimField(input){
+  const which=input.dataset.trimfield;
+  const secs=parseMmss(input.value);
+  if(secs===null){
+    trimError('Enter a time like 6:52 — or 1:02:03 for something over an hour.');
+    if(composerClipRange) input.value=mmss(which==='in'?composerClipRange.s:composerClipRange.e);
+    return;
+  }
+  trimError('');
+  if(composerVideoDur&&secs>composerVideoDur){
+    trimError('That’s past the end of the video ('+mmss(composerVideoDur)+').');
+  }
+  setTrimEdge(which,secs);
+  if(composerClipRange) input.value=mmss(which==='in'?composerClipRange.s:composerClipRange.e);
+}
+TRIM_BOX.addEventListener('change',ev=>{
+  const f=ev.target.closest('[data-trimfield]'); if(f) commitTrimField(f);
+});
+TRIM_BOX.addEventListener('keydown',ev=>{
+  if(ev.key!=='Enter') return;
+  const f=ev.target.closest('[data-trimfield]'); if(!f) return;
+  // The composer is a form-shaped panel; Enter here means "apply this time",
+  // never "publish the post".
+  ev.preventDefault();
+  commitTrimField(f);
 });
 
 /* ---- event/episode attachment: search results + a removable chip ---- */
@@ -5602,7 +6435,8 @@ document.getElementById('p-event-results').addEventListener('click',ev=>{
 });
 
 function resetComposerFields(){
-  setClipPreview(null);
+  composerSeedIn=0;
+  setClipPreview(null);   // tears down the player, the poll and the range
   document.getElementById('p-yt-q').value='';
   document.getElementById('p-yt-search-btn').disabled=true;
   document.getElementById('p-yt-results').hidden=true;
@@ -5635,6 +6469,11 @@ function openComposer(eventId){
   (postKind==='text'?document.getElementById('p-cap'):document.getElementById('p-yt-q')).focus();
 }
 function closeComposer(){
+  // The poll and the player outlive the panel otherwise — an interval calling
+  // getCurrentTime() on a hidden frame forever, and a destroyed-but-not-really
+  // player the next open would leak past.
+  teardownComposerPlayer();
+  trimDragEnd();
   document.getElementById('composer').hidden=true;
   document.body.classList.remove('drawer-open');
   updateCenterPaneMode();
@@ -5672,11 +6511,17 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
       'add it as a comment on an event or post instead.');
   }
   if(cap.length>500) return show('Posts are capped at 500 characters.');
+  // The range only ever travels with a YouTube clip — start/end mean nothing
+  // to the other two players, and clip_range.sql rejects the combination.
+  const range=(vid&&vid.kind==='yt'&&composerClipRange)?composerClipRange:null;
+  if(range&&!clipSchemaV2)
+    return show('This site’s database is missing the clip range columns, so the trim '+
+      'can’t be saved — run clip_range.sql, or choose “Use the whole video” to post it untrimmed.');
   err.style.display='none';
   setSavedName(name);
   const btn=document.getElementById('post-submit'); btn.disabled=true;
   try{
-    const {data,error}=await sb.from('posts').insert({
+    const row={
       author_id:session.user.id, author_label:name, caption:cap,
       video_kind:vid?vid.kind:null, video_id:vid?vid.id:null,
       video_title:(vid&&vid.kind==='yt')?(vid.title||null):null,
@@ -5684,8 +6529,30 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
       video_published:(vid&&vid.kind==='yt')?(vid.publishedAt||null):null,
       video_duration:(vid&&vid.kind==='yt')?(vid.duration||null):null,
       event_id:composerEventId||null
-    }).select().single();
-    if(error) throw error;
+    };
+    // Named only when the columns are known to exist — an INSERT mentioning a
+    // missing column fails outright, which would take an ordinary untrimmed
+    // clip post down with it. Same reasoning as parent_id on comments.
+    if(clipSchemaV2){
+      row.clip_start=range?range.s:null;
+      row.clip_end=range?range.e:null;
+    }
+    const {data,error}=await sb.from('posts').insert(row).select().single();
+    if(error){
+      // The probe can only see columns on rows that already exist, so an empty
+      // posts table reaches here still believing the migration ran. Correct the
+      // flag and say so — never retry silently without the range, which would
+      // publish the whole three-hour video as if that had been the request.
+      if(clipSchemaV2&&isMissingColumn(error)){
+        clipSchemaV2=false;
+        renderTrim();
+        show('This site’s database is missing the clip range columns — run clip_range.sql. '+
+          'Nothing was posted. Your trim is still here; choose “Use the whole video” '+
+          'if you want to post it untrimmed instead.');
+        return;
+      }
+      throw error;
+    }
     // Don't return to a detail drawer over the feed after publishing — the
     // point now is to see the post land.
     composerReturnToDetail=false;

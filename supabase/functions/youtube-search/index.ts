@@ -104,7 +104,15 @@ Deno.serve(async (req: Request) => {
   if (isLookup && !YT_ID.test(rawId)) return fail('bad_request', 'Not a YouTube video id.');
   if (!isLookup && rawQ.length < 2) return fail('bad_request', 'Search needs at least 2 characters.');
 
-  const cacheKey = isLookup ? 'id:' + rawId : 'q:' + rawQ.toLowerCase();
+  // The version token namespaces every search entry to the query-building rules
+  // that produced it. Dropping the 'Joe Rogan ' prefix changed what a given q
+  // means, so without this the 20-minute cache would keep answering with
+  // Rogan-scoped results for a while after the redeploy — briefly, but
+  // confusingly, and exactly while somebody is checking whether the change
+  // worked. Bump it whenever the query sent to Google changes shape. Lookups
+  // are keyed by video id, which no rule change can alter, so they skip it.
+  const SEARCH_RULES_V = 'v2';
+  const cacheKey = isLookup ? 'id:' + rawId : 'q:' + SEARCH_RULES_V + ':' + rawQ.toLowerCase();
 
   // Cache first — a hit costs no quota and skips every check below.
   const { data: cached } = await db.from('yt_cache').select('payload,fetched_at')
@@ -181,10 +189,13 @@ async function searchVideos(q: string): Promise<Clip[]> {
   url.search = new URLSearchParams({
     key: YT_KEY!, part: 'snippet', type: 'video', maxResults: '6',
     videoEmbeddable: 'true', safeSearch: 'moderate', order: 'relevance',
-    // Scoped to the show, not just prefixed with his name — a bare "q" like
-    // "mma" would otherwise return the entire platform's back catalog on the
-    // topic rather than anything of his.
-    q: 'Joe Rogan ' + q,
+    // The query goes through as typed. This used to be prefixed with 'Joe
+    // Rogan ' to scope every search to the show, which made sense while the
+    // site only tracked him — but the clipping tool is for comedy generally,
+    // and a prefix that silently rewrites "Bill Burr crowd work" into
+    // something else is worse than no search at all. safeSearch and
+    // videoEmbeddable still apply; relevance is now YouTube's problem.
+    q,
   }).toString();
   const res = await fetch(url);
   if (!res.ok) throw new Error('search.list ' + res.status);

@@ -7,7 +7,11 @@ natively; for Claude Code, symlink or copy this to `CLAUDE.md`.
 
 A static fan site logging Joe Rogan's **publicly announced** appearances — tour
 dates, scheduled broadcasts, JRE episode releases — plus **Posts**, a public feed of
-fan-submitted clips and text, and public comments/reactions on both. The tracker
+fan-submitted clips and text, and public comments/reactions on both. A post's clip
+can be **trimmed** to a span of its source video (invariant #15), which is the
+feature the site is growing around: the composer's YouTube search is no longer
+scoped to Rogan, because clipping a specific joke is worth doing for comedy
+generally. The tracker half remains Rogan-only. The tracker
 itself is still a single-page app with no backend; posts, comments and reactions
 are the one piece backed by Supabase (Postgres + anonymous auth + RLS), configured near the top of
 `index.html`'s script (`const SUPABASE={...}`, with setup SQL in the comment
@@ -27,6 +31,8 @@ reactions_replies.sql             run once, by hand — emoji reactions + commen
 video_duration.sql                run once, by hand — adds posts.video_duration
                                    for the clip-thumbnail duration badge, see
                                    Known gaps
+clip_range.sql                    run once, by hand — adds posts.clip_start/
+                                   clip_end for the trim tool, see invariant #15
 ```
 
 ### Layout
@@ -123,6 +129,11 @@ are the same trust category: anyone can `INSERT` a row straight through
 Supabase's REST API using the (intentionally public) anon key, bypassing this
 page's JS entirely, so post rows are re-validated with `parseVideo0()` on read
 too, never trusted just because the app itself wrote them.
+
+`clip_start`/`clip_end` are the first stored values that reach an embed URL as
+anything other than the id — they become `&start=`/`&end=`. They go through
+`parseClipRange()` on read for exactly the same reason, and `CLIPSRC.yt()`
+rebuilds the URL from the validated integers. See invariant #15.
 
 ### 2. Event listeners bind to data attributes, never `.tab` or `.rxchip`
 
@@ -293,6 +304,14 @@ the exact mistake this function exists to prevent.
 The function is deliberately conservative for the same reason invariant #10's
 estimate is conservative — a shared, finite, easily-exhausted resource:
 
+- The query is sent **as typed**. It used to be prefixed with `'Joe Rogan '`
+  so every search was scoped to the show. That went when clip trimming landed:
+  the tool is for comedy generally now, and a prefix that silently rewrites
+  someone's query is worse than no search. `safeSearch: 'moderate'` and
+  `videoEmbeddable: 'true'` still apply. The `yt_cache` key carries a
+  `SEARCH_RULES_V` token so a change to how the query is built cannot be
+  answered from entries built under the old rules — bump it whenever that
+  changes.
 - Cache before quota, quota before search: an identical query within ~20
   minutes never calls Google at all (`yt_cache`); a global daily unit budget
   (`yt_quota`, `DAILY_UNIT_BUDGET` in the function) is checked and refused
@@ -314,8 +333,12 @@ estimate is conservative — a shared, finite, easily-exhausted resource:
 Deployment is manual and is not part of this repo's CI: run `youtube_search.sql`
 once in the Supabase SQL editor, then `supabase functions deploy youtube-search`
 and `supabase secrets set YOUTUBE_API_KEY=...` from the CLI (or paste the
-function into the dashboard's Edge Function editor, which needs no CLI). See
-Known gaps — this has not been deployed or exercised against a live key.
+function into the dashboard's Edge Function editor, which needs no CLI). It **is**
+deployed with a live key as of 2026-08-17 — but every later change to this
+function needs that deploy step run again by hand, because CI will not do it and
+nothing in the repo will tell you it is stale. A `git push` that changes
+`index.html` and `supabase/functions/youtube-search/index.ts` together ships only
+half of itself.
 
 ### 14. Reactions are an allowlisted emoji, read against two schemas at once
 
@@ -354,6 +377,49 @@ all have to keep agreeing:
   deploy risk. Deleting a comment cascades to its replies and their reactions
   (`on delete cascade`); the remove control says so (`remove (and 3
   replies)`) rather than deleting silently.
+
+### 15. A clip range is two integers, and nothing is ever cut
+
+A "clip" here is a source video id plus `clip_start`/`clip_end` in whole
+seconds. **No video file is downloaded, cut, re-encoded, stored or re-hosted**,
+and none should be: playback seeks into the original YouTube embed and stops at
+the out-point, which is what makes this buildable on a static site and what
+keeps it clear of both hosting costs and somebody else's copyright. Do not
+"finish" the feature by adding an export/download path — that is a different
+product with a server in it, and it was considered and rejected, not overlooked.
+
+The two integers get the same three-layer treatment as invariant #14's emoji,
+and for the same reason — they are the only stored values that reach an embed
+URL as anything but the id:
+
+- **The DB CHECK** (`posts_clip_range` in `clip_range.sql`) is the boundary:
+  both-or-neither, `video_kind='yt'` only, `clip_start >= 0`,
+  `clip_end > clip_start`, `clip_end <= 86400`. Anyone can `INSERT` a post row
+  through the REST API with the anon key, so an unconstrained pair of integers
+  would let one row put arbitrary text into `&start=`.
+- **`parseClipRange()` re-validates on read anyway**, and `CLIPSRC.yt(id,r)`
+  rebuilds the URL from the validated numbers. Don't delete the re-validation
+  because the CHECK exists — a later migration could loosen the CHECK without
+  this file changing. It is deliberately *not* folded into `parseVideo0()`,
+  which is also on the `events.json` path and strips unknown keys by design.
+- **`clipSchemaV2`** probes for the columns on the first fetch, the same way
+  `replySchemaV2` does (`'clip_start' in row` across a non-empty result — free,
+  no extra query). When it's false the trim UI says so instead of offering
+  controls that would silently no-op, and the publish handler **refuses rather
+  than retrying without the range**: quietly posting a three-hour video that
+  somebody spent a minute trimming is worse than an error message.
+- YouTube only, because `start`/`end` are YouTube embed parameters. TikTok and
+  Vimeo have no equivalent, so trimming is not offered on them at all.
+
+The scrubber needs YouTube's **IFrame Player API** — position can't be read from
+a plain embed. It is loaded lazily, on the first attached clip, and every path
+treats it as optional: no API, or no known duration, and `renderTrim()` falls
+back to typed in/out fields. Trimming degrades to typing; it must never vanish.
+In the drawer the API is a pure enhancement — the markup already carries
+`&start=`/`&end=` and works alone; the player only adds looping. That upgrade
+runs solely where `renderPlayer()` rebuilds the frame anyway (a `paneKey` miss),
+so it does not violate the don't-touch-a-playing-iframe rule `paneRefresh()`
+exists to honour.
 
 ## Scope boundaries
 
@@ -414,39 +480,62 @@ This tracks **announced, scheduled** events. Do not add:
   fill-box`, neither of which this file had used before), the unified header
   search, and Explore's four curated sections behind a "Browse everything"
   disclosure are all similarly unexercised.
-- **`video_duration.sql` has not been run, and the `youtube-search` Edge
-  Function's updated `contentDetails` lookup has not been deployed.** The
-  publish handler and every duration-display site (search results, the clip
-  preview, published post rows and panes) all reference `posts.video_duration`
-  and `clip.duration` unconditionally now — until both the SQL and the
-  function redeploy land, duration simply never appears (every site already
-  treats it as optional), but publishing itself will 400 if the column is
-  missing. Same sequencing risk `reactions_replies.sql` already documents: run
-  the SQL and redeploy the function *before* this version of `index.html`
-  goes live. See invariant #13 for the deploy steps.
-- **`reactions_replies.sql` has not been run against the live project.** It
-  adds `reactions.emoji`, `reactions.comment_id`, `comments.parent_id`, and
-  migrates the old `value` column's data to emoji (see invariant #14). Until it
-  runs, `loadPosts()`'s schema probe should detect the missing columns and fall
-  back to read-only rendering — that fallback path is exactly as untested as
-  everything else above. Introspect the `value` CHECK's real constraint name
-  before running the migration; the file has the query.
-- The `posts.video_kind`/`video_id` nullable-pair migration (text posts) and
-  the original two-column reactions table have both been run against the live
-  project — see the schema comment in `index.html` for the SQL, kept as the
-  record of what the live schema should match. The `video_title`/
-  `video_channel`/`video_published` columns (clip metadata) are a separate,
-  newer migration in the same comment block and have **not** been confirmed
-  run yet — `reactions_replies.sql` adds them idempotently as its first step
-  for exactly this reason, so running it also closes this gap.
-- **`supabase/functions/youtube-search` has not been deployed, and
-  `youtube_search.sql` has not been run.** Nothing about the composer's clip
-  search/paste-preview flow has executed against a real YouTube key — not the
-  Edge Function itself, not the cache/quota/rate-limit bookkeeping, not the
-  client's `sb.functions.invoke()` call. See invariant #13 for the deploy
-  steps. Until it's deployed, pasting a YouTube link still works for the
-  embed itself (`parseVideo()` is unchanged and needs no network), but gets
-  no title/channel/date and the Search button never returns results.
+- **The clip trimming tool has never run in a browser, and it is the largest
+  single piece of unexercised behaviour in the file.** It brings in the first
+  external runtime dependency this app has beyond supabase-js (YouTube's
+  IFrame Player API), the first live player object, the first `setInterval`
+  polling loop, and the first hand-rolled pointer-drag gesture. Specifically
+  unverified: whether `YT.Player` mounted against
+  `host:'https://www.youtube-nocookie.com'` with `enablejsapi` actually
+  reports a duration; whether the drag survives a repaint (the listeners are
+  on `document` rather than using `setPointerCapture` precisely because it
+  shouldn't have to, but that reasoning has not been tested); whether
+  `.player .frame iframe`'s absolute positioning still applies to the iframe
+  the API generates in place of the mounted div; whether the 200ms poll's
+  playhead is smooth enough to be useful; and whether looping via `seekTo()`
+  on the out-point is clean or audibly stutters. The degraded paths — API
+  blocked, duration unknown, `clip_range.sql` not run — have each been
+  reasoned through and none has been triggered.
+
+  There is a second-order risk worth naming: `setClipPreview()` was rewritten
+  to redraw only the meta line when the video id is unchanged, because
+  `tryYtLookup()` calls it twice per paste and rebuilding would now destroy a
+  live player mid-trim. If that identity check is ever "simplified" back to an
+  unconditional rebuild, the symptom is a trim that silently resets a second
+  after you set it — which reads as a mystery, not as a regression in that
+  function.
+- **The schema is current: every hand-run migration has been applied to the
+  live project, and the Edge Function is deployed with its key set** (as of
+  2026-08-17). That covers `youtube_search.sql`, `reactions_replies.sql`,
+  `video_duration.sql` and `clip_range.sql`, plus the original
+  `posts.video_kind`/`video_id` nullable-pair change and the two-column
+  reactions table before them. The schema comment block in `index.html` is
+  the record of what the live schema should match; keep it in step.
+
+  **This retires "not run", not "not tested".** Nothing below changes: the
+  degraded paths those migrations exist to make survivable are now *harder*
+  to reach, not proven. Specifically, these have still never executed:
+  `rxSchemaV2`/`replySchemaV2` falling back to the pre-emoji column list;
+  `clipSchemaV2` turning the trim panel read-only; the publish handler
+  catching `isMissingColumn()` and refusing. Do not delete a fallback on the
+  grounds that the migration has run — the whole point of the probes is that
+  a future project, a restored backup, or a second deployment may not have.
+  If you need to exercise one, do it against a scratch project rather than by
+  dropping a column here.
+
+  One asymmetry worth remembering if you ever do test it: the schema probe
+  can only detect a missing column on rows that already exist, so on an
+  **empty** `posts` table `clipSchemaV2` stays `true` until the first publish
+  fails.
+- **The composer's search path has now run against a real YouTube key, but
+  its bookkeeping has not been observed under load.** The cache/quota/
+  rate-limit tables (`yt_cache`, `yt_quota`, `yt_rate`) are written on every
+  fresh search, and nothing has yet confirmed that the daily unit budget
+  actually refuses *before* spending, that the per-visitor cap trips at 15
+  searches, or that a cache hit genuinely costs no quota. The failure paths
+  all return HTTP 200 with `{ok:false}` by design (invariant #13), so a
+  broken budget check would look like ordinary search results right up until
+  the key is exhausted. Worth watching the first time real traffic hits it.
 - `firstSeen` (added to every event so Upcoming can flag a genuinely new
   arrival — see `eventIsRecent()` in `index.html`) was backfilled onto the 242
   rows already in `events.json` as a flat `"2025-01-01"` on 2026-08-16, since
