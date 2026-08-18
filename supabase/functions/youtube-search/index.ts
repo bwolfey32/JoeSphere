@@ -34,6 +34,12 @@ const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 // refers to. Capped below the true ceiling so a handful of id-lookups (also
 // billed here, at 1 unit) and any other quota use on the project still fit,
 // and so a raised quota later just means editing one number.
+//
+// A search now also makes a second, batched videos.list call for duration
+// (contentDetails isn't available on search.list at all) — one more LOOKUP_COST
+// unit regardless of how many of the <=6 results are in the batch, so a
+// search's true cost is SEARCH_COST + LOOKUP_COST. lookupVideo's own cost is
+// unchanged: duration rides along on the part= list it already requests.
 const DAILY_UNIT_BUDGET = 9000;
 const SEARCH_COST = 100;
 const LOOKUP_COST = 1;
@@ -108,7 +114,7 @@ Deno.serve(async (req: Request) => {
   }
 
   const day = todayUTC();
-  const cost = isLookup ? LOOKUP_COST : SEARCH_COST;
+  const cost = isLookup ? LOOKUP_COST : SEARCH_COST + LOOKUP_COST;
 
   // Global budget: refuse before spending, not after — a call that fails
   // partway through still gets billed by Google.
@@ -165,8 +171,10 @@ Deno.serve(async (req: Request) => {
 // Normalized shape both callers return. Thumbnails are deliberately not
 // taken from the API response — the client already knows how to build
 // https://i.ytimg.com/vi/<id>/mqdefault.jpg from the id alone (see index.html
-// row/card rendering), so there is one fewer URL anyone has to trust.
-type Clip = { id: string; title: string; channel: string; publishedAt: string };
+// row/card rendering), so there is one fewer URL anyone has to trust. duration
+// is plain descriptive text like title/channel — never used to build a URL,
+// and null whenever the follow-up contentDetails lookup didn't have it.
+type Clip = { id: string; title: string; channel: string; publishedAt: string; duration: string | null };
 
 async function searchVideos(q: string): Promise<Clip[]> {
   const url = new URL('https://www.googleapis.com/youtube/v3/search');
@@ -181,7 +189,7 @@ async function searchVideos(q: string): Promise<Clip[]> {
   const res = await fetch(url);
   if (!res.ok) throw new Error('search.list ' + res.status);
   const data = await res.json();
-  return (data.items || [])
+  const items = (data.items || [])
     // Google's own id scheme is always this shape, but the client is about to
     // build an iframe src from it — validate against the same strict charset
     // the rest of the app uses (parseVideo/parseVideo0) rather than trusting
@@ -193,12 +201,15 @@ async function searchVideos(q: string): Promise<Clip[]> {
       channel: String(it.snippet?.channelTitle || '').slice(0, 100),
       publishedAt: String(it.snippet?.publishedAt || '').slice(0, 10),
     }));
+  if (!items.length) return [];
+  const durations = await fetchDurations(items.map((c: any) => c.id));
+  return items.map((c: any) => ({ ...c, duration: durations[c.id] || null }));
 }
 
 async function lookupVideo(id: string): Promise<Clip[]> {
   const url = new URL('https://www.googleapis.com/youtube/v3/videos');
   url.search = new URLSearchParams({
-    key: YT_KEY!, part: 'snippet,status', id,
+    key: YT_KEY!, part: 'snippet,status,contentDetails', id,
   }).toString();
   const res = await fetch(url);
   if (!res.ok) throw new Error('videos.list ' + res.status);
@@ -214,5 +225,42 @@ async function lookupVideo(id: string): Promise<Clip[]> {
     title: String(it.snippet?.title || '').slice(0, 200),
     channel: String(it.snippet?.channelTitle || '').slice(0, 100),
     publishedAt: String(it.snippet?.publishedAt || '').slice(0, 10),
+    duration: parseISODuration(it.contentDetails?.duration || ''),
   }];
+}
+
+// contentDetails only exists on videos.list, not search.list, so getting
+// duration for search results needs this second, batched call — one request
+// for all <=6 ids rather than one per result. Fails soft: a duration hiccup
+// must not turn a working search into an error, so this never throws — a
+// missing entry just means no badge that time.
+async function fetchDurations(ids: string[]): Promise<Record<string, string>> {
+  try {
+    const url = new URL('https://www.googleapis.com/youtube/v3/videos');
+    url.search = new URLSearchParams({ key: YT_KEY!, part: 'contentDetails', id: ids.join(',') }).toString();
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('videos.list(durations) ' + res.status);
+    const data = await res.json();
+    const out: Record<string, string> = {};
+    for (const it of data.items || []) {
+      const d = parseISODuration(it?.contentDetails?.duration || '');
+      if (d) out[it.id] = d;
+    }
+    return out;
+  } catch (err) {
+    console.error('Duration lookup failed (non-fatal)', err);
+    return {};
+  }
+}
+
+// YouTube's contentDetails.duration is ISO-8601: PT1H2M3S -> "1:02:03",
+// PT4M13S -> "4:13", PT45S -> "0:45". A live/unfinished upload's duration
+// comes back as something this regex won't match (no T component or all-zero)
+// — that correctly returns null rather than a bogus "0:00".
+function parseISODuration(iso: string): string | null {
+  const m = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(iso || '');
+  if (!m || (!m[1] && !m[2] && !m[3])) return null;
+  const h = Number(m[1] || 0), mi = Number(m[2] || 0), s = Number(m[3] || 0);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return h > 0 ? h + ':' + pad(mi) + ':' + pad(s) : mi + ':' + pad(s);
 }

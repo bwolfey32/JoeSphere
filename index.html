@@ -22,6 +22,7 @@
   --card:#1A202A;
   --ink:#EDEAE3;
   --ink-soft:#94A0B4;
+  --ink-mid:#AEB9CC;   /* dates/channel/provenance — one step up from --ink-soft */
   --stamp:#FF4127;
   --blue:#3DD6C4;
   --rule:#2F3846;
@@ -197,9 +198,9 @@ body.drawer-open{overflow:hidden}
 /* On a post, the caption IS the headline — the largest text in the pane, above
    the embed. The clip's own title drops to provenance in .psource below it. */
 .player .pcaption.lead{font-size:15.5px;line-height:1.45;margin:4px 0 11px}
-.player .pauthor{font-size:12.5px;color:var(--ink-soft);margin:0 0 2px}
+.player .pauthor{font-size:12.5px;color:var(--ink-mid);margin:0 0 2px}
 .player .pauthor b{color:var(--blue);font-weight:400;font-style:italic}
-.player .psource{font-size:12px;color:var(--ink-soft);margin:7px 0 0}
+.player .psource{font-size:12px;color:var(--ink-mid);margin:7px 0 0}
 /* "No location attached" and the episode's venue note: present, but plainly
    secondary to a real sourced place. */
 .player .pstat.muted{color:var(--ink-soft)}
@@ -251,6 +252,19 @@ body.drawer-open{overflow:hidden}
 .rlink.sel::before{content:"▸ ";color:var(--blue)}
 .subhead{font-family:"Oswald",Impact,sans-serif;font-size:12px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ink-soft);margin:15px 0 7px}
+/* Explore's four curated sections. */
+.explore-section{margin-bottom:8px}
+.explore-section .viewall{display:block;background:none;border:none;color:var(--blue);
+  font:inherit;font-size:12px;cursor:pointer;padding:6px 0;text-decoration:underline}
+/* Full filter/search/map/results UI, folded — same pattern as .mapkey below:
+   a full-width block disclosure sized for real content, not a small popover
+   like .filtermenu. */
+.browse-everything{margin:14px 0 0;border-top:1px solid var(--rule)}
+.browse-everything>summary{padding:10px 0;cursor:pointer;list-style:none;font-family:"Oswald",Impact,sans-serif;
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.browse-everything>summary::-webkit-details-marker{display:none}
+.browse-everything>summary:hover{color:var(--ink)}
+.browse-everything[open]>summary{color:var(--ink);border-bottom:1px dashed var(--rule);margin-bottom:10px}
 .srcnote{font-size:12.5px;color:var(--ink-soft);margin-top:14px;font-style:italic;line-height:1.6}
 /* The estimate must never be mistaken for the reported figures above it, so it
    sits in its own dashed, amber-keyed block rather than in a stat tile. */
@@ -319,15 +333,30 @@ body.drawer-open{overflow:hidden}
 .pin .hit{fill:transparent;stroke:none;pointer-events:all}
 .pin.up circle{fill:var(--stamp);stroke:#0F1218}
 .pin.pastpin circle{fill:none;stroke:var(--ink-soft)}
-.pin.sel circle{fill:var(--blue);stroke:#0F1218}
 .pin:focus{outline:none}
 .pin:focus-visible circle{stroke:var(--blue);stroke-width:3}
+/* Selected pin gets a red ring rather than a fill swap — .up pins are already
+   --stamp, so recoloring .sel the same way would make a selected upcoming
+   pin indistinguishable from an unselected one. Ring radius is uiK()-derived
+   like every other marker (invariant #3); the pulse only scales relatively on
+   top of that, so it stays proportionally correct at any screen width.
+   transform-box:fill-box is required so the scale originates from the
+   circle's own center, not the SVG's (0,0). */
+.pin-ring{fill:none;stroke:var(--stamp);pointer-events:none;transform-box:fill-box;transform-origin:center}
+@media(prefers-reduced-motion:no-preference){
+  .pin.sel .pin-ring{animation:pinpulse 1.6s ease-out infinite}
+}
+@keyframes pinpulse{ 0%{opacity:.85;transform:scale(1)} 100%{opacity:0;transform:scale(1.7)} }
 /* Dimmed = matched by the type filter but not by the current search. Opacity
    only, never a smaller radius: marker size is computed in screen pixels from
    uiK() and shrinking it here would undo that (invariant #3). Not a result, so
    not a target either — pointer-events off and out of the tab order. */
 .pin.dim circle,.pin.dim .pin-cmt{opacity:.26}
 .pin.dim{pointer-events:none}
+/* "Other" = dimmed because something ELSE is selected, not because of a
+   search miss. Still clickable and tabbable — picking a different pin while
+   one is selected has to keep working, unlike a genuine search non-match. */
+.pin.other circle,.pin.other .pin-cmt{opacity:.35}
 /* "Has comments" banner — color only, size is set in JS via uiK() (invariant
    #3). pointer-events:none so it doesn't create a second dead zone inside
    the pin's existing hit-circle. */
@@ -537,7 +566,7 @@ body.m-both #heat{opacity:.8}
 .row.sel{border-left-color:var(--stamp);background:#1E2632}
 .row.past{opacity:.78}
 .row.past:hover,.row.sel{opacity:1}
-.row-thumb{flex:0 0 104px;height:59px;position:relative;overflow:hidden;background:#080A0E;
+.row-thumb{flex:0 0 104px;aspect-ratio:16/9;position:relative;overflow:hidden;background:#080A0E;
   border:1px solid var(--rule);display:flex;align-items:center;justify-content:center}
 .row-thumb i{display:none}
 .row-thumb img{width:100%;height:100%;object-fit:cover}
@@ -545,12 +574,20 @@ body.m-both #heat{opacity:.8}
 .row-thumb.noimg i{font-family:"Oswald",Impact,sans-serif;font-style:normal;font-weight:700;
   font-size:13px;letter-spacing:.06em;color:var(--blue);text-align:center;padding:0 4px;
   line-height:1.1}
+/* Bottom-right duration overlay on a clip thumbnail. Plain descriptive text —
+   same trust level as video_title/video_channel, esc()'d, never used to build
+   a URL. Absent for text posts and for clips published before the duration
+   pipeline existed; that's expected, not a bug. */
+.thumb-dur{position:absolute;right:3px;bottom:3px;z-index:1;
+  font-family:"Oswald",Impact,sans-serif;font-size:10.5px;font-weight:700;
+  letter-spacing:.03em;color:#fff;background:rgba(0,0,0,.78);padding:1px 4px;
+  line-height:1.4;pointer-events:none}
 .row-body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
 .row-top{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .row-title{font-family:"Oswald",Impact,sans-serif;font-size:14.5px;letter-spacing:.02em;
   text-transform:uppercase;color:var(--ink);line-height:1.25;
   display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.row-meta{font-size:12px;color:var(--ink-soft)}
+.row-meta{font-size:12px;color:var(--ink-mid)}
 /* A post card is the row plus an action row beneath it. They are SIBLINGS,
    not nested: .row is a <button>, and a <button> inside a <button> is not
    parseable — the browser closes the outer one and the card falls apart. This
@@ -561,32 +598,52 @@ body.m-both #heat{opacity:.8}
 .pcard .row{border-bottom:none}
 .row-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
   padding:0 12px 9px 128px}
-.rowact{background:none;border:none;color:var(--ink-soft);font:inherit;font-size:12px;
-  cursor:pointer;padding:5px 2px}
-.rowact:hover{color:var(--ink);text-decoration:underline}
+/* Same hard-edge, tinted-outline vocabulary as .rxchip/.stat-pill/.tag — the
+   comment/share buttons were flat text and read as unstyled next to the
+   bordered reaction chip beside them and the bordered stat pills events still
+   use (rowStatsHTML, kept for events on purpose — see .stat-pill above). */
+.rowact{display:inline-flex;align-items:center;gap:4px;background:transparent;
+  border:1px solid var(--rule);color:var(--ink-soft);font:inherit;font-size:12px;
+  cursor:pointer;padding:3px 8px;min-height:28px;border-radius:0}
+.rowact:hover{border-color:var(--ink-soft);color:var(--ink)}
+/* Matches .stat-pill's own recipe exactly (font, size, letter-spacing, padding)
+   rather than relying on cascade order against a same-specificity class, so the
+   post-card comment count reads as the identical banner events already show via
+   rowStatsHTML — same label text ("N comments"), same amber-when-active accent. */
+.rowact-comment{font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.04em;
+  font-weight:700;padding:2px 7px;min-height:0}
+.rowact-comment.has-n{color:var(--mid);border-color:rgba(255,176,46,.45);background:rgba(255,176,46,.10)}
+.rowact .ic{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;font-style:normal;
+  font-size:16px;line-height:1}
+/* The share arrow is a plain Unicode glyph, not a pictograph like the comment
+   bubble — rendered in the color-emoji font stack above, some platforms give it
+   a colored glyph (a blue circle-arrow that reads as a Facebook share icon).
+   Forcing the plain text font keeps it a monochrome, gray-by-default glyph that
+   follows .rowact's own color instead. Sized 15% over the shared .ic size. */
+.rowact-share .ic{font-family:inherit;font-size:18.4px}
+.rxadd-label{font-size:11.5px}
 /* The poster's name and when they posted, above their words. */
-.row-byline{font-size:12px;color:var(--ink-soft)}
+.row-byline{font-size:12.5px;color:var(--ink-mid)}
 .row-byline b{color:var(--blue);font-weight:400;font-style:italic}
+/* A small colored initial, deterministic per name — see nameHash()/avatarHTML().
+   Decorative only: aria-hidden, the adjacent name text already carries identity. */
+.avatar{display:inline-flex;align-items:center;justify-content:center;width:16.2px;height:16.2px;
+  border-radius:50%;font-family:"Oswald",Impact,sans-serif;font-size:9px;font-weight:700;
+  color:#0F1218;flex:0 0 auto;line-height:1;vertical-align:middle;margin-right:5px}
 /* The caption LEADS a post card, in body mono at reading size. Deliberately not
    Oswald: the condensed uppercase face is reserved for official titles, content
    types and labels, so type alone now says whether a card is a record or a
    person talking. Events keep .row-title. */
-.row-lead{font-size:14.5px;line-height:1.4;color:var(--ink);
+.row-lead{font-size:15.5px;line-height:1.4;color:var(--ink);
   display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 /* The imported clip title and channel are provenance now, not the headline. */
-.row-source{font-size:11.5px;color:var(--ink-soft);
+.row-source{font-size:11.5px;color:var(--ink-mid);
   display:-webkit-box;-webkit-line-clamp:1;line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 .row-attach{font-size:11.5px;color:var(--blue)}
 /* Upcoming promotes the countdown and the venue out of the metadata line. */
 .row-count{font-family:"Oswald",Impact,sans-serif;font-size:12.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--stamp)}
 .tag.fresh{color:var(--mid);border-color:rgba(255,176,46,.55);background:rgba(255,176,46,.12)}
-/* Events under an Upcoming header: indentation and one rule, not a second card
-   border — the group is already visually one thing. */
-.upgroup{margin-bottom:14px}
-.upgroup-posts{margin:0 0 0 16px;padding-left:12px;border-left:1px solid var(--rule)}
-.upgroup-posts .pcard{border-bottom:none}
-.upgroup-posts .row-actions{padding-left:128px}
 /* Briefly outlined when something else (a map pin, a shared link) selects it. */
 .row.flash{outline:2px solid var(--blue);outline-offset:-2px}
 /* Engagement pills — same outlined-pill shape as .tag, plus a tint fill, so a
@@ -601,12 +658,13 @@ body.m-both #heat{opacity:.8}
   padding:2px 7px;border:1px solid currentColor;font-weight:700;display:inline-flex;align-items:center}
 .stat-pill.comments{color:var(--mid);border-color:rgba(255,176,46,.45);background:rgba(255,176,46,.10)}
 @media(max-width:520px){
-  .row-lead{font-size:13.5px;-webkit-line-clamp:2;line-clamp:2}
+  .row-lead{font-size:14px;-webkit-line-clamp:2;line-clamp:2}
   .row-actions{padding-left:12px}
-  .upgroup-posts .row-actions{padding-left:12px}
+  .rxadd-label,.rowact-share .rowact-label{display:none}
+  .rxadd{padding:0 6px;width:28px}
 }
 @media(max-width:520px){
-  .row-thumb{flex-basis:76px;height:44px}
+  .row-thumb{flex-basis:76px}
   .row-title{font-size:13px}
 }
 
@@ -617,7 +675,7 @@ body.m-both #heat{opacity:.8}
   text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;
 }
 .c{border-left:2px solid var(--blue);padding:2px 0 2px 10px;margin-bottom:9px}
-.c-meta{font-size:12px;color:var(--ink-soft)}
+.c-meta{font-size:13px;color:var(--ink-mid)}
 .c-meta b{color:var(--blue);font-style:italic}
 .c-body{font-size:13.5px;margin-top:1px;word-wrap:break-word;overflow-wrap:anywhere}
 .c-del{
@@ -678,9 +736,13 @@ textarea{resize:vertical;min-height:64px}
    than leaving the fallback to whatever the UA picks. */
 .rxe,.rxopt{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
   line-height:1;font-style:normal}
-.rxadd{width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;
-  background:transparent;border:1px dashed var(--rule);color:var(--ink-soft);
-  cursor:pointer;font:inherit;font-size:15px;line-height:1}
+/* min-width, not width: an icon-only "+" (comment/pane bars) still sizes to a
+   28px square via the min, but the labeled "+ React" variant (post-card
+   footer) needs room to grow — see .rxadd-label and the compact-mode
+   overrides that collapse it back to icon-only under narrow width. */
+.rxadd{min-width:28px;height:28px;padding:0 8px;gap:4px;display:inline-flex;
+  align-items:center;justify-content:center;background:transparent;border:1px dashed var(--rule);
+  color:var(--ink-soft);cursor:pointer;font:inherit;font-size:15px;line-height:1}
 .rxadd:hover{border-color:var(--ink-soft);color:var(--ink)}
 .rxpick{position:absolute;z-index:40;bottom:calc(100% + 6px);left:0;display:flex;gap:2px;
   padding:5px;background:var(--paper-2);border:1px solid var(--rule);
@@ -718,6 +780,12 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
   display:block;font-family:"Oswald",Impact,sans-serif;font-size:11.5px;
   letter-spacing:.13em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px;
 }
+/* No display: override on the bare class — bare [hidden] is enough here,
+   deliberately avoiding the cascade trap AGENTS.md's conventions call out
+   (.home-search once shipped exactly this bug). */
+.namefield-display{margin:0;font-size:13px;color:var(--ink-soft)}
+.namefield-display b{color:var(--blue);font-weight:400;font-style:italic}
+.namefield{flex:1;min-width:0}   /* fills a .pc-row exactly like the bare input used to */
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .actions{display:flex;gap:8px;margin-top:14px}
 .ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--rule)}
@@ -735,15 +803,16 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
 .ytresult{display:flex;gap:10px;align-items:center;width:100%;text-align:left;
   background:var(--card);border:1px solid var(--rule);padding:6px;cursor:pointer;font:inherit;color:inherit}
 .ytresult:hover{border-color:var(--ink-soft)}
-.ytresult img{width:88px;height:50px;object-fit:cover;flex:0 0 auto;background:#080A0E}
+.ytresult-thumb{position:relative;width:88px;height:50px;flex:0 0 auto;background:#080A0E}
+.ytresult-thumb img{width:100%;height:100%;object-fit:cover}
 .ytresult-body{display:flex;flex-direction:column;gap:2px;min-width:0}
 .ytresult-body b{font-size:13px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;
   line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ytresult-body span{font-size:11.5px;color:var(--ink-soft)}
+.ytresult-body span{font-size:11.5px;color:var(--ink-mid)}
 .ytpreview{margin-top:9px}
 .ytpreview-meta{padding:8px 0 0}
 .ytpreview-meta b{display:block;font-size:13.5px;line-height:1.3;margin-bottom:2px}
-.ytpreview-meta>span{font-size:12px;color:var(--ink-soft)}
+.ytpreview-meta>span{font-size:12px;color:var(--ink-mid)}
 .ytpreview-actions{display:flex;gap:12px;align-items:center;margin-top:6px;flex-wrap:wrap}
 
 /* ---------- composer: attach chip + results ---------- */
@@ -823,8 +892,6 @@ footer{
 .player .pinsight .figrow{margin-bottom:0}
 .player .pinsight .fig{padding:9px 10px}
 .player .pinsight .fig .v{font-size:18px}
-#explore-trending{margin-bottom:6px}
-#explore-trending[hidden]{display:none}
 
 /* Screen-reader-only: keeps live-region announcements out of the layout. */
 .visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
@@ -921,12 +988,17 @@ footer{
     bottom:14px;height:auto
   }
   body.center-pane-open .homecol .row{gap:8px;padding:8px}
-  body.center-pane-open .homecol .row-thumb{flex-basis:76px;height:44px}
+  body.center-pane-open .homecol .row-thumb{flex-basis:76px}
   body.center-pane-open .homecol .row-title{font-size:13px}
   body.center-pane-open .homecol .row-meta{font-size:11px;line-height:1.35}
   body.center-pane-open .homecol .when{margin-left:0;width:100%}
   body.center-pane-open .homecol .feedtools{flex-wrap:wrap}
   body.center-pane-open .homecol .filtermenu{margin-left:0}
+  /* All actions stay on one line in the narrow 320px feed column — Share
+     never wraps because it drops its text label, same pattern as ≤520px. */
+  body.center-pane-open .homecol .rxadd-label,
+  body.center-pane-open .homecol .rowact-share .rowact-label{display:none}
+  body.center-pane-open .homecol .rxadd{padding:0 6px;width:28px}
 }
 
 @media(max-width:640px){
@@ -983,6 +1055,15 @@ This log needs JavaScript to render the map and event list.</div></noscript>
     <button class="viewtab" data-view="explore" aria-pressed="false">Explore</button>
   </nav>
 
+  <!-- One search box, reachable from every view, instead of Home and Explore
+       each keeping their own separate query. #open-search focuses/reveals
+       this rather than forcing a jump to Home. -->
+  <div class="home-search" id="platform-search" hidden>
+    <input type="search" id="platform-q" placeholder="Search posts, episodes and events…"
+      aria-label="Search" spellcheck="false">
+    <button class="mini ghost" id="clear-search">Clear</button>
+  </div>
+
   <div class="app">
     <div class="app-main">
 
@@ -994,11 +1075,6 @@ This log needs JavaScript to render the map and event list.</div></noscript>
              the comment banners show at a glance where the discussion is. -->
         <div class="homegrid">
           <div class="homecol">
-            <div class="home-search" id="home-search" hidden>
-              <input type="search" id="home-q" placeholder="Search posts, episodes and events…"
-                aria-label="Search the feed" spellcheck="false">
-              <button class="mini ghost" id="clear-search">Clear</button>
-            </div>
             <div class="feedtools">
               <button class="tab" data-hs="all" aria-pressed="true">All</button>
               <button class="tab" data-hs="active" aria-pressed="false">Active</button>
@@ -1009,6 +1085,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
                   <!-- Multi-select: nothing ticked means everything eligible in
                        the current mode. Each box binds to [data-ft] individually,
                        never to a shared selector — see AGENTS.md #2. -->
+                  <p class="hint" id="ft-upcoming-hint" hidden style="margin:0 0 8px">Upcoming only shows events.</p>
                   <fieldset class="typefilter">
                     <legend>Content</legend>
                     <label><input type="checkbox" data-ft="post"> Posts</label>
@@ -1045,10 +1122,13 @@ This log needs JavaScript to render the map and event list.</div></noscript>
           <button class="tab" data-xs="stats" aria-pressed="false">Stats</button>
         </div>
         <div id="explore-browse">
-        <div class="feedbar">
-          <input type="search" id="ex-q" placeholder="Search events, episodes and posts…"
-            aria-label="Search" spellcheck="false">
-        </div>
+        <div id="explore-sections"></div>
+        <!-- The full filter/search/map/results UI, folded behind a disclosure —
+             same "folded, not condensed" convention as .mapkey below and
+             .about in the footer. Curated sections (above) are the default
+             landing content; this stays available, not gone. -->
+        <details class="browse-everything" id="browse-everything">
+        <summary>Browse everything</summary>
         <div class="feedbar">
           <span class="rowlab">Type</span>
           <button class="tab" data-xf="all" aria-pressed="true">All</button>
@@ -1070,7 +1150,6 @@ This log needs JavaScript to render the map and event list.</div></noscript>
           <span class="rowlab">Where</span>
           <select id="ex-loc" aria-label="Filter by location"><option value="">Anywhere</option></select>
         </div>
-        <div id="explore-trending"></div>
         <div id="explore-map">
   <section class="mapcard" aria-label="Map of announced appearance locations">
     <div class="maphead">
@@ -1125,6 +1204,7 @@ This log needs JavaScript to render the map and event list.</div></noscript>
   </section>
         </div>
         <main id="explorefeed"></main>
+        </details>
         </div><!-- /#explore-browse -->
       <div id="view-insights" hidden>
   <div class="feedbar">
@@ -1359,6 +1439,8 @@ This log needs JavaScript to render the map and event list.</div></noscript>
       </div>
       <div class="field">
         <label for="p-name">Display name</label>
+        <p class="namefield-display" id="p-name-display" hidden>Posting as <b id="p-name-shown"></b>
+          <button type="button" class="linkish" id="p-name-change">Change</button></p>
         <input type="text" id="p-name" placeholder="How you'll appear on your posts" maxlength="40">
       </div>
       <div class="field" id="p-vid-field">
@@ -1368,9 +1450,11 @@ This log needs JavaScript to render the map and event list.</div></noscript>
             spellcheck="false" autocomplete="off">
           <button class="mini ghost" id="p-yt-search-btn" type="button" disabled>Search</button>
         </div>
-        <p class="hint" id="p-yt-hint" style="margin:6px 0 0">Searches are scoped to Joe Rogan content and
-          limited per day — paste a link directly if search is unavailable. TikTok and Vimeo links work too,
-          just without the search/preview.</p>
+        <!-- The daily-limit detail used to live here permanently; it now only
+             shows up via ytError() when the limit is actually hit, not as a
+             standing disclaimer every time the composer opens. -->
+        <p class="hint" id="p-yt-hint" style="margin:6px 0 0">Paste a link directly, or search — TikTok and
+          Vimeo links work too, just without the search/preview.</p>
         <div class="err" id="p-yt-err" style="display:none"></div>
         <div id="p-yt-results" class="ytresults" hidden></div>
         <div id="p-yt-preview" class="ytpreview" hidden></div>
@@ -1432,6 +1516,9 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //     video_title text,
 //     video_channel text,
 //     video_published text,
+//     -- "4:13" / "1:02:03" style, YouTube only — see video_duration.sql.
+//     -- Same descriptive-only trust level as the three columns above.
+//     video_duration text,
 //     event_id text,
 //     created_at timestamptz not null default now(),
 //     constraint posts_video_pair check (
@@ -1448,6 +1535,8 @@ This log needs JavaScript to render the map and event list.</div></noscript>
 //   --   alter table posts add column video_title text;
 //   --   alter table posts add column video_channel text;
 //   --   alter table posts add column video_published text;
+//   -- Adding duration to a project that predates it: see video_duration.sql
+//   -- (adds video_duration text; run once, by hand, same convention).
 //   -- a comment targets either a Fan Post (post_id) or a tracker event
 //   -- (event_id, a plain string matching that event's client-side id — events
 //   -- live in events.json/localStorage, not in Supabase, so no FK there) —
@@ -1800,6 +1889,16 @@ function addDays(n){
 }
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function uid(){return Math.random().toString(36).slice(2,10);}
+// Deterministic per-name color — there is no account system here (out of
+// scope, and never will be for anonymous fan posts), so this is the only
+// "identity" a display name gets. Same name always gets the same color.
+function nameHash(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h); }
+function avatarHTML(name){
+  const n=(name||'Fan').trim()||'Fan';
+  const hue=nameHash(n)%360;
+  return '<span class="avatar" style="background:hsl('+hue+',58%,52%)" aria-hidden="true">'+
+    esc(n.slice(0,1).toUpperCase())+'</span>';
+}
 // Local, not UTC. toISOString() returns tomorrow's date for a US visitor after
 // about 5pm PT, which put the manual-entry form's default date a day out and
 // made monthlyViews() mark the wrong month as still in progress.
@@ -1987,6 +2086,21 @@ function eventCommentsHTML(eid){ return threadHTML('event:'+eid); }
 /* ---------- fan posts (Supabase-backed public content) ---------- */
 function getSavedName(){ try{ return localStorage.getItem('fan-post-name')||''; }catch(e){ return ''; } }
 function setSavedName(n){ try{ localStorage.setItem('fan-post-name',n); }catch(e){} }
+// A saved name renders as a static "Posting as X — Change" line instead of a
+// perpetually-editable box, so a returning visitor isn't re-typing it on
+// every post or comment. No saved name yet -> just show the plain input,
+// same as before. Shared by both the composer (#p-name) and the pane
+// composer (#pc-name) — same pattern, same four-id shape.
+function wireNameField(inputId,displayId,shownId,changeId){
+  const input=document.getElementById(inputId), display=document.getElementById(displayId);
+  const shown=document.getElementById(shownId), change=document.getElementById(changeId);
+  if(!input||!display||!shown||!change) return;
+  const saved=getSavedName();
+  const showEdit=on=>{ input.hidden=!on; display.hidden=on; if(on) input.focus(); };
+  if(saved){ input.value=saved; shown.innerHTML=avatarHTML(saved)+esc(saved); showEdit(false); }
+  else showEdit(true);
+  change.addEventListener('click',()=>showEdit(true));
+}
 
 // No email/password step — every visitor gets an anonymous Supabase session
 // automatically, the same zero-friction feel as the local "Log an appearance"
@@ -2165,8 +2279,9 @@ function reactionBarHTML(target,opts){
         'data-rxpick="'+esc(e)+'" aria-pressed="'+(s.mine===e)+'" '+
         'aria-label="'+esc(RX_LABEL[e])+' — '+s.counts[e]+'">'+
         '<span class="rxe">'+e+'</span><span class="rxn">'+s.counts[e]+'</span></button>').join('')+
-    '<button type="button" class="rxadd" data-rxopen="1" aria-expanded="false" '+
-      'aria-label="Add a reaction">+</button>'+
+    '<button type="button" class="rxadd" data-rxopen="1" aria-expanded="false" aria-label="Add a reaction">'+
+      '<span class="rxadd-icon">+</span>'+(o.addLabel?'<span class="rxadd-label">React</span>':'')+
+    '</button>'+
     '<div class="rxpick" hidden role="group" aria-label="Pick a reaction">'+
       RX.map(e=>'<button type="button" class="rxopt'+(s.mine===e?' mine':'')+'" '+
         'data-rxpick="'+esc(e)+'" title="'+esc(RX_LABEL[e])+'" '+
@@ -2221,8 +2336,13 @@ function repaintReactionBars(target){
   for(const bar of document.querySelectorAll('.rxbar[data-rx]')){
     if(bar.dataset.rx!==target) continue;
     const open=!!bar.querySelector('.rxpick:not([hidden])');
+    // Preserve whichever options the bar was originally built with — only the
+    // post-card footer passes addLabel:true, and losing it on the first
+    // repaint (i.e. the first click) would make the "React" text disappear
+    // right after someone actually used it.
     const wrap=document.createElement('div');
-    wrap.innerHTML=reactionBarHTML(target,{compact:bar.classList.contains('compact')});
+    wrap.innerHTML=reactionBarHTML(target,
+      {compact:bar.classList.contains('compact'), addLabel:!!bar.querySelector('.rxadd-label')});
     const fresh=wrap.firstElementChild; if(!fresh) continue;
     bar.replaceWith(fresh);
     if(open) setRxPickerOpen(fresh,true);
@@ -2325,19 +2445,25 @@ function postRow(p){
     // when a thumbnail 404s — deleted and private videos do that routinely.
     '<span class="row-thumb'+(yt?'':' noimg')+'">'+
       '<i>'+esc(vid?CLIPNAME[vid.kind]:'TEXT')+'</i>'+
-      (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg" onerror="this.closest(\'.row-thumb\').classList.add(\'noimg\');this.remove()">':'')+'</span>'+
+      (yt?'<img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+esc(yt)+'/mqdefault.jpg" onerror="this.closest(\'.row-thumb\').classList.add(\'noimg\');this.remove()">':'')+
+      (yt&&p.video_duration?'<span class="thumb-dur">'+esc(p.video_duration)+'</span>':'')+'</span>'+
     '<span class="row-body">'+
-      '<span class="row-byline"><b>'+esc(p.author_label||'Fan')+'</b> · '+
+      '<span class="row-byline">'+avatarHTML(p.author_label)+'<b>'+esc(p.author_label||'Fan')+'</b> · '+
         timeHTML(p.created_at)+'</span>'+
       '<span class="row-lead">'+esc(lead)+'</span>'+
       (source?'<span class="row-source">'+esc(source)+'</span>':'')+
       (ev?'<span class="row-attach">About: '+esc(ev.title.slice(0,44))+'</span>':'')+
-      rowStatsHTML(target,p.cCount||0)+
     '</span></button>'+
+    // A row is a <button>, so it cannot contain buttons — the interactive
+    // footer is this sibling, not a child. One footer, not the old row-stats-
+    // plus-action-row duplication: reactions, comment count and share, once.
     '<div class="row-actions">'+
-      reactionBarHTML(target,{compact:true})+
-      '<button type="button" class="rowact" data-postcomment="'+esc(p.id)+'">Comment</button>'+
-      '<button type="button" class="rowact" data-sharepost="'+esc(p.id)+'">Share</button>'+
+      reactionBarHTML(target,{compact:true,addLabel:true})+
+      '<button type="button" class="rowact rowact-comment'+((p.cCount||0)?' has-n':'')+'" data-postcomment="'+esc(p.id)+'" '+
+        'aria-label="'+(p.cCount||0)+' comment'+((p.cCount||0)===1?'':'s')+' — reply">'+
+        (p.cCount||0)+' comment'+((p.cCount||0)===1?'':'s')+'</button>'+
+      '<button type="button" class="rowact rowact-share" data-sharepost="'+esc(p.id)+'">'+
+        '<span class="ic" aria-hidden="true">⤴︎</span><span class="rowact-label">Share</span></button>'+
     '</div>'+
   '</article>';
 }
@@ -2351,11 +2477,12 @@ function postPaneHTML(p){
   // anywhere until now.
   const source=[p.video_title&&p.video_title!==p.caption?p.video_title:'',
                 p.video_channel||'',
-                p.video_published?fmt(String(p.video_published).slice(0,10)):'']
+                p.video_published?fmt(String(p.video_published).slice(0,10)):'',
+                p.video_duration||'']
     .filter(Boolean).join(' · ');
   return '<div class="player"><div class="ph"><span>Post</span>'+
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
-    '<p class="pauthor"><b>'+esc(p.author_label||'Fan')+'</b> · '+timeHTML(p.created_at)+'</p>'+
+    '<p class="pauthor">'+avatarHTML(p.author_label)+'<b>'+esc(p.author_label||'Fan')+'</b> · '+timeHTML(p.created_at)+'</p>'+
     '<p class="pcaption lead">'+esc(p.caption||'(no caption)')+'</p>'+
     (vid&&CLIPSRC[vid.kind]?
       '<div class="frame"><iframe src="'+esc(CLIPSRC[vid.kind](vid.id))+'" loading="lazy" '+
@@ -2391,7 +2518,7 @@ function relatedPostsHTML(p){
   const sibs=posts.filter(x=>x.event_id===p.event_id&&x.id!==p.id);
   if(!sibs.length) return '';
   return '<div class="pposts"><div class="ann-h">Related posts · '+sibs.length+'</div>'+
-    sibs.slice(0,5).map(x=>'<button class="ppost" data-post="'+esc(x.id)+'"><b>'+
+    sibs.slice(0,5).map(x=>'<button class="ppost" data-post="'+esc(x.id)+'">'+avatarHTML(x.author_label)+'<b>'+
       esc(x.author_label||'Fan')+'</b> '+esc((x.caption||'').slice(0,80))+
       (x.caption&&x.caption.length>80?'…':'')+'</button>').join('')+
     '</div>';
@@ -2434,7 +2561,7 @@ function commentMetaHTML(c,replyCount){
   // Deleting a parent cascades to its replies in Postgres, so the control has
   // to say so rather than quietly taking a thread down with it.
   const n=replyCount||0;
-  return '<div class="c-meta"><b>'+esc(c.author_label||'Fan')+'</b> · '+
+  return '<div class="c-meta">'+avatarHTML(c.author_label)+'<b>'+esc(c.author_label||'Fan')+'</b> · '+
     timeHTML(c.created_at)+
     (isMyComment(c)?'<button class="c-del" data-delcomment="'+esc(c.id)+'">remove'+
       (n?' (and '+n+' repl'+(n===1?'y':'ies')+')':'')+'</button>':'')+
@@ -2550,14 +2677,10 @@ function feedWhen(it){
 }
 
 // Kept for the callers that still want a single ranked list (the now-strip,
-// Explore, trending, the Insights community panel).
-function hotEntries(){ return rankActive(feedItems.slice()); }
-function rankActive(items){
-  const fresh=items.filter(isFreshPost).sort((a,b)=>b.when-a.when);
-  const rest=items.filter(it=>!isFreshPost(it))
-    .sort((a,b)=>activityScore(b)-activityScore(a)||cmpId(a,b));
-  return fresh.concat(rest);
-}
+// Explore, trending, the Insights community panel). Sort-only, never a
+// filter — those callers need every item, just ordered, not a subset. cmpActive
+// itself is defined below, with isActiveEligible.
+function hotEntries(){ return feedItems.slice().sort(cmpActive); }
 
 function itemType(it){ return it.kind==='post' ? 'post' : it.entry.type; }
 // feedTypes is a Set; empty means "everything eligible in this mode", which is
@@ -2569,7 +2692,12 @@ function itemMatches(it,types){
 }
 function itemRow(it){ return it.kind==='event'?eventRow(it.entry):postRow(it.post); }
 
-let feedMode='all', feedTypes=new Set(), feedQuery='', homePage=1;
+let feedMode='all', feedTypes=new Set(), homePage=1;
+// One query for every view — Home, Explore Browse, and Upcoming all read this
+// same variable. Replaces the old split of feedQuery (Home) / platformQuery
+// (Explore), which let the same typed text find different things depending
+// on which view happened to be open.
+let platformQuery='';
 const PAGE=25;
 
 function matchesPostQuery(p,q){
@@ -2614,63 +2742,34 @@ function eligibleFor(it,mode){
   return it.kind==='post'||daysTo(it.entry.date)<=0;
 }
 
-// A brand-new post hasn't had time to earn the reactions and comments
-// activityScore() rewards, so left to that score alone Active would bury it at
-// the bottom for as long as it stays unengaged (see the -1000 branch). Give it
-// a window to actually be seen instead: for its first hour, float it above the
-// score-ranked rest, newest first. Events are excluded — an event entering the
-// feed isn't somebody choosing to post.
-const FRESH_POST_MS=60*60*1000;
-function isFreshPost(it){
-  return it.kind==='post'&&(Date.now()-it.when)<FRESH_POST_MS;
-}
 
 function homeItems(){
-  const q=feedQuery.trim().toLowerCase();
+  const q=platformQuery.trim().toLowerCase();
   const items=feedItems
     .filter(it=>eligibleFor(it,feedMode))
     .filter(it=>itemMatches(it,feedTypes))
     .filter(it=>itemMatchesQuery(it,q));
-  if(feedMode==='active') return rankActive(items);
+  // Active is a real filter, not just a different sort — see isActiveEligible.
+  if(feedMode==='active') return items.filter(isActiveEligible).sort(cmpActive);
   // All: newest first by the timeline above, with a deterministic tie-break so
   // the order can't shuffle between two renders of the same data.
   return items.sort((a,b)=>b.feedWhen-a.feedWhen||cmpId(a,b));
 }
 
-// Upcoming is the one mode that isn't a flat list: each future event carries
-// the community posts about it underneath, so the conversation sits with the
-// thing it is about instead of scattered through a chronological feed.
-function upcomingGroups(){
-  const q=feedQuery.trim().toLowerCase();
+// Upcoming is event cards only — no fan posts, even ones attached to a
+// future event (a post about a future card still shows up in All/Active as a
+// post; it just doesn't also appear here). Flat and chronological, soonest
+// first, capped at UPCOMING_CAP with no pagination — see renderHomeUpcoming.
+function upcomingItems(){
+  const q=platformQuery.trim().toLowerCase();
   const noTypes=!feedTypes.size;
-  const wantEvents=noTypes||feedTypes.has('event')||feedTypes.has('podcast');
-  const wantPosts=noTypes||feedTypes.has('post');
-  const evs=[...entryIndex.values()]
+  return [...entryIndex.values()]
     .filter(e=>daysTo(e.date)>=0)
-    .filter(e=>{
-      if(noTypes) return true;
-      if(feedTypes.has(e.type==='podcast'?'podcast':'event')) return true;
-      // Posts-only still needs the event as a header to hang its posts on.
-      return feedTypes.has('post');
-    })
+    .filter(e=>noTypes||feedTypes.has(e.type==='podcast'?'podcast':'event'))
+    .filter(e=>!q||matchesEventQuery(e,q))
     .sort((a,b)=>a.date.localeCompare(b.date)||(a.id<b.id?-1:a.id>b.id?1:0));
-  const kids=new Map();
-  if(wantPosts) for(const p of posts){
-    if(!p.event_id) continue;
-    if(!kids.has(p.event_id)) kids.set(p.event_id,[]);
-    kids.get(p.event_id).push(p);
-  }
-  return evs.map(e=>({
-      event:e,
-      posts:(kids.get(e.id)||[]).sort((a,b)=>ts(b.created_at)-ts(a.created_at))
-    }))
-    // Posts-only: drop events with nothing under them; the header is context,
-    // not content, so an empty one is just noise.
-    .filter(g=>wantEvents||g.posts.length)
-    // A query matches a group if it matches the event OR any post beneath it —
-    // narrowing must never orphan a matching post from the event it is about.
-    .filter(g=>!q||matchesEventQuery(g.event,q)||g.posts.some(p=>matchesPostQuery(p,q)));
 }
+const UPCOMING_CAP=10;
 
 function homeMapRows(items){
   const ids=new Set();
@@ -2680,7 +2779,6 @@ function homeMapRows(items){
   });
   return [...ids].map(id=>entryIndex.get(id));
 }
-function upcomingMapRows(groups){ return groups.map(g=>g.event); }
 function updateFilterSummary(){
   const el=document.getElementById('filter-summary');
   if(el) el.textContent=feedTypes.size?'Filters · '+feedTypes.size:'Filters';
@@ -2722,7 +2820,7 @@ let lastFeedRows=[];
 // then costs no repaint at all, which is the first and best defence against
 // the feed moving under the reader.
 function feedSignature(shown){
-  let s=feedMode+'|'+[...feedTypes].sort().join(',')+'|'+feedQuery+'|'+
+  let s=feedMode+'|'+[...feedTypes].sort().join(',')+'|'+platformQuery+'|'+
     (postsFailed?'F':'')+(postsLoading?'L':'')+'|';
   for(const it of shown) s+=it.id+':'+it.uniq+':'+it.cCount+':'+(reactionsFor(it.rxTarget).mine||'')+'|';
   return s;
@@ -2772,6 +2870,13 @@ function emptyFeedHTML(){
     (sb?'Clear the search or filters to see more.':'Posts and reactions need Supabase switched on — see the '+
     'SUPABASE setup comment near the top of the script.')+'</div>';
 }
+// Active deliberately shows nothing rather than padding itself out with
+// untouched content — see isActiveEligible.
+function activeEmptyHTML(){
+  return '<div class="empty"><strong>Nothing active right now</strong>'+
+    'No posts or events have picked up a reaction or comment in the last 30 days. '+
+    'Check All for everything, or be the first to react.</div>';
+}
 
 function renderHome(){
   const el=document.getElementById('homefeed'); if(!el) return;
@@ -2787,7 +2892,7 @@ function renderHome(){
   // the events we already had.
   if(!items.length&&(postsLoading||!bootDone)){ el.innerHTML=skeleton(6); return; }
   if(!items.length){
-    el.innerHTML=emptyFeedHTML();
+    el.innerHTML = feedMode==='active' ? activeEmptyHTML() : emptyFeedHTML();
     document.getElementById('load-more').hidden=true;
     lastFeedRows=[]; drawFeedMap([]);
     return;
@@ -2811,40 +2916,37 @@ function renderHome(){
   drawFeedMap(items);
 }
 
-// Upcoming: events soonest first, each with the posts about it underneath.
-// Pagination counts groups rather than rows, so "load more" never splits an
-// event away from its own discussion.
+// Upcoming: events soonest first, event cards only — no posts nested
+// underneath, even ones attached to a future event. A short, curated list
+// rather than another paginated feed: capped at UPCOMING_CAP with no "Load
+// more"; past the cap it ends in a link to the full Schedule instead.
 function renderHomeUpcoming(el){
-  const groups=upcomingGroups();
-  if(!groups.length&&!bootDone){ el.innerHTML=skeleton(6); return; }
-  if(!groups.length){
+  const items=upcomingItems();
+  if(!items.length&&!bootDone){ el.innerHTML=skeleton(6); return; }
+  if(!items.length){
     el.innerHTML='<div class="empty"><strong>Nothing scheduled</strong>'+
       'No announced dates ahead right now. Schedule has the full record.</div>';
     document.getElementById('load-more').hidden=true;
     lastFeedRows=[]; drawFeedMap([]);
     return;
   }
-  const shown=groups.slice(0,homePage*PAGE);
-  const sig='up|'+feedSignature([])+shown.map(g=>
-    g.event.id+':'+g.posts.length+':'+eventCommentCount(g.event.id)).join('|');
-  lastFeedRows=upcomingMapRows(groups);
+  const shown=items.slice(0,UPCOMING_CAP);
+  const sig='up|'+feedSignature([])+shown.map(e=>e.id+':'+eventCommentCount(e.id)).join('|');
+  // The map keeps showing every upcoming pin, not just the capped 10 shown in
+  // the list — same "map is comprehensive, list paginates" convention the
+  // non-Upcoming branch of renderHome() already uses.
+  lastFeedRows=items;
   if(el.dataset.sig===sig){ drawFeedMapRows(lastFeedRows); return; }
 
   const anchor=captureAnchor(el);
-  el.innerHTML=feedNoticeHTML()+shown.map(upcomingGroupHTML).join('');
+  el.innerHTML=feedNoticeHTML()+shown.map(e=>eventRow(e,{countdown:true})).join('')+
+    (items.length>UPCOMING_CAP?'<div class="morewrap"><button type="button" class="mini ghost" '+
+      'data-viewschedule="1">View full schedule ('+(items.length-UPCOMING_CAP)+' more)</button></div>':'');
   el.dataset.sig=sig;
   wireFeedNotice();
   restoreAnchor(el,anchor);
-  const more=document.getElementById('load-more');
-  more.hidden=shown.length>=groups.length;
-  more.textContent='Load more ('+(groups.length-shown.length)+' left)';
+  document.getElementById('load-more').hidden=true;   // Upcoming never paginates
   drawFeedMapRows(lastFeedRows);
-}
-function upcomingGroupHTML(g){
-  return '<section class="upgroup">'+
-    eventRow(g.event,{countdown:true})+
-    (g.posts.length?'<div class="upgroup-posts">'+g.posts.map(postRow).join('')+'</div>':'')+
-  '</section>';
 }
 
 // The map is secondary to the feed, so it is never allowed to take the feed
@@ -2859,7 +2961,7 @@ function drawFeedMapRows(rows){
 // query dims them instead, because seeing where a match sits relative to
 // everything else is the point of having a map next to the results.
 function queryMatchIds(){
-  const q=feedQuery.trim().toLowerCase();
+  const q=platformQuery.trim().toLowerCase();
   if(!q) return null;
   const ids=new Set();
   for(const e of entryIndex.values()) if(matchesEventQuery(e,q)) ids.add(e.id);
@@ -2876,13 +2978,19 @@ function renderNowStrip(){
   const up=all.filter(e=>daysTo(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
   const lastEp=past[0];
   const nextEv=up.find(e=>e.type!=='podcast')||up[0];
-  const engaged=hotEntries().filter(it=>(it.cCount||0)>0);
+  // Reaction OR comment, matching the same "engaged" definition the Active tab
+  // uses now — this used to be comment-count only, ignoring reactions.
+  const engaged=hotEntries().filter(it=>((it.uniq||0)+(it.cCount||0))>0);
   const activityTime=it=>it.kind==='post'
     ? (Number(it.post.lastActivity)||it.when)
     : (Number(eventLastActivity[it.entry.id])||it.when);
-  const recent=engaged.filter(it=>activityTime(it)>=Date.now()-30*DAY);
+  const recent=engaged.filter(it=>activityTime(it)>=Date.now()-DAY30);
+  // Tiebreak was `b.score-a.score` — .score was never assigned anywhere on a
+  // feed item (dead code from an earlier rewrite), so that comparison was
+  // always NaN and silently a no-op. cmpId is the deterministic tiebreak
+  // used everywhere else in the file; this should have been that all along.
   const active=(recent.length?recent:engaged).sort((a,b)=>
-    (b.cCount||0)-(a.cCount||0)||activityTime(b)-activityTime(a)||b.score-a.score)[0];
+    (b.cCount||0)-(a.cCount||0)||activityTime(b)-activityTime(a)||cmpId(a,b))[0];
   const cell=(k,t,s,attr)=>'<button class="nowcell"'+attr+'><span class="k">'+esc(k)+
     '</span><span class="t">'+esc(t)+'</span>'+(s?'<span class="s">'+esc(s)+'</span>':'')+'</button>';
   let h='';
@@ -2908,7 +3016,7 @@ function renderNowStrip(){
 // VIEWS — so none of this had ever run. It is live again as the Browse
 // sub-section, sharing the feed's item shape, query matcher and row builders
 // rather than keeping its own near-copies.
-let exQuery='', exFilter='all', exView='list', exDate='any', exLoc='';
+let exFilter='all', exView='list', exDate='any', exLoc='';
 let lastExploreRows=[];
 // populateLocPicker rebuilds ~130 <option>s; only worth doing when the entry
 // set has actually changed, not on every keystroke-driven re-render.
@@ -2944,6 +3052,49 @@ function populateLocPicker(){
   sel.value=cur;
 }
 
+// Explore lands on four curated, five-item sections by default. The full
+// filter/search/map/results UI lives behind "Browse everything" — the
+// <details> element itself is the single source of truth for which is
+// showing (see its 'toggle' listener below), not a second tracked flag.
+function renderExploreSections(){
+  const el=document.getElementById('explore-sections'); if(!el||!sb) return;
+  const clips=hotEntries().filter(it=>it.kind==='post'&&it.post.video_kind&&((it.uniq||0)||it.cCount)).slice(0,5);
+  const active=activeFeedItems().slice(0,5);
+  const episodes=[...entryIndex.values()].filter(e=>e.type==='podcast'&&daysTo(e.date)<=0)
+    .sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  const upcoming=[...entryIndex.values()].filter(e=>daysTo(e.date)>=0)
+    .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,5);
+  const section=(title,rowsHTML,preset)=>rowsHTML?('<section class="explore-section">'+
+    '<div class="subhead">'+esc(title)+'</div>'+rowsHTML+
+    '<button type="button" class="linkish viewall" data-viewall="'+preset+'">View all</button></section>'):'';
+  el.innerHTML=
+    section('Trending clips',clips.map(itemRow).join(''),'clips')+
+    section('Active discussions',active.map(itemRow).join(''),'active')+
+    section('Latest episodes',episodes.map(e=>eventRow(e)).join(''),'episodes')+
+    section('Upcoming events',upcoming.map(e=>eventRow(e,{countdown:true})).join(''),'upcoming');
+  if(!el.innerHTML) el.innerHTML='<div class="empty"><strong>Nothing to show yet</strong>'+
+    'Check back once posts and reactions start coming in.</div>';
+}
+// Each section's "View all" opens Browse-everything pre-set to the closest
+// matching filter, via the existing [data-xf]/[data-xd] primitives rather
+// than inventing a new filter dimension. "Trending clips" -> post is an
+// approximation (Browse has no clip-vs-text distinction); "Active
+// discussions" -> 'all' is close to a no-op, since Browse's default order is
+// already cmpActive-sorted, so "View all" there is really just "open the panel".
+const VIEWALL_MAP={clips:{xf:'post'}, active:{xf:'all'}, episodes:{xf:'podcast'}, upcoming:{xf:'event',xd:'upcoming'}};
+function openBrowseEverything(preset){
+  const p=VIEWALL_MAP[preset]||{};
+  if(p.xf){ exFilter=p.xf; pressGroup('data-xf',document.querySelector('[data-xf="'+p.xf+'"]')); }
+  if(p.xd){ exDate=p.xd; pressGroup('data-xd',document.querySelector('[data-xd="'+p.xd+'"]')); }
+  document.getElementById('browse-everything').open=true;
+  renderExplore();
+  document.getElementById('browse-everything').scrollIntoView({block:'start'});
+}
+document.getElementById('browse-everything').addEventListener('toggle',()=>{
+  const s=document.getElementById('explore-sections');
+  if(s) s.hidden=document.getElementById('browse-everything').open;
+});
+
 function renderExplore(){
   const el=document.getElementById('explorefeed'); if(!el) return;
   populateLocPicker();
@@ -2952,8 +3103,14 @@ function renderExplore(){
   // they must agree or the card ends up in a hidden host (invariant #3).
   document.getElementById('explore-map').hidden=(exView!=='map');
   el.hidden=(exView==='map');
-  document.getElementById('explore-trending').hidden=(exView==='map');
-  const q=exQuery.trim().toLowerCase();
+  const details=document.getElementById('browse-everything');
+  const q=platformQuery.trim().toLowerCase();
+  const filtered=exFilter!=='all'||exDate!=='any'||!!exLoc||!!q;
+  if(filtered&&!details.open) details.open=true;   // reveal the panel the moment there's something to filter for
+  const sectionsEl=document.getElementById('explore-sections');
+  if(sectionsEl) sectionsEl.hidden=details.open;
+  if(!details.open) renderExploreSections();
+
   const types=exFilter==='all'?new Set():new Set([exFilter]);
   let items=feedItems
     .filter(it=>itemMatches(it,types))
@@ -2963,13 +3120,12 @@ function renderExplore(){
     // video_title and channel, Explore searched neither, so the same words
     // found different things depending on which list you were looking at.
     .filter(it=>itemMatchesQuery(it,q));
-  items=rankActive(items);
+  items=items.slice().sort(cmpActive);   // sort only — Browse must keep every matching item
   lastExploreRows=homeMapRows(items);
   if(exView==='map'){ syncMap(); return; }
-  renderTrending(q||exLoc||exDate!=='any'||exFilter!=='all');
   if(!items.length){
     el.innerHTML='<div class="empty"><strong>No matches</strong>'+
-      (q?'Nothing matches “'+esc(exQuery)+'”.':'Nothing fits these filters.')+'</div>';
+      (q?'Nothing matches “'+esc(platformQuery)+'”.':'Nothing fits these filters.')+'</div>';
     syncMap();
     return;
   }
@@ -2977,32 +3133,6 @@ function renderExplore(){
     (items.length>60?' · showing the first 60':'')+'</p>'+
     items.slice(0,60).map(itemRow).join('');
   syncMap();
-}
-
-// Trending is a starting point for an empty Explore, not a competitor to the
-// results list — it hides the moment a filter or query narrows things.
-function renderTrending(narrowed){
-  const el=document.getElementById('explore-trending'); if(!el) return;
-  if(narrowed||!sb){ el.innerHTML=''; return; }
-  const items=hotEntries();
-  const trendingPosts=items.filter(it=>it.kind==='post'&&((it.uniq||0)||it.cCount))
-    .slice(0,5);
-  const active=items.filter(it=>(it.cCount||0)>0)
-    .sort((a,b)=>(b.cCount||0)-(a.cCount||0)).slice(0,5);
-  if(!trendingPosts.length&&!active.length){ el.innerHTML=''; return; }
-  // Unique reactors, not a net vote — there is no "net" any more, and the top
-  // emoji says more about how something landed than a count on its own.
-  const rxN=it=>{
-    const s=reactionsFor(it.rxTarget);
-    const top=RX.filter(e=>s.counts[e]>0).sort((a,b)=>s.counts[b]-s.counts[a])[0];
-    return (top?top+' ':'')+(it.uniq||0)+(it.cCount?' · '+it.cCount+'c':'');
-  };
-  const list=(rows)=>ranks(rows.map(it=>it.kind==='post'
-    ? {t:(it.post.author_label||'Fan')+' — '+(it.post.caption||''), n:rxN(it), pid:it.post.id}
-    : {t:it.entry.title, n:rxN(it), id:it.entry.id}));
-  el.innerHTML=
-    (trendingPosts.length?'<div class="subhead">Trending posts</div>'+list(trendingPosts):'')+
-    (active.length?'<div class="subhead">Active discussions</div>'+list(active):'');
 }
 
 /* ---------- schedule ---------- */
@@ -3126,55 +3256,39 @@ function ranks(rows){
   }).join('')+'</ul>';
 }
 
-// Two tiers: anything people have actually reacted to or discussed ranks
-// above anything they haven't.
-//
-// This started as Reddit's log-score-plus-age formula and that was wrong
-// here. Reddit's blend assumes every item was submitted at roughly the same
-// time, so a few hours of age trades against a 10x score difference. This
-// list mixes fan posts from today with fight cards *scheduled months into
-// the future*, and a future date read as enormously "fresh" — every
-// untouched UFC card rode its own schedule straight to the top while a clip
-// with real votes and a comment thread sank. Reacting to an event actually
-// demoted it, by moving its anchor from the far future back to now.
-//
-// Future events can no longer reach Active at all (see eligibleFor), so that
-// specific failure is gone by construction. What remained was the opposite
-// problem: recency() is capped at 1 and documented as a tie-breaker, so
-// nothing here ever *decayed*. A post that collected twenty reactions last
-// spring outranked a thread people are arguing in right now, forever. The
-// two tiers stay; the engaged tier gains real gravity.
-//
-//   engaged → engagement, lifted by recent activity, divided by age
-//   quiet   → closest to today first, all of them below the engaged tier
-
-// Always greater than 0 and at most 1, decaying with distance from now in
-// either direction — so it can only ever break a tie between equal scores,
-// never outweigh one. Still the ordering for the quiet tier.
-function recency(ms){
-  return Number.isFinite(ms) ? 1/(1+Math.abs(Date.now()-ms)/DAY) : 0;
-}
-const ACTIVE_GRAVITY=1.35;     // exponent on age; >1 is what makes old popular items sink
-const ACTIVE_HALFLIFE_H=30;    // how fast a thread stops counting as live once it goes quiet
-// Engagement is unique reactors plus comments. "Unique" is exact rather than
-// approximate: the partial unique indexes allow one reaction row per
-// (target,user), and indexReactions() counts distinct user ids anyway, so
-// stacking six emoji cannot inflate a score. Replies are rows in `comments`
-// with the same target, so cCount already includes them.
-//
-// Reactions on a *comment* deliberately do NOT feed its parent's score. The
-// comment is already counted once in cCount; counting its reactions as well
-// would weight discussion twice over. Don't "fix" this.
-function activityScore(it){
+// Active means genuinely active: at least one reaction or comment, and the
+// most recent one of those landed within the last 30 days. This replaces an
+// earlier gravity-decay formula (age^-1.35 with a liveness boost) that never
+// actually excluded anything — a zero-engagement item just sank to the
+// bottom of the list instead of leaving it, so "Active" quietly padded itself
+// out with content nobody had touched. Now it doesn't: zero-engagement or
+// stale items are excluded outright, and the tab shows an empty state instead.
+const DAY30=30*DAY;
+function isActiveEligible(it){
   const eng=(it.uniq||0)+(it.cCount||0);
-  // Unchanged intent, new sort key: an untouched item is not "active", whatever
-  // its date. Kept far below any real score so the tiers can never interleave.
-  if(!eng) return -1000+recency(it.feedWhen);
-  const ageH=Math.max(0.5,(Date.now()-it.feedWhen)/3600000);
-  const quietH=Math.max(0,(Date.now()-(it.lastActivity||it.feedWhen))/3600000);
-  const liveness=1+Math.exp(-quietH/ACTIVE_HALFLIFE_H);   // bounded [1,2]
-  return 1000*Math.pow(eng,0.8)*liveness/Math.pow(ageH+2,ACTIVE_GRAVITY);
+  if(!eng) return false;
+  return (Date.now()-(it.lastActivity||it.feedWhen))<=DAY30;
 }
+// Three keys, in order: most recent activity, then comment count, then
+// reaction count, then the same deterministic id tiebreak everything else
+// uses. No age-decay term — this orders, it doesn't score.
+//
+// Also used, sort-only (no eligibility filter), by hotEntries()/Explore's
+// default order/Insights' "Hottest right now" — one definition of "active"
+// everywhere, not a second ad hoc ranking. Reactions on a *comment*
+// deliberately do NOT feed its parent's ordering — the comment is already
+// counted once in cCount; counting its reactions too would weight discussion
+// twice over. Don't "fix" this.
+function cmpActive(a,b){
+  return (b.lastActivity||b.feedWhen)-(a.lastActivity||a.feedWhen)
+    || (b.cCount||0)-(a.cCount||0)
+    || (b.uniq||0)-(a.uniq||0)
+    || cmpId(a,b);
+}
+// The canonical "what's active site-wide" list — Home's Active tab (after its
+// own type/query filters) and Explore's "Active discussions" section both
+// read this same pair of primitives, so "active" means one thing everywhere.
+function activeFeedItems(){ return feedItems.filter(isActiveEligible).sort(cmpActive); }
 // Deterministic tie-break. Half the reason the feed stops shuffling between
 // renders is that equal scores no longer resolve to whatever order the source
 // array happened to be in.
@@ -3313,6 +3427,11 @@ function selectPost(id,opts){
   const p=posts.find(x=>x.id===id);
   selPin=(p&&p.event_id&&entryIndex.has(p.event_id))?p.event_id:null;
   paintPinSelection();
+  // Pan to wherever this post's event is, if it has a meaningful location.
+  // A post with none — unattached, or attached to a location-less episode —
+  // deliberately leaves the map exactly where it already was.
+  const pt=selPin?mapPointForEvent(entryIndex.get(selPin)):null;
+  if(pt) panMapTo(pt[0],pt[1]);
   renderPlayer();
   openDrawer(opts);
   // Clear the other kind's highlight too — one list can show a [data-goto]
@@ -3333,6 +3452,8 @@ function selectEntry(id,opts){
   // The reverse link the map never had: picking a row from the feed now lights
   // its pin, not just the other way round.
   selPin=id; paintPinSelection();
+  const pt=mapPointForEvent(entryIndex.get(id));
+  if(pt) panMapTo(pt[0],pt[1]);
   renderPlayer();
   openDrawer(opts);
   document.querySelectorAll('[data-post].sel').forEach(el=>el.classList.remove('sel'));
@@ -3359,7 +3480,7 @@ function clearSelection(){
   if(location.hash) history.replaceState(null,'',location.pathname+location.search);
   // Repaint the class, don't replot: a replot here would rebuild the map from
   // whatever `lastRows` happened to hold and throw away the feed's filtering.
-  if(selPin){ selPin=null; paintPinSelection(); }
+  if(selPin){ selPin=null; paintPinSelection(); panMapReset(); }
   // Thread UI state belongs to the thing that was open, not to the next one.
   openReplies=new Set(); replyingTo=null; replyDraft='';
   renderPlayer();
@@ -3377,7 +3498,7 @@ document.addEventListener('keydown',ev=>{
   if(!document.getElementById('composer').hidden){ closeComposer(); return; }
   if(replyingTo){ cancelReply(); return; }
   if(!document.getElementById('drawer').hidden){ clearSelection(); return; }
-  if(!document.getElementById('home-search').hidden){ setSearchOpen(false); return; }
+  if(!document.getElementById('platform-search').hidden){ setSearchOpen(false); return; }
 });
 // A Tab trap, but only where the surface is genuinely modal. The composer
 // always is. The drawer only is at phone width — above 640px it deliberately
@@ -3474,14 +3595,18 @@ function renderPaneComposer(){
   box.dataset.target=target;
   box.hidden=false;
   box.innerHTML='<div class="pc-row">'+
-      '<input type="text" id="pc-name" maxlength="40" placeholder="Display name" '+
-        'aria-label="Display name" value="'+esc(getSavedName())+'">'+
+      '<div class="namefield">'+
+        '<p class="namefield-display" id="pc-name-display" hidden>Posting as <b id="pc-name-shown"></b> '+
+          '<button type="button" class="linkish" id="pc-name-change">Change</button></p>'+
+        '<input type="text" id="pc-name" maxlength="40" placeholder="Display name" aria-label="Display name">'+
+      '</div>'+
     '</div>'+
     '<div class="pc-row">'+
       '<textarea id="pc-body" rows="1" maxlength="500" placeholder="Add a comment…" '+
         'aria-label="Comment"></textarea>'+
       '<button class="mini" id="pc-send" data-cadd="'+esc(target)+'">Comment</button>'+
     '</div>';
+  wireNameField('pc-name','pc-name-display','pc-name-shown','pc-name-change');
 }
 function renderPlayer(){
   const el=document.getElementById('insight-player'); if(!el) return;
@@ -4172,6 +4297,7 @@ function cityLabel(loc){
   return loc;
 }
 const MAPW=980.0;
+const MAPH=619.8;   // matches the static viewBox height in the markup
 // SVG user-units per on-screen pixel. Pins and labels are UI, not geography:
 // they must hold a constant screen size while the map itself scales.
 function uiK(){
@@ -4181,6 +4307,40 @@ function uiK(){
 }
 let lastRows=[];
 let selPin=null;
+
+/* ---------- pan-to-selection ---------- */
+// The current viewBox origin, in viewBox units — tracked directly rather than
+// as a "centered on" id, which is what makes "preserve current state" trivial:
+// a selection with no location just never calls panMapTo, so panX/panY sit
+// wherever they already were. This is a PURE PAN: MAPW/MAPH (the viewBox's
+// width/height) never change, only its x/y origin — so uiK(), which reads
+// clientWidth, needs no changes at all, and every marker stays exactly the
+// screen-pixel size invariant #3 requires, before, during and after a pan.
+let panX=0, panY=0, panRAF=0;
+function setViewBox(x,y){
+  const svg=document.querySelector('.mapbody svg');
+  if(svg) svg.setAttribute('viewBox',x.toFixed(2)+' '+y.toFixed(2)+' '+MAPW+' '+MAPH);
+}
+// JS-tweened rather than CSS-transitioned: viewBox isn't reliably animatable
+// via CSS across engines, and there's no build step here to reach for a
+// library for one animation.
+function panMapTo(x,y){
+  if(!document.querySelector('.mapbody svg')) return;
+  const targetX=x-MAPW/2, targetY=y-MAPH/2;
+  cancelAnimationFrame(panRAF);
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches){
+    panX=targetX; panY=targetY; setViewBox(panX,panY); return;
+  }
+  const fromX=panX, fromY=panY, start=performance.now(), dur=380;
+  (function step(now){
+    const t=Math.min(1,(now-start)/dur), e=1-Math.pow(1-t,3);
+    setViewBox(fromX+(targetX-fromX)*e, fromY+(targetY-fromY)*e);
+    if(t<1) panRAF=requestAnimationFrame(step); else { panX=targetX; panY=targetY; }
+  })(performance.now());
+}
+function panMapReset(){ panMapTo(MAPW/2,MAPH/2); }   // back to the markup's default origin
+// "Meaningful location" — the same test that already puts a pin on the map.
+function mapPointForEvent(e){ const c=e&&e.loc&&findCity(e.loc); return c?project(c[0],c[1]):null; }
 // Set when plotMap is asked to draw into a host that isn't laid out yet, and
 // flushed once one is. Explore going live means the .mapcard genuinely moves
 // between hosts for the first time, so it can now sit inside a hidden
@@ -4206,7 +4366,16 @@ function plotMap(rows,opts){
   const svg=document.querySelector('.mapbody svg');
   if(!g||!svg||!svg.getClientRects().length){ pendingPlot={rows,opts:o}; return; }
   pendingPlot=null;
-  const dimOf=id=>(o.matchIds&&!o.matchIds.has(id))?' dim':'';
+  // A selection in progress takes over the dim signal from search-matching:
+  // once something is picked, the point is to isolate that one pin, not to
+  // keep showing search results. "other" pins stay opacity-dimmed but still
+  // clickable/focusable — picking a different pin while one is selected is a
+  // primary interaction, unlike a search miss, which is genuinely inert.
+  const dimOf=id=>{
+    if(selPin) return id===selPin?'':' other';
+    return (o.matchIds&&!o.matchIds.has(id))?' dim':'';
+  };
+  const inertOf=id=>!selPin&&o.matchIds&&!o.matchIds.has(id);
   // Episode releases carry no venue by design, so counting them as
   // "not plotted" reported 215 of 242 missing and read like a fault.
   // Only venues that exist but could not be placed are worth flagging.
@@ -4246,10 +4415,19 @@ function plotMap(rows,opts){
       bx.toFixed(1)+','+by.toFixed(1)+' '+(bx+bw).toFixed(1)+','+by.toFixed(1)+' '+
       (bx+bw).toFixed(1)+','+(by+bh*0.7).toFixed(1)+' '+(bx+bw/2).toFixed(1)+','+(by+bh).toFixed(1)+' '+
       bx.toFixed(1)+','+(by+bh*0.7).toFixed(1)+'"/>':'';
+    // Selected pin gets a red ring rather than a fill-color swap — .up pins
+    // are already --stamp (red/orange), so recoloring .sel the same way would
+    // make a selected upcoming pin look identical to an unselected one.
+    // Ring radius is uiK()-derived like every other marker (invariant #3);
+    // only the pulse keyframe applies a relative scale() on top of that.
+    const isSel=selPin===p.e.id;
+    const ring=isSel?'<circle class="pin-ring" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+
+      '" r="'+(r+5*k).toFixed(1)+'" stroke-width="'+(2*k).toFixed(2)+'"/>':'';
     // Dimming is opacity only, never a smaller radius — see invariant #3.
-    return '<g class="pin '+(p.past?'pastpin':'up')+(selPin===p.e.id?' sel':'')+dim+
-    '" data-pin="'+esc(p.e.id)+'" tabindex="'+(dim?'-1':'0')+'" role="button" aria-label="'+esc(p.e.title)+
+    return '<g class="pin '+(p.past?'pastpin':'up')+(isSel?' sel':'')+dim+
+    '" data-pin="'+esc(p.e.id)+'" tabindex="'+(inertOf(p.e.id)?'-1':'0')+'" role="button" aria-label="'+esc(p.e.title)+
     (n?' · '+n+' comment'+(n===1?'':'s'):'')+'">'+
+    ring+
     '<circle class="hit" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+rHit.toFixed(1)+'"/>'+
     '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+r.toFixed(1)+
     '" stroke-width="'+(1.8*k).toFixed(2)+'"/>'+banner+'</g>';
@@ -4555,6 +4733,10 @@ function pickOpts(ev){
   return {noScroll:!!(row&&row.closest('#homefeed,#explorefeed,#schedulefeed'))};
 }
 function onPick(ev){
+  const vs=ev.target.closest('[data-viewschedule]');
+  if(vs){ showView('schedule'); return; }
+  const va=ev.target.closest('[data-viewall]');
+  if(va){ openBrowseEverything(va.dataset.viewall); return; }
   const g=ev.target.closest('[data-goto]');
   if(g){ selectEntry(g.dataset.goto,pickOpts(ev)); return; }
   const p=ev.target.closest('[data-post]');
@@ -4656,8 +4838,24 @@ function pressGroup(attr,el){
 // select content dropdown; it had had no markup to bind to for some time.
 document.querySelectorAll('[data-hs]').forEach(t=>t.addEventListener('click',()=>{
   feedMode=t.dataset.hs; homePage=1; pressGroup('data-hs',t);
+  syncTypeFilterAvailability();
   clearFeedSig(); renderHome();
 }));
+// Upcoming only ever shows events — episodes are always past-dated releases
+// and posts never appear there — so the Posts/Episodes checkboxes can't match
+// anything in that mode. Disabled rather than hidden, with a hint, so a
+// visitor doesn't check one and get a silently-empty list.
+function syncTypeFilterAvailability(){
+  const upcoming=feedMode==='upcoming';
+  let changed=false;
+  document.querySelectorAll('[data-ft="post"],[data-ft="podcast"]').forEach(cb=>{
+    cb.disabled=upcoming;
+    if(upcoming&&cb.checked){ cb.checked=false; feedTypes.delete(cb.dataset.ft); changed=true; }
+  });
+  const hint=document.getElementById('ft-upcoming-hint');
+  if(hint) hint.hidden=!upcoming;
+  if(changed) updateFilterSummary();
+}
 // Multi-select: nothing checked means everything eligible in the current mode,
 // which is what makes "no selection" the honest default rather than a magic
 // 'all' value that has to be special-cased everywhere.
@@ -4677,22 +4875,24 @@ document.getElementById('clear-filters').addEventListener('click',()=>{
 function clearFeedSig(){
   const el=document.getElementById('homefeed'); if(el) delete el.dataset.sig;
 }
+// One box, reachable from every view — no longer forces a jump to Home.
+// Whichever view is open re-renders itself against the same platformQuery.
 function setSearchOpen(open){
-  const panel=document.getElementById('home-search'), button=document.getElementById('open-search');
+  const panel=document.getElementById('platform-search'), button=document.getElementById('open-search');
   panel.hidden=!open; button.setAttribute('aria-expanded',String(open));
-  if(open){ showView('home'); document.getElementById('home-q').focus(); }
+  if(open) document.getElementById('platform-q').focus();
 }
 document.getElementById('open-search').addEventListener('click',()=>{
-  setSearchOpen(currentView!=='home'||document.getElementById('home-search').hidden);
+  setSearchOpen(document.getElementById('platform-search').hidden);
 });
-let homeQueryTimer;
-document.getElementById('home-q').addEventListener('input',ev=>{
-  feedQuery=ev.target.value; homePage=1; clearTimeout(homeQueryTimer);
-  homeQueryTimer=setTimeout(()=>{ clearFeedSig(); renderHome(); },120);
+let platformQueryTimer;
+document.getElementById('platform-q').addEventListener('input',ev=>{
+  platformQuery=ev.target.value; homePage=1; clearTimeout(platformQueryTimer);
+  platformQueryTimer=setTimeout(()=>{ clearFeedSig(); renderFeeds(); },120);
 });
 document.getElementById('clear-search').addEventListener('click',()=>{
-  feedQuery=''; homePage=1; document.getElementById('home-q').value='';
-  setSearchOpen(false); clearFeedSig(); renderHome();
+  platformQuery=''; homePage=1; document.getElementById('platform-q').value='';
+  setSearchOpen(false); clearFeedSig(); renderFeeds();
 });
 document.getElementById('mobile-map-toggle').addEventListener('click',ev=>{
   const rail=document.querySelector('.maprail');
@@ -4723,10 +4923,6 @@ document.querySelectorAll('[data-xd]').forEach(t=>t.addEventListener('click',()=
 }));
 document.getElementById('ex-loc').addEventListener('change',ev=>{
   exLoc=ev.target.value; renderExplore();
-});
-let exT;
-document.getElementById('ex-q').addEventListener('input',ev=>{
-  exQuery=ev.target.value; clearTimeout(exT); exT=setTimeout(renderExplore,140);
 });
 document.querySelectorAll('[data-sc]').forEach(t=>t.addEventListener('click',()=>{
   schedScope=t.dataset.sc; pressGroup('data-sc',t); renderSchedule();
@@ -4796,6 +4992,17 @@ function parseVideo(u){
     return null;
   }
   return null;
+}
+// Distinguishes "this was clearly an attempt at a link on a supported host,
+// which failed to parse" from "this is just search text" — parseVideo()
+// returns null for both today, and both silently fell through to plain
+// search, which read as the paste being ignored.
+function looksLikeVideoUrl(s){
+  let url; try{ url=new URL(s.trim()); }catch(e){ return false; }
+  if(url.protocol!=='https:'&&url.protocol!=='http:') return false;
+  const host=url.hostname.replace(/^www\./,'').toLowerCase();
+  return ['youtu.be','youtube.com','m.youtube.com','youtube-nocookie.com',
+    'tiktok.com','vm.tiktok.com','vimeo.com','player.vimeo.com'].includes(host);
 }
 const CLIPSRC={
   yt:id=>'https://www.youtube-nocookie.com/embed/'+id+'?rel=0',
@@ -5200,16 +5407,15 @@ function setSearchUIVisible(on){
   if(!on&&res){ res.hidden=true; }
 }
 function setClipPreview(clip){
+  const hadClip=!!composerClip;
   composerClip=clip;
   const box=document.getElementById('p-yt-preview');
   if(!clip){ box.hidden=true; box.innerHTML=''; setSearchUIVisible(true); return; }
   box.hidden=false;
   setSearchUIVisible(false);
   const title=clip.title||(clip.kind==='yt'?'(fetching title…)':CLIPNAME[clip.kind]+' clip');
-  // Duration would go here; the Edge Function's Clip shape is
-  // {id,title,channel,publishedAt} and adding it needs a second
-  // videos.list?part=contentDetails call plus the quota for it. Read
-  // defensively so it lights up for free if that ever lands.
+  // yt only — the Edge Function's contentDetails lookup is YouTube-specific;
+  // TikTok/Vimeo clips never carry a duration.
   const dur=clip.duration?' · '+esc(String(clip.duration)):'';
   box.innerHTML='<div class="frame"><iframe src="'+esc(CLIPSRC[clip.kind](clip.id))+'" loading="lazy" '+
     'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
@@ -5231,6 +5437,16 @@ function setClipPreview(clip){
     const q=document.getElementById('p-yt-q'); q.value=''; q.focus();
     document.getElementById('p-yt-search-btn').disabled=true;
   });
+  // Bring Caption + Publish into view the moment a clip is actually chosen —
+  // guarded on hadClip so this fires once per pick, not on the metadata
+  // refresh that follows a paste (tryYtLookup calls this twice: an instant
+  // embed, then the real title/channel once fetched — yanking focus back on
+  // the second call would interrupt whatever the visitor started typing).
+  if(!hadClip){
+    const cap=document.getElementById('p-cap');
+    cap.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+    cap.focus();
+  }
 }
 
 async function callYouTubeSearch(payload){
@@ -5267,7 +5483,10 @@ function renderYtResults(results){
     "this.src=this.src.replace('/mqdefault.jpg','/hqdefault.jpg');}else{this.remove();}";
   el.innerHTML=results.map(r=>
     '<button type="button" class="ytresult" data-ytpick="'+esc(r.id)+'">'+
-      '<img loading="lazy" alt="" src="'+esc(ytThumb(r.id))+'" onerror="'+esc(fallback)+'">'+
+      '<span class="ytresult-thumb">'+
+        '<img loading="lazy" alt="" src="'+esc(ytThumb(r.id))+'" onerror="'+esc(fallback)+'">'+
+        (r.duration?'<span class="thumb-dur">'+esc(r.duration)+'</span>':'')+
+      '</span>'+
       '<span class="ytresult-body"><b>'+esc(r.title)+'</b>'+
       '<span>'+esc(r.channel)+(r.publishedAt?' · '+esc(fmt(String(r.publishedAt).slice(0,10))):'')+'</span></span>'+
     '</button>').join('');
@@ -5311,6 +5530,15 @@ document.getElementById('p-yt-q').addEventListener('input',ev=>{
   if(vid&&vid.kind==='yt'){ btn.disabled=true; tryYtLookup(vid.id); return; }
   if(vid){ btn.disabled=true; setClipPreview({kind:vid.kind,id:vid.id,title:'',channel:'',publishedAt:''}); return; }
   setClipPreview(null);
+  // A recognizable link that failed to parse (bad path, malformed id) is a
+  // different problem than "no query yet" — say so instead of silently
+  // treating the paste as ordinary search text.
+  if(looksLikeVideoUrl(val)){
+    btn.disabled=true;
+    ytError('That link doesn’t look like a supported video URL — check it’s a full '+
+      'youtube.com/watch, youtu.be, TikTok or Vimeo link.');
+    return;
+  }
   // Searches only run on Enter/Search, never per keystroke — this just says
   // whether there is enough here to search for.
   btn.disabled=val.length<2;
@@ -5328,11 +5556,10 @@ document.getElementById('p-yt-results').addEventListener('click',ev=>{
   const b=ev.target.closest('[data-ytpick]'); if(!b) return;
   const picked=(document.getElementById('p-yt-results').__results||[]).find(r=>r.id===b.dataset.ytpick);
   if(!picked) return;
-  setClipPreview(Object.assign({kind:'yt'},picked));
+  setClipPreview(Object.assign({kind:'yt'},picked));   // scrolls/focuses the caption itself
   document.getElementById('p-yt-results').hidden=true;
   document.getElementById('p-yt-q').value=picked.title;
   document.getElementById('p-yt-search-btn').disabled=true;
-  document.getElementById('p-cap').focus();
 });
 
 /* ---- event/episode attachment: search results + a removable chip ---- */
@@ -5393,7 +5620,7 @@ function openComposer(eventId){
   composerFocusReturn=document.activeElement;
   resetComposerFields();
   setComposerEvent(eventId||'');
-  document.getElementById('p-name').value=getSavedName();
+  wireNameField('p-name','p-name-display','p-name-shown','p-name-change');
   document.getElementById('p-err').style.display='none';
   const d=document.getElementById('composer');
   d.hidden=false;
@@ -5455,6 +5682,7 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
       video_title:(vid&&vid.kind==='yt')?(vid.title||null):null,
       video_channel:(vid&&vid.kind==='yt')?(vid.channel||null):null,
       video_published:(vid&&vid.kind==='yt')?(vid.publishedAt||null):null,
+      video_duration:(vid&&vid.kind==='yt')?(vid.duration||null):null,
       event_id:composerEventId||null
     }).select().single();
     if(error) throw error;

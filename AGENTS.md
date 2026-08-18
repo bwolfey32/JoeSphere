@@ -24,6 +24,9 @@ supabase/functions/youtube-search deployed manually, not by CI — see invariant
 youtube_search.sql                run once, by hand, before deploying the function above
 reactions_replies.sql             run once, by hand — emoji reactions + comment
                                    replies, see invariant #14 and Known gaps
+video_duration.sql                run once, by hand — adds posts.video_duration
+                                   for the clip-thumbnail duration badge, see
+                                   Known gaps
 ```
 
 ### Layout
@@ -402,7 +405,25 @@ This tracks **announced, scheduled** events. Do not add:
   Explore going from dead code to live, and the map's two-way sync with the
   feed have all been checked structurally but **none of it has been clicked
   through**. Treat runtime bugs as likely until someone has actually opened the
-  page.
+  page. The same caveat applies to the social-feed-polish pass that followed:
+  the consolidated post-card footer, the Active tab's rewrite from a
+  gravity-decay score to a strict 30-day/3-key filter, Upcoming's flattening
+  back to event-only cards, the map's pan-to-selection (a genuinely new
+  interaction pattern — hand-rolled `requestAnimationFrame` tweening of the
+  SVG `viewBox`, and a pulsing selection ring relying on `transform-box:
+  fill-box`, neither of which this file had used before), the unified header
+  search, and Explore's four curated sections behind a "Browse everything"
+  disclosure are all similarly unexercised.
+- **`video_duration.sql` has not been run, and the `youtube-search` Edge
+  Function's updated `contentDetails` lookup has not been deployed.** The
+  publish handler and every duration-display site (search results, the clip
+  preview, published post rows and panes) all reference `posts.video_duration`
+  and `clip.duration` unconditionally now — until both the SQL and the
+  function redeploy land, duration simply never appears (every site already
+  treats it as optional), but publishing itself will 400 if the column is
+  missing. Same sequencing risk `reactions_replies.sql` already documents: run
+  the SQL and redeploy the function *before* this version of `index.html`
+  goes live. See invariant #13 for the deploy steps.
 - **`reactions_replies.sql` has not been run against the live project.** It
   adds `reactions.emoji`, `reactions.comment_id`, `comments.parent_id`, and
   migrates the old `value` column's data to emoji (see invariant #14). Until it
