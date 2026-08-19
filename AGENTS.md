@@ -330,6 +330,48 @@ estimate is conservative — a shared, finite, easily-exhausted resource:
   `video_published` on a post are plain descriptive text, same trust level as
   `caption` — always through `esc()`, never used to build a URL.
 
+The composer's suggestion shelf (`{recommend:true}`) is a third mode on the same
+function, and it is conservative in one extra way the other two are not — it
+answers a question nobody asked, so it must never cost a visitor anything they
+would otherwise have spent:
+
+- **The queries are derived server-side, from the `posts` table, and this is a
+  security property rather than a tidiness one.** It makes the cache key a
+  function of stored rows instead of the request body, so a caller cannot vary
+  it, cannot force a cache miss, and cannot make the function spend quota on
+  demand. *That* is what licenses the next bullet. Moving `deriveThemes()` to
+  the client — an obvious "simplification", since the browser already has the
+  posts in memory — would reopen exactly the drain `PER_USER_DAILY_SEARCHES`
+  exists to close.
+- **`yt_rate` is deliberately not charged for this mode.** There is nothing for
+  a per-visitor cap to protect against given the above, and charging one would
+  mean a shelf nobody asked for eating the 15 searches somebody needs to
+  actually search. The global `yt_quota` is still checked — against
+  `REC_BUDGET_CEILING` (60% of the budget), not the full one, so the shelf can
+  never starve real searches.
+- **It never returns `{ok:false}`.** Cold start, budget ceiling, and every
+  upstream failure all answer `{ok:true, results:[], reason}`, because an error
+  message about a shelf the visitor never requested is noise. `index.html` falls
+  back to recent JRE episodes from `events.json`, which cost nothing and are
+  already on the page. Only an explicit search may show an error.
+- **`REC_RULES_V` is the same contract as `SEARCH_RULES_V`** — bump it whenever
+  theme extraction or query building changes, or the 12-hour cache will keep
+  answering with shelves built under the old rules.
+- **The show's own vocabulary is in `STOPWORDS`** (`joe`, `rogan`, `jre`,
+  `episode`, `powerfuljre`…) for the same reason invariant #13 dropped the
+  `'Joe Rogan '` prefix. Nearly every post here is a JRE clip, so without it
+  every derived query collapses back to "joe rogan" and the shelf recommends
+  the show it is already full of instead of the guests and subjects that are
+  the actual theme.
+- **Already-clipped videos are excluded, on both sides.** The shelf is for
+  finding the *next* clip, not for listing what has been found. The function
+  filters against the ids it just read; `index.html` filters again on render,
+  because a cached shelf can be 12 hours old and posts published since must
+  still drop out of it.
+- YouTube removed `search.list`'s `relatedToVideoId` parameter on 2023-08-07,
+  so there is no related-videos endpoint. If someone proposes "just ask YouTube
+  for related videos", that is why the code derives queries instead.
+
 Deployment is manual and is not part of this repo's CI: run `youtube_search.sql`
 once in the Supabase SQL editor, then `supabase functions deploy youtube-search`
 and `supabase secrets set YOUTUBE_API_KEY=...` from the CLI (or paste the
@@ -491,6 +533,17 @@ This tracks **announced, scheduled** events. Do not add:
   `.drawer[hidden]` for the pattern) — don't assume `hidden` alone is enough
   once the element has *any* class setting `display`.
 
+  It shipped a **second** time, undetected, in the composer: `.ytresults` and
+  `.evresults` both set `display:flex` and neither had the override, so every
+  `#p-yt-results.hidden=true` and `#p-event-results.hidden=true` in the file
+  was a no-op. It went unnoticed because both lists are usually emptied at the
+  same moments they are hidden, so an un-hidden empty flex column looks like
+  nothing at all — the symptom only appears when a list still has content, as
+  when picking a search result should dismiss the list it was picked from.
+  Both now carry the override. **When you add a class that sets `display`,
+  grep for whether anything toggles that element's `hidden`** — this bug is
+  invisible in review precisely because the broken state usually renders empty.
+
 ## Known gaps
 
 - **Most of this app has not been exercised in a browser by the agent that
@@ -580,6 +633,31 @@ This tracks **announced, scheduled** events. Do not add:
   can only detect a missing column on rows that already exist, so on an
   **empty** `posts` table `clipSchemaV2` stays `true` until the first publish
   fails.
+- **The composer's suggestion shelf has never run in a browser, and its Edge
+  Function mode has never run at all.** The shelf (`loadComposerSuggestions()`,
+  `renderSuggestShelf()`, `renderResultList()`) and the `{recommend:true}` mode
+  landed together, and nothing in either has been exercised. Specifically
+  unverified: whether `deriveThemes()` produces queries anyone would call
+  on-theme from real captions (the stopword list is a guess at what this corpus
+  looks like, and is the first thing to tune); whether the round-robin merge in
+  `recommendClips()` actually surfaces both themes rather than one; whether the
+  derived queries are stable enough day to day that the cache key holds for its
+  full 12 hours, or whether theme jitter re-keys it and buys the same shelf
+  repeatedly — **watch `yt_quota.units` over the first few days, since a
+  shelf-driven overspend would look exactly like ordinary search traffic**; and
+  whether `entryIndex` is reliably populated by the time somebody can open the
+  composer, which is what the cold-start fallback reads.
+
+  Never triggered: the `REC_BUDGET_CEILING` refusal, the all-queries-failed
+  path, and the `rows.length < REC_MIN_POSTS` cold start. The empty-shelf case
+  is deliberately *not* cached (`composerSuggest` stays `null` rather than
+  `[]`), so a transient failure retries on the next open instead of disabling
+  the shelf for the session — that retry has not been observed either.
+
+  Note the shelf does not weaken invariant #16: it is `i.ytimg.com` thumbnails
+  only, and opening the composer must still cost **zero** requests to
+  `youtube-nocookie.com`. That is the measurement to re-run if anyone reworks
+  this into a grid of live previews.
 - **The composer's search path has now run against a real YouTube key, but
   its bookkeeping has not been observed under load.** The cache/quota/
   rate-limit tables (`yt_cache`, `yt_quota`, `yt_rate`) are written on every

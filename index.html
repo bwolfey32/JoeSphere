@@ -823,6 +823,13 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
    the only scroller in the composer. Result counts are bounded anyway — about
    ten clips, eight events. */
 .ytresults{display:flex;flex-direction:column;gap:6px;margin-top:9px}
+/* Required, not optional — the same cascade trap .trim documents below and
+   .home-search once shipped: this class sets display:, and an author-origin
+   display: beats the UA's [hidden]{display:none} on origin, not specificity.
+   Without it every `#p-yt-results.hidden=true` in this file is a no-op, which
+   is now load-bearing: the suggestion shelf lives here and has to disappear on
+   paste and on pick, not just when it happens to be empty. */
+.ytresults[hidden]{display:none}
 .ytresult{display:flex;gap:10px;align-items:center;width:100%;text-align:left;
   background:var(--card);border:1px solid var(--rule);padding:6px;cursor:pointer;font:inherit;color:inherit}
 .ytresult:hover{border-color:var(--ink-soft)}
@@ -897,6 +904,10 @@ code{font-family:inherit;color:var(--blue);font-size:12px}
 .chip-x:hover{color:var(--ink)}
 /* Same as .ytresults: no nested scroller inside .drawer-panel. */
 .evresults{display:flex;flex-direction:column;gap:1px;margin-top:6px;background:var(--rule)}
+/* Same override, same reason as .ytresults above — this one is a pre-existing
+   miss rather than anything the shelf introduced: renderEventResults() hides
+   this list by attribute, and the display: rule was quietly out-ranking it. */
+.evresults[hidden]{display:none}
 .evresult{display:block;width:100%;text-align:left;background:var(--card);
   border:none;padding:8px 9px;font:inherit;color:inherit;font-size:13px;cursor:pointer}
 .evresult:hover{background:var(--paper-2)}
@@ -5787,6 +5798,13 @@ let composerPlayer=null, composerPoll=0, composerLoop=false;
 // The event/episode this draft is attached to, or '' for none. Mirrored into
 // the hidden #p-event input so the submit handler has one place to read it.
 let composerEventId='';
+// The suggestion shelf under the search box: what to clip next, before anyone
+// has typed. Held for the whole session rather than per open, so reopening the
+// composer is instant and costs nothing — the underlying set only changes
+// every REC_TTL_MS anyway (see the youtube-search Edge Function).
+// composerSuggestKind decides the heading: 'rec' for themed recommendations,
+// 'episodes' for the zero-cost cold-start fallback.
+let composerSuggest=null, composerSuggestKind='', composerSuggestBusy=false;
 
 function setPostKind(k){
   postKind=(k==='text')?'text':'clip';
@@ -5800,6 +5818,9 @@ function setPostKind(k){
   // player behind it would keep running. Stop it, and let renderTrim() decide
   // whether the panel belongs on screen at all.
   if(postKind==='text') teardownComposerPlayer();
+  // Coming back to Clip with nothing picked yet should find the shelf where it
+  // was left. It is inside #p-vid-field, so Text hides it for free.
+  else if(!composerClip) loadComposerSuggestions();
   renderTrim();
 }
 
@@ -5813,6 +5834,107 @@ function ytError(msg){
   const el=document.getElementById('p-yt-err');
   if(!msg){ el.style.display='none'; el.textContent=''; return; }
   el.textContent=msg; el.style.display='block';
+}
+
+/* ---- the suggestion shelf ----
+   An empty search box asks somebody to already know which video they want to
+   clip. This fills it with videos on the same theme as what the community has
+   been clipping, and the typing handler narrows that list locally — no
+   keystroke reaches the network (invariant #13's budget is 100 searches a day
+   for the whole site; see the Edge Function).
+
+   Everything here degrades quietly. A shelf nobody asked for must never be
+   able to produce an error message, so every failure path ends at recent JRE
+   episodes, which are already on the page and cost nothing. */
+
+// Videos already clipped, so the shelf never suggests one. Applied here as
+// well as in the Edge Function: a cached shelf can be up to REC_TTL_MS old,
+// and posts published since must still drop out of it.
+function clippedVideoIds(){
+  const out=new Set();
+  (posts||[]).forEach(p=>{ if(p.video_kind==='yt'&&p.video_id) out.add(String(p.video_id)); });
+  return out;
+}
+
+// The cold-start fallback, and the safety net under every failure. Episodes
+// are already in memory from events.json, so this costs nothing at all.
+// Shaped as the same records the search path produces, so one renderer and one
+// pick handler serve both.
+function episodeSuggestions(exclude,n){
+  const out=[];
+  for(const e of entryIndex.values()){
+    if(e.type!=='podcast') continue;
+    // The feed is untrusted input like any other stored row (invariant #1),
+    // so the id is validated before it can ever build a thumbnail or an embed.
+    const v=parseVideo0(e.video);
+    if(!v||v.kind!=='yt'||exclude.has(v.id)) continue;
+    out.push({id:v.id,title:e.title||'',channel:'PowerfulJRE',publishedAt:e.date||'',duration:null});
+  }
+  // Newest first. PowerfulJRE is accurate rather than decorative — it is the
+  // channel scripts/fetch-events.mjs pulls these ids from.
+  out.sort((a,b)=>String(b.publishedAt).localeCompare(String(a.publishedAt)));
+  return out.slice(0,n);
+}
+
+function suggestHeading(){
+  return composerSuggestKind==='rec'?'Ideas for your next clip':'Recent episodes';
+}
+
+// Paint the shelf, filtered by whatever is in the search box.
+function renderSuggestShelf(){
+  const el=document.getElementById('p-yt-results');
+  if(composerSuggestBusy&&!composerSuggest){
+    el.hidden=false; el.__results=[];
+    el.innerHTML='<p class="hint" style="margin:0">Finding something to clip…</p>';
+    return;
+  }
+  const all=composerSuggest||[];
+  if(!all.length){ el.hidden=true; el.__results=[]; el.innerHTML=''; return; }
+  // Matched case-insensitively but echoed back as typed — quoting somebody's
+  // words at them in a different case reads as a transcription error.
+  const raw=(document.getElementById('p-yt-q').value||'').trim();
+  const q=raw.toLowerCase();
+  const list=q?all.filter(r=>((r.title||'')+' '+(r.channel||'')).toLowerCase().includes(q)):all;
+  if(!list.length){
+    el.hidden=false; el.__results=[];
+    el.innerHTML='<p class="hint" style="margin:0">Nothing here matches “'+esc(raw)+'”. '+
+      'Press Enter to search all of YouTube.</p>';
+    return;
+  }
+  renderResultList(list,{heading:suggestHeading()});
+}
+
+// Fetch the shelf. Called on open; never blocks anything, never reports a
+// failure, and always leaves something on screen.
+async function loadComposerSuggestions(){
+  if(composerSuggestBusy) return;
+  const clipped=clippedVideoIds();
+  // A shelf from earlier in the session is still good — repaint it and stop.
+  if(composerSuggest&&composerSuggest.length){
+    composerSuggest=composerSuggest.filter(r=>!clipped.has(r.id));
+    renderSuggestShelf();
+    return;
+  }
+  composerSuggestBusy=true;
+  renderSuggestShelf();
+  let recs=[];
+  // callYouTubeSearch() revalidates every id against the strict charset before
+  // it can reach an iframe src, exactly as it does for a typed search.
+  try{ recs=await callYouTubeSearch({recommend:true}); }catch(e){ recs=[]; }
+  recs=recs.filter(r=>!clipped.has(r.id));
+  composerSuggestKind=recs.length?'rec':'episodes';
+  // Left null rather than [] when both sources come up empty, so the next open
+  // tries again. Caching the empty case would turn one bad moment — a failed
+  // request, or entryIndex not yet built on a slow first load — into a shelf
+  // that stays missing for the rest of the session.
+  const next=recs.length?recs:episodeSuggestions(clipped,6);
+  composerSuggest=next.length?next:null;
+  composerSuggestBusy=false;
+  // The composer may have been closed, switched to Text, or had a clip picked
+  // while this was in flight — repaint only if the shelf still belongs on
+  // screen, the same posture as the locPickerGen guard in populateLocPicker().
+  const open=!document.getElementById('composer').hidden;
+  if(open&&postKind==='clip'&&!composerClip) renderSuggestShelf();
 }
 
 // clip: {kind,id,title,channel,publishedAt} or null. Rendering the preview is
@@ -5857,6 +5979,9 @@ function wireClipClear(){
     setClipPreview(null);
     const q=document.getElementById('p-yt-q'); q.value=''; q.focus();
     document.getElementById('p-yt-search-btn').disabled=true;
+    // "Change clip" puts the visitor back where they started, which now means
+    // the shelf, not an empty box.
+    renderSuggestShelf();
   });
 }
 
@@ -6259,11 +6384,21 @@ async function callYouTubeSearch(payload){
   return (data.results||[]).filter(r=>r&&/^[A-Za-z0-9_-]{11}$/.test(r.id));
 }
 
-function renderYtResults(results){
+// One renderer for both the suggestion shelf and typed search results. They
+// are deliberately the same rows: typing narrows a single list rather than
+// swapping one surface for another, so there is never a moment where the
+// visitor has to work out which of two things they are looking at.
+//
+// el.__results is what [data-ytpick] resolves against, not the DOM, so it must
+// track exactly what is on screen — including after a local filter, or picking
+// a filtered row would find nothing.
+function renderResultList(results,opts){
+  const o=opts||{};
   const el=document.getElementById('p-yt-results');
   el.hidden=false;
   if(!results.length){
-    el.innerHTML='<p class="hint" style="margin:0">No embeddable results. Try different words, or paste a link.</p>';
+    el.innerHTML='<p class="hint" style="margin:0">'+
+      esc(o.empty||'No embeddable results. Try different words, or paste a link.')+'</p>';
     el.__results=[];
     return;
   }
@@ -6274,7 +6409,8 @@ function renderYtResults(results){
   // pattern as the onerror on feed row thumbs.
   const fallback="if(!this.dataset.f){this.dataset.f=1;"+
     "this.src=this.src.replace('/mqdefault.jpg','/hqdefault.jpg');}else{this.remove();}";
-  el.innerHTML=results.map(r=>
+  el.innerHTML=(o.heading?'<div class="subhead">'+esc(o.heading)+'</div>':'')+
+    results.map(r=>
     '<button type="button" class="ytresult" data-ytpick="'+esc(r.id)+'">'+
       '<span class="ytresult-thumb">'+
         '<img loading="lazy" alt="" src="'+esc(ytThumb(r.id))+'" onerror="'+esc(fallback)+'">'+
@@ -6284,6 +6420,8 @@ function renderYtResults(results){
       '<span>'+esc(r.channel)+(r.publishedAt?' · '+esc(fmt(String(r.publishedAt).slice(0,10))):'')+'</span></span>'+
     '</button>').join('');
 }
+
+function renderYtResults(results){ renderResultList(results); }
 
 async function runYtSearch(q){
   ytError('');
@@ -6317,7 +6455,7 @@ async function tryYtLookup(id){
 document.getElementById('p-yt-q').addEventListener('input',ev=>{
   const val=ev.target.value.trim();
   const btn=document.getElementById('p-yt-search-btn');
-  document.getElementById('p-yt-results').hidden=true;
+  const res=document.getElementById('p-yt-results');
   ytError('');
   const vid=parseVideo(val);
   if(vid&&vid.kind==='yt'){
@@ -6325,22 +6463,32 @@ document.getElementById('p-yt-q').addEventListener('input',ev=>{
     // later and seeds the in-point from this. Somebody pasting a link at 6:52
     // has already found the joke once; don't make them find it again.
     composerSeedIn=parseVideoTime(val)||0;
+    // Each of these three branches hides the list itself. It used to be hidden
+    // unconditionally at the top, which would now wipe the shelf on every
+    // keystroke — a pasted link should take the list away, but typing should
+    // narrow it.
+    res.hidden=true;
     btn.disabled=true; tryYtLookup(vid.id); return;
   }
-  if(vid){ btn.disabled=true; setClipPreview({kind:vid.kind,id:vid.id,title:'',channel:'',publishedAt:''}); return; }
+  if(vid){ res.hidden=true; btn.disabled=true;
+    setClipPreview({kind:vid.kind,id:vid.id,title:'',channel:'',publishedAt:''}); return; }
   setClipPreview(null);
   // A recognizable link that failed to parse (bad path, malformed id) is a
   // different problem than "no query yet" — say so instead of silently
   // treating the paste as ordinary search text.
   if(looksLikeVideoUrl(val)){
+    res.hidden=true;
     btn.disabled=true;
     ytError('That link doesn’t look like a supported video URL — check it’s a full '+
       'youtube.com/watch, youtu.be, TikTok or Vimeo link.');
     return;
   }
   // Searches only run on Enter/Search, never per keystroke — this just says
-  // whether there is enough here to search for.
+  // whether there is enough here to search for. What a keystroke *does* do is
+  // narrow the shelf, which is a local filter over what is already loaded and
+  // costs nothing.
   btn.disabled=val.length<2;
+  renderSuggestShelf();
 });
 document.getElementById('p-yt-q').addEventListener('keydown',ev=>{
   if(ev.key!=='Enter') return;
@@ -6565,6 +6713,9 @@ function resetComposerFields(){
   document.getElementById('p-yt-results').hidden=true;
   ytError('');
   document.getElementById('p-cap').value='';
+  // composerSuggest itself is deliberately kept: it is the same shelf for
+  // everyone and only changes every REC_TTL_MS, so reopening reuses it rather
+  // than asking again. loadComposerSuggestions() repaints it.
 }
 
 function openComposer(eventId){
@@ -6576,6 +6727,9 @@ function openComposer(eventId){
   if(!detail.hidden) closeDrawer();
   composerFocusReturn=document.activeElement;
   resetComposerFields();
+  // Fire and forget: the shelf fills itself in when it arrives, and the
+  // composer is fully usable before it does.
+  if(postKind==='clip') loadComposerSuggestions();
   setComposerEvent(eventId||'');
   wireNameField('p-name','p-name-display','p-name-shown','p-name-change');
   document.getElementById('p-err').style.display='none';
