@@ -223,6 +223,27 @@ body.drawer-open{overflow:hidden}
 .player .frame{position:relative;aspect-ratio:16/9;background:#080A0E;border:1px solid var(--rule);
   overflow:hidden}
 .player .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Click-to-play poster. Nothing is embedded until this is pressed, so opening
+   a detail costs no YouTube request and no preroll for a clip nobody chose to
+   watch. The button fills the whole 16/9 frame, so the touch target is the
+   poster itself rather than the glyph. */
+.clipfacade{position:absolute;inset:0;width:100%;height:100%;padding:0;margin:0;border:0;
+  background:#080A0E;color:inherit;font:inherit;cursor:pointer;display:block;overflow:hidden}
+.clipfacade img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:.6;transition:opacity .15s}
+.clipfacade:hover img,.clipfacade:focus-visible img{opacity:.8}
+.clipfacade .pf-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:64px;height:64px;border-radius:50%;background:rgba(15,18,24,.82);
+  border:2px solid var(--stamp);color:var(--stamp);display:flex;align-items:center;
+  justify-content:center;font-size:23px;line-height:1;padding-left:4px;
+  transition:background .15s,color .15s}
+.clipfacade:hover .pf-play,.clipfacade:focus-visible .pf-play{background:var(--stamp);color:#14171D}
+.clipfacade .pf-lab{position:absolute;left:0;right:0;bottom:0;padding:7px 9px;text-align:left;
+  font-family:"Oswald",Impact,sans-serif;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-soft);
+  background:linear-gradient(transparent,rgba(8,10,14,.92))}
+.clipfacade:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+@media(max-width:640px){ .clipfacade .pf-play{width:56px;height:56px;font-size:20px} }
 .player .pactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .player .empty{padding:26px 16px}
 
@@ -2636,24 +2657,20 @@ function postPaneHTML(p){
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
     '<p class="pauthor">'+avatarHTML(p.author_label)+'<b>'+esc(p.author_label||'Fan')+'</b> · '+timeHTML(p.created_at)+'</p>'+
     '<p class="pcaption lead">'+esc(p.caption||'(no caption)')+'</p>'+
-    // The plain iframe with &start=/&end= is still the baseline: it needs no
-    // API and no script, and it already seeks to the in-point and stops at the
-    // out-point. data-ytclip is a hint for upgradeClipPlayer(), which swaps in
-    // an IFrame API player so the clip loops instead of landing on YouTube's
-    // end-screen.
+    // No embed until somebody asks for one. Opening a post used to mount an
+    // iframe immediately, so browsing a feed spent a YouTube request — and
+    // risked a preroll — on every clip that was merely glanced at. The poster
+    // costs one cached thumbnail; mountClip() builds the real frame on click,
+    // and the preroll that follows is one the visitor opted into.
     //
-    // On a trimmed clip the src is withheld as data-src, because that swap
-    // discards this iframe — letting both load costs two fetches of the same
-    // video for a frame only one of them ends up using. Exactly one of the two
-    // always comes up: upgradeClipPlayer() owes this iframe its src on every
-    // path where the API player does not mount, including its early returns.
-    // Untrimmed clips are never upgraded, so they keep a plain src.
+    // The plain &start=/&end= iframe is still the baseline it builds: it needs
+    // no API and no script, and it already seeks to the in-point and stops at
+    // the out-point. On a trimmed clip mountClip() withholds that src while
+    // upgradeClipPlayer() tries to swap in an IFrame API player (which loops,
+    // instead of landing on YouTube's end-screen), so only one of the two ever
+    // loads — and exactly one of them always does.
     (vid&&CLIPSRC[vid.kind]?
-      '<div class="frame"'+(range?' data-ytclip="'+esc(vid.id+':'+range.s+':'+range.e)+'"':'')+'>'+
-      '<iframe '+(range?'data-src':'src')+'="'+esc(CLIPSRC[vid.kind](vid.id,range))+'" loading="lazy" '+
-      'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
-      'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
-      'title="'+esc(CLIPNAME[vid.kind])+' clip"></iframe></div>':'')+
+      '<div class="frame">'+clipFacadeHTML(vid,range,p.video_duration)+'</div>':'')+
     (source?'<p class="psource">'+esc(source)+'</p>':'')+
     // The association is a way through to the parent, not just a label.
     (ev?'<p class="pstat">About: <button class="linkish" data-goto="'+esc(ev.id)+'">'+
@@ -3824,10 +3841,14 @@ function startPaneLoop(){
     if(t>=r.e-0.15){ try{ panePlayer.seekTo(r.s,true); }catch(_){} }
   },250);
 }
-function upgradeClipPlayer(root){
-  const frame=root.querySelector('[data-ytclip]'); if(!frame) return;
-  // postPaneHTML() withheld this iframe's src so the upgrade below doesn't cost
-  // a second fetch of the same video. That makes every exit from here owe one
+function upgradeClipPlayer(root,opts){
+  opts=opts||{};
+  // Takes either the frame itself (mountClip, which has it in hand) or an
+  // ancestor to search under.
+  const frame=(root.matches&&root.matches('[data-ytclip]'))?root:root.querySelector('[data-ytclip]');
+  if(!frame) return;
+  // mountClip() withheld this iframe's src so the upgrade below doesn't cost a
+  // second fetch of the same video. That makes every exit from here owe one
   // of two outcomes: the API player mounts, or the held-back iframe gets its
   // src. Skipping both leaves a permanently blank frame, so `settled` tracks
   // which of the two happened and promote() is called on every other path.
@@ -3848,11 +3869,11 @@ function upgradeClipPlayer(root){
   if(!r){ promote(); return; }
   // loadYtApi() rejects on error and on its own 8s timeout, so .catch() already
   // covers a blocked or dead API. This fires well before that on purpose: an
-  // adblocker that blocks iframe_api is a common case, and waiting the full 8s
-  // would leave a blank frame where the old eager iframe showed one instantly.
-  // Cutting it short costs only the loop — explicitly an enhancement, per the
-  // note above — while the plain &start=/&end= embed still plays the right span.
-  // A slow-but-alive API loses looping too; that is the accepted trade.
+  // adblocker that blocks iframe_api is a common case, and somebody who just
+  // pressed play should not watch a blank frame for eight seconds waiting for
+  // it. Cutting it short costs only the loop — explicitly an enhancement, per
+  // the note above — while the plain &start=/&end= embed still plays the right
+  // span. A slow-but-alive API loses looping too; that is the accepted trade.
   const guard=setTimeout(promote,2500);
   loadYtApi().then(YT=>{
     clearTimeout(guard);
@@ -3870,11 +3891,31 @@ function upgradeClipPlayer(root){
     panePlayer=new YT.Player(host,{
       host:'https://www.youtube-nocookie.com',
       videoId:id,
+      // autoplay only ever comes from a real click on the poster, so this is a
+      // user gesture and browsers allow it. Nothing here autoplays on render.
       playerVars:{rel:0,enablejsapi:1,origin:location.origin,playsinline:1,
-        start:r.s,end:r.e},
+        start:r.s,end:r.e,autoplay:opts.autoplay?1:0},
       events:{onReady:startPaneLoop}
     });
   }).catch(()=>{ clearTimeout(guard); promote(); });
+}
+// Swaps the click-to-play poster for the real embed. Everything it needs comes
+// off the button, and all of it is re-validated through the same validators a
+// stored row goes through — the attributes are a hint, not a contract.
+function mountClip(btn){
+  const frame=btn.closest('.frame'); if(!frame) return;
+  const m=/^([a-z]{2}):(.+)$/.exec(btn.dataset.playclip||''); if(!m) return;
+  const vid=parseVideo0({kind:m[1],id:m[2]}); if(!vid||!CLIPSRC[vid.kind]) return;
+  const rm=/^(\d+):(\d+)$/.exec(btn.dataset.clip||'');
+  const r=rm?parseClipRange({clip_start:Number(rm[1]),clip_end:Number(rm[2])}):null;
+  // Only a trimmed YouTube clip has anything to upgrade to, so only it holds
+  // its src back; everything else mounts its one iframe and is done.
+  const trimmed=vid.kind==='yt'&&!!r;
+  frame.innerHTML=clipIframeHTML(vid,r,{autoplay:true,hold:trimmed});
+  if(trimmed){
+    frame.dataset.ytclip=vid.id+':'+r.s+':'+r.e;
+    upgradeClipPlayer(frame,{autoplay:true});
+  }
 }
 
 function renderPlayer(){
@@ -3903,7 +3944,8 @@ function renderPlayer(){
     if(p){
       el.innerHTML=postPaneHTML(p);
       setDrawerLabel(); renderPaneComposer();
-      upgradeClipPlayer(el);
+      // No upgrade call here any more: the pane draws a poster, not an embed,
+      // so there is nothing to upgrade until mountClip() builds the frame.
       return;
     }
   }
@@ -3917,10 +3959,11 @@ function renderPlayer(){
       el.innerHTML='<div class="player"><div class="ph"><span>Selected '+
         (e.type==='podcast'?'episode':'event')+'</span>'+
         '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
-        (v?'<div class="frame"><iframe src="'+esc(CLIPSRC[v.kind](v.id))+'" loading="lazy" '+
-          'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
-          'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
-          'title="'+esc(CLIPNAME[v.kind])+' clip"></iframe></div>'
+        // Click-to-play here too, for the same reason as a post: opening an
+        // episode to read its stats should not spend a request on a video
+        // nobody asked to watch. Events carry no clip range, so pressing this
+        // mounts a plain embed with no API player behind it.
+        (v?'<div class="frame">'+clipFacadeHTML(v,null,'')+'</div>'
           :posterHTML(e))+
         '<h4>'+esc(e.title)+'</h4>'+
         '<p class="pmeta">'+esc(labels[e.type]||e.type)+' · '+esc(fmt(e.date))+
@@ -5331,6 +5374,45 @@ function ytWatchURL(id,r){
   return 'https://youtu.be/'+id+(r?'?t='+r.s:'');
 }
 const CLIPNAME={yt:'YouTube',tt:'TikTok',vm:'Vimeo'};
+// One place builds a clip frame's contents, so the pane's markup and the
+// click-to-play handler can't drift apart on sandbox flags or URL shape.
+// Appending autoplay is a fixed literal on a URL CLIPSRC has just rebuilt from
+// a validated id and validated integers — no user string is involved, so this
+// stays inside invariants #1 and #15. It is best-effort: tt/vm may ignore it,
+// which costs one more tap inside their own player and nothing else.
+function clipSrc(vid,range,autoplay){
+  const u=CLIPSRC[vid.kind](vid.id,range);
+  return autoplay?u+(u.indexOf('?')<0?'?':'&')+'autoplay=1':u;
+}
+function clipIframeHTML(vid,range,opts){
+  opts=opts||{};
+  return '<iframe '+(opts.hold?'data-src':'src')+'="'+esc(clipSrc(vid,range,opts.autoplay))+'" '+
+    'loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
+    'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen'+
+    // Without this the autoplay parameter above is refused by the embed.
+    (opts.autoplay?'; autoplay':'')+'" '+
+    'title="'+esc(CLIPNAME[vid.kind])+' clip"></iframe>';
+}
+// The poster that stands in for the embed until somebody asks for it. It
+// carries everything mountClip() needs to build the real frame — and mountClip
+// re-validates all of it rather than trusting attributes this file just wrote,
+// the same posture parseVideo0() and parseClipRange() take on a stored row.
+function clipFacadeHTML(vid,range,durTxt){
+  const len=range?mmss(range.e-range.s):'';
+  const lab=len?len+' clip':(durTxt||CLIPNAME[vid.kind]);
+  return '<button type="button" class="clipfacade" '+
+    'data-playclip="'+esc(vid.kind+':'+vid.id)+'"'+
+    (range?' data-clip="'+esc(range.s+':'+range.e)+'"':'')+
+    ' aria-label="Play '+esc(CLIPNAME[vid.kind])+' clip'+(len?', '+esc(len):'')+'">'+
+    // Built from the id alone, exactly like every other thumbnail here, so
+    // there is no extra URL to trust. TikTok and Vimeo have no equivalent
+    // endpoint, so they get the bare frame and the play glyph.
+    (vid.kind==='yt'?'<img loading="lazy" alt="" src="'+esc(ytThumb(vid.id))+'" '+
+      'onerror="this.remove()">':'')+
+    '<span class="pf-play" aria-hidden="true">▶</span>'+
+    '<span class="pf-lab">'+esc(lab)+'</span>'+
+    '</button>';
+}
 // Ticket links go in a plain <a href>, never an iframe, so there's no host
 // whitelist (any ticket vendor is fine) — but the scheme is still restricted
 // to http/https so a javascript:/data: URL can never end up in an href, and
@@ -5468,6 +5550,7 @@ document.getElementById('save-entry').addEventListener('click',async()=>{
 document.getElementById('insight-player').addEventListener('click',async ev=>{
   const b=ev.target.closest('button'); if(!b)return;
   if(b.dataset.closepane){ clearSelection(); return; }
+  if(b.dataset.playclip){ mountClip(b); return; }
   if(b.dataset.drop){
     state.entries=state.entries.filter(x=>x.id!==b.dataset.drop);
     if(selectedId===b.dataset.drop){ selectedId=null; renderPlayer(); }

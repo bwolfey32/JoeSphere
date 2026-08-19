@@ -415,11 +415,45 @@ The scrubber needs YouTube's **IFrame Player API** — position can't be read fr
 a plain embed. It is loaded lazily, on the first attached clip, and every path
 treats it as optional: no API, or no known duration, and `renderTrim()` falls
 back to typed in/out fields. Trimming degrades to typing; it must never vanish.
-In the drawer the API is a pure enhancement — the markup already carries
-`&start=`/`&end=` and works alone; the player only adds looping. That upgrade
-runs solely where `renderPlayer()` rebuilds the frame anyway (a `paneKey` miss),
-so it does not violate the don't-touch-a-playing-iframe rule `paneRefresh()`
-exists to honour.
+In the drawer the API is a pure enhancement — the iframe `mountClip()` builds
+already carries `&start=`/`&end=` and works alone; the player only adds looping.
+That upgrade runs solely from `mountClip()`, which is building the frame from
+scratch anyway, so it does not violate the don't-touch-a-playing-iframe rule
+`paneRefresh()` exists to honour.
+
+### 16. The embed is never mounted until somebody asks for it
+
+The drawer draws a **click-to-play poster** (`clipFacadeHTML()`), not an iframe.
+Opening a post or an event costs one `i.ytimg.com` thumbnail and zero requests to
+YouTube; `mountClip()` builds the real frame on click. This is the one lever this
+project actually has over ad exposure, and it is a UX guardrail, not an
+optimization — **an ad nobody opted into is the thing being prevented**, so do not
+"simplify" the pane by rendering the iframe directly again.
+
+Note what this is *not*: there is no ad blocking here and there cannot be. The
+embed is cross-origin, so this page cannot see inside it, and every technique that
+does strip ads needs a server and breaks invariant #15 (or YouTube's ToS, or
+both). Reducing *unrequested* embeds is the whole of the available fix.
+
+Three details are load-bearing:
+
+- **Exactly one embed load per click.** A trimmed clip's iframe is emitted with
+  its src withheld as `data-src`, because `upgradeClipPlayer()` is about to
+  replace it with an API player; letting both load costs two fetches of one
+  video. So every exit from `upgradeClipPlayer()` owes one of two outcomes —
+  the API player mounts, or the held-back iframe gets its src — including its
+  early returns and a 2.5s timeout guard. Skipping both leaves a blank frame.
+- **The guard fires well inside `loadYtApi()`'s own 8s timeout, deliberately.**
+  An adblocker blocking `iframe_api` is a common case, and somebody who just
+  pressed play must not watch a blank frame for eight seconds. Cutting it short
+  costs only looping, which is already an enhancement.
+- **`autoplay` is only ever set from a real click**, never on render — that is
+  what makes it a user gesture the browser will honour, and what keeps a pane
+  from starting a video by itself.
+
+`mountClip()` re-validates everything off the button through `parseVideo0()` and
+`parseClipRange()` rather than trusting attributes this file just wrote — the same
+posture those two take on a stored row.
 
 ## Scope boundaries
 
@@ -504,6 +538,25 @@ This tracks **announced, scheduled** events. Do not add:
   unconditional rebuild, the symptom is a trim that silently resets a second
   after you set it — which reads as a mystery, not as a regression in that
   function.
+- **The click-to-play facade (invariant #16) has never run in a browser
+  either**, and it now sits in front of every clip the drawer can show, so a
+  bug here reads as "video is broken" rather than as a playback regression.
+  Specifically unverified: whether `autoplay` is actually honoured on the
+  `YT.Player` path, where the player is constructed *after* `loadYtApi()`
+  resolves and so may land outside the click's user-activation window (the
+  plain-iframe fallback is built synchronously in the handler and should be
+  safer); whether the 2.5s guard is long enough that a normal connection still
+  gets looping rather than silently falling back every time; whether
+  `object-fit:cover` on the poster matches the 16/9 letterboxing of the embed
+  it replaces, or visibly jumps on mount; and whether TikTok and Vimeo honour
+  an appended `autoplay=1` at all, which is best-effort by design.
+
+  The measurement that proves the feature works is the Network tab filtered to
+  `youtube-nocookie.com`: opening details should now cost **zero** requests
+  there, and clicking play exactly **one** — including on a trimmed clip,
+  which used to cost two. If a trimmed clip ever shows two, the held-back
+  `data-src` has been promoted *and* the API player mounted, which means
+  `settled` is no longer doing its job.
 - **The schema is current: every hand-run migration has been applied to the
   live project, and the Edge Function is deployed with its key set** (as of
   2026-08-17). That covers `youtube_search.sql`, `reactions_replies.sql`,
