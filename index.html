@@ -6782,10 +6782,7 @@ document.getElementById('post-submit').addEventListener('click',async()=>{
     vid=composerClip;
     if(!cap) return show('Add a short caption.');
   }else{
-    // A text post has to carry its own weight — it is a thread starter, not a
-    // comment. Comments are the short-form channel and live on the parent.
-    if(cap.length<40) return show('A text post needs a bit more to it — under 40 characters, '+
-      'add it as a comment on an event or post instead.');
+    if(!cap) return show('Say something first.');
   }
   if(cap.length>500) return show('Posts are capped at 500 characters.');
   // The range only ever travels with a YouTube clip — start/end mean nothing
