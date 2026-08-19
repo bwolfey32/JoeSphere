@@ -87,7 +87,9 @@ body{
 .brand-name{font-family:"Oswald",Impact,"Arial Narrow",sans-serif;font-weight:700;
   text-transform:uppercase;letter-spacing:.04em;font-size:20px;line-height:1.05}
 .brand-sub{font-size:11px;color:var(--ink-soft);letter-spacing:.04em}
-.topbar #open-post{margin-left:auto;flex:0 0 auto}
+.topbar #open-post{margin-left:auto;flex:0 0 auto;
+  border-color:var(--stamp);color:var(--stamp)}
+.topbar #open-post:hover{background:var(--stamp);color:#14171D}
 
 /* The disclosure is folded, never dropped — invariant #12. */
 .about{border:1px solid var(--rule);background:var(--card);margin-bottom:4px}
@@ -919,6 +921,11 @@ footer{
 .method>summary:focus-visible,.ytresult:focus-visible,.evresult:focus-visible,
 .chip-x:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 @media(max-width:640px){
+  /* iOS Safari auto-zooms the viewport on focus when a form field's
+     font-size is under 16px — that's what was cropping the screen on
+     navigation, not a real zoom gesture. 16px here is the fix, not a
+     style choice. */
+  input[type=text],input[type=date],textarea,select{font-size:16px}
   .ytresult{padding:8px}
   .evresult{padding:11px 9px}
   .chip-x{min-width:28px;min-height:28px}
