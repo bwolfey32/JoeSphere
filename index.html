@@ -2636,16 +2636,21 @@ function postPaneHTML(p){
     '<button class="paneclose" data-closepane="1" aria-label="Close">×</button></div>'+
     '<p class="pauthor">'+avatarHTML(p.author_label)+'<b>'+esc(p.author_label||'Fan')+'</b> · '+timeHTML(p.created_at)+'</p>'+
     '<p class="pcaption lead">'+esc(p.caption||'(no caption)')+'</p>'+
-    // The plain iframe with &start=/&end= is the baseline and is always what
-    // ships in the markup: it needs no API, no script and no network beyond
-    // the embed itself, and it already seeks to the in-point and stops at the
+    // The plain iframe with &start=/&end= is still the baseline: it needs no
+    // API and no script, and it already seeks to the in-point and stops at the
     // out-point. data-ytclip is a hint for upgradeClipPlayer(), which swaps in
-    // an IFrame API player afterwards so the clip loops instead of landing on
-    // YouTube's end-screen. If that upgrade never happens — blocked script,
-    // no network — this markup is what stays, and it works.
+    // an IFrame API player so the clip loops instead of landing on YouTube's
+    // end-screen.
+    //
+    // On a trimmed clip the src is withheld as data-src, because that swap
+    // discards this iframe — letting both load costs two fetches of the same
+    // video for a frame only one of them ends up using. Exactly one of the two
+    // always comes up: upgradeClipPlayer() owes this iframe its src on every
+    // path where the API player does not mount, including its early returns.
+    // Untrimmed clips are never upgraded, so they keep a plain src.
     (vid&&CLIPSRC[vid.kind]?
       '<div class="frame"'+(range?' data-ytclip="'+esc(vid.id+':'+range.s+':'+range.e)+'"':'')+'>'+
-      '<iframe src="'+esc(CLIPSRC[vid.kind](vid.id,range))+'" loading="lazy" '+
+      '<iframe '+(range?'data-src':'src')+'="'+esc(CLIPSRC[vid.kind](vid.id,range))+'" loading="lazy" '+
       'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen '+
       'allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture; fullscreen" '+
       'title="'+esc(CLIPNAME[vid.kind])+' clip"></iframe></div>':'')+
@@ -3821,15 +3826,43 @@ function startPaneLoop(){
 }
 function upgradeClipPlayer(root){
   const frame=root.querySelector('[data-ytclip]'); if(!frame) return;
+  // postPaneHTML() withheld this iframe's src so the upgrade below doesn't cost
+  // a second fetch of the same video. That makes every exit from here owe one
+  // of two outcomes: the API player mounts, or the held-back iframe gets its
+  // src. Skipping both leaves a permanently blank frame, so `settled` tracks
+  // which of the two happened and promote() is called on every other path.
+  let settled=false;
+  const promote=()=>{
+    if(settled) return; settled=true;
+    // Never start a load on a frame the drawer has already moved past.
+    if(!document.contains(frame)) return;
+    const f=frame.querySelector('iframe[data-src]'); if(!f) return;
+    f.src=f.dataset.src; f.removeAttribute('data-src');
+  };
   // Re-validated here rather than trusted from the attribute this file just
   // wrote: the attribute is a hint, the id and the numbers are the contract.
-  const m=/^([A-Za-z0-9_-]{11}):(\d+):(\d+)$/.exec(frame.dataset.ytclip||''); if(!m) return;
+  const m=/^([A-Za-z0-9_-]{11}):(\d+):(\d+)$/.exec(frame.dataset.ytclip||'');
+  if(!m){ promote(); return; }
   const id=m[1];
-  const r=parseClipRange({clip_start:Number(m[2]),clip_end:Number(m[3])}); if(!r) return;
+  const r=parseClipRange({clip_start:Number(m[2]),clip_end:Number(m[3])});
+  if(!r){ promote(); return; }
+  // loadYtApi() rejects on error and on its own 8s timeout, so .catch() already
+  // covers a blocked or dead API. This fires well before that on purpose: an
+  // adblocker that blocks iframe_api is a common case, and waiting the full 8s
+  // would leave a blank frame where the old eager iframe showed one instantly.
+  // Cutting it short costs only the loop — explicitly an enhancement, per the
+  // note above — while the plain &start=/&end= embed still plays the right span.
+  // A slow-but-alive API loses looping too; that is the accepted trade.
+  const guard=setTimeout(promote,2500);
   loadYtApi().then(YT=>{
+    clearTimeout(guard);
+    // The guard beat us to it — the plain iframe is loading, so leave it be
+    // rather than throwing away a fetch that is already in flight.
+    if(settled) return;
     // The drawer can move on while the API loads. Only upgrade a frame that is
     // still in the document and still showing this clip.
     if(!document.contains(frame)||frame.dataset.ytclip!==m[0]) return;
+    settled=true;
     const host=document.createElement('div');
     frame.innerHTML='';
     frame.appendChild(host);
@@ -3841,7 +3874,7 @@ function upgradeClipPlayer(root){
         start:r.s,end:r.e},
       events:{onReady:startPaneLoop}
     });
-  }).catch(()=>{ /* the plain start/end iframe is already in place */ });
+  }).catch(()=>{ clearTimeout(guard); promote(); });
 }
 
 function renderPlayer(){
